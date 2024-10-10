@@ -7,8 +7,8 @@ package ca.mcgill.ecse321.gameshop.model;
 import java.util.*;
 import java.sql.Date;
 
-// line 73 "model.ump"
-// line 148 "model.ump"
+// line 76 "model.ump"
+// line 152 "model.ump"
 public class Cart
 {
 
@@ -16,21 +16,18 @@ public class Cart
     // MEMBER VARIABLES
     //------------------------
 
-    //Cart Attributes
-    private List<Game> cartGames;
-
     //Cart Associations
     private List<Game> games;
     private List<Order> orders;
     private Customer customer;
+    private Guest guest;
 
     //------------------------
     // CONSTRUCTOR
     //------------------------
 
-    public Cart(List<Game> aCartGames, Customer aCustomer)
+    public Cart(Customer aCustomer, Guest aGuest)
     {
-        cartGames = aCartGames;
         games = new ArrayList<Game>();
         orders = new ArrayList<Order>();
         if (aCustomer == null || aCustomer.getCarts() != null)
@@ -38,32 +35,28 @@ public class Cart
             throw new RuntimeException("Unable to create Cart due to aCustomer. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
         }
         customer = aCustomer;
+        boolean didAddGuest = setGuest(aGuest);
+        if (!didAddGuest)
+        {
+            throw new RuntimeException("Unable to create guestCart due to guest. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
+        }
     }
 
-    public Cart(List<Game> aCartGames, User aUserForCustomer, String aShippingAddressForCustomer, Wishlist aWishlistForCustomer)
+    public Cart(User aUserForCustomer, String aShippingAddressForCustomer, Wishlist aWishlistForCustomer, Guest aGuest)
     {
-        cartGames = aCartGames;
         games = new ArrayList<Game>();
         orders = new ArrayList<Order>();
         customer = new Customer(aUserForCustomer, aShippingAddressForCustomer, this, aWishlistForCustomer);
+        boolean didAddGuest = setGuest(aGuest);
+        if (!didAddGuest)
+        {
+            throw new RuntimeException("Unable to create guestCart due to guest. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
+        }
     }
 
     //------------------------
     // INTERFACE
     //------------------------
-
-    public boolean setCartGames(List<Game> aCartGames)
-    {
-        boolean wasSet = false;
-        cartGames = aCartGames;
-        wasSet = true;
-        return wasSet;
-    }
-
-    public List<Game> getCartGames()
-    {
-        return cartGames;
-    }
     /* Code from template association_GetMany */
     public Game getGame(int index)
     {
@@ -128,6 +121,11 @@ public class Cart
     public Customer getCustomer()
     {
         return customer;
+    }
+    /* Code from template association_GetOne */
+    public Guest getGuest()
+    {
+        return guest;
     }
     /* Code from template association_MinimumNumberOfMethod */
     public static int minimumNumberOfGames()
@@ -283,6 +281,25 @@ public class Cart
         }
         return wasAdded;
     }
+    /* Code from template association_SetOneToMany */
+    public boolean setGuest(Guest aGuest)
+    {
+        boolean wasSet = false;
+        if (aGuest == null)
+        {
+            return wasSet;
+        }
+
+        Guest existingGuest = guest;
+        guest = aGuest;
+        if (existingGuest != null && !existingGuest.equals(aGuest))
+        {
+            existingGuest.removeGuestCart(this);
+        }
+        guest.addGuestCart(this);
+        wasSet = true;
+        return wasSet;
+    }
 
     public void delete()
     {
@@ -303,13 +320,12 @@ public class Cart
         {
             existingCustomer.delete();
         }
+        Guest placeholderGuest = guest;
+        this.guest = null;
+        if(placeholderGuest != null)
+        {
+            placeholderGuest.removeGuestCart(this);
+        }
     }
 
-
-    public String toString()
-    {
-        return super.toString() + "["+ "]" + System.getProperties().getProperty("line.separator") +
-                "  " + "cartGames" + "=" + (getCartGames() != null ? !getCartGames().equals(this)  ? getCartGames().toString().replaceAll("  ","    ") : "this" : "null") + System.getProperties().getProperty("line.separator") +
-                "  " + "customer = "+(getCustomer()!=null?Integer.toHexString(System.identityHashCode(getCustomer())):"null");
-    }
 }

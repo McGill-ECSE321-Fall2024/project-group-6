@@ -6,17 +6,14 @@ package ca.mcgill.ecse321.gameshop.model;
 
 import java.util.*;
 
-// line 63 "model.ump"
-// line 138 "model.ump"
+// line 66 "model.ump"
+// line 142 "model.ump"
 public class Wishlist
 {
 
     //------------------------
     // MEMBER VARIABLES
     //------------------------
-
-    //Wishlist Attributes
-    private List<Game> wishlistGames;
 
     //Wishlist Associations
     private Customer customer;
@@ -26,9 +23,8 @@ public class Wishlist
     // CONSTRUCTOR
     //------------------------
 
-    public Wishlist(List<Game> aWishlistGames, Customer aCustomer)
+    public Wishlist(Customer aCustomer)
     {
-        wishlistGames = aWishlistGames;
         if (aCustomer == null || aCustomer.getWishlist() != null)
         {
             throw new RuntimeException("Unable to create Wishlist due to aCustomer. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
@@ -37,9 +33,8 @@ public class Wishlist
         games = new ArrayList<Game>();
     }
 
-    public Wishlist(List<Game> aWishlistGames, User aUserForCustomer, String aShippingAddressForCustomer, Cart aCartsForCustomer)
+    public Wishlist(User aUserForCustomer, String aShippingAddressForCustomer, Cart aCartsForCustomer)
     {
-        wishlistGames = aWishlistGames;
         customer = new Customer(aUserForCustomer, aShippingAddressForCustomer, aCartsForCustomer, this);
         games = new ArrayList<Game>();
     }
@@ -47,19 +42,6 @@ public class Wishlist
     //------------------------
     // INTERFACE
     //------------------------
-
-    public boolean setWishlistGames(List<Game> aWishlistGames)
-    {
-        boolean wasSet = false;
-        wishlistGames = aWishlistGames;
-        wasSet = true;
-        return wasSet;
-    }
-
-    public List<Game> getWishlistGames()
-    {
-        return wishlistGames;
-    }
     /* Code from template association_GetOne */
     public Customer getCustomer()
     {
@@ -194,11 +176,4 @@ public class Wishlist
         }
     }
 
-
-    public String toString()
-    {
-        return super.toString() + "["+ "]" + System.getProperties().getProperty("line.separator") +
-                "  " + "wishlistGames" + "=" + (getWishlistGames() != null ? !getWishlistGames().equals(this)  ? getWishlistGames().toString().replaceAll("  ","    ") : "this" : "null") + System.getProperties().getProperty("line.separator") +
-                "  " + "customer = "+(getCustomer()!=null?Integer.toHexString(System.identityHashCode(getCustomer())):"null");
-    }
 }

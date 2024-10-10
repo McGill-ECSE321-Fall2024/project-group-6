@@ -10,7 +10,7 @@ import java.util.*;
  * Defining the User class
  */
 // line 3 "model.ump"
-// line 91 "model.ump"
+// line 93 "model.ump"
 public class User
 {
 

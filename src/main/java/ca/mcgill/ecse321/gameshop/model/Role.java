@@ -9,7 +9,7 @@ package ca.mcgill.ecse321.gameshop.model;
  * Abstract Role class
  */
 // line 11 "model.ump"
-// line 96 "model.ump"
+// line 98 "model.ump"
 public abstract class Role
 {
 

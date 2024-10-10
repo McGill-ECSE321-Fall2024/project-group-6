@@ -6,8 +6,8 @@ package ca.mcgill.ecse321.gameshop.model;
 
 import java.util.*;
 
-// line 58 "model.ump"
-// line 160 "model.ump"
+// line 61 "model.ump"
+// line 164 "model.ump"
 public class Category
 {
 
@@ -16,7 +16,7 @@ public class Category
     //------------------------
 
     //Category Attributes
-    private String category;
+    private String categoryName;
 
     //Category Associations
     private List<Game> games;
@@ -25,9 +25,9 @@ public class Category
     // CONSTRUCTOR
     //------------------------
 
-    public Category(String aCategory)
+    public Category(String aCategoryName)
     {
-        category = aCategory;
+        categoryName = aCategoryName;
         games = new ArrayList<Game>();
     }
 
@@ -35,17 +35,17 @@ public class Category
     // INTERFACE
     //------------------------
 
-    public boolean setCategory(String aCategory)
+    public boolean setCategoryName(String aCategoryName)
     {
         boolean wasSet = false;
-        category = aCategory;
+        categoryName = aCategoryName;
         wasSet = true;
         return wasSet;
     }
 
-    public String getCategory()
+    public String getCategoryName()
     {
-        return category;
+        return categoryName;
     }
     /* Code from template association_GetMany */
     public Game getGame(int index)
@@ -181,6 +181,6 @@ public class Category
     public String toString()
     {
         return super.toString() + "["+
-                "category" + ":" + getCategory()+ "]";
+                "categoryName" + ":" + getCategoryName()+ "]";
     }
 }

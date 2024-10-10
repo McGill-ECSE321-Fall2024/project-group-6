@@ -8,7 +8,7 @@ import java.util.*;
 import java.sql.Date;
 
 // line 16 "model.ump"
-// line 103 "model.ump"
+// line 105 "model.ump"
 public class Customer extends Role
 {
 
@@ -47,12 +47,12 @@ public class Customer extends Role
         payments = new ArrayList<Payment>();
     }
 
-    public Customer(User aUser, String aShippingAddress, List<Game> aCartGamesForCarts, List<Game> aWishlistGamesForWishlist)
+    public Customer(User aUser, String aShippingAddress, Guest aGuestForCarts)
     {
         super(aUser);
         shippingAddress = aShippingAddress;
-        carts = new Cart(aCartGamesForCarts, this);
-        wishlist = new Wishlist(aWishlistGamesForWishlist, this);
+        carts = new Cart(this, aGuestForCarts);
+        wishlist = new Wishlist(this);
         reviews = new ArrayList<Review>();
         payments = new ArrayList<Payment>();
     }
@@ -149,9 +149,9 @@ public class Customer extends Role
         return 0;
     }
     /* Code from template association_AddManyToOne */
-    public Review addReview(String aRating, String aComment, int aAmountOfLikes, Game aGame)
+    public Review addReview(String aRating, String aComment, int aAmountOfLikes, int aReviewId, Manager aManager, Game aGame)
     {
-        return new Review(aRating, aComment, aAmountOfLikes, this, aGame);
+        return new Review(aRating, aComment, aAmountOfLikes, aReviewId, this, aManager, aGame);
     }
 
     public boolean addReview(Review aReview)
@@ -324,3 +324,4 @@ public class Customer extends Role
                 "  " + "wishlist = "+(getWishlist()!=null?Integer.toHexString(System.identityHashCode(getWishlist())):"null");
     }
 }
+

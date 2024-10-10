@@ -6,8 +6,8 @@ package ca.mcgill.ecse321.gameshop.model;
 
 import java.util.*;
 
-// line 45 "model.ump"
-// line 130 "model.ump"
+// line 50 "model.ump"
+// line 134 "model.ump"
 public class Game
 {
 
@@ -20,14 +20,14 @@ public class Game
     private String description;
     private float price;
     private int stockQuantity;
-    private boolean approvedByOwner;
     private Image photo;
-    private String category;
+    private int gameId;
 
     //Game Associations
     private List<Review> reviews;
     private Manager manager;
     private List<Wishlist> wishlists;
+    private Employee creator;
     private List<Category> categories;
     private List<Cart> carts;
 
@@ -35,15 +35,14 @@ public class Game
     // CONSTRUCTOR
     //------------------------
 
-    public Game(String aName, String aDescription, float aPrice, int aStockQuantity, boolean aApprovedByOwner, Image aPhoto, String aCategory, Manager aManager, Category... allCategories)
+    public Game(String aName, String aDescription, float aPrice, int aStockQuantity, Image aPhoto, int aGameId, Manager aManager, Employee aCreator, Category... allCategories)
     {
         name = aName;
         description = aDescription;
         price = aPrice;
         stockQuantity = aStockQuantity;
-        approvedByOwner = aApprovedByOwner;
         photo = aPhoto;
-        category = aCategory;
+        gameId = aGameId;
         reviews = new ArrayList<Review>();
         boolean didAddManager = setManager(aManager);
         if (!didAddManager)
@@ -51,6 +50,11 @@ public class Game
             throw new RuntimeException("Unable to create game due to manager. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
         }
         wishlists = new ArrayList<Wishlist>();
+        boolean didAddCreator = setCreator(aCreator);
+        if (!didAddCreator)
+        {
+            throw new RuntimeException("Unable to create created due to creator. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
+        }
         categories = new ArrayList<Category>();
         boolean didAddCategories = setCategories(allCategories);
         if (!didAddCategories)
@@ -96,14 +100,6 @@ public class Game
         return wasSet;
     }
 
-    public boolean setApprovedByOwner(boolean aApprovedByOwner)
-    {
-        boolean wasSet = false;
-        approvedByOwner = aApprovedByOwner;
-        wasSet = true;
-        return wasSet;
-    }
-
     public boolean setPhoto(Image aPhoto)
     {
         boolean wasSet = false;
@@ -112,10 +108,10 @@ public class Game
         return wasSet;
     }
 
-    public boolean setCategory(String aCategory)
+    public boolean setGameId(int aGameId)
     {
         boolean wasSet = false;
-        category = aCategory;
+        gameId = aGameId;
         wasSet = true;
         return wasSet;
     }
@@ -140,19 +136,14 @@ public class Game
         return stockQuantity;
     }
 
-    public boolean getApprovedByOwner()
-    {
-        return approvedByOwner;
-    }
-
     public Image getPhoto()
     {
         return photo;
     }
 
-    public String getCategory()
+    public int getGameId()
     {
-        return category;
+        return gameId;
     }
     /* Code from template association_GetMany */
     public Review getReview(int index)
@@ -218,6 +209,11 @@ public class Game
     {
         int index = wishlists.indexOf(aWishlist);
         return index;
+    }
+    /* Code from template association_GetOne */
+    public Employee getCreator()
+    {
+        return creator;
     }
     /* Code from template association_GetMany */
     public Category getCategory(int index)
@@ -285,9 +281,9 @@ public class Game
         return 0;
     }
     /* Code from template association_AddManyToOne */
-    public Review addReview(String aRating, String aComment, int aAmountOfLikes, Customer aCustomer)
+    public Review addReview(String aRating, String aComment, int aAmountOfLikes, int aReviewId, Customer aCustomer, Manager aManager)
     {
-        return new Review(aRating, aComment, aAmountOfLikes, aCustomer, this);
+        return new Review(aRating, aComment, aAmountOfLikes, aReviewId, aCustomer, aManager, this);
     }
 
     public boolean addReview(Review aReview)
@@ -451,6 +447,25 @@ public class Game
             wasAdded = addWishlistAt(aWishlist, index);
         }
         return wasAdded;
+    }
+    /* Code from template association_SetOneToMany */
+    public boolean setCreator(Employee aCreator)
+    {
+        boolean wasSet = false;
+        if (aCreator == null)
+        {
+            return wasSet;
+        }
+
+        Employee existingCreator = creator;
+        creator = aCreator;
+        if (existingCreator != null && !existingCreator.equals(aCreator))
+        {
+            existingCreator.removeCreated(this);
+        }
+        creator.addCreated(this);
+        wasSet = true;
+        return wasSet;
     }
     /* Code from template association_IsNumberOfValidMethod */
     public boolean isNumberOfCategoriesValid()
@@ -688,6 +703,12 @@ public class Game
         {
             aWishlist.removeGame(this);
         }
+        Employee placeholderCreator = creator;
+        this.creator = null;
+        if(placeholderCreator != null)
+        {
+            placeholderCreator.removeCreated(this);
+        }
         ArrayList<Category> copyOfCategories = new ArrayList<Category>(categories);
         categories.clear();
         for(Category aCategory : copyOfCategories)
@@ -710,11 +731,10 @@ public class Game
                 "description" + ":" + getDescription()+ "," +
                 "price" + ":" + getPrice()+ "," +
                 "stockQuantity" + ":" + getStockQuantity()+ "," +
-                "approvedByOwner" + ":" + getApprovedByOwner()+ "," +
-                "category" + ":" + getCategory()+ "]" + System.getProperties().getProperty("line.separator") +
+                "gameId" + ":" + getGameId()+ "]" + System.getProperties().getProperty("line.separator") +
                 "  " + "photo" + "=" + (getPhoto() != null ? !getPhoto().equals(this)  ? getPhoto().toString().replaceAll("  ","    ") : "this" : "null") + System.getProperties().getProperty("line.separator") +
-                "  " + "manager = "+(getManager()!=null?Integer.toHexString(System.identityHashCode(getManager())):"null");
+                "  " + "manager = "+(getManager()!=null?Integer.toHexString(System.identityHashCode(getManager())):"null") + System.getProperties().getProperty("line.separator") +
+                "  " + "creator = "+(getCreator()!=null?Integer.toHexString(System.identityHashCode(getCreator())):"null");
     }
 }
-
 

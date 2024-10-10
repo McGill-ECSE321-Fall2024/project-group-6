@@ -6,8 +6,8 @@ package ca.mcgill.ecse321.gameshop.model;
 
 import java.sql.Date;
 
-// line 79 "model.ump"
-// line 155 "model.ump"
+// line 81 "model.ump"
+// line 159 "model.ump"
 public class Payment
 {
 
