@@ -7,7 +7,7 @@ package ca.mcgill.ecse321.gameshop.model;
 import java.util.*;
 
 // line 28 "model.ump"
-// line 116 "model.ump"
+// line 115 "model.ump"
 public class Employee extends Role
 {
 
@@ -25,9 +25,9 @@ public class Employee extends Role
     // CONSTRUCTOR
     //------------------------
 
-    public Employee(User aUser, String aAssignedTasks)
+    public Employee(Person aPerson, String aAssignedTasks)
     {
-        super(aUser);
+        super(aPerson);
         assignedTasks = aAssignedTasks;
         created = new ArrayList<Game>();
     }
@@ -168,3 +168,4 @@ public class Employee extends Role
                 "assignedTasks" + ":" + getAssignedTasks()+ "]";
     }
 }
+

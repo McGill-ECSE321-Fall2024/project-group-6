@@ -1,87 +1,92 @@
 namespace ca.mcgill.ecse321.gameshop.model;
 
-// Defining the User class
-class User{
-    username;
-    unique email;
-    password;
-    phone;
+// Defining the Person class
+class Person{
+  username;
+  unique email;
+  password;
+  phone;
 }
 
 // Abstract Role class
 class Role{
-    * -> 1 User;
-    abstract;
+  * -> 1 Person;
+  abstract;
 }
 
 class Customer{
-    isA Role;
-	shippingAddress;
+  isA Role;
+  shippingAddress;
 
-    1 <@>- 1 Cart carts;
-    1 <@>- 1 Wishlist wishlist;
+  1 <@>- 1 Cart carts;
+  1 <@>- 1 Wishlist wishlist;
 
-    1 -- * Review;
+  1 -- * Review;
 
-    1 -- * Payment;
+  1 -- * Payment;
 }
 
 class Employee{
-    isA Role;
-    assignedTasks;
+  isA Role;
+  assignedTasks;
+  1 creator -- * Game created;
 }
 
 class Manager{
-    isA Role;
+  isA Role;
+  1 -- * Review;
 }
 
 class Order{
-    int orderId;
-    Date orderDate;
-    float totalPrice;
+  int orderId;
+  Date orderDate;
+  float totalPrice;
 
-    1 -- 1 Payment;
+   1 -- 1 Payment;
+}
+
+class Guest{
+  1<@>-* Cart guestCart;
 }
 
 class Game{
-    name;
-    description;
-    float price;
-    int stockQuantity;
-    boolean approvedByOwner;
-
-    Image photo;
-    category;
-    1 -- * Review;
-    * -- 1 Manager;
-    * -- * Wishlist;
+  name;
+  description;
+  float price;
+  int stockQuantity;
+  Image photo;
+  int gameId;
+  1 -- * Review;
+  * -- 1 Manager;
+  * -- * Wishlist;
 }
 
 class Category{
-    1..*--* Game;
-    String category;
+  1..*--* Game;
+  String categoryName;
  }
 
 class Wishlist{
-    List<Game> wishlistGames;
 }
 
 class Review{
-    rating;
-    comment;
-    int amountOfLikes;
+  enum StarRating {oneStar, twoStar, threeStar, fourStar, fiveStar}
+
+  StarRating rating;
+  comment;
+  int amountOfLikes;
+  int reviewId;
 }
 
 class Cart{
-    List<Game> cartGames;
-    *-- * Game;
-    1 -- * Order;
+  * -- * Game;
+  1 -- * Order;
 }
 
 class Payment{
-    billingAddress;
-    int creditCardNb;
-    Date expirationDate;
-    int cvc;
-    int total;
+  billingAddress;
+  int creditCardNb;
+  Date expirationDate;
+  int cvc;
+  int total;
 }

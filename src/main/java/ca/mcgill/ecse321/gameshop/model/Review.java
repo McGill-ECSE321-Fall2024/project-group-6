@@ -6,16 +6,22 @@ package ca.mcgill.ecse321.gameshop.model;
 
 
 // line 69 "model.ump"
-// line 147 "model.ump"
+// line 146 "model.ump"
 public class Review
 {
+
+    //------------------------
+    // ENUMERATIONS
+    //------------------------
+
+    public enum StarRating { OneStar, TwoStar, ThreeStar, FourStar, FiveStar }
 
     //------------------------
     // MEMBER VARIABLES
     //------------------------
 
     //Review Attributes
-    private String rating;
+    private StarRating rating;
     private String comment;
     private int amountOfLikes;
     private int reviewId;
@@ -29,7 +35,7 @@ public class Review
     // CONSTRUCTOR
     //------------------------
 
-    public Review(String aRating, String aComment, int aAmountOfLikes, int aReviewId, Customer aCustomer, Manager aManager, Game aGame)
+    public Review(StarRating aRating, String aComment, int aAmountOfLikes, int aReviewId, Customer aCustomer, Manager aManager, Game aGame)
     {
         rating = aRating;
         comment = aComment;
@@ -56,7 +62,7 @@ public class Review
     // INTERFACE
     //------------------------
 
-    public boolean setRating(String aRating)
+    public boolean setRating(StarRating aRating)
     {
         boolean wasSet = false;
         rating = aRating;
@@ -88,7 +94,7 @@ public class Review
         return wasSet;
     }
 
-    public String getRating()
+    public StarRating getRating()
     {
         return rating;
     }
@@ -206,10 +212,10 @@ public class Review
     public String toString()
     {
         return super.toString() + "["+
-                "rating" + ":" + getRating()+ "," +
                 "comment" + ":" + getComment()+ "," +
                 "amountOfLikes" + ":" + getAmountOfLikes()+ "," +
                 "reviewId" + ":" + getReviewId()+ "]" + System.getProperties().getProperty("line.separator") +
+                "  " + "rating" + "=" + (getRating() != null ? !getRating().equals(this)  ? getRating().toString().replaceAll("  ","    ") : "this" : "null") + System.getProperties().getProperty("line.separator") +
                 "  " + "customer = "+(getCustomer()!=null?Integer.toHexString(System.identityHashCode(getCustomer())):"null") + System.getProperties().getProperty("line.separator") +
                 "  " + "manager = "+(getManager()!=null?Integer.toHexString(System.identityHashCode(getManager())):"null") + System.getProperties().getProperty("line.separator") +
                 "  " + "game = "+(getGame()!=null?Integer.toHexString(System.identityHashCode(getGame())):"null");

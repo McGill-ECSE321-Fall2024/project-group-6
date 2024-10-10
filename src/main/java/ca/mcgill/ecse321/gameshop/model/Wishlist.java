@@ -7,7 +7,7 @@ package ca.mcgill.ecse321.gameshop.model;
 import java.util.*;
 
 // line 66 "model.ump"
-// line 142 "model.ump"
+// line 141 "model.ump"
 public class Wishlist
 {
 
@@ -33,9 +33,9 @@ public class Wishlist
         games = new ArrayList<Game>();
     }
 
-    public Wishlist(User aUserForCustomer, String aShippingAddressForCustomer, Cart aCartsForCustomer)
+    public Wishlist(Person aPersonForCustomer, String aShippingAddressForCustomer, Cart aCartsForCustomer)
     {
-        customer = new Customer(aUserForCustomer, aShippingAddressForCustomer, aCartsForCustomer, this);
+        customer = new Customer(aPersonForCustomer, aShippingAddressForCustomer, aCartsForCustomer, this);
         games = new ArrayList<Game>();
     }
 
@@ -175,5 +175,5 @@ public class Wishlist
             aGame.removeWishlist(this);
         }
     }
-
 }
+

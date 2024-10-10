@@ -6,8 +6,8 @@ package ca.mcgill.ecse321.gameshop.model;
 
 import java.sql.Date;
 
-// line 81 "model.ump"
-// line 159 "model.ump"
+// line 84 "model.ump"
+// line 158 "model.ump"
 public class Payment
 {
 
@@ -191,3 +191,4 @@ public class Payment
                 "  " + "order = "+(getOrder()!=null?Integer.toHexString(System.identityHashCode(getOrder())):"null");
     }
 }
+

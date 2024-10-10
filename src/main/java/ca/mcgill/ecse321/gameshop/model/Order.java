@@ -7,7 +7,7 @@ package ca.mcgill.ecse321.gameshop.model;
 import java.sql.Date;
 
 // line 39 "model.ump"
-// line 128 "model.ump"
+// line 127 "model.ump"
 public class Order
 {
 
@@ -157,5 +157,3 @@ public class Order
                 "  " + "cart = "+(getCart()!=null?Integer.toHexString(System.identityHashCode(getCart())):"null");
     }
 }
-
-

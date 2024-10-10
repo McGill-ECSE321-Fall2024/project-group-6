@@ -7,7 +7,7 @@ package ca.mcgill.ecse321.gameshop.model;
 import java.util.*;
 
 // line 50 "model.ump"
-// line 134 "model.ump"
+// line 133 "model.ump"
 public class Game
 {
 
@@ -281,7 +281,7 @@ public class Game
         return 0;
     }
     /* Code from template association_AddManyToOne */
-    public Review addReview(String aRating, String aComment, int aAmountOfLikes, int aReviewId, Customer aCustomer, Manager aManager)
+    public Review addReview(Review.StarRating aRating, String aComment, int aAmountOfLikes, int aReviewId, Customer aCustomer, Manager aManager)
     {
         return new Review(aRating, aComment, aAmountOfLikes, aReviewId, aCustomer, aManager, this);
     }
@@ -737,4 +737,3 @@ public class Game
                 "  " + "creator = "+(getCreator()!=null?Integer.toHexString(System.identityHashCode(getCreator())):"null");
     }
 }
-

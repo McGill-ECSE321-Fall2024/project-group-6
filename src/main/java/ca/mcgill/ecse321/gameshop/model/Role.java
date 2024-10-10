@@ -1,5 +1,7 @@
 package ca.mcgill.ecse321.gameshop.model;
 
+//%% NEW FILE Role BEGINS HERE %%
+
 /*PLEASE DO NOT EDIT THIS CODE*/
 /*This code was generated using the UMPLE 1.34.0.7242.6b8819789 modeling language!*/
 
@@ -9,7 +11,7 @@ package ca.mcgill.ecse321.gameshop.model;
  * Abstract Role class
  */
 // line 11 "model.ump"
-// line 98 "model.ump"
+// line 96 "model.ump"
 public abstract class Role
 {
 
@@ -18,17 +20,17 @@ public abstract class Role
     //------------------------
 
     //Role Associations
-    private User user;
+    private Person person;
 
     //------------------------
     // CONSTRUCTOR
     //------------------------
 
-    public Role(User aUser)
+    public Role(Person aPerson)
     {
-        if (!setUser(aUser))
+        if (!setPerson(aPerson))
         {
-            throw new RuntimeException("Unable to create Role due to aUser. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
+            throw new RuntimeException("Unable to create Role due to aPerson. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
         }
     }
 
@@ -36,17 +38,17 @@ public abstract class Role
     // INTERFACE
     //------------------------
     /* Code from template association_GetOne */
-    public User getUser()
+    public Person getPerson()
     {
-        return user;
+        return person;
     }
     /* Code from template association_SetUnidirectionalOne */
-    public boolean setUser(User aNewUser)
+    public boolean setPerson(Person aNewPerson)
     {
         boolean wasSet = false;
-        if (aNewUser != null)
+        if (aNewPerson != null)
         {
-            user = aNewUser;
+            person = aNewPerson;
             wasSet = true;
         }
         return wasSet;
@@ -54,7 +56,7 @@ public abstract class Role
 
     public void delete()
     {
-        user = null;
+        person = null;
     }
 
 }

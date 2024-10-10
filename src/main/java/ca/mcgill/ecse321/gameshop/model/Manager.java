@@ -7,7 +7,7 @@ package ca.mcgill.ecse321.gameshop.model;
 import java.util.*;
 
 // line 34 "model.ump"
-// line 122 "model.ump"
+// line 121 "model.ump"
 public class Manager extends Role
 {
 
@@ -23,9 +23,9 @@ public class Manager extends Role
     // CONSTRUCTOR
     //------------------------
 
-    public Manager(User aUser)
+    public Manager(Person aPerson)
     {
-        super(aUser);
+        super(aPerson);
         reviews = new ArrayList<Review>();
         games = new ArrayList<Game>();
     }
@@ -99,7 +99,7 @@ public class Manager extends Role
         return 0;
     }
     /* Code from template association_AddManyToOne */
-    public Review addReview(String aRating, String aComment, int aAmountOfLikes, int aReviewId, Customer aCustomer, Game aGame)
+    public Review addReview(Review.StarRating aRating, String aComment, int aAmountOfLikes, int aReviewId, Customer aCustomer, Game aGame)
     {
         return new Review(aRating, aComment, aAmountOfLikes, aReviewId, aCustomer, this, aGame);
     }

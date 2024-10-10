@@ -7,8 +7,8 @@ package ca.mcgill.ecse321.gameshop.model;
 import java.util.*;
 import java.sql.Date;
 
-// line 76 "model.ump"
-// line 152 "model.ump"
+// line 78 "model.ump"
+// line 151 "model.ump"
 public class Cart
 {
 
@@ -42,11 +42,11 @@ public class Cart
         }
     }
 
-    public Cart(User aUserForCustomer, String aShippingAddressForCustomer, Wishlist aWishlistForCustomer, Guest aGuest)
+    public Cart(Person aPersonForCustomer, String aShippingAddressForCustomer, Wishlist aWishlistForCustomer, Guest aGuest)
     {
         games = new ArrayList<Game>();
         orders = new ArrayList<Order>();
-        customer = new Customer(aUserForCustomer, aShippingAddressForCustomer, this, aWishlistForCustomer);
+        customer = new Customer(aPersonForCustomer, aShippingAddressForCustomer, this, aWishlistForCustomer);
         boolean didAddGuest = setGuest(aGuest);
         if (!didAddGuest)
         {

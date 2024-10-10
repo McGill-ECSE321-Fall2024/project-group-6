@@ -7,7 +7,7 @@ package ca.mcgill.ecse321.gameshop.model;
 import java.util.*;
 
 // line 46 "model.ump"
-// line 170 "model.ump"
+// line 169 "model.ump"
 public class Guest
 {
 

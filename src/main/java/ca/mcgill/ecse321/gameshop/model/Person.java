@@ -7,24 +7,24 @@ package ca.mcgill.ecse321.gameshop.model;
 import java.util.*;
 
 /**
- * Defining the User class
+ * Defining the Person class
  */
 // line 3 "model.ump"
-// line 93 "model.ump"
-public class User
+// line 174 "model.ump"
+public class Person
 {
 
     //------------------------
     // STATIC VARIABLES
     //------------------------
 
-    private static Map<String, User> usersByEmail = new HashMap<String, User>();
+    private static Map<String, Person> personsByEmail = new HashMap<String, Person>();
 
     //------------------------
     // MEMBER VARIABLES
     //------------------------
 
-    //User Attributes
+    //Person Attributes
     private String username;
     private String email;
     private String password;
@@ -34,7 +34,7 @@ public class User
     // CONSTRUCTOR
     //------------------------
 
-    public User(String aUsername, String aEmail, String aPassword, String aPhone)
+    public Person(String aUsername, String aEmail, String aPassword, String aPhone)
     {
         username = aUsername;
         password = aPassword;
@@ -70,9 +70,9 @@ public class User
         email = aEmail;
         wasSet = true;
         if (anOldEmail != null) {
-            usersByEmail.remove(anOldEmail);
+            personsByEmail.remove(anOldEmail);
         }
-        usersByEmail.put(aEmail, this);
+        personsByEmail.put(aEmail, this);
         return wasSet;
     }
 
@@ -102,9 +102,9 @@ public class User
         return email;
     }
     /* Code from template attribute_GetUnique */
-    public static User getWithEmail(String aEmail)
+    public static Person getWithEmail(String aEmail)
     {
-        return usersByEmail.get(aEmail);
+        return personsByEmail.get(aEmail);
     }
     /* Code from template attribute_HasUnique */
     public static boolean hasWithEmail(String aEmail)
@@ -124,7 +124,7 @@ public class User
 
     public void delete()
     {
-        usersByEmail.remove(getEmail());
+        personsByEmail.remove(getEmail());
     }
 
 

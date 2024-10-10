@@ -7,7 +7,7 @@ package ca.mcgill.ecse321.gameshop.model;
 import java.util.*;
 
 // line 61 "model.ump"
-// line 164 "model.ump"
+// line 163 "model.ump"
 public class Category
 {
 

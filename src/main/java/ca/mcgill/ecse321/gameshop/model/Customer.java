@@ -8,7 +8,7 @@ import java.util.*;
 import java.sql.Date;
 
 // line 16 "model.ump"
-// line 105 "model.ump"
+// line 104 "model.ump"
 public class Customer extends Role
 {
 
@@ -29,9 +29,9 @@ public class Customer extends Role
     // CONSTRUCTOR
     //------------------------
 
-    public Customer(User aUser, String aShippingAddress, Cart aCarts, Wishlist aWishlist)
+    public Customer(Person aPerson, String aShippingAddress, Cart aCarts, Wishlist aWishlist)
     {
-        super(aUser);
+        super(aPerson);
         shippingAddress = aShippingAddress;
         if (aCarts == null || aCarts.getCustomer() != null)
         {
@@ -47,9 +47,9 @@ public class Customer extends Role
         payments = new ArrayList<Payment>();
     }
 
-    public Customer(User aUser, String aShippingAddress, Guest aGuestForCarts)
+    public Customer(Person aPerson, String aShippingAddress, Guest aGuestForCarts)
     {
-        super(aUser);
+        super(aPerson);
         shippingAddress = aShippingAddress;
         carts = new Cart(this, aGuestForCarts);
         wishlist = new Wishlist(this);
@@ -149,7 +149,7 @@ public class Customer extends Role
         return 0;
     }
     /* Code from template association_AddManyToOne */
-    public Review addReview(String aRating, String aComment, int aAmountOfLikes, int aReviewId, Manager aManager, Game aGame)
+    public Review addReview(Review.StarRating aRating, String aComment, int aAmountOfLikes, int aReviewId, Manager aManager, Game aGame)
     {
         return new Review(aRating, aComment, aAmountOfLikes, aReviewId, this, aManager, aGame);
     }
