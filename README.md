@@ -1,4 +1,4 @@
-Introduction to the team : 
+Introduction to the team : <br/>
 We are a team of 6 engineering students coming from various backgrounds. 
 Marine Dupuy is a U4 chemical engineering student who is doing a minor in software engineering. 
 Maissa Mehdi is a U4 chemical engineering student who is also doing a minor in software engineering. 
@@ -7,10 +7,10 @@ Joseph Roustom is a U3 computer engineering student.
 Annabelle Huynh-Rondeau is a U3 software engineering student.
 Laurence Perreault is a U3 software engineering student. 
 
-Main scope of the project : 
+Main scope of the project : <br/>
 The main scope of the project is developing a web application for an independent game shop with three main user types: owner, employees and customers. 
 
-Store Management Features:
+Store Management Features: <br/>
 The owner and employees can manage the product catalogue by adding, updating, and removing games.
 Games must be categorised, and employees can only publish games after the owner approves.
 The owner requires an administrative dashboard to oversee employee management, review customer order history, respond to reviews, and update store details (e.g., policies, promotions).
@@ -19,6 +19,7 @@ Customers can browse games, create accounts, purchase games, track their order h
 
 Our web application must support the scenarios described for every stakeholder. All functionality of the system needs to be accessible via the web frontend for respective stakeholders.
 
+Table 1 : Roles of each team member : <br/>
 | **Name**    | **Role**                                            | **Number of Hours** |
 |-------------|-----------------------------------------------------|---------------------|
 | Laurence    | Creating the README file                            | 2                   |
