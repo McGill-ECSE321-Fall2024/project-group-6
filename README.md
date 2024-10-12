@@ -48,5 +48,3 @@ Mario                         Writing the Detailed use case specifications      
                                 Conception of the Use Case Diagrams                             1.5
                                   Write test cases (Persistance layer)
                                   Installing the personal PostgreSQL                            0.5
-
-
