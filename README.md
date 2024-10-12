@@ -19,7 +19,6 @@ Customers can browse games, create accounts, purchase games, track their order h
 
 Our web application must support the scenarios described for every stakeholder. All functionality of the system needs to be accessible via the web frontend for respective stakeholders.
 
-
 Name                                        Role                                        Number of hours
 Laurence                         Creating the README file                                      2
                                 Creating the Requirements model                                2
@@ -46,5 +45,5 @@ Joseph                     Writing the Detailed use case specifications         
                                 Installing the personal PostgreSQL                               0.5
 Mario                         Writing the Detailed use case specifications                      1.5
                                 Conception of the Use Case Diagrams                             1.5
-                                  Write test cases (Persistance layer)
-                                  Installing the personal PostgreSQL                            0.5
+                                Write test cases (Persistance layer)
+                                Installing the personal PostgreSQL                              0.5
