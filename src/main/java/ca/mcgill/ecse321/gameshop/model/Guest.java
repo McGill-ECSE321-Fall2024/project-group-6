@@ -1,147 +1,83 @@
 package ca.mcgill.ecse321.gameshop.model;
-
-/*PLEASE DO NOT EDIT THIS CODE*/
-/*This code was generated using the UMPLE 1.34.0.7242.6b8819789 modeling language!*/
-
-
+import jakarta.persistence.*;
 import java.util.*;
-
-// line 46 "model.ump"
-// line 169 "model.ump"
+import jakarta.persistence.*;
+// line 47 "model.ump"
+// line 174 "model.ump"
+@Entity
 public class Guest
 {
 
-    //------------------------
-    // MEMBER VARIABLES
-    //------------------------
+  //------------------------
+  // MEMBER VARIABLES
+  //------------------------
 
-    //Guest Associations
-    private List<Cart> guestCart;
+  //Guest Attributes
+  @Id
+  @GeneratedValue
+  private int guestId;
 
-    //------------------------
-    // CONSTRUCTOR
-    //------------------------
+  //Guest Associations
+  @OneToOne(cascade = CascadeType.ALL)
+  private Cart guestCart;
 
-    public Guest()
+  //------------------------
+  // CONSTRUCTOR
+  //------------------------
+
+  public Guest(int aGuestId, Cart aGuestCart)
+  {
+    guestId = aGuestId;
+    if (aGuestCart == null || aGuestCart.getGuest() != null)
     {
-        guestCart = new ArrayList<Cart>();
+      throw new RuntimeException("Unable to create Guest due to aGuestCart. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
     }
+    guestCart = aGuestCart;
+  }
 
-    //------------------------
-    // INTERFACE
-    //------------------------
-    /* Code from template association_GetMany */
-    public Cart getGuestCart(int index)
-    {
-        Cart aGuestCart = guestCart.get(index);
-        return aGuestCart;
-    }
+  public Guest(int aGuestId, int aCartIdForGuestCart, Customer aCustomerForGuestCart)
+  {
+    guestId = aGuestId;
+    guestCart = new Cart(aCartIdForGuestCart, aCustomerForGuestCart, this);
+  }
 
-    public List<Cart> getGuestCart()
-    {
-        List<Cart> newGuestCart = Collections.unmodifiableList(guestCart);
-        return newGuestCart;
-    }
+  //------------------------
+  // INTERFACE
+  //------------------------
 
-    public int numberOfGuestCart()
-    {
-        int number = guestCart.size();
-        return number;
-    }
+  public boolean setGuestId(int aGuestId)
+  {
+    boolean wasSet = false;
+    guestId = aGuestId;
+    wasSet = true;
+    return wasSet;
+  }
 
-    public boolean hasGuestCart()
-    {
-        boolean has = guestCart.size() > 0;
-        return has;
-    }
+  public int getGuestId()
+  {
+    return guestId;
+  }
+  /* Code from template association_GetOne */
+  public Cart getGuestCart()
+  {
+    return guestCart;
+  }
 
-    public int indexOfGuestCart(Cart aGuestCart)
+  public void delete()
+  {
+    Cart existingGuestCart = guestCart;
+    guestCart = null;
+    if (existingGuestCart != null)
     {
-        int index = guestCart.indexOf(aGuestCart);
-        return index;
+      existingGuestCart.delete();
     }
-    /* Code from template association_MinimumNumberOfMethod */
-    public static int minimumNumberOfGuestCart()
-    {
-        return 0;
-    }
-    /* Code from template association_AddManyToOne */
-    public Cart addGuestCart(Customer aCustomer)
-    {
-        return new Cart(aCustomer, this);
-    }
+  }
 
-    public boolean addGuestCart(Cart aGuestCart)
-    {
-        boolean wasAdded = false;
-        if (guestCart.contains(aGuestCart)) { return false; }
-        Guest existingGuest = aGuestCart.getGuest();
-        boolean isNewGuest = existingGuest != null && !this.equals(existingGuest);
-        if (isNewGuest)
-        {
-            aGuestCart.setGuest(this);
-        }
-        else
-        {
-            guestCart.add(aGuestCart);
-        }
-        wasAdded = true;
-        return wasAdded;
-    }
 
-    public boolean removeGuestCart(Cart aGuestCart)
-    {
-        boolean wasRemoved = false;
-        //Unable to remove aGuestCart, as it must always have a guest
-        if (!this.equals(aGuestCart.getGuest()))
-        {
-            guestCart.remove(aGuestCart);
-            wasRemoved = true;
-        }
-        return wasRemoved;
-    }
-    /* Code from template association_AddIndexControlFunctions */
-    public boolean addGuestCartAt(Cart aGuestCart, int index)
-    {
-        boolean wasAdded = false;
-        if(addGuestCart(aGuestCart))
-        {
-            if(index < 0 ) { index = 0; }
-            if(index > numberOfGuestCart()) { index = numberOfGuestCart() - 1; }
-            guestCart.remove(aGuestCart);
-            guestCart.add(index, aGuestCart);
-            wasAdded = true;
-        }
-        return wasAdded;
-    }
-
-    public boolean addOrMoveGuestCartAt(Cart aGuestCart, int index)
-    {
-        boolean wasAdded = false;
-        if(guestCart.contains(aGuestCart))
-        {
-            if(index < 0 ) { index = 0; }
-            if(index > numberOfGuestCart()) { index = numberOfGuestCart() - 1; }
-            guestCart.remove(aGuestCart);
-            guestCart.add(index, aGuestCart);
-            wasAdded = true;
-        }
-        else
-        {
-            wasAdded = addGuestCartAt(aGuestCart, index);
-        }
-        return wasAdded;
-    }
-
-    public void delete()
-    {
-        while (guestCart.size() > 0)
-        {
-            Cart aGuestCart = guestCart.get(guestCart.size() - 1);
-            aGuestCart.delete();
-            guestCart.remove(aGuestCart);
-        }
-
-    }
-
+  public String toString()
+  {
+    return super.toString() + "["+
+            "guestId" + ":" + getGuestId()+ "]" + System.getProperties().getProperty("line.separator") +
+            "  " + "guestCart = "+(getGuestCart()!=null?Integer.toHexString(System.identityHashCode(getGuestCart())):"null");
+  }
 }
