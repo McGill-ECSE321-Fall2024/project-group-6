@@ -1,62 +1,78 @@
 package ca.mcgill.ecse321.gameshop.model;
-
-/*PLEASE DO NOT EDIT THIS CODE*/
-/*This code was generated using the UMPLE 1.34.0.7242.6b8819789 modeling language!*/
-
-
 import java.util.*;
 import java.sql.Date;
+import jakarta.persistence.*;
+// line 81 "model.ump"
+// line 156 "model.ump"
 
-// line 78 "model.ump"
-// line 151 "model.ump"
+@Entity
 public class Cart
 {
-
     //------------------------
     // MEMBER VARIABLES
     //------------------------
 
+    //Cart Attributes
+    @Id
+    @GeneratedValue
+    private int cartId;
+
     //Cart Associations
+    @ManyToMany
     private List<Game> games;
+    @OneToMany
     private List<Order> orders;
+    @OneToOne
     private Customer customer;
+    @OneToOne
     private Guest guest;
 
     //------------------------
     // CONSTRUCTOR
     //------------------------
 
-    public Cart(Customer aCustomer, Guest aGuest)
+    public Cart(int aCartId, Customer aCustomer, Guest aGuest)
     {
+        cartId = aCartId;
         games = new ArrayList<Game>();
         orders = new ArrayList<Order>();
-        if (aCustomer == null || aCustomer.getCarts() != null)
+        if (aCustomer == null || aCustomer.getCart() != null)
         {
             throw new RuntimeException("Unable to create Cart due to aCustomer. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
         }
         customer = aCustomer;
-        boolean didAddGuest = setGuest(aGuest);
-        if (!didAddGuest)
+        if (aGuest == null || aGuest.getGuestCart() != null)
         {
-            throw new RuntimeException("Unable to create guestCart due to guest. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
+            throw new RuntimeException("Unable to create Cart due to aGuest. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
         }
+        guest = aGuest;
     }
 
-    public Cart(Person aPersonForCustomer, String aShippingAddressForCustomer, Wishlist aWishlistForCustomer, Guest aGuest)
+    public Cart(int aCartId, int aRoleIdForCustomer, Person aPersonForCustomer, String aShippingAddressForCustomer, Wishlist aWishlistForCustomer, int aGuestIdForGuest)
     {
+        cartId = aCartId;
         games = new ArrayList<Game>();
         orders = new ArrayList<Order>();
-        customer = new Customer(aPersonForCustomer, aShippingAddressForCustomer, this, aWishlistForCustomer);
-        boolean didAddGuest = setGuest(aGuest);
-        if (!didAddGuest)
-        {
-            throw new RuntimeException("Unable to create guestCart due to guest. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
-        }
+        customer = new Customer(aRoleIdForCustomer, aPersonForCustomer, aShippingAddressForCustomer, this, aWishlistForCustomer);
+        guest = new Guest(aGuestIdForGuest, this);
     }
 
     //------------------------
     // INTERFACE
     //------------------------
+
+    public boolean setCartId(int aCartId)
+    {
+        boolean wasSet = false;
+        cartId = aCartId;
+        wasSet = true;
+        return wasSet;
+    }
+
+    public int getCartId()
+    {
+        return cartId;
+    }
     /* Code from template association_GetMany */
     public Game getGame(int index)
     {
@@ -281,25 +297,6 @@ public class Cart
         }
         return wasAdded;
     }
-    /* Code from template association_SetOneToMany */
-    public boolean setGuest(Guest aGuest)
-    {
-        boolean wasSet = false;
-        if (aGuest == null)
-        {
-            return wasSet;
-        }
-
-        Guest existingGuest = guest;
-        guest = aGuest;
-        if (existingGuest != null && !existingGuest.equals(aGuest))
-        {
-            existingGuest.removeGuestCart(this);
-        }
-        guest.addGuestCart(this);
-        wasSet = true;
-        return wasSet;
-    }
 
     public void delete()
     {
@@ -320,12 +317,21 @@ public class Cart
         {
             existingCustomer.delete();
         }
-        Guest placeholderGuest = guest;
-        this.guest = null;
-        if(placeholderGuest != null)
+        Guest existingGuest = guest;
+        guest = null;
+        if (existingGuest != null)
         {
-            placeholderGuest.removeGuestCart(this);
+            existingGuest.delete();
         }
+    }
+
+
+    public String toString()
+    {
+        return super.toString() + "["+
+                "cartId" + ":" + getCartId()+ "]" + System.getProperties().getProperty("line.separator") +
+                "  " + "customer = "+(getCustomer()!=null?Integer.toHexString(System.identityHashCode(getCustomer())):"null") + System.getProperties().getProperty("line.separator") +
+                "  " + "guest = "+(getGuest()!=null?Integer.toHexString(System.identityHashCode(getGuest())):"null");
     }
 
 }
