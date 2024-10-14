@@ -42,8 +42,8 @@ Table 1 : Roles of each team member : <br/>
 |             | Writing the design criteria                         | 0.5                 |
 | Joseph      | Writing the Detailed use case specifications        | 1.5                 |
 |             | Conception of the Use Case Diagrams                 | 1.5                 |
-|             | Read test cases (Persistence layer)                 | -                   |
-|             | Setting the Persistence layer                       | -                   |
+|             | Writing the test cases (Persistence layer)          | 7                   |
+|             | Setting the Persistence layer                       | 8                   |
 |             | Installing the personal PostgreSQL                   | 0.5                 |
 | Mario       | Writing the Detailed use case specifications        | 1.5                 |
 |             | Conception of the Use Case Diagrams                 | 1.5                 |
