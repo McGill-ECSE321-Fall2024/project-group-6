@@ -18,12 +18,10 @@ Customer Features:
 Customers can browse games, create accounts, purchase games, track their order history, save items to wish lists, and post reviews of purchased games.
 
 Our web application must support the scenarios described for every stakeholder. All functionality of the system needs to be accessible via the web frontend for respective stakeholders.
-
 To run the tests:
 1) Clone repository
 2) Go to the resources folder and open the application.properties document.
 3) You can either create a database with the specified name on the specified port or change the properties any way that suits you.
-
 Table 1 : Roles of each team member : <br/>
 | **Name**    | **Role**                                            | **Number of Hours** |
 |-------------|-----------------------------------------------------|---------------------|
