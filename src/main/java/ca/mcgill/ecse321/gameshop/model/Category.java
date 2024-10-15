@@ -14,7 +14,7 @@ public class Category {
 
 
     @Id
-    @GeneratedValue
+    //@GeneratedValue
     private int categoryId;
     private String categoryName;
         //Category Associations
@@ -24,7 +24,8 @@ public class Category {
         //------------------------
         // CONSTRUCTOR
         //------------------------
-
+        public Category() {
+        }
         public Category(String aCategoryName, int aCategoryId)
         {
             categoryName = aCategoryName;

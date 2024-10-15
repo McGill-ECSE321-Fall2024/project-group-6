@@ -18,7 +18,7 @@ public class Customer extends Role {
   //Customer Associations
   @OneToOne(cascade = CascadeType.ALL)
   private Cart cart;
-  @OneToOne(cascade = CascadeType.ALL)
+  @OneToOne (cascade = CascadeType.ALL)
   private Wishlist wishlist;
   @OneToMany
   private List<Review> reviews;
@@ -28,11 +28,15 @@ public class Customer extends Role {
   //------------------------
   // CONSTRUCTOR
   //------------------------
+  public Customer(){
+      super();
 
-  public Customer(int aRoleId, Person aPerson, String aShippingAddress, Cart aCart, Wishlist aWishlist)
+  }
+  public Customer(int aRoleId, Person aPerson, String aShippingAddress)
   {
     super(aRoleId, aPerson);
     shippingAddress = aShippingAddress;
+    /*
     if (aCart == null || aCart.getCustomer() != null)
     {
       throw new RuntimeException("Unable to create Customer due to aCart. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
@@ -43,6 +47,8 @@ public class Customer extends Role {
       throw new RuntimeException("Unable to create Customer due to aWishlist. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
     }
     wishlist = aWishlist;
+
+     */
     reviews = new ArrayList<Review>();
     payments = new ArrayList<Payment>();
   }
@@ -51,7 +57,7 @@ public class Customer extends Role {
   {
     super(aRoleId, aPerson);
     shippingAddress = aShippingAddress;
-    cart = new Cart(aCartIdForCart, this, aGuestForCart);
+    cart = new Cart(aCartIdForCart, this);
     wishlist = new Wishlist(aWishlistIdForWishlist, this);
     reviews = new ArrayList<Review>();
     payments = new ArrayList<Payment>();
@@ -221,9 +227,9 @@ public class Customer extends Role {
     return 0;
   }
   /* Code from template association_AddManyToOne */
-  public Payment addPayment(String aBillingAddress, int aCreditCardNb, Date aExpirationDate, int aCvc, int aTotal, int aPaymentId, Order aOrder)
+  public Payment addPayment(String aBillingAddress, int aCreditCardNb, String aExpirationDate, int aCvc, int aTotal, int aPaymentId, Command aCommand)
   {
-    return new Payment(aBillingAddress, aCreditCardNb, aExpirationDate, aCvc, aTotal, aPaymentId, this, aOrder);
+    return new Payment(aBillingAddress, aCreditCardNb, aExpirationDate, aCvc, aTotal, aPaymentId, this, aCommand);
   }
 
   public boolean addPayment(Payment aPayment)

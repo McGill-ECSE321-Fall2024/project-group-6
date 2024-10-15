@@ -27,7 +27,7 @@ public class Person{
   private String password;
   private String phone;
   @Id
- @GeneratedValue
+ //@GeneratedValue
   private int userId;
 
 
@@ -35,7 +35,8 @@ public class Person{
   //------------------------
   // CONSTRUCTOR
   //------------------------
-
+  public Person() {
+  }
   public Person(String aUsername, String aEmail, String aPassword, String aPhone, int aUserId)
   {
     username = aUsername;

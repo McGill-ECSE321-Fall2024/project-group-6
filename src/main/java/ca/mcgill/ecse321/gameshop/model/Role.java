@@ -8,14 +8,15 @@ import jakarta.persistence.*;
  */
 // line 12 "model.ump"
 // line 101 "model.ump"
-@MappedSuperclass
+@Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public abstract class Role {
 
   @Id
-  @GeneratedValue
+ // @GeneratedValue
   private int roleId;
   //Role Associations
-  @ManyToOne
+  @OneToOne
   private Person person;
   //------------------------
 
@@ -30,6 +31,10 @@ public abstract class Role {
     {
       throw new RuntimeException("Unable to create Role due to aPerson. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
     }
+  }
+
+  public Role() {
+
   }
 
   //------------------------

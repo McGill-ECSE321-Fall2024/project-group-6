@@ -23,7 +23,9 @@ public class Manager extends Role {
   //------------------------
   // CONSTRUCTOR
   //------------------------
-
+public Manager(){
+  super();
+}
   public Manager(int aRoleId, Person aPerson)
   {
     super(aRoleId, aPerson);

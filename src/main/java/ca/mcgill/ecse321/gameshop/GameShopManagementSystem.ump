@@ -1,92 +1,105 @@
 namespace ca.mcgill.ecse321.gameshop.model;
 
 // Defining the Person class
-class Person{
+class Person {
   username;
   unique email;
   password;
   phone;
+  int userId;
 }
 
 // Abstract Role class
-class Role{
+ class Role {
+   abstract;
+  int roleId;
   * -> 1 Person;
-  abstract;
 }
 
-class Customer{
+// Customer class extending Role
+class Customer {
   isA Role;
   shippingAddress;
-
-  1 <@>- 1 Cart carts;
+  1 <@>- 1 Cart cart;
   1 <@>- 1 Wishlist wishlist;
-
   1 -- * Review;
-
   1 -- * Payment;
 }
 
-class Employee{
+// Employee class extending Role
+class Employee {
   isA Role;
   assignedTasks;
   1 creator -- * Game created;
 }
 
-class Manager{
+// Manager class extending Role
+class Manager {
   isA Role;
   1 -- * Review;
 }
 
-class Order{
-  int orderId;
-  Date orderDate;
+// Command class
+class Command {
+  int commandId;
+  String commandDate;
   float totalPrice;
-
-   1 -- 1 Payment;
+  1 -- 1 Payment;
 }
 
-class Guest{
-  1<@>-* Cart guestCart;
+// Guest class
+class Guest {
+  int guestId;
+  1 <@>- 1 Cart guestCart;
 }
 
-class Game{
+// Game class
+class Game {
   name;
   description;
   float price;
   int stockQuantity;
-  Image photo;
+  photoURL;
   int gameId;
   1 -- * Review;
   * -- 1 Manager;
   * -- * Wishlist;
 }
 
-class Category{
-  1..*--* Game;
+// Category class
+class Category {
+  1..* -- * Game;
   String categoryName;
- }
-
-class Wishlist{
+  int categoryId;
 }
 
-class Review{
-  enum StarRating {oneStar, twoStar, threeStar, fourStar, fiveStar}
+// Wishlist class
+class Wishlist {
+  int wishlistId;
+}
 
+// Review class
+class Review {
+  enum StarRating {oneStar, twoStar, threeStar, fourStar, fiveStar}
   StarRating rating;
   comment;
   int amountOfLikes;
   int reviewId;
 }
 
-class Cart{
+// Cart class
+class Cart {
+  int cartId;
   * -- * Game;
-  1 -- * Order;
+  1 -- * Command;
 }
 
-class Payment{
+// Payment class
+class Payment {
   billingAddress;
   int creditCardNb;
-  Date expirationDate;
+   expirationDate;
   int cvc;
   int total;
+  int paymentId;
 }

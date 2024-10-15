@@ -18,7 +18,7 @@ public class Game
   private int stockQuantity;
   private String photoURL;
   @Id
-  @GeneratedValue
+  //@GeneratedValue
   private int gameId;
 
   //Game Associations
@@ -45,6 +45,48 @@ public class Game
   //------------------------
   // CONSTRUCTOR
   //------------------------
+public Game(){
+
+}
+  public Game(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL, int aGameId)
+  {
+    name = aName;
+    description = aDescription;
+    price = aPrice;
+    stockQuantity = aStockQuantity;
+    photoURL = aPhotoURL;
+    gameId = aGameId;
+    reviews = new ArrayList<Review>();
+
+    wishlists = new ArrayList<Wishlist>();
+
+
+    carts = new ArrayList<Cart>();
+  }
+  public Game(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL, int aGameId, Manager aManager,  Category... allCategories)
+  {
+    name = aName;
+    description = aDescription;
+    price = aPrice;
+    stockQuantity = aStockQuantity;
+    photoURL = aPhotoURL;
+    gameId = aGameId;
+    reviews = new ArrayList<Review>();
+    boolean didAddManager = setManager(aManager);
+    if (!didAddManager)
+    {
+      throw new RuntimeException("Unable to create game due to manager. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
+    }
+    wishlists = new ArrayList<Wishlist>();
+
+    categories = new ArrayList<Category>();
+    boolean didAddCategories = setCategories(allCategories);
+    if (!didAddCategories)
+    {
+      throw new RuntimeException("Unable to create Game, must have at least 1 categories. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
+    }
+    carts = new ArrayList<Cart>();
+  }
 
   public Game(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL, int aGameId, Manager aManager, Employee aCreator, Category... allCategories)
   {

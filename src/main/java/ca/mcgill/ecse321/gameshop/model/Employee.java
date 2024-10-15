@@ -24,7 +24,10 @@ public class Employee extends Role {
   //------------------------
   // CONSTRUCTOR
   //------------------------
+  public Employee(){
+    super();
 
+  }
   public Employee(int aRoleId, Person aPerson, String aAssignedTasks) {
     super(aRoleId, aPerson);
     assignedTasks = aAssignedTasks;

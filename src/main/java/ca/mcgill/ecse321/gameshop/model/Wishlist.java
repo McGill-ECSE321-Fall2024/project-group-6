@@ -14,7 +14,7 @@ public class Wishlist {
 
   //Wishlist Attributes
  @Id
- @GeneratedValue
+ //@GeneratedValue
   private int wishlistId;
 
   //Wishlist Associations
@@ -26,7 +26,15 @@ public class Wishlist {
   //------------------------
   // CONSTRUCTOR
   //------------------------
+public Wishlist(){
 
+}
+  public Wishlist(int aWishlistId)
+  {
+    wishlistId = aWishlistId;
+
+    games = new ArrayList<Game>();
+  }
   public Wishlist(int aWishlistId, Customer aCustomer)
   {
     wishlistId = aWishlistId;
@@ -41,7 +49,7 @@ public class Wishlist {
   public Wishlist(int aWishlistId, int aRoleIdForCustomer, Person aPersonForCustomer, String aShippingAddressForCustomer, Cart aCartsForCustomer)
   {
     wishlistId = aWishlistId;
-    customer = new Customer(aRoleIdForCustomer, aPersonForCustomer, aShippingAddressForCustomer, aCartsForCustomer, this);
+    customer = new Customer(aRoleIdForCustomer, aPersonForCustomer, aShippingAddressForCustomer);
     games = new ArrayList<Game>();
   }
 

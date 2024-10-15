@@ -14,14 +14,14 @@ public class Cart
 
     //Cart Attributes
     @Id
-    @GeneratedValue
+    //@GeneratedValue
     private int cartId;
 
     //Cart Associations
     @ManyToMany
     private List<Game> games;
     @OneToMany
-    private List<Order> orders;
+    private List<Command> commands;
     @OneToOne
     private Customer customer;
     @OneToOne
@@ -30,31 +30,43 @@ public class Cart
     //------------------------
     // CONSTRUCTOR
     //------------------------
-
-    public Cart(int aCartId, Customer aCustomer, Guest aGuest)
+    public Cart() {
+    }
+    public Cart(int aCartId, Customer aCustomer)
     {
         cartId = aCartId;
         games = new ArrayList<Game>();
-        orders = new ArrayList<Order>();
+        commands = new ArrayList<Command>();
+
         if (aCustomer == null || aCustomer.getCart() != null)
         {
             throw new RuntimeException("Unable to create Cart due to aCustomer. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
         }
         customer = aCustomer;
+
+    }
+    public Cart(int aCartId,Guest aGuest)
+    {
+        cartId = aCartId;
+        games = new ArrayList<Game>();
+        commands = new ArrayList<Command>();
+
         if (aGuest == null || aGuest.getGuestCart() != null)
         {
             throw new RuntimeException("Unable to create Cart due to aGuest. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
         }
+
+
         guest = aGuest;
     }
 
-    public Cart(int aCartId, int aRoleIdForCustomer, Person aPersonForCustomer, String aShippingAddressForCustomer, Wishlist aWishlistForCustomer, int aGuestIdForGuest)
+    public Cart(int aCartId, int aRoleIdForCustomer, Person aPersonForCustomer, String aShippingAddressForCustomer, int aGuestIdForGuest)
     {
         cartId = aCartId;
         games = new ArrayList<Game>();
-        orders = new ArrayList<Order>();
-        customer = new Customer(aRoleIdForCustomer, aPersonForCustomer, aShippingAddressForCustomer, this, aWishlistForCustomer);
-        guest = new Guest(aGuestIdForGuest, this);
+        commands = new ArrayList<Command>();
+        customer = new Customer(aRoleIdForCustomer, aPersonForCustomer, aShippingAddressForCustomer);
+        guest = new Guest(aGuestIdForGuest);
     }
 
     //------------------------
@@ -104,33 +116,33 @@ public class Cart
         return index;
     }
     /* Code from template association_GetMany */
-    public Order getOrder(int index)
+    public Command getCommand(int index)
     {
-        Order aOrder = orders.get(index);
-        return aOrder;
+        Command aCommand = commands.get(index);
+        return aCommand;
     }
 
-    public List<Order> getOrders()
+    public List<Command> getCommands()
     {
-        List<Order> newOrders = Collections.unmodifiableList(orders);
-        return newOrders;
+        List<Command> newCommands = Collections.unmodifiableList(commands);
+        return newCommands;
     }
 
-    public int numberOfOrders()
+    public int numberOfCommands()
     {
-        int number = orders.size();
+        int number = commands.size();
         return number;
     }
 
-    public boolean hasOrders()
+    public boolean hasCommands()
     {
-        boolean has = orders.size() > 0;
+        boolean has = commands.size() > 0;
         return has;
     }
 
-    public int indexOfOrder(Order aOrder)
+    public int indexOfCommand(Command aCommand)
     {
-        int index = orders.indexOf(aOrder);
+        int index = commands.indexOf(aCommand);
         return index;
     }
     /* Code from template association_GetOne */
@@ -226,74 +238,74 @@ public class Cart
         return wasAdded;
     }
     /* Code from template association_MinimumNumberOfMethod */
-    public static int minimumNumberOfOrders()
+    public static int minimumNumberOfCommands()
     {
         return 0;
     }
     /* Code from template association_AddManyToOne */
-    public Order addOrder(int aOrderId, Date aOrderDate, float aTotalPrice, Payment aPayment)
+    public Command addCommand(int aCommandId, String aCommandDate, float aTotalPrice, Payment aPayment)
     {
-        return new Order(aOrderId, aOrderDate, aTotalPrice, aPayment, this);
+        return new Command(aCommandId, aCommandDate, aTotalPrice, aPayment, this);
     }
 
-    public boolean addOrder(Order aOrder)
+    public boolean addCommand(Command aCommand)
     {
         boolean wasAdded = false;
-        if (orders.contains(aOrder)) { return false; }
-        Cart existingCart = aOrder.getCart();
+        if (commands.contains(aCommand)) { return false; }
+        Cart existingCart = aCommand.getCart();
         boolean isNewCart = existingCart != null && !this.equals(existingCart);
         if (isNewCart)
         {
-            aOrder.setCart(this);
+            aCommand.setCart(this);
         }
         else
         {
-            orders.add(aOrder);
+            commands.add(aCommand);
         }
         wasAdded = true;
         return wasAdded;
     }
 
-    public boolean removeOrder(Order aOrder)
+    public boolean removeCommand(Command aCommand)
     {
         boolean wasRemoved = false;
-        //Unable to remove aOrder, as it must always have a cart
-        if (!this.equals(aOrder.getCart()))
+        //Unable to remove aCommand, as it must always have a cart
+        if (!this.equals(aCommand.getCart()))
         {
-            orders.remove(aOrder);
+            commands.remove(aCommand);
             wasRemoved = true;
         }
         return wasRemoved;
     }
     /* Code from template association_AddIndexControlFunctions */
-    public boolean addOrderAt(Order aOrder, int index)
+    public boolean addCommandAt(Command aCommand, int index)
     {
         boolean wasAdded = false;
-        if(addOrder(aOrder))
+        if(addCommand(aCommand))
         {
             if(index < 0 ) { index = 0; }
-            if(index > numberOfOrders()) { index = numberOfOrders() - 1; }
-            orders.remove(aOrder);
-            orders.add(index, aOrder);
+            if(index > numberOfCommands()) { index = numberOfCommands() - 1; }
+            commands.remove(aCommand);
+            commands.add(index, aCommand);
             wasAdded = true;
         }
         return wasAdded;
     }
 
-    public boolean addOrMoveOrderAt(Order aOrder, int index)
+    public boolean addOrMoveCommandAt(Command aCommand, int index)
     {
         boolean wasAdded = false;
-        if(orders.contains(aOrder))
+        if(commands.contains(aCommand))
         {
             if(index < 0 ) { index = 0; }
-            if(index > numberOfOrders()) { index = numberOfOrders() - 1; }
-            orders.remove(aOrder);
-            orders.add(index, aOrder);
+            if(index > numberOfCommands()) { index = numberOfCommands() - 1; }
+            commands.remove(aCommand);
+            commands.add(index, aCommand);
             wasAdded = true;
         }
         else
         {
-            wasAdded = addOrderAt(aOrder, index);
+            wasAdded = addCommandAt(aCommand, index);
         }
         return wasAdded;
     }
@@ -306,10 +318,10 @@ public class Cart
         {
             aGame.removeCart(this);
         }
-        for(int i=orders.size(); i > 0; i--)
+        for(int i=commands.size(); i > 0; i--)
         {
-            Order aOrder = orders.get(i - 1);
-            aOrder.delete();
+            Command aCommand = commands.get(i - 1);
+            aCommand.delete();
         }
         Customer existingCustomer = customer;
         customer = null;

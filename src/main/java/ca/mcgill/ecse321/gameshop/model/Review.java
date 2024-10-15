@@ -21,7 +21,7 @@ public class Review
 
   private int amountOfLikes;
   @Id
-  @GeneratedValue
+  //@GeneratedValue
   private int reviewId;
 
 
@@ -42,7 +42,17 @@ public class Review
 //------------------------
   // CONSTRUCTOR
   //------------------------
+  public Review (){
 
+  }
+public Review(StarRating aRating, String aComment, int aAmountOfLikes, int aReviewId)
+{
+  rating = aRating;
+  comment = aComment;
+  amountOfLikes = aAmountOfLikes;
+  reviewId = aReviewId;
+
+}
   public Review(StarRating aRating, String aComment, int aAmountOfLikes, int aReviewId, Customer aCustomer, Manager aManager, Game aGame)
   {
     rating = aRating;

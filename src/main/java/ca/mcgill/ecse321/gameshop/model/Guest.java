@@ -14,7 +14,7 @@ public class Guest
 
   //Guest Attributes
   @Id
-  @GeneratedValue
+  //@GeneratedValue
   private int guestId;
 
   //Guest Associations
@@ -24,21 +24,18 @@ public class Guest
   //------------------------
   // CONSTRUCTOR
   //------------------------
-
-  public Guest(int aGuestId, Cart aGuestCart)
+  public Guest() {
+  }
+  public Guest(int aGuestId)
   {
     guestId = aGuestId;
-    if (aGuestCart == null || aGuestCart.getGuest() != null)
-    {
-      throw new RuntimeException("Unable to create Guest due to aGuestCart. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
-    }
-    guestCart = aGuestCart;
   }
 
-  public Guest(int aGuestId, int aCartIdForGuestCart, Customer aCustomerForGuestCart)
+
+  public Guest(int aGuestId, int aCartIdForGuestCart)
   {
     guestId = aGuestId;
-    guestCart = new Cart(aCartIdForGuestCart, aCustomerForGuestCart, this);
+    guestCart = new Cart(aCartIdForGuestCart,  this);
   }
 
   //------------------------

@@ -14,26 +14,29 @@ public class Payment
   //Payment Attributes
   private String billingAddress;
   private int creditCardNb;
-  private Date expirationDate;
+  private String expirationDate;
   private int cvc;
   private int total;
   @Id
-  @GeneratedValue
+  //@GeneratedValue
   private int paymentId;
 
   //Payment Associations
   @ManyToOne
   private Customer customer;
   @OneToOne
-  private Order order;
+  private Command command;
   //------------------------
   // MEMBER VARIABLES
   //------------------------
   //------------------------
   // CONSTRUCTOR
   //------------------------
+public Payment(){
 
-  public Payment(String aBillingAddress, int aCreditCardNb, Date aExpirationDate, int aCvc, int aTotal, int aPaymentId, Customer aCustomer, Order aOrder)
+}
+
+  public Payment(String aBillingAddress, int aCreditCardNb, String aExpirationDate, int aCvc, int aTotal, int aPaymentId)
   {
     billingAddress = aBillingAddress;
     creditCardNb = aCreditCardNb;
@@ -41,19 +44,11 @@ public class Payment
     cvc = aCvc;
     total = aTotal;
     paymentId = aPaymentId;
-    boolean didAddCustomer = setCustomer(aCustomer);
-    if (!didAddCustomer)
-    {
-      throw new RuntimeException("Unable to create payment due to customer. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
-    }
-    if (aOrder == null || aOrder.getPayment() != null)
-    {
-      throw new RuntimeException("Unable to create Payment due to aOrder. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
-    }
-    order = aOrder;
+
   }
 
-  public Payment(String aBillingAddress, int aCreditCardNb, Date aExpirationDate, int aCvc, int aTotal, int aPaymentId, Customer aCustomer, int aOrderIdForOrder, Date aOrderDateForOrder, float aTotalPriceForOrder, Cart aCartForOrder)
+
+  public Payment(String aBillingAddress, int aCreditCardNb, String aExpirationDate, int aCvc, int aTotal, int aPaymentId, Customer aCustomer, Command aCommand)
   {
     billingAddress = aBillingAddress;
     creditCardNb = aCreditCardNb;
@@ -66,7 +61,27 @@ public class Payment
     {
       throw new RuntimeException("Unable to create payment due to customer. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
     }
-    order = new Order(aOrderIdForOrder, aOrderDateForOrder, aTotalPriceForOrder, this, aCartForOrder);
+    if (aCommand == null || aCommand.getPayment() != null)
+    {
+      throw new RuntimeException("Unable to create Payment due to aCommand. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
+    }
+    command = aCommand;
+  }
+
+  public Payment(String aBillingAddress, int aCreditCardNb, String aExpirationDate, int aCvc, int aTotal, int aPaymentId, Customer aCustomer, int aCommandIdForCommand, String aCommandDateForCommand, float aTotalPriceForCommand, Cart aCartForCommand)
+  {
+    billingAddress = aBillingAddress;
+    creditCardNb = aCreditCardNb;
+    expirationDate = aExpirationDate;
+    cvc = aCvc;
+    total = aTotal;
+    paymentId = aPaymentId;
+    boolean didAddCustomer = setCustomer(aCustomer);
+    if (!didAddCustomer)
+    {
+      throw new RuntimeException("Unable to create payment due to customer. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
+    }
+    command = new Command(aCommandIdForCommand, aCommandDateForCommand, aTotalPriceForCommand, this, aCartForCommand);
   }
 
   //------------------------
@@ -89,7 +104,7 @@ public class Payment
     return wasSet;
   }
 
-  public boolean setExpirationDate(Date aExpirationDate)
+  public boolean setExpirationDate(String aExpirationDate)
   {
     boolean wasSet = false;
     expirationDate = aExpirationDate;
@@ -131,7 +146,7 @@ public class Payment
     return creditCardNb;
   }
 
-  public Date getExpirationDate()
+  public String getExpirationDate()
   {
     return expirationDate;
   }
@@ -156,9 +171,9 @@ public class Payment
     return customer;
   }
   /* Code from template association_GetOne */
-  public Order getOrder()
+  public Command getCommand()
   {
-    return order;
+    return command;
   }
   /* Code from template association_SetOneToMany */
   public boolean setCustomer(Customer aCustomer)
@@ -188,11 +203,11 @@ public class Payment
     {
       placeholderCustomer.removePayment(this);
     }
-    Order existingOrder = order;
-    order = null;
-    if (existingOrder != null)
+    Command existingCommand= command;
+    command = null;
+    if (existingCommand != null)
     {
-      existingOrder.delete();
+      existingCommand.delete();
     }
   }
 
@@ -207,6 +222,6 @@ public class Payment
             "paymentId" + ":" + getPaymentId()+ "]" + System.getProperties().getProperty("line.separator") +
             "  " + "expirationDate" + "=" + (getExpirationDate() != null ? !getExpirationDate().equals(this)  ? getExpirationDate().toString().replaceAll("  ","    ") : "this" : "null") + System.getProperties().getProperty("line.separator") +
             "  " + "customer = "+(getCustomer()!=null?Integer.toHexString(System.identityHashCode(getCustomer())):"null") + System.getProperties().getProperty("line.separator") +
-            "  " + "order = "+(getOrder()!=null?Integer.toHexString(System.identityHashCode(getOrder())):"null");
+            "  " + "command = "+(getCommand()!=null?Integer.toHexString(System.identityHashCode(getCommand())):"null");
   }
 }
