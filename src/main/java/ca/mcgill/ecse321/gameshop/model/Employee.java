@@ -15,7 +15,7 @@ public class Employee extends Role {
 
   //Employee Attributes
   private String assignedTasks;
-
+  private boolean activated;
   //Employee Associations
   @OneToMany
   private List<Game> created;
@@ -24,11 +24,25 @@ public class Employee extends Role {
   //------------------------
   // CONSTRUCTOR
   //------------------------
+  public Employee(){
+    super();
 
-  public Employee(int aRoleId, Person aPerson, String aAssignedTasks) {
-    super(aRoleId, aPerson);
+  }
+  public Employee( Person aPerson, String aAssignedTasks) {
+    super(aPerson);
     assignedTasks = aAssignedTasks;
     created = new ArrayList<Game>();
+  }
+  public Employee(Person aPerson, String aAssignedTasks, boolean aActivated)
+
+  {
+    super( aPerson);
+
+    assignedTasks = aAssignedTasks;
+    activated = aActivated;
+
+    created = new ArrayList<Game>();
+
   }
 
   //------------------------
@@ -41,6 +55,18 @@ public class Employee extends Role {
     wasSet = true;
     return wasSet;
   }
+  public boolean setActivated(boolean aActivated)
+  {
+
+    boolean wasSet = false;
+
+    activated = aActivated;
+
+    wasSet = true;
+
+    return wasSet;
+
+  }
 
   public String getAssignedTasks() {
     return assignedTasks;
@@ -50,6 +76,19 @@ public class Employee extends Role {
   public Game getCreated(int index) {
     Game aCreated = created.get(index);
     return aCreated;
+  }
+
+  public boolean getActivated()
+  {
+    return activated;
+  }
+        /* Code from template attribute_IsBoolean */
+
+
+  public boolean isActivated()
+  {
+    return activated;
+
   }
 
   public List<Game> getCreated() {
@@ -78,8 +117,8 @@ public class Employee extends Role {
   }
 
   /* Code from template association_AddManyToOne */
-  public Game addCreated(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL, int aGameId, Manager aManager, Category... allCategories) {
-    return new Game(aName, aDescription, aPrice, aStockQuantity, aPhotoURL, aGameId, aManager, this, allCategories);
+  public Game addCreated(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,  Manager aManager, Category... allCategories) {
+    return new Game(aName, aDescription, aPrice, aStockQuantity, aPhotoURL,  aManager, this, allCategories);
   }
 
   public boolean addCreated(Game aCreated) {
@@ -153,7 +192,8 @@ public class Employee extends Role {
 
 
   public String toString() {
-    return super.toString() + "[" +
-            "assignedTasks" + ":" + getAssignedTasks() + "]";
+    return super.toString() + "["+
+    "assignedTasks" + ":" + getAssignedTasks()+ "," +
+    "activated" + ":" + getActivated()+ "]";
   }
 }

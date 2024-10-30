@@ -18,7 +18,7 @@ public class Customer extends Role {
   //Customer Associations
   @OneToOne(cascade = CascadeType.ALL)
   private Cart cart;
-  @OneToOne(cascade = CascadeType.ALL)
+  @OneToOne (cascade = CascadeType.ALL)
   private Wishlist wishlist;
   @OneToMany
   private List<Review> reviews;
@@ -28,31 +28,24 @@ public class Customer extends Role {
   //------------------------
   // CONSTRUCTOR
   //------------------------
+  public Customer(){
+      super();
 
-  public Customer(int aRoleId, Person aPerson, String aShippingAddress, Cart aCart, Wishlist aWishlist)
+  }
+  public Customer( Person aPerson, String aShippingAddress)
   {
-    super(aRoleId, aPerson);
+    super( aPerson);
     shippingAddress = aShippingAddress;
-    if (aCart == null || aCart.getCustomer() != null)
-    {
-      throw new RuntimeException("Unable to create Customer due to aCart. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
-    }
-    cart = aCart;
-    if (aWishlist == null || aWishlist.getCustomer() != null)
-    {
-      throw new RuntimeException("Unable to create Customer due to aWishlist. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
-    }
-    wishlist = aWishlist;
     reviews = new ArrayList<Review>();
     payments = new ArrayList<Payment>();
   }
 
-  public Customer(int aRoleId, Person aPerson, String aShippingAddress, int aCartIdForCart, Guest aGuestForCart, int aWishlistIdForWishlist)
+  public Customer( Person aPerson, String aShippingAddress,  Guest aGuestForCart)
   {
-    super(aRoleId, aPerson);
+    super( aPerson);
     shippingAddress = aShippingAddress;
-    cart = new Cart(aCartIdForCart, this, aGuestForCart);
-    wishlist = new Wishlist(aWishlistIdForWishlist, this);
+    cart = new Cart(this);
+    wishlist = new Wishlist( this);
     reviews = new ArrayList<Review>();
     payments = new ArrayList<Payment>();
   }
@@ -149,9 +142,9 @@ public class Customer extends Role {
     return 0;
   }
   /* Code from template association_AddManyToOne */
-  public Review addReview(Review.StarRating aRating, String aComment, int aAmountOfLikes, int aReviewId, Manager aManager, Game aGame)
+  public Review addReview(Review.StarRating aRating, String aComment, int aAmountOfLikes,  Manager aManager, Game aGame)
   {
-    return new Review(aRating, aComment, aAmountOfLikes, aReviewId, this, aManager, aGame);
+    return new Review(aRating, aComment, aAmountOfLikes,  this, aManager, aGame);
   }
 
   public boolean addReview(Review aReview)
@@ -221,9 +214,9 @@ public class Customer extends Role {
     return 0;
   }
   /* Code from template association_AddManyToOne */
-  public Payment addPayment(String aBillingAddress, int aCreditCardNb, Date aExpirationDate, int aCvc, int aTotal, int aPaymentId, Order aOrder)
+  public Payment addPayment(String aBillingAddress, int aCreditCardNb, String aExpirationDate, int aCvc, int aTotal, Command aCommand)
   {
-    return new Payment(aBillingAddress, aCreditCardNb, aExpirationDate, aCvc, aTotal, aPaymentId, this, aOrder);
+    return new Payment(aBillingAddress, aCreditCardNb, aExpirationDate, aCvc, aTotal,  this, aCommand);
   }
 
   public boolean addPayment(Payment aPayment)

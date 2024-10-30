@@ -24,34 +24,22 @@ public class Guest
   //------------------------
   // CONSTRUCTOR
   //------------------------
-
-  public Guest(int aGuestId, Cart aGuestCart)
-  {
-    guestId = aGuestId;
-    if (aGuestCart == null || aGuestCart.getGuest() != null)
-    {
-      throw new RuntimeException("Unable to create Guest due to aGuestCart. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
-    }
-    guestCart = aGuestCart;
+  public Guest() {
   }
 
-  public Guest(int aGuestId, int aCartIdForGuestCart, Customer aCustomerForGuestCart)
+
+/*
+  public Guest(int aGuestId, int aCartIdForGuestCart)
   {
     guestId = aGuestId;
-    guestCart = new Cart(aCartIdForGuestCart, aCustomerForGuestCart, this);
+    guestCart = new Cart(aCartIdForGuestCart,  this);
   }
-
+*/
   //------------------------
   // INTERFACE
   //------------------------
 
-  public boolean setGuestId(int aGuestId)
-  {
-    boolean wasSet = false;
-    guestId = aGuestId;
-    wasSet = true;
-    return wasSet;
-  }
+
 
   public int getGuestId()
   {

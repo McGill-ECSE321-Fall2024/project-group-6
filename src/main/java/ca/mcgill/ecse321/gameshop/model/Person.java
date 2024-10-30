@@ -35,13 +35,13 @@ public class Person{
   //------------------------
   // CONSTRUCTOR
   //------------------------
-
-  public Person(String aUsername, String aEmail, String aPassword, String aPhone, int aUserId)
+  public Person() {
+  }
+  public Person(String aUsername, String aEmail, String aPassword, String aPhone)
   {
     username = aUsername;
     password = aPassword;
     phone = aPhone;
-    userId = aUserId;
     if (!setEmail(aEmail))
     {
       throw new RuntimeException("Cannot create due to duplicate email. See https://manual.umple.org?RE003ViolationofUniqueness.html");
@@ -95,13 +95,7 @@ public class Person{
     return wasSet;
   }
 
-  public boolean setUserId(int aUserId)
-  {
-    boolean wasSet = false;
-    userId = aUserId;
-    wasSet = true;
-    return wasSet;
-  }
+
 
   public String getUsername()
   {

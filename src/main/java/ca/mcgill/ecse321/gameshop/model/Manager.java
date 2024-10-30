@@ -23,10 +23,12 @@ public class Manager extends Role {
   //------------------------
   // CONSTRUCTOR
   //------------------------
-
-  public Manager(int aRoleId, Person aPerson)
+public Manager(){
+  super();
+}
+  public Manager( Person aPerson)
   {
-    super(aRoleId, aPerson);
+    super( aPerson);
     reviews = new ArrayList<Review>();
     games = new ArrayList<Game>();
   }
@@ -100,9 +102,9 @@ public class Manager extends Role {
     return 0;
   }
   /* Code from template association_AddManyToOne */
-  public Review addReview(Review.StarRating aRating, String aComment, int aAmountOfLikes, int aReviewId, Customer aCustomer, Game aGame)
+  public Review addReview(Review.StarRating aRating, String aComment, int aAmountOfLikes,  Customer aCustomer, Game aGame)
   {
-    return new Review(aRating, aComment, aAmountOfLikes, aReviewId, aCustomer, this, aGame);
+    return new Review(aRating, aComment, aAmountOfLikes,  aCustomer, this, aGame);
   }
 
   public boolean addReview(Review aReview)
@@ -172,9 +174,9 @@ public class Manager extends Role {
     return 0;
   }
   /* Code from template association_AddManyToOne */
-  public Game addGame(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL, int aGameId, Employee aCreator, Category... allCategories)
+  public Game addGame(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,  Employee aCreator, Category... allCategories)
   {
-    return new Game(aName, aDescription, aPrice, aStockQuantity, aPhotoURL, aGameId, this, aCreator, allCategories);
+    return new Game(aName, aDescription, aPrice, aStockQuantity, aPhotoURL,  this, aCreator, allCategories);
   }
 
   public boolean addGame(Game aGame)

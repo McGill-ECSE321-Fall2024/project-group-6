@@ -20,6 +20,8 @@ public class Review
   private String comment;
 
   private int amountOfLikes;
+
+  private String reply;
   @Id
   @GeneratedValue
   private int reviewId;
@@ -42,13 +44,23 @@ public class Review
 //------------------------
   // CONSTRUCTOR
   //------------------------
+  public Review (){
 
-  public Review(StarRating aRating, String aComment, int aAmountOfLikes, int aReviewId, Customer aCustomer, Manager aManager, Game aGame)
+  }
+public Review(StarRating aRating, String aComment, int aAmountOfLikes)
+{
+  rating = aRating;
+  comment = aComment;
+  amountOfLikes = aAmountOfLikes;
+
+
+}
+  public Review(StarRating aRating, String aComment, int aAmountOfLikes, Customer aCustomer, Manager aManager, Game aGame)
   {
     rating = aRating;
     comment = aComment;
     amountOfLikes = aAmountOfLikes;
-    reviewId = aReviewId;
+
     boolean didAddCustomer = setCustomer(aCustomer);
     if (!didAddCustomer)
     {
@@ -66,6 +78,29 @@ public class Review
     }
   }
 
+  public Review(StarRating aRating, String aComment, int aAmountOfLikes,  String aReply, Customer aCustomer, Manager aManager, Game aGame)
+  {
+    rating = aRating;
+    comment = aComment;
+    amountOfLikes = aAmountOfLikes;
+
+    reply = aReply;
+    boolean didAddCustomer = setCustomer(aCustomer);
+    if (!didAddCustomer)
+    {
+      throw new RuntimeException("Unable to create review due to customer. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
+    }
+    boolean didAddManager = setManager(aManager);
+    if (!didAddManager)
+    {
+      throw new RuntimeException("Unable to create review due to manager. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
+    }
+    boolean didAddGame = setGame(aGame);
+    if (!didAddGame)
+    {
+      throw new RuntimeException("Unable to create review due to game. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
+    }
+  }
   //------------------------
   // INTERFACE
   //------------------------
@@ -93,7 +128,7 @@ public class Review
     wasSet = true;
     return wasSet;
   }
-
+/*
   public boolean setReviewId(int aReviewId)
   {
     boolean wasSet = false;
@@ -102,6 +137,14 @@ public class Review
     return wasSet;
   }
 
+ */
+  public boolean setReply(String aReply)
+  {
+    boolean wasSet = false;
+    reply = aReply;
+    wasSet = true;
+    return wasSet;
+  }
   public StarRating getRating()
   {
     return rating;
@@ -120,6 +163,10 @@ public class Review
   public int getReviewId()
   {
     return reviewId;
+  }
+  public String getReply()
+  {
+    return reply;
   }
   /* Code from template association_GetOne */
   public Customer getCustomer()
@@ -222,7 +269,8 @@ public class Review
     return super.toString() + "["+
             "comment" + ":" + getComment()+ "," +
             "amountOfLikes" + ":" + getAmountOfLikes()+ "," +
-            "reviewId" + ":" + getReviewId()+ "]" + System.getProperties().getProperty("line.separator") +
+            "reviewId" + ":" + getReviewId()+ "," +
+            "reply" + ":" + getReply()+ "]" + System.getProperties().getProperty("line.separator") +
             "  " + "rating" + "=" + (getRating() != null ? !getRating().equals(this)  ? getRating().toString().replaceAll("  ","    ") : "this" : "null") + System.getProperties().getProperty("line.separator") +
             "  " + "customer = "+(getCustomer()!=null?Integer.toHexString(System.identityHashCode(getCustomer())):"null") + System.getProperties().getProperty("line.separator") +
             "  " + "manager = "+(getManager()!=null?Integer.toHexString(System.identityHashCode(getManager())):"null") + System.getProperties().getProperty("line.separator") +

@@ -26,10 +26,13 @@ public class Wishlist {
   //------------------------
   // CONSTRUCTOR
   //------------------------
+public Wishlist(){
 
-  public Wishlist(int aWishlistId, Customer aCustomer)
+}
+
+  public Wishlist( Customer aCustomer)
   {
-    wishlistId = aWishlistId;
+
     if (aCustomer == null || aCustomer.getWishlist() != null)
     {
       throw new RuntimeException("Unable to create Wishlist due to aCustomer. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
@@ -38,10 +41,10 @@ public class Wishlist {
     games = new ArrayList<Game>();
   }
 
-  public Wishlist(int aWishlistId, int aRoleIdForCustomer, Person aPersonForCustomer, String aShippingAddressForCustomer, Cart aCartsForCustomer)
+  public Wishlist(  Person aPersonForCustomer, String aShippingAddressForCustomer, Cart aCartsForCustomer)
   {
-    wishlistId = aWishlistId;
-    customer = new Customer(aRoleIdForCustomer, aPersonForCustomer, aShippingAddressForCustomer, aCartsForCustomer, this);
+
+    customer = new Customer( aPersonForCustomer, aShippingAddressForCustomer);
     games = new ArrayList<Game>();
   }
 
@@ -49,13 +52,7 @@ public class Wishlist {
   // INTERFACE
   //------------------------
 
-  public boolean setWishlistId(int aWishlistId)
-  {
-    boolean wasSet = false;
-    wishlistId = aWishlistId;
-    wasSet = true;
-    return wasSet;
-  }
+
 
   public int getWishlistId()
   {

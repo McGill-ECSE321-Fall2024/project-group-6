@@ -24,11 +24,12 @@ public class Category {
         //------------------------
         // CONSTRUCTOR
         //------------------------
-
-        public Category(String aCategoryName, int aCategoryId)
+        public Category() {
+        }
+        public Category(String aCategoryName)
         {
             categoryName = aCategoryName;
-            categoryId = aCategoryId;
+
             games = new ArrayList<Game>();
         }
 
@@ -44,13 +45,6 @@ public class Category {
             return wasSet;
         }
 
-        public boolean setCategoryId(int aCategoryId)
-        {
-            boolean wasSet = false;
-            categoryId = aCategoryId;
-            wasSet = true;
-            return wasSet;
-        }
 
         public String getCategoryName()
         {
