@@ -37,22 +37,21 @@ public class RolePersistenceTest {
 
     @Test
     public void testCreateAndReadRole() {
-        Random rand = new Random();
-        int n = rand.nextInt(1000);
 
-        Person person = new Person("johndoe", "john@hotmail.com", "password123", "555-1234", n);
+
+        Person person = new Person("johndoe", "john@hotmail.com", "password123", "555-1234");
         person = personRepo.save(person);
 
 
-        Customer customer = new Customer(n, person, "1234 Montreal");
+        Customer customer = new Customer( person, "1234 Montreal");
 
         customer = roleRepo.save(customer);
 
-        Role customerFromDB = roleRepo.findRoleByRoleId(n);
+        Role customerFromDB = roleRepo.findRoleByRoleId(customer.getRoleId());
         /**
          * Relational testing (Customer is a subclass compared to Role)
          */
         assertNotNull(customerFromDB);
-        assertEquals(customerFromDB.getRoleId(),n);
+        assertEquals(customerFromDB.getRoleId(),customer.getRoleId());
     }
 }

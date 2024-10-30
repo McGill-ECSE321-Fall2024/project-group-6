@@ -17,8 +17,11 @@ public class Game
   private float price;
   private int stockQuantity;
   private String photoURL;
+  private boolean toBeAdded;
+  private boolean toBeRemoved;
+  private float promotion;
   @Id
-  //@GeneratedValue
+  @GeneratedValue
   private int gameId;
 
   //Game Associations
@@ -48,14 +51,13 @@ public class Game
 public Game(){
 
 }
-  public Game(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL, int aGameId)
+  public Game(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL)
   {
     name = aName;
     description = aDescription;
     price = aPrice;
     stockQuantity = aStockQuantity;
     photoURL = aPhotoURL;
-    gameId = aGameId;
     reviews = new ArrayList<Review>();
 
     wishlists = new ArrayList<Wishlist>();
@@ -63,14 +65,14 @@ public Game(){
 
     carts = new ArrayList<Cart>();
   }
-  public Game(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL, int aGameId, Manager aManager,  Category... allCategories)
+  public Game(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,  Manager aManager,  Category... allCategories)
   {
     name = aName;
     description = aDescription;
     price = aPrice;
     stockQuantity = aStockQuantity;
     photoURL = aPhotoURL;
-    gameId = aGameId;
+
     reviews = new ArrayList<Review>();
     boolean didAddManager = setManager(aManager);
     if (!didAddManager)
@@ -88,14 +90,45 @@ public Game(){
     carts = new ArrayList<Cart>();
   }
 
-  public Game(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL, int aGameId, Manager aManager, Employee aCreator, Category... allCategories)
+  public Game(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,  Manager aManager, Employee aCreator, Category... allCategories)
   {
     name = aName;
     description = aDescription;
     price = aPrice;
     stockQuantity = aStockQuantity;
     photoURL = aPhotoURL;
-    gameId = aGameId;
+
+    reviews = new ArrayList<Review>();
+    boolean didAddManager = setManager(aManager);
+    if (!didAddManager)
+    {
+      throw new RuntimeException("Unable to create game due to manager. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
+    }
+    wishlists = new ArrayList<Wishlist>();
+    boolean didAddCreator = setCreator(aCreator);
+    if (!didAddCreator)
+    {
+      throw new RuntimeException("Unable to create created due to creator. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
+    }
+    categories = new ArrayList<Category>();
+    boolean didAddCategories = setCategories(allCategories);
+    if (!didAddCategories)
+    {
+      throw new RuntimeException("Unable to create Game, must have at least 1 categories. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
+    }
+    carts = new ArrayList<Cart>();
+  }
+
+  public Game(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,  boolean aToBeAdded, boolean aToBeRemoved, float aPromotion, Manager aManager, Employee aCreator, Category... allCategories)
+  {
+    name = aName;
+    description = aDescription;
+    price = aPrice;
+    stockQuantity = aStockQuantity;
+    photoURL = aPhotoURL;
+    toBeAdded = aToBeAdded;
+    toBeRemoved = aToBeRemoved;
+    promotion = aPromotion;
     reviews = new ArrayList<Review>();
     boolean didAddManager = setManager(aManager);
     if (!didAddManager)
@@ -161,10 +194,27 @@ public Game(){
     return wasSet;
   }
 
-  public boolean setGameId(int aGameId)
+
+  public boolean setToBeAdded(boolean aToBeAdded)
   {
     boolean wasSet = false;
-    gameId = aGameId;
+    toBeAdded = aToBeAdded;
+    wasSet = true;
+    return wasSet;
+  }
+
+  public boolean setToBeRemoved(boolean aToBeRemoved)
+  {
+    boolean wasSet = false;
+    toBeRemoved = aToBeRemoved;
+    wasSet = true;
+    return wasSet;
+  }
+
+  public boolean setPromotion(float aPromotion)
+  {
+    boolean wasSet = false;
+    promotion = aPromotion;
     wasSet = true;
     return wasSet;
   }
@@ -198,6 +248,33 @@ public Game(){
   {
     return gameId;
   }
+
+  public boolean getToBeAdded()
+  {
+    return toBeAdded;
+  }
+
+  public boolean getToBeRemoved()
+  {
+    return toBeRemoved;
+  }
+
+  public float getPromotion()
+  {
+    return promotion;
+  }
+
+  /* Code from template attribute_IsBoolean */
+  public boolean isToBeAdded()
+  {
+    return toBeAdded;
+  }
+  /* Code from template attribute_IsBoolean */
+  public boolean isToBeRemoved()
+  {
+    return toBeRemoved;
+  }
+
   /* Code from template association_GetMany */
   public Review getReview(int index)
   {
@@ -334,9 +411,9 @@ public Game(){
     return 0;
   }
   /* Code from template association_AddManyToOne */
-  public Review addReview(Review.StarRating aRating, String aComment, int aAmountOfLikes, int aReviewId, Customer aCustomer, Manager aManager)
+  public Review addReview(Review.StarRating aRating, String aComment, int aAmountOfLikes,  Customer aCustomer, Manager aManager)
   {
-    return new Review(aRating, aComment, aAmountOfLikes, aReviewId, aCustomer, aManager, this);
+    return new Review(aRating, aComment, aAmountOfLikes,  aCustomer, aManager, this);
   }
 
   public boolean addReview(Review aReview)
@@ -785,7 +862,10 @@ public Game(){
             "price" + ":" + getPrice()+ "," +
             "stockQuantity" + ":" + getStockQuantity()+ "," +
             "photoURL" + ":" + getPhotoURL()+ "," +
-            "gameId" + ":" + getGameId()+ "]" + System.getProperties().getProperty("line.separator") +
+            "gameId" + ":" + getGameId()+ "," +
+            "toBeAdded" + ":" + getToBeAdded()+ "," +
+            "toBeRemoved" + ":" + getToBeRemoved()+ "," +
+            "promotion" + ":" + getPromotion()+ "]" + System.getProperties().getProperty("line.separator") +
             "  " + "manager = "+(getManager()!=null?Integer.toHexString(System.identityHashCode(getManager())):"null") + System.getProperties().getProperty("line.separator") +
             "  " + "creator = "+(getCreator()!=null?Integer.toHexString(System.identityHashCode(getCreator())):"null");
   }

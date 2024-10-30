@@ -35,11 +35,10 @@ public class GuestPersistenceTest {
 
     @Test
     public void testCreateAndReadGuest() {
-        Random rand = new Random();
-        int n = rand.nextInt(1000);
-        Guest guest = new Guest(n);
+
+        Guest guest = new Guest();
         guest = guestRepo.save(guest);
-        Guest guestFromDB = guestRepo.findGuestByGuestId(n);
+        Guest guestFromDB = guestRepo.findGuestByGuestId(guest.getGuestId());
         assertNotNull(guestFromDB);
 
     }

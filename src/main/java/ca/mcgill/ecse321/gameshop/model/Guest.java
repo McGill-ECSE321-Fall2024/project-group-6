@@ -14,7 +14,7 @@ public class Guest
 
   //Guest Attributes
   @Id
-  //@GeneratedValue
+  @GeneratedValue
   private int guestId;
 
   //Guest Associations
@@ -26,29 +26,20 @@ public class Guest
   //------------------------
   public Guest() {
   }
-  public Guest(int aGuestId)
-  {
-    guestId = aGuestId;
-  }
 
 
+/*
   public Guest(int aGuestId, int aCartIdForGuestCart)
   {
     guestId = aGuestId;
     guestCart = new Cart(aCartIdForGuestCart,  this);
   }
-
+*/
   //------------------------
   // INTERFACE
   //------------------------
 
-  public boolean setGuestId(int aGuestId)
-  {
-    boolean wasSet = false;
-    guestId = aGuestId;
-    wasSet = true;
-    return wasSet;
-  }
+
 
   public int getGuestId()
   {

@@ -36,12 +36,11 @@ public class PaymentPersistenceTest {
 
     @Test
     public void testCreateAndReadPayment() {
-        Random rand = new Random();
-        int n = rand.nextInt(1000000000);
 
-        Payment payment = new Payment("1234 Montreal",123456789,"05/27",444,50,n);
+
+        Payment payment = new Payment("1234 Montreal",123456789,"05/27",444,50);
         payment = paymentRepo.save(payment);
-        Payment paymentFromDB = paymentRepo.findPaymentByPaymentId(n);
+        Payment paymentFromDB = paymentRepo.findPaymentByPaymentId(payment.getPaymentId());
         assertNotNull(paymentFromDB);
         assertEquals(paymentFromDB.getCvc(),444);
 

@@ -18,7 +18,7 @@ public class Payment
   private int cvc;
   private int total;
   @Id
-  //@GeneratedValue
+  @GeneratedValue
   private int paymentId;
 
   //Payment Associations
@@ -36,26 +36,26 @@ public Payment(){
 
 }
 
-  public Payment(String aBillingAddress, int aCreditCardNb, String aExpirationDate, int aCvc, int aTotal, int aPaymentId)
+  public Payment(String aBillingAddress, int aCreditCardNb, String aExpirationDate, int aCvc, int aTotal)
   {
     billingAddress = aBillingAddress;
     creditCardNb = aCreditCardNb;
     expirationDate = aExpirationDate;
     cvc = aCvc;
     total = aTotal;
-    paymentId = aPaymentId;
+
 
   }
 
 
-  public Payment(String aBillingAddress, int aCreditCardNb, String aExpirationDate, int aCvc, int aTotal, int aPaymentId, Customer aCustomer, Command aCommand)
+  public Payment(String aBillingAddress, int aCreditCardNb, String aExpirationDate, int aCvc, int aTotal, Customer aCustomer, Command aCommand)
   {
     billingAddress = aBillingAddress;
     creditCardNb = aCreditCardNb;
     expirationDate = aExpirationDate;
     cvc = aCvc;
     total = aTotal;
-    paymentId = aPaymentId;
+
     boolean didAddCustomer = setCustomer(aCustomer);
     if (!didAddCustomer)
     {
@@ -68,20 +68,20 @@ public Payment(){
     command = aCommand;
   }
 
-  public Payment(String aBillingAddress, int aCreditCardNb, String aExpirationDate, int aCvc, int aTotal, int aPaymentId, Customer aCustomer, int aCommandIdForCommand, String aCommandDateForCommand, float aTotalPriceForCommand, Cart aCartForCommand)
+  public Payment(String aBillingAddress, int aCreditCardNb, String aExpirationDate, int aCvc, int aTotal,  Customer aCustomer, int aCommandIdForCommand, String aCommandDateForCommand, float aTotalPriceForCommand, Cart aCartForCommand)
   {
     billingAddress = aBillingAddress;
     creditCardNb = aCreditCardNb;
     expirationDate = aExpirationDate;
     cvc = aCvc;
     total = aTotal;
-    paymentId = aPaymentId;
+
     boolean didAddCustomer = setCustomer(aCustomer);
     if (!didAddCustomer)
     {
       throw new RuntimeException("Unable to create payment due to customer. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
     }
-    command = new Command(aCommandIdForCommand, aCommandDateForCommand, aTotalPriceForCommand, this, aCartForCommand);
+    command = new Command( aCommandDateForCommand, aTotalPriceForCommand, this, aCartForCommand);
   }
 
   //------------------------
@@ -128,13 +128,7 @@ public Payment(){
     return wasSet;
   }
 
-  public boolean setPaymentId(int aPaymentId)
-  {
-    boolean wasSet = false;
-    paymentId = aPaymentId;
-    wasSet = true;
-    return wasSet;
-  }
+
 
   public String getBillingAddress()
   {

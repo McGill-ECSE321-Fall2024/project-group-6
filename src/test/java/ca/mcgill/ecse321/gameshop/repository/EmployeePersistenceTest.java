@@ -37,15 +37,14 @@ public class EmployeePersistenceTest {
 
     @Test
     public void testCreateAndReadEmployee() {
-        Random rand = new Random();
-        int n = rand.nextInt(1000);
-        Person person = new Person("johndoe", "joseph.roustom@mail.mcgill.ca", "password123", "555-1234", n);
+
+        Person person = new Person("johndoe", "joseph.roustom@mail.mcgill.ca", "password123", "555-1234");
         person = personRepo.save(person);
 
         String task ="Add a game to the store";
-        Employee employee = new Employee(n,person,task);
+        Employee employee = new Employee(person,task);
         employee = employeeRepo.save(employee);
-        Employee employeeFromDB = employeeRepo.findEmployeeByRoleId(n);
+        Employee employeeFromDB = employeeRepo.findEmployeeByRoleId(employee.getRoleId());
         assertNotNull(employeeFromDB);
         assertEquals(employeeFromDB.getAssignedTasks(),task);
     }

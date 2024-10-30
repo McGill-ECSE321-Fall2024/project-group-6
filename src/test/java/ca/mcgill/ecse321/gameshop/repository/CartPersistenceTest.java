@@ -39,20 +39,19 @@ public class CartPersistenceTest {
 
     @Test
     public void testCreateAndReadCart() {
-        Random rand = new Random();
-        int n = rand.nextInt(1000);
-        Person person = new Person("johndoe", "john.doe@email.com", "password123", "555-1234", n);
+
+        Person person = new Person("johndoe", "john.doe@email.com", "password123", "555-1234");
         person = personRepo.save(person);
 
 
-        Customer customer = new Customer(n, person, "1234 Montreal");
+        Customer customer = new Customer( person, "1234 Montreal");
         customer = customerRepo.save(customer);
-        Cart cart = new Cart(n, customer);
+        Cart cart = new Cart( customer);
         cart = cartRepo.save(cart);
-        Cart cartFromDb = cartRepo.findCartByCartId(n);
+        Cart cartFromDb = cartRepo.findCartByCartId(cart.getCartId());
         //Customer customerFromDb=customerRepo.findCustomerById(0);
         assertNotNull(cartFromDb);
-        assertEquals(cartFromDb.getCartId(),n);
+        assertEquals(cartFromDb.getCartId(),cart.getCartId());
         //assertNotNull(customerFromDb);
 
     }

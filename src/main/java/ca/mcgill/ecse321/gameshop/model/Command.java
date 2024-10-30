@@ -21,7 +21,7 @@ public class Command
 
     //Command Attributes
     @Id
-    //@GeneratedValue
+    @GeneratedValue
     private int commandId;
     private String commandDate;
     private float totalPrice;
@@ -38,9 +38,9 @@ public class Command
 public Command(){
 
 }
-    public Command(int aCommandId, String aCommandDate, float aTotalPrice, Payment aPayment, Cart aCart)
+    public Command( String aCommandDate, float aTotalPrice, Payment aPayment, Cart aCart)
     {
-        commandId = aCommandId;
+
         commandDate = aCommandDate;
         totalPrice = aTotalPrice;
         if (aPayment == null || aPayment.getCommand() != null)
@@ -55,12 +55,12 @@ public Command(){
         }
     }
 
-    public Command(int aCommandId, String aCommandDate, float aTotalPrice, String aBillingAddressForPayment, int aCreditCardNbForPayment, String aExpirationDateForPayment, int aCvcForPayment, int aTotalForPayment, int aPaymentIdForPayment, Customer aCustomerForPayment, Cart aCart)
+    public Command( String aCommandDate, float aTotalPrice, String aBillingAddressForPayment, int aCreditCardNbForPayment, String aExpirationDateForPayment, int aCvcForPayment, int aTotalForPayment,  Customer aCustomerForPayment, Cart aCart)
     {
-        commandId = aCommandId;
+
         commandDate = aCommandDate;
         totalPrice = aTotalPrice;
-        payment = new Payment(aBillingAddressForPayment, aCreditCardNbForPayment, aExpirationDateForPayment, aCvcForPayment, aTotalForPayment, aPaymentIdForPayment, aCustomerForPayment, this);
+        payment = new Payment(aBillingAddressForPayment, aCreditCardNbForPayment, aExpirationDateForPayment, aCvcForPayment, aTotalForPayment,  aCustomerForPayment, this);
         boolean didAddCart = setCart(aCart);
         if (!didAddCart)
         {
@@ -72,13 +72,7 @@ public Command(){
     // INTERFACE
     //------------------------
 
-    public boolean setCommandId(int aCommandId)
-    {
-        boolean wasSet = false;
-        commandId = aCommandId;
-        wasSet = true;
-        return wasSet;
-    }
+
 
     public boolean setCommandDate(String aCommandDate)
     {

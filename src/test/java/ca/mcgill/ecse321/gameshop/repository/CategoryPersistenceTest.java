@@ -33,12 +33,12 @@ public class CategoryPersistenceTest {
 
     @Test
     public void testCreateAndReadCategory() {
-        Random rand = new Random();
-        int n = rand.nextInt(1000);
-        Category category=new Category("Sports Games",n);
 
-        Category categoryFromDb = categoryRepo.findCategoryByCategoryId(n);
-        categoryFromDb = categoryRepo.save(category);
+        Category category=new Category("Sports Games");
+        category = categoryRepo.save(category);
+
+        Category categoryFromDb = categoryRepo.findCategoryByCategoryId(category.getCategoryId());
+
         assertNotNull(categoryFromDb);
         assertEquals(categoryFromDb.getCategoryName(),"Sports Games");
 
