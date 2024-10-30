@@ -34,16 +34,15 @@ public class WishlistPersistenceTest {
 
     @Test
     public void testCreateAndReadWishlist() {
-        Random rand = new Random();
-        int n = rand.nextInt(1000000);
 
 
 
-        Wishlist wishlist= new Wishlist(n);
+
+        Wishlist wishlist= new Wishlist();
         wishlist=wishlistRepo.save(wishlist);
-        Wishlist wishlistFromDb= wishlistRepo.findWishlistByWishlistId(n);
+        Wishlist wishlistFromDb= wishlistRepo.findWishlistByWishlistId(wishlist.getWishlistId());
         assertNotNull(wishlistFromDb);
-        //assertEquals(wishlistFromDb.getCustomer().getShippingAddress(),"Montreal 1234");
+
 
     }
   

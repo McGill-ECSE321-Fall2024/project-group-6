@@ -36,12 +36,11 @@ public class ReviewPersistenceTest {
 
     @Test
     public void testCreateAndReadReview() {
-        Random rand = new Random();
-        int n = rand.nextInt(1000);
 
-        Review review = new Review(Review.StarRating.OneStar, "Amazing game", 4, n);
+
+        Review review = new Review(Review.StarRating.OneStar, "Amazing game", 4);
         review = reviewRepo.save(review);
-        Review reviewFromDB = reviewRepo.findReviewByReviewId(n);
+        Review reviewFromDB = reviewRepo.findReviewByReviewId(review.getReviewId());
         assertNotNull(reviewFromDB);
         assertEquals(reviewFromDB.getAmountOfLikes(),4);
         assertEquals(reviewFromDB.getRating(),Review.StarRating.OneStar);

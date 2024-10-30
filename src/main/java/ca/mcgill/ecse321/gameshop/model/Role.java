@@ -13,7 +13,7 @@ import jakarta.persistence.*;
 public abstract class Role {
 
   @Id
- // @GeneratedValue
+ @GeneratedValue
   private int roleId;
   //Role Associations
   @OneToOne
@@ -24,9 +24,8 @@ public abstract class Role {
   // CONSTRUCTOR
   //------------------------
 
-  public Role(int aRoleId, Person aPerson)
+  public Role( Person aPerson)
   {
-    roleId = aRoleId;
     if (!setPerson(aPerson))
     {
       throw new RuntimeException("Unable to create Role due to aPerson. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
@@ -41,13 +40,7 @@ public abstract class Role {
   // INTERFACE
   //------------------------
 
-  public boolean setRoleId(int aRoleId)
-  {
-    boolean wasSet = false;
-    roleId = aRoleId;
-    wasSet = true;
-    return wasSet;
-  }
+
 
   public int getRoleId()
   {

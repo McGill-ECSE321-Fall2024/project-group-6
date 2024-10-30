@@ -14,7 +14,7 @@ public class Cart
 
     //Cart Attributes
     @Id
-    //@GeneratedValue
+    @GeneratedValue
     private int cartId;
 
     //Cart Associations
@@ -32,9 +32,9 @@ public class Cart
     //------------------------
     public Cart() {
     }
-    public Cart(int aCartId, Customer aCustomer)
+    public Cart( Customer aCustomer)
     {
-        cartId = aCartId;
+
         games = new ArrayList<Game>();
         commands = new ArrayList<Command>();
 
@@ -45,9 +45,9 @@ public class Cart
         customer = aCustomer;
 
     }
-    public Cart(int aCartId,Guest aGuest)
+    public Cart(Guest aGuest)
     {
-        cartId = aCartId;
+
         games = new ArrayList<Game>();
         commands = new ArrayList<Command>();
 
@@ -60,26 +60,20 @@ public class Cart
         guest = aGuest;
     }
 
-    public Cart(int aCartId, int aRoleIdForCustomer, Person aPersonForCustomer, String aShippingAddressForCustomer, int aGuestIdForGuest)
+    public Cart( Person aPersonForCustomer, String aShippingAddressForCustomer)
     {
-        cartId = aCartId;
+
         games = new ArrayList<Game>();
         commands = new ArrayList<Command>();
-        customer = new Customer(aRoleIdForCustomer, aPersonForCustomer, aShippingAddressForCustomer);
-        guest = new Guest(aGuestIdForGuest);
+        customer = new Customer( aPersonForCustomer, aShippingAddressForCustomer);
+        guest = new Guest();
     }
 
     //------------------------
     // INTERFACE
     //------------------------
 
-    public boolean setCartId(int aCartId)
-    {
-        boolean wasSet = false;
-        cartId = aCartId;
-        wasSet = true;
-        return wasSet;
-    }
+
 
     public int getCartId()
     {
@@ -243,9 +237,9 @@ public class Cart
         return 0;
     }
     /* Code from template association_AddManyToOne */
-    public Command addCommand(int aCommandId, String aCommandDate, float aTotalPrice, Payment aPayment)
+    public Command addCommand( String aCommandDate, float aTotalPrice, Payment aPayment)
     {
-        return new Command(aCommandId, aCommandDate, aTotalPrice, aPayment, this);
+        return new Command( aCommandDate, aTotalPrice, aPayment, this);
     }
 
     public boolean addCommand(Command aCommand)

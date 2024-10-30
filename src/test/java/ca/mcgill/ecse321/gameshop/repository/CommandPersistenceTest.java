@@ -48,28 +48,24 @@ public class CommandPersistenceTest {
 
     @Test
     public void testCreateAndReadCommand() {
-        Random rand = new Random();
-        int n = rand.nextInt(1000000000);
-        int indexCart= n+10;
-        int indexPay=n+20;
-        int indexCommand=n+30;
-        Person person = new Person("johndoe", "r@email.com", "password123", "555-1234", n);
+
+        Person person = new Person("johndoe", "r@email.com", "password123", "555-1234");
         person = personRepo.save(person);
 
 
-        Customer customer = new Customer(n, person, "1234 Montreal");
+        Customer customer = new Customer(person, "1234 Montreal");
         customer = customerRepo.save(customer);
-        Cart cart = new Cart(indexCart, customer);
+        Cart cart = new Cart(customer);
         cart = cartRepo.save(cart);
 
-        Payment payment = new Payment("1234 Toronto",123456789,"05/27",444,50,indexPay);
+        Payment payment = new Payment("1234 Toronto",123456789,"05/27",444,50);
         payment = paymentRepo.save(payment);
 
-        Command command=new Command(indexCommand, "13-10-2024", 75.6F, payment, cart);
+        Command command=new Command( "13-10-2024", 75.6F, payment, cart);
         command=commandRepo.save(command);
 
 
-        Command commandFromDb= commandRepo.findCommandByCommandId(indexCommand);
+        Command commandFromDb= commandRepo.findCommandByCommandId(command.getCommandId());
         /**
          * Object test
          */
@@ -77,7 +73,7 @@ public class CommandPersistenceTest {
         /**
          * Relationship test
          */
-        assertEquals(commandFromDb.getCart().getCartId(),indexCart);
+        assertEquals(commandFromDb.getCart().getCartId(),cart.getCartId());
         /**
          * variable test
          */

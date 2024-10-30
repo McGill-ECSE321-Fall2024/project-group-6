@@ -37,15 +37,14 @@ public class CustomerPersistenceTest {
 
     @Test
     public void testCreateAndReadCustomer() {
-        Random rand = new Random();
-        int n = rand.nextInt(1000);
-        Person person = new Person("johndoe", "john.doe@gmail.com", "password123", "555-1234", n);
+
+        Person person = new Person("johndoe", "john.doe@gmail.com", "password123", "555-1234");
         person = personRepo.save(person);
 
 
-        Customer customer = new Customer(n, person, "1234 Montreal");
+        Customer customer = new Customer( person, "1234 Montreal");
         customer = customerRepo.save(customer);
-        Customer customerFromDb = customerRepo.findCustomerByRoleId(n);
+        Customer customerFromDb = customerRepo.findCustomerByRoleId(customer.getRoleId());
         assertEquals(customerFromDb.getShippingAddress(),"1234 Montreal");
     }
 }

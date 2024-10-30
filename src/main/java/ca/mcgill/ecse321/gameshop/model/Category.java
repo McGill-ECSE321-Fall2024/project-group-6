@@ -14,7 +14,7 @@ public class Category {
 
 
     @Id
-    //@GeneratedValue
+    @GeneratedValue
     private int categoryId;
     private String categoryName;
         //Category Associations
@@ -26,10 +26,10 @@ public class Category {
         //------------------------
         public Category() {
         }
-        public Category(String aCategoryName, int aCategoryId)
+        public Category(String aCategoryName)
         {
             categoryName = aCategoryName;
-            categoryId = aCategoryId;
+
             games = new ArrayList<Game>();
         }
 
@@ -45,13 +45,6 @@ public class Category {
             return wasSet;
         }
 
-        public boolean setCategoryId(int aCategoryId)
-        {
-            boolean wasSet = false;
-            categoryId = aCategoryId;
-            wasSet = true;
-            return wasSet;
-        }
 
         public String getCategoryName()
         {

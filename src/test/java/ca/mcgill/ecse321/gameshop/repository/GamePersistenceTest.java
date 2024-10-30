@@ -36,13 +36,11 @@ public class GamePersistenceTest {
 
     @Test
     public void testCreateAndReadGame() {
-        Random rand = new Random();
-        int n = rand.nextInt(1000);
 
-        Game game= new Game("FC 24","Soccer Game", 88.90F,70,"https://www.si.com/.image/t_share/MTk5MzQ1NDU2NDYxOTE2MTEw/erling-haaland-pictured-on-the-front-cover-of-ea-sports-fc-24-video-game.jpg",n);
+        Game game= new Game("FC 24","Soccer Game", 88.90F,70,"https://www.si.com/.image/t_share/MTk5MzQ1NDU2NDYxOTE2MTEw/erling-haaland-pictured-on-the-front-cover-of-ea-sports-fc-24-video-game.jpg");
 
         game = gameRepo.save(game);
-        Game gameFromDb = gameRepo.findGameByGameId(n);
+        Game gameFromDb = gameRepo.findGameByGameId(game.getGameId());
 
         assertNotNull(gameFromDb);
 

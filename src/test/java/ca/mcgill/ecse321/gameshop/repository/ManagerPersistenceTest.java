@@ -37,14 +37,13 @@ public class ManagerPersistenceTest {
 
     @Test
     public void testCreateAndReadManager() {
-        Random rand = new Random();
-        int n = rand.nextInt(1000);
-        Person person = new Person("joseph", "joe.roustom@mcgill.ca", "password123", "555-1234", n);
+
+        Person person = new Person("joseph", "joe.roustom@mcgill.ca", "password123", "555-1234");
         person = personRepo.save(person);
 
-        Manager manager = new Manager(n,person);
+        Manager manager = new Manager(person);
         manager = managerRepo.save(manager);
-        Manager managerFromDB = managerRepo.findManagerByRoleId(n);
+        Manager managerFromDB = managerRepo.findManagerByRoleId(manager.getRoleId());
         assertNotNull(managerFromDB);
         assertEquals(managerFromDB.getPerson().getPassword(),"password123");
     }

@@ -34,12 +34,11 @@ public class PersonPersistenceTest {
 
     @Test
     public void testCreateAndReadEmployee() {
-        Random rand = new Random();
-        int n = rand.nextInt(1000);
-        Person person = new Person("joseph", "joseph@mail.mcgill.ca", "password123", "555-1234", n);
+
+        Person person = new Person("joseph", "joseph@mail.mcgill.ca", "password123", "555-1234");
         person = personRepo.save(person);
 
-        Person personFromDB = personRepo.findPersonByUserId(n);
+        Person personFromDB = personRepo.findPersonByUserId(person.getUserId());
 
         assertNotNull(personFromDB);
         assertEquals(personFromDB.getEmail(),("joseph@mail.mcgill.ca"));
