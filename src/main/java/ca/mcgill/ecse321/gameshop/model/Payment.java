@@ -1,9 +1,19 @@
+/*PLEASE DO NOT EDIT THIS CODE*/
+/*This code was generated using the UMPLE 1.35.0.7523.c616a4dce modeling language!*/
+
+
 package ca.mcgill.ecse321.gameshop.model;
-import java.sql.Date;
+import java.util.*;
+
+
 import jakarta.persistence.*;
-// line 88 "model.ump"
-// line 163 "model.ump"
+/**
+ * Payment class
+ */
+// line 92 "model.ump"
+
 @Entity
+
 public class Payment
 {
 
@@ -16,7 +26,6 @@ public class Payment
   private int creditCardNb;
   private String expirationDate;
   private int cvc;
-  private int total;
   @Id
   @GeneratedValue
   private int paymentId;
@@ -24,64 +33,40 @@ public class Payment
   //Payment Associations
   @ManyToOne
   private Customer customer;
-  @OneToOne
+  @ManyToOne
   private Command command;
-  //------------------------
-  // MEMBER VARIABLES
-  //------------------------
+
   //------------------------
   // CONSTRUCTOR
   //------------------------
-public Payment(){
 
-}
-
-  public Payment(String aBillingAddress, int aCreditCardNb, String aExpirationDate, int aCvc, int aTotal)
-  {
-    billingAddress = aBillingAddress;
-    creditCardNb = aCreditCardNb;
-    expirationDate = aExpirationDate;
-    cvc = aCvc;
-    total = aTotal;
-
+  public Payment(){
 
   }
-
-
-  public Payment(String aBillingAddress, int aCreditCardNb, String aExpirationDate, int aCvc, int aTotal, Customer aCustomer, Command aCommand)
+  public Payment(String aBillingAddress, int aCreditCardNb, String aExpirationDate, int aCvc)
   {
     billingAddress = aBillingAddress;
     creditCardNb = aCreditCardNb;
     expirationDate = aExpirationDate;
     cvc = aCvc;
-    total = aTotal;
 
+  }
+  public Payment(String aBillingAddress, int aCreditCardNb, String aExpirationDate, int aCvc,  Customer aCustomer, Command aCommand)
+  {
+    billingAddress = aBillingAddress;
+    creditCardNb = aCreditCardNb;
+    expirationDate = aExpirationDate;
+    cvc = aCvc;
     boolean didAddCustomer = setCustomer(aCustomer);
     if (!didAddCustomer)
     {
       throw new RuntimeException("Unable to create payment due to customer. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
     }
-    if (aCommand == null || aCommand.getPayment() != null)
+    boolean didAddCommand = setCommand(aCommand);
+    if (!didAddCommand)
     {
-      throw new RuntimeException("Unable to create Payment due to aCommand. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
+      throw new RuntimeException("Unable to create payment due to command. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
     }
-    command = aCommand;
-  }
-
-  public Payment(String aBillingAddress, int aCreditCardNb, String aExpirationDate, int aCvc, int aTotal,  Customer aCustomer, int aCommandIdForCommand, String aCommandDateForCommand, float aTotalPriceForCommand, Cart aCartForCommand)
-  {
-    billingAddress = aBillingAddress;
-    creditCardNb = aCreditCardNb;
-    expirationDate = aExpirationDate;
-    cvc = aCvc;
-    total = aTotal;
-
-    boolean didAddCustomer = setCustomer(aCustomer);
-    if (!didAddCustomer)
-    {
-      throw new RuntimeException("Unable to create payment due to customer. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
-    }
-    command = new Command( aCommandDateForCommand, aTotalPriceForCommand, this, aCartForCommand);
   }
 
   //------------------------
@@ -120,15 +105,13 @@ public Payment(){
     return wasSet;
   }
 
-  public boolean setTotal(int aTotal)
+  public boolean setPaymentId(int aPaymentId)
   {
     boolean wasSet = false;
-    total = aTotal;
+    paymentId = aPaymentId;
     wasSet = true;
     return wasSet;
   }
-
-
 
   public String getBillingAddress()
   {
@@ -148,11 +131,6 @@ public Payment(){
   public int getCvc()
   {
     return cvc;
-  }
-
-  public int getTotal()
-  {
-    return total;
   }
 
   public int getPaymentId()
@@ -188,6 +166,25 @@ public Payment(){
     wasSet = true;
     return wasSet;
   }
+  /* Code from template association_SetOneToMany */
+  public boolean setCommand(Command aCommand)
+  {
+    boolean wasSet = false;
+    if (aCommand == null)
+    {
+      return wasSet;
+    }
+
+    Command existingCommand = command;
+    command = aCommand;
+    if (existingCommand != null && !existingCommand.equals(aCommand))
+    {
+      existingCommand.removePayment(this);
+    }
+    command.addPayment(this);
+    wasSet = true;
+    return wasSet;
+  }
 
   public void delete()
   {
@@ -197,11 +194,11 @@ public Payment(){
     {
       placeholderCustomer.removePayment(this);
     }
-    Command existingCommand= command;
-    command = null;
-    if (existingCommand != null)
+    Command placeholderCommand = command;
+    this.command = null;
+    if(placeholderCommand != null)
     {
-      existingCommand.delete();
+      placeholderCommand.removePayment(this);
     }
   }
 
@@ -211,10 +208,9 @@ public Payment(){
     return super.toString() + "["+
             "billingAddress" + ":" + getBillingAddress()+ "," +
             "creditCardNb" + ":" + getCreditCardNb()+ "," +
+            "expirationDate" + ":" + getExpirationDate()+ "," +
             "cvc" + ":" + getCvc()+ "," +
-            "total" + ":" + getTotal()+ "," +
             "paymentId" + ":" + getPaymentId()+ "]" + System.getProperties().getProperty("line.separator") +
-            "  " + "expirationDate" + "=" + (getExpirationDate() != null ? !getExpirationDate().equals(this)  ? getExpirationDate().toString().replaceAll("  ","    ") : "this" : "null") + System.getProperties().getProperty("line.separator") +
             "  " + "customer = "+(getCustomer()!=null?Integer.toHexString(System.identityHashCode(getCustomer())):"null") + System.getProperties().getProperty("line.separator") +
             "  " + "command = "+(getCommand()!=null?Integer.toHexString(System.identityHashCode(getCommand())):"null");
   }

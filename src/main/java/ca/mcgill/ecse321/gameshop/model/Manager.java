@@ -1,34 +1,41 @@
+/*PLEASE DO NOT EDIT THIS CODE*/
+/*This code was generated using the UMPLE 1.35.0.7523.c616a4dce modeling language!*/
+
+
 package ca.mcgill.ecse321.gameshop.model;
-import jakarta.persistence.*;
 import java.util.*;
 
-// line 37 "model.ump"
-// line 129 "model.ump"
+
+import jakarta.persistence.*;
+
+/**
+ * Manager class extending Role
+ */
+// line 39 "model.ump"
+// line 123 "model.ump"
 @Entity
-public class Manager extends Role {
+public class Manager extends Role
+{
 
   //------------------------
   // MEMBER VARIABLES
   //------------------------
 
-
   //Manager Associations
-
   @OneToMany
-  private List<Review> reviews=new ArrayList<>();
+  private List<Review> reviews;
   @OneToMany
-  private List<Game> games= new ArrayList<>();
-
+  private List<Game> games;
 
   //------------------------
   // CONSTRUCTOR
   //------------------------
 public Manager(){
-  super();
+
 }
   public Manager( Person aPerson)
   {
-    super( aPerson);
+    super(aPerson);
     reviews = new ArrayList<Review>();
     games = new ArrayList<Game>();
   }
@@ -102,9 +109,10 @@ public Manager(){
     return 0;
   }
   /* Code from template association_AddManyToOne */
-  public Review addReview(Review.StarRating aRating, String aComment, int aAmountOfLikes,  Customer aCustomer, Game aGame)
+  public Review addReview(Review.StarRating aRating, String aComment, int aAmountOfLikes,  String aReply, Customer aCustomer, Game aGame)
   {
-    return new Review(aRating, aComment, aAmountOfLikes,  aCustomer, this, aGame);
+    return new Review(aRating, aComment, aAmountOfLikes,  aReply, aCustomer, this,aGame);
+   // (aRating, aComment, aAmountOfLikes,  aReply, aCustomer, aManager, this)
   }
 
   public boolean addReview(Review aReview)
@@ -138,7 +146,7 @@ public Manager(){
   }
   /* Code from template association_AddIndexControlFunctions */
   public boolean addReviewAt(Review aReview, int index)
-  {
+  {  
     boolean wasAdded = false;
     if(addReview(aReview))
     {
@@ -161,8 +169,8 @@ public Manager(){
       reviews.remove(aReview);
       reviews.add(index, aReview);
       wasAdded = true;
-    }
-    else
+    } 
+    else 
     {
       wasAdded = addReviewAt(aReview, index);
     }
@@ -174,9 +182,9 @@ public Manager(){
     return 0;
   }
   /* Code from template association_AddManyToOne */
-  public Game addGame(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,  Employee aCreator, Category... allCategories)
+  public Game addGame(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL, int aGameId, boolean aToBeAdded, boolean aToBeRemoved, Employee aCreator, Category... allCategories)
   {
-    return new Game(aName, aDescription, aPrice, aStockQuantity, aPhotoURL,  this, aCreator, allCategories);
+    return new Game(aName, aDescription, aPrice, aStockQuantity, aPhotoURL, aToBeAdded, aToBeRemoved, this, aCreator, allCategories);
   }
 
   public boolean addGame(Game aGame)
@@ -210,7 +218,7 @@ public Manager(){
   }
   /* Code from template association_AddIndexControlFunctions */
   public boolean addGameAt(Game aGame, int index)
-  {
+  {  
     boolean wasAdded = false;
     if(addGame(aGame))
     {
@@ -233,8 +241,8 @@ public Manager(){
       games.remove(aGame);
       games.add(index, aGame);
       wasAdded = true;
-    }
-    else
+    } 
+    else 
     {
       wasAdded = addGameAt(aGame, index);
     }

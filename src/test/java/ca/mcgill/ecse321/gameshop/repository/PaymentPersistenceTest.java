@@ -38,7 +38,7 @@ public class PaymentPersistenceTest {
     public void testCreateAndReadPayment() {
 
 
-        Payment payment = new Payment("1234 Montreal",123456789,"05/27",444,50);
+        Payment payment = new Payment("1234 Montreal",123456789,"05/27",444);
         payment = paymentRepo.save(payment);
         Payment paymentFromDB = paymentRepo.findPaymentByPaymentId(payment.getPaymentId());
         assertNotNull(paymentFromDB);
