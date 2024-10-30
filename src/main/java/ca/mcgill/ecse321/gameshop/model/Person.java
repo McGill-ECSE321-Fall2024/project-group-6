@@ -1,14 +1,22 @@
-package ca.mcgill.ecse321.gameshop.model;
+/*PLEASE DO NOT EDIT THIS CODE*/
+/*This code was generated using the UMPLE 1.35.0.7523.c616a4dce modeling language!*/
 
+
+package ca.mcgill.ecse321.gameshop.model;
 import java.util.*;
+
+
 import jakarta.persistence.*;
+
 /**
  * Defining the Person class
  */
 // line 3 "model.ump"
-// line 179 "model.ump"
+// line 103 "model.ump"
+
 @Entity
-public class Person{
+public class Person
+{
 
   //------------------------
   // STATIC VARIABLES
@@ -22,26 +30,25 @@ public class Person{
 
   //Person Attributes
   private String username;
-  @Column(unique = true)
   private String email;
   private String password;
   private String phone;
   @Id
- @GeneratedValue
+  @GeneratedValue
   private int userId;
-
-
 
   //------------------------
   // CONSTRUCTOR
   //------------------------
-  public Person() {
-  }
+public Person (){
+
+}
   public Person(String aUsername, String aEmail, String aPassword, String aPhone)
   {
     username = aUsername;
     password = aPassword;
     phone = aPhone;
+
     if (!setEmail(aEmail))
     {
       throw new RuntimeException("Cannot create due to duplicate email. See https://manual.umple.org?RE003ViolationofUniqueness.html");
@@ -95,7 +102,13 @@ public class Person{
     return wasSet;
   }
 
-
+  public boolean setUserId(int aUserId)
+  {
+    boolean wasSet = false;
+    userId = aUserId;
+    wasSet = true;
+    return wasSet;
+  }
 
   public String getUsername()
   {

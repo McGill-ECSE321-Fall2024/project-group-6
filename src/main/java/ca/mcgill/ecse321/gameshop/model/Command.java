@@ -1,163 +1,210 @@
-package ca.mcgill.ecse321.gameshop.model;
 /*PLEASE DO NOT EDIT THIS CODE*/
 /*This code was generated using the UMPLE 1.35.0.7523.c616a4dce modeling language!*/
+package ca.mcgill.ecse321.gameshop.model;
 import java.util.*;
+
+
 import jakarta.persistence.*;
 
-import java.sql.Date;
+
 
 /**
- * Command class--> the orders being made by customers
+ * Command class
  */
-// line 42 "model.ump"
-// line 143 "model.ump"
-@Entity
+// line 45 "model.ump"
+// line 128 "model.ump"
+  @Entity
 public class Command
 {
 
-    //------------------------
-    // MEMBER VARIABLES
-    //------------------------
+  //------------------------
+  // MEMBER VARIABLES
+  //------------------------
 
-    //Command Attributes
-    @Id
-    @GeneratedValue
-    private int commandId;
-    private String commandDate;
-    private float totalPrice;
+  //Command Attributes
+  @Id
+  @GeneratedValue
+  private int commandId;
+  private String commandDate;
+  private float totalPrice;
 
-    //Command Associations
-    @OneToOne
-    private Payment payment;
-    @ManyToOne
-    private Cart cart;
+  //Command Associations
+  @OneToMany
+  private List<Payment> payments;
 
-    //------------------------
-    // CONSTRUCTOR
-    //------------------------
-public Command(){
+  //------------------------
+  // CONSTRUCTOR
+  //------------------------
+public Command (){
 
 }
-    public Command( String aCommandDate, float aTotalPrice, Payment aPayment, Cart aCart)
+  public Command( String aCommandDate, float aTotalPrice)
+  {
+    commandDate = aCommandDate;
+    totalPrice = aTotalPrice;
+    payments = new ArrayList<Payment>();
+  }
+
+  //------------------------
+  // INTERFACE
+  //------------------------
+
+  public boolean setCommandId(int aCommandId)
+  {
+    boolean wasSet = false;
+    commandId = aCommandId;
+    wasSet = true;
+    return wasSet;
+  }
+
+  public boolean setCommandDate(String aCommandDate)
+  {
+    boolean wasSet = false;
+    commandDate = aCommandDate;
+    wasSet = true;
+    return wasSet;
+  }
+
+  public boolean setTotalPrice(float aTotalPrice)
+  {
+    boolean wasSet = false;
+    totalPrice = aTotalPrice;
+    wasSet = true;
+    return wasSet;
+  }
+
+  public int getCommandId()
+  {
+    return commandId;
+  }
+
+  public String getCommandDate()
+  {
+    return commandDate;
+  }
+
+  public float getTotalPrice()
+  {
+    return totalPrice;
+  }
+  /* Code from template association_GetMany */
+  public Payment getPayment(int index)
+  {
+    Payment aPayment = payments.get(index);
+    return aPayment;
+  }
+
+  public List<Payment> getPayments()
+  {
+    List<Payment> newPayments = Collections.unmodifiableList(payments);
+    return newPayments;
+  }
+
+  public int numberOfPayments()
+  {
+    int number = payments.size();
+    return number;
+  }
+
+  public boolean hasPayments()
+  {
+    boolean has = payments.size() > 0;
+    return has;
+  }
+
+  public int indexOfPayment(Payment aPayment)
+  {
+    int index = payments.indexOf(aPayment);
+    return index;
+  }
+  /* Code from template association_MinimumNumberOfMethod */
+  public static int minimumNumberOfPayments()
+  {
+    return 0;
+  }
+  /* Code from template association_AddManyToOne */
+  public Payment addPayment(String aBillingAddress, int aCreditCardNb, String aExpirationDate, int aCvc, int aPaymentId, Customer aCustomer)
+  {
+    return new Payment(aBillingAddress, aCreditCardNb, aExpirationDate, aCvc, aCustomer, this);
+  }
+
+  public boolean addPayment(Payment aPayment)
+  {
+    boolean wasAdded = false;
+    if (payments.contains(aPayment)) { return false; }
+    Command existingCommand = aPayment.getCommand();
+    boolean isNewCommand = existingCommand != null && !this.equals(existingCommand);
+    if (isNewCommand)
     {
-
-        commandDate = aCommandDate;
-        totalPrice = aTotalPrice;
-        if (aPayment == null || aPayment.getCommand() != null)
-        {
-            throw new RuntimeException("Unable to create Command due to aPayment. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
-        }
-        payment = aPayment;
-        boolean didAddCart = setCart(aCart);
-        if (!didAddCart)
-        {
-            throw new RuntimeException("Unable to create command due to cart. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
-        }
+      aPayment.setCommand(this);
     }
-
-    public Command( String aCommandDate, float aTotalPrice, String aBillingAddressForPayment, int aCreditCardNbForPayment, String aExpirationDateForPayment, int aCvcForPayment, int aTotalForPayment,  Customer aCustomerForPayment, Cart aCart)
+    else
     {
-
-        commandDate = aCommandDate;
-        totalPrice = aTotalPrice;
-        payment = new Payment(aBillingAddressForPayment, aCreditCardNbForPayment, aExpirationDateForPayment, aCvcForPayment, aTotalForPayment,  aCustomerForPayment, this);
-        boolean didAddCart = setCart(aCart);
-        if (!didAddCart)
-        {
-            throw new RuntimeException("Unable to create command due to cart. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
-        }
+      payments.add(aPayment);
     }
+    wasAdded = true;
+    return wasAdded;
+  }
 
-    //------------------------
-    // INTERFACE
-    //------------------------
-
-
-
-    public boolean setCommandDate(String aCommandDate)
+  public boolean removePayment(Payment aPayment)
+  {
+    boolean wasRemoved = false;
+    //Unable to remove aPayment, as it must always have a command
+    if (!this.equals(aPayment.getCommand()))
     {
-        boolean wasSet = false;
-        commandDate = aCommandDate;
-        wasSet = true;
-        return wasSet;
+      payments.remove(aPayment);
+      wasRemoved = true;
     }
+    return wasRemoved;
+  }
+  /* Code from template association_AddIndexControlFunctions */
+  public boolean addPaymentAt(Payment aPayment, int index)
+  {  
+    boolean wasAdded = false;
+    if(addPayment(aPayment))
+    {
+      if(index < 0 ) { index = 0; }
+      if(index > numberOfPayments()) { index = numberOfPayments() - 1; }
+      payments.remove(aPayment);
+      payments.add(index, aPayment);
+      wasAdded = true;
+    }
+    return wasAdded;
+  }
 
-    public boolean setTotalPrice(float aTotalPrice)
+  public boolean addOrMovePaymentAt(Payment aPayment, int index)
+  {
+    boolean wasAdded = false;
+    if(payments.contains(aPayment))
     {
-        boolean wasSet = false;
-        totalPrice = aTotalPrice;
-        wasSet = true;
-        return wasSet;
+      if(index < 0 ) { index = 0; }
+      if(index > numberOfPayments()) { index = numberOfPayments() - 1; }
+      payments.remove(aPayment);
+      payments.add(index, aPayment);
+      wasAdded = true;
+    } 
+    else 
+    {
+      wasAdded = addPaymentAt(aPayment, index);
     }
+    return wasAdded;
+  }
 
-    public int getCommandId()
+  public void delete()
+  {
+    for(int i=payments.size(); i > 0; i--)
     {
-        return commandId;
+      Payment aPayment = payments.get(i - 1);
+      aPayment.delete();
     }
-
-    public String getCommandDate()
-    {
-        return commandDate;
-    }
-
-    public float getTotalPrice()
-    {
-        return totalPrice;
-    }
-    /* Code from template association_GetOne */
-    public Payment getPayment()
-    {
-        return payment;
-    }
-    /* Code from template association_GetOne */
-    public Cart getCart()
-    {
-        return cart;
-    }
-    /* Code from template association_SetOneToMany */
-    public boolean setCart(Cart aCart)
-    {
-        boolean wasSet = false;
-        if (aCart == null)
-        {
-            return wasSet;
-        }
-
-        Cart existingCart = cart;
-        cart = aCart;
-        if (existingCart != null && !existingCart.equals(aCart))
-        {
-            existingCart.removeCommand(this);
-        }
-        cart.addCommand(this);
-        wasSet = true;
-        return wasSet;
-    }
-
-    public void delete()
-    {
-        Payment existingPayment = payment;
-        payment = null;
-        if (existingPayment != null)
-        {
-            existingPayment.delete();
-        }
-        Cart placeholderCart = cart;
-        this.cart = null;
-        if(placeholderCart != null)
-        {
-            placeholderCart.removeCommand(this);
-        }
-    }
+  }
 
 
-    public String toString()
-    {
-        return super.toString() + "["+
-                "commandId" + ":" + getCommandId()+ "," +
-                "commandDate" + ":" + getCommandDate()+ "," +
-                "totalPrice" + ":" + getTotalPrice()+ "]" + System.getProperties().getProperty("line.separator") +
-                "  " + "payment = "+(getPayment()!=null?Integer.toHexString(System.identityHashCode(getPayment())):"null") + System.getProperties().getProperty("line.separator") +
-                "  " + "cart = "+(getCart()!=null?Integer.toHexString(System.identityHashCode(getCart())):"null");
-    }
+  public String toString()
+  {
+    return super.toString() + "["+
+            "commandId" + ":" + getCommandId()+ "," +
+            "commandDate" + ":" + getCommandDate()+ "," +
+            "totalPrice" + ":" + getTotalPrice()+ "]";
+  }
 }

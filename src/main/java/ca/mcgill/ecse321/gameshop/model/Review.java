@@ -1,35 +1,42 @@
+/*PLEASE DO NOT EDIT THIS CODE*/
+/*This code was generated using the UMPLE 1.35.0.7523.c616a4dce modeling language!*/
+
 package ca.mcgill.ecse321.gameshop.model;
+import java.util.*;
+
 
 import jakarta.persistence.*;
-// line 72 "model.ump"
-// line 151 "model.ump"
+
+/**
+ * Review class
+ */
+// line 82 "model.ump"
+
+
 @Entity
 public class Review
 {
+
   //------------------------
   // ENUMERATIONS
   //------------------------
 
   public enum StarRating { OneStar, TwoStar, ThreeStar, FourStar, FiveStar }
 
+  //------------------------
+  // MEMBER VARIABLES
+  //------------------------
 
-  //public enum StarRating { OneStar, TwoStar, ThreeStar, FourStar, FiveStar }
-
+  //Review Attributes
   private StarRating rating;
-
   private String comment;
-
   private int amountOfLikes;
-
-  private String reply;
   @Id
   @GeneratedValue
   private int reviewId;
+  private String reply;
 
-
-
-//Review Associations
-
+  //Review Associations
   @ManyToOne
   private Customer customer;
   @ManyToOne
@@ -37,47 +44,20 @@ public class Review
   @ManyToOne
   private Game game;
 
-
-
-
-
-//------------------------
+  //------------------------
   // CONSTRUCTOR
   //------------------------
-  public Review (){
-
-  }
-public Review(StarRating aRating, String aComment, int aAmountOfLikes)
-{
-  rating = aRating;
-  comment = aComment;
-  amountOfLikes = aAmountOfLikes;
-
+public Review(){
 
 }
-  public Review(StarRating aRating, String aComment, int aAmountOfLikes, Customer aCustomer, Manager aManager, Game aGame)
+  public Review(StarRating aRating, String aComment, int aAmountOfLikes)
   {
     rating = aRating;
     comment = aComment;
     amountOfLikes = aAmountOfLikes;
 
-    boolean didAddCustomer = setCustomer(aCustomer);
-    if (!didAddCustomer)
-    {
-      throw new RuntimeException("Unable to create review due to customer. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
-    }
-    boolean didAddManager = setManager(aManager);
-    if (!didAddManager)
-    {
-      throw new RuntimeException("Unable to create review due to manager. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
-    }
-    boolean didAddGame = setGame(aGame);
-    if (!didAddGame)
-    {
-      throw new RuntimeException("Unable to create review due to game. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
-    }
-  }
 
+  }
   public Review(StarRating aRating, String aComment, int aAmountOfLikes,  String aReply, Customer aCustomer, Manager aManager, Game aGame)
   {
     rating = aRating;
@@ -101,6 +81,7 @@ public Review(StarRating aRating, String aComment, int aAmountOfLikes)
       throw new RuntimeException("Unable to create review due to game. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
     }
   }
+
   //------------------------
   // INTERFACE
   //------------------------
@@ -128,7 +109,7 @@ public Review(StarRating aRating, String aComment, int aAmountOfLikes)
     wasSet = true;
     return wasSet;
   }
-/*
+
   public boolean setReviewId(int aReviewId)
   {
     boolean wasSet = false;
@@ -137,7 +118,6 @@ public Review(StarRating aRating, String aComment, int aAmountOfLikes)
     return wasSet;
   }
 
- */
   public boolean setReply(String aReply)
   {
     boolean wasSet = false;
@@ -145,6 +125,7 @@ public Review(StarRating aRating, String aComment, int aAmountOfLikes)
     wasSet = true;
     return wasSet;
   }
+
   public StarRating getRating()
   {
     return rating;
@@ -164,6 +145,7 @@ public Review(StarRating aRating, String aComment, int aAmountOfLikes)
   {
     return reviewId;
   }
+
   public String getReply()
   {
     return reply;
