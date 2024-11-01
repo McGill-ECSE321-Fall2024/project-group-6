@@ -15,8 +15,9 @@ public class GuestService {
 
     // Create a new guest and save it to the repository
     @Transactional
-    public Guest createGuest(Guest guest) {
-        return guestRepo.save(guest);
+    public Guest createGuest() {
+        Guest g = new Guest();
+        return guestRepo.save(g);
     }
 
     // Find a guest by their ID

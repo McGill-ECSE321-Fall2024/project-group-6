@@ -15,8 +15,13 @@ public class PersonService {
 
     // Create a new person and save it in the repository
     @Transactional
-    public Person createPerson(Person person) {
-        return personRepo.save(person);
+    public Person createPerson(String aUsername, String aEmail, String aPassword, String aPhone) {
+        if (aUsername == null || aEmail == null || aPassword == null || aPhone == null) {
+            throw new IllegalArgumentException("You can't enter a null value for those fields.");
+        }
+        
+        Person p = new Person(aUsername, aEmail, aPassword, aPhone);
+        return personRepo.save(p);
     }
 
     // Retrieve all people from the repository
