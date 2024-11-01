@@ -2,22 +2,22 @@ package ca.mcgill.ecse321.gameshop.dto;
 
 import ca.mcgill.ecse321.gameshop.model.Person;
 
-public class PersonResponseDto {
+public class PersonRequestDto {
     //Person Attributes
     private String username;
     private String email;
     private String phone;
-    private int userId;
+    private String password;
 
     @SuppressWarnings("unused")
-    private PersonResponseDto() {
+    private PersonRequestDto() {
     }
 
-    public PersonResponseDto(Person person) {
+    public PersonRequestDto(Person person) {
         this.username = person.getUsername();
         this.email = person.getEmail();
         this.phone = person.getPhone();
-        this.userId = person.getUserId();
+        this.password = person.getPassword();
     }
 
     public String getUsername() {
@@ -32,8 +32,8 @@ public class PersonResponseDto {
         return phone;
     }
 
-    public int getUserId() {
-        return userId;
+    public String getPassword() {
+        return password;
     }
 
     public void setUsername(String username) {
@@ -48,7 +48,7 @@ public class PersonResponseDto {
         this.phone = phone;
     }
 
-    public void setUserId(int id) {
-        this.userId = id;
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

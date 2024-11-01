@@ -5,15 +5,15 @@ import java.util.List;
 import ca.mcgill.ecse321.gameshop.model.Game;
 import ca.mcgill.ecse321.gameshop.model.Guest;
 
-public class GuestResponseDto {
+public class GuestDto {
     private int guestId;
     private List<Game> games;
 
     @SuppressWarnings("unused")
-    private GuestResponseDto() {
+    private GuestDto() {
     }
 
-    public GuestResponseDto(Guest guest) {
+    public GuestDto(Guest guest) {
         this.guestId = guest.getGuestId();
         this.games = guest.getGames();
     }

@@ -43,17 +43,17 @@ public class PersonService {
 
     // Update an existing person's details by ID
     @Transactional
-    public Person updatePerson(int id, Person personDetails) {
+    public Person updatePerson(int id, String aUsername, String aEmail, String aPassword, String aPhone) {
         Person p = personRepo.findPersonByUserId(id);
 
         if (p == null) {
             throw new IllegalArgumentException("Person with ID " + id + " does not exist.");
         }
 
-        p.setEmail(personDetails.getEmail());
-        p.setPassword(personDetails.getPassword());
-        p.setPhone(personDetails.getPhone());
-        p.setUsername(personDetails.getUsername());
+        p.setUsername(aUsername);
+        p.setEmail(aEmail);
+        p.setPassword(aPassword);
+        p.setPhone(aPhone);
 
         return personRepo.save(p);
     }

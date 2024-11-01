@@ -20,6 +20,11 @@ public class GuestService {
         return guestRepo.save(g);
     }
 
+    // Retrieve all guests from the repository
+    public Iterable<Guest> getAllGuests() {
+        return guestRepo.findAll();
+    }
+
     // Find a guest by their ID
     public Guest findGuestByID(int id) {
         Guest g = guestRepo.findGuestByGuestId(id);
@@ -34,7 +39,7 @@ public class GuestService {
 
     // Update an existing guest's details by their ID
     @Transactional
-    public Guest updateGuest(int id, Guest guestDetails) {
+    public Guest updateGuest(int id) {
         Guest g = guestRepo.findGuestByGuestId(id);
 
         if (g == null) {
