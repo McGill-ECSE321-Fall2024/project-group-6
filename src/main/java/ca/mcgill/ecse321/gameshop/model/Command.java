@@ -31,13 +31,26 @@ public class Command
   //Command Associations
   @OneToMany
   private List<Payment> payments;
-
+@ManyToOne
+  private Customer customer;
   //------------------------
   // CONSTRUCTOR
   //------------------------
 public Command (){
 
 }
+  public Command( String aCommandDate, float aTotalPrice, Customer aCustomer)
+  {
+   // commandId = aCommandId;
+    commandDate = aCommandDate;
+    totalPrice = aTotalPrice;
+    payments = new ArrayList<Payment>();
+    boolean didAddCustomer = setCustomer(aCustomer);
+    if (!didAddCustomer)
+    {
+      throw new RuntimeException("Unable to create command due to customer. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
+    }
+  }
   public Command( String aCommandDate, float aTotalPrice)
   {
     commandDate = aCommandDate;
@@ -117,6 +130,11 @@ public Command (){
     int index = payments.indexOf(aPayment);
     return index;
   }
+  /* Code from template association_GetOne */
+  public Customer getCustomer()
+  {
+    return customer;
+  }
   /* Code from template association_MinimumNumberOfMethod */
   public static int minimumNumberOfPayments()
   {
@@ -189,6 +207,24 @@ public Command (){
     }
     return wasAdded;
   }
+  /* Code from template association_SetOneToMany */
+  public boolean setCustomer(Customer aCustomer)
+  {
+    boolean wasSet = false;
+    if (aCustomer == null)
+    {
+      return wasSet;
+    }
+    Customer existingCustomer = customer;
+    customer = aCustomer;
+    if (existingCustomer != null && !existingCustomer.equals(aCustomer))
+    {
+      existingCustomer.removeCommand(this);
+    }
+    customer.addCommand(this);
+    wasSet = true;
+    return wasSet;
+  }
 
   public void delete()
   {
@@ -196,6 +232,12 @@ public Command (){
     {
       Payment aPayment = payments.get(i - 1);
       aPayment.delete();
+    }
+    Customer placeholderCustomer = customer;
+    this.customer = null;
+    if(placeholderCustomer != null)
+    {
+      placeholderCustomer.removeCommand(this);
     }
   }
 
@@ -205,6 +247,7 @@ public Command (){
     return super.toString() + "["+
             "commandId" + ":" + getCommandId()+ "," +
             "commandDate" + ":" + getCommandDate()+ "," +
-            "totalPrice" + ":" + getTotalPrice()+ "]";
+            "totalPrice" + ":" + getTotalPrice()+ "]" + System.getProperties().getProperty("line.separator") +
+            "  " + "customer = "+(getCustomer()!=null?Integer.toHexString(System.identityHashCode(getCustomer())):"null");
   }
 }
