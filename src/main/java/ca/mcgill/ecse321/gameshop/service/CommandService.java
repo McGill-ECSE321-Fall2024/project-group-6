@@ -25,8 +25,21 @@ public class CommandService {
         return repo.save(c);
     }
 
-    public Command findCommandById(int cId){
+    public Command findCommandById(int cId) {
+        if (repo.findCommandByCommandId(cId) == null) {
+            throw new IllegalArgumentException("Category does not exist.");
+        }
         return repo.findCommandByCommandId(cId);
+    }
+
+    public void deleteCommand(int cId){
+        if (repo.findCommandByCommandId(cId) == null) {
+            throw new IllegalArgumentException("Command does not exist.");
+        }
+        repo.deleteById(cId);
+    }
+    public Iterable<Command> getAllCommands(){
+       return repo.findAll();
     }
 
 }

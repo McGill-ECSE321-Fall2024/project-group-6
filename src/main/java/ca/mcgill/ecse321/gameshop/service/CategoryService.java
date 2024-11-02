@@ -14,22 +14,33 @@ public class CategoryService {
     @Transactional
     public Category createCategory(String name){
         if (name==null){
-            throw new IllegalArgumentException("Category name must be valid");
+            throw new IllegalArgumentException("Category name must be valid.");
         }
         Category c = new Category(name);
        return repo.save(c);
     }
 
     public Category findCategoryById(int cId){
-        if(cId<0){throw new IllegalArgumentException("Category ID is not valid");}
-        else if (repo.findCategoryByCategoryId(cId)==null){ throw new IllegalArgumentException("Category does not exist");}
+        if(cId<0){throw new IllegalArgumentException("Category ID is not valid.");}
+        else if (repo.findCategoryByCategoryId(cId)==null){ throw new IllegalArgumentException("Category does not exist.");}
         return repo.findCategoryByCategoryId(cId);
     }
-    /*
-    public List<Game> getAllCategoryGames(int cId){
-        if(cId<0){throw new IllegalArgumentException("Category ID is not valid");}
-        else if (repo.findCategoryByCategoryId(cId)==null){ throw new IllegalArgumentException("Category does not exist");}
-   return repo.findCategoryByCategoryId(cId).getGames();
+
+    @Transactional
+    public Category updateCategory(int cId, String name){
+        if(cId<0){throw new IllegalArgumentException("Category ID is not valid.");}
+        Category toUpdate= repo.findCategoryByCategoryId(cId);
+        toUpdate.setCategoryName(name);
+        return repo.save(toUpdate);
     }
-    */
+
+    public void deleteCategory(int cId) {
+        if (repo.findCategoryByCategoryId(cId) == null) {
+            throw new IllegalArgumentException("Category does not exist.");
+        }
+        repo.deleteById(cId);
+    }
+    public Iterable<Category> getAllCategories(){
+        return repo.findAll();
+    }
 }

@@ -17,16 +17,25 @@ public class CategoryController {
         Category createdCategory = categoryService.createCategory(c.getCategoryName());
         return  new CategoryResponseDto(createdCategory);
     }
+    @PutMapping("/categories/{cId}/{name}")
+    public CategoryResponseDto updateCategory(@PathVariable int cId, @PathVariable String name){
+        return new CategoryResponseDto(categoryService.updateCategory(cId,name));
+    }
 
     @GetMapping("/categories/{cId}")
     public CategoryResponseDto findCategoryById(@PathVariable int cId){
         return new CategoryResponseDto(categoryService.findCategoryById(cId));
     }
-    /*
-    @GetMapping("/categories/{cId}")
-    public CategoryResponseDto getCategoryGames(@PathVariable int cId){
-        return new CategoryResponseDto(categoryService.getAllCategoryGames(cId));
+
+    @GetMapping("/categories")
+    public Iterable<Category> getAllCategories(@PathVariable int cId){
+        return categoryService.getAllCategories();
     }
-    */
+
+    @DeleteMapping
+    public void deleteCategory(@PathVariable int cId){
+        categoryService.deleteCategory(cId);
+    }
+
 
 }

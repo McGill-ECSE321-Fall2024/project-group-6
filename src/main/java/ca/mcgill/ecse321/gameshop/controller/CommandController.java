@@ -22,4 +22,14 @@ public class CommandController {
     public CommandResponseDto findCommandById(@PathVariable int cId){
         return new CommandResponseDto(commandService.findCommandById(cId));
     }
+
+    @GetMapping("/commands")
+    public Iterable<Command> getAllCommands(){
+        return commandService.getAllCommands();
+    }
+
+    @DeleteMapping("/commands/{cId}")
+    public void deleteCommand(int cId){
+        commandService.deleteCommand(cId);
+    }
 }
