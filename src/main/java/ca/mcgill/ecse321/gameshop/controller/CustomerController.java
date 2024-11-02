@@ -26,7 +26,7 @@ public class CustomerController {
     // Retrieve all customers from the DB
     @GetMapping
     public Iterable<Customer> getAllCustomers() {
-        return CustomerService.getAllCustomers();
+        return customerService.getAllCustomers();
     }
 
     // Find customer by their ID

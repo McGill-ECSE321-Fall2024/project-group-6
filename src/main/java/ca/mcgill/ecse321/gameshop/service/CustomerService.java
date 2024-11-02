@@ -72,13 +72,12 @@ public class CustomerService {
         customerrepo.delete(customer);
     }
 
-    //TODO associate review to a game in particular
+
     // Create a review for a game
     @Transactional
     public Review createReview(int gameId, Review.StarRating aRating, String aComment, int aAmountOfLikes) {
         Game game = gamerepo.findGameByGameId(gameId);
-
-        Review review = new Review(aRating, aComment, 0);
+        Review review = new Review(aRating, aComment,aAmountOfLikes);
         return reviewrepo.save(review);
     }
 
