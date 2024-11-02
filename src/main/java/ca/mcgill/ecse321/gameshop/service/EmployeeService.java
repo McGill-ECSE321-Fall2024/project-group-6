@@ -1,4 +1,4 @@
-package service;
+package ca.mcgill.ecse321.gameshop.service;
 
 import java.sql.Date;
 import java.time.LocalDate;
@@ -22,7 +22,6 @@ public class EmployeeService {
 
     @Autowired
     private EmployeeRepository repo;
-
     @Autowired
     private CategoryRepository catrepo;
     @Autowired

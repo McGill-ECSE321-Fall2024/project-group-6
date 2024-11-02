@@ -1,17 +1,14 @@
-package service;
+package ca.mcgill.ecse321.gameshop.service;
 
 import ca.mcgill.ecse321.gameshop.model.Category;
 import ca.mcgill.ecse321.gameshop.model.Review;
 import ca.mcgill.ecse321.gameshop.model.Customer;
 import ca.mcgill.ecse321.gameshop.model.Game;
-import ca.mcgill.ecse321.gameshop.repository.CategoryRepository;
-import ca.mcgill.ecse321.gameshop.repository.CustomerRepository;
+import ca.mcgill.ecse321.gameshop.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import ca.mcgill.ecse321.gameshop.model.Person;
-import ca.mcgill.ecse321.gameshop.repository.GameRepository;
-import ca.mcgill.ecse321.gameshop.repository.ReviewRepository;
 import jakarta.transaction.Transactional;
 
 
@@ -81,7 +78,7 @@ public class CustomerService {
     public Review createReview(int gameId, Review.StarRating aRating, String aComment, int aAmountOfLikes) {
         Game game = gamerepo.findGameByGameId(gameId);
 
-        Review review = new Review(aRating, aComment, aAmountOfLikes);
+        Review review = new Review(aRating, aComment, 0);
         return reviewrepo.save(review);
     }
 
