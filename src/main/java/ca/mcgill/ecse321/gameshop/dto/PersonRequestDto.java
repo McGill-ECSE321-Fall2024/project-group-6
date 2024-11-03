@@ -9,10 +9,6 @@ public class PersonRequestDto {
     private String phone;
     private String password;
 
-    @SuppressWarnings("unused")
-    private PersonRequestDto() {
-    }
-
     public PersonRequestDto(Person person) {
         this.username = person.getUsername();
         this.email = person.getEmail();

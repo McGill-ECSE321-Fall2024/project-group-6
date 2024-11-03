@@ -9,6 +9,7 @@ public class PersonResponseDto {
     private String phone;
     private int userId;
 
+    // Jackson needs a default constructor, but it doesn't need to be public
     @SuppressWarnings("unused")
     private PersonResponseDto() {
     }

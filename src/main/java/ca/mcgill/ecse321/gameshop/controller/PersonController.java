@@ -1,5 +1,8 @@
 package ca.mcgill.ecse321.gameshop.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,6 +12,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import ca.mcgill.ecse321.gameshop.dto.PersonListDto;
 import ca.mcgill.ecse321.gameshop.dto.PersonRequestDto;
 import ca.mcgill.ecse321.gameshop.dto.PersonResponseDto;
 import ca.mcgill.ecse321.gameshop.model.Person;
@@ -38,8 +42,12 @@ public class PersonController {
      * @return All the people.
      */
     @GetMapping("/person")
-    public Iterable<Person> getAllPeople() {
-        return personService.getAllPeople();
+    public PersonListDto getAllPeople() {
+        List<PersonResponseDto> people = new ArrayList<>();
+        for (Person p: personService.getAllPeople()) {
+            people.add(new PersonResponseDto(p));
+        }
+        return new PersonListDto(people);
     }
     
     /**

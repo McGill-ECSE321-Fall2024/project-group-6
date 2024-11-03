@@ -1,5 +1,8 @@
 package ca.mcgill.ecse321.gameshop.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,7 +12,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import ca.mcgill.ecse321.gameshop.dto.GuestDto;
+import ca.mcgill.ecse321.gameshop.dto.GuestListDto;
+import ca.mcgill.ecse321.gameshop.dto.GuestRequestDto;
+import ca.mcgill.ecse321.gameshop.dto.GuestResponseDto;
 import ca.mcgill.ecse321.gameshop.model.Guest;
 import ca.mcgill.ecse321.gameshop.service.GuestService;
 
@@ -20,30 +25,34 @@ public class GuestController {
     private GuestService guestService;
 
     @PostMapping("/guest")
-    public GuestDto createGuest(@RequestBody GuestDto guest) {
+    public GuestResponseDto createGuest(@RequestBody GuestRequestDto guest) {
         Guest g = guestService.createGuest();
-        return new GuestDto(g);
+        return new GuestResponseDto(g);
     }
 
     @GetMapping("/guest/{id}")
-    public GuestDto findGuestByID(@PathVariable int id) {
+    public GuestResponseDto findGuestByID(@PathVariable int id) {
         Guest g = guestService.findGuestByID(id);
-        return new GuestDto(g);
+        return new GuestResponseDto(g);
     }
     
     @GetMapping("/guest")
-    public Iterable<Guest> getAllGuests() {
-        return guestService.getAllGuests();
+    public GuestListDto getAllGuests() {
+        List<GuestResponseDto> guests = new ArrayList<>();
+        for (Guest g: guestService.getAllGuests()) {
+            guests.add(new GuestResponseDto(g));
+        }
+        return new GuestListDto(guests);
     }
 
     @PutMapping("/guest/{id}")
-    public GuestDto updateGuest(@PathVariable int id, @RequestBody GuestDto guest) {
+    public GuestResponseDto updateGuest(@PathVariable int id, @RequestBody GuestRequestDto guest) {
         Guest g = guestService.updateGuest(id);
-        return new GuestDto(g);
+        return new GuestResponseDto(g);
     }
 
     @DeleteMapping("/guest/{id}")
-    public void deleteGuest(@PathVariable int id, @RequestBody GuestDto guest) {
+    public void deleteGuest(@PathVariable int id, @RequestBody GuestRequestDto guest) {
         guestService.deleteGuest(id);
     }
 }
