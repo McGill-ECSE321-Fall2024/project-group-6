@@ -1,9 +1,10 @@
 package ca.mcgill.ecse321.gameshop.controller;
 
+import ca.mcgill.ecse321.gameshop.dto.ReviewRequestDto;
+import ca.mcgill.ecse321.gameshop.dto.ReviewResponseDto;
 import ca.mcgill.ecse321.gameshop.model.Review;
 import ca.mcgill.ecse321.gameshop.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,10 +21,11 @@ public class ReviewController {
      *
      * @return Return all reviews.
      */
-    @GetMapping
+    @GetMapping //IS THIS THE RIGHT RETURN TYPE
     public List<Review> getAllReviews() {
         return reviewService.getAllReviews();
     }
+
 
     /**
      * Return the review with the given ID.
@@ -32,10 +34,9 @@ public class ReviewController {
      * @return The review with the given ID.
      */
     @GetMapping("/{id}") //handles HTTP get requests to the review with a specific ID
-    public ResponseEntity<Review> getReviewById(@PathVariable int id) {
-        return reviewService.getReviewById(id)
-                .map(ResponseEntity::ok) //sent to the response body
-                .orElse(ResponseEntity.notFound().build());
+    public ReviewResponseDto getReviewById(@PathVariable int id) {
+        Review review = reviewService.getReviewById(id);
+        return new ReviewResponseDto(review);
     }
 
     /**
@@ -45,9 +46,10 @@ public class ReviewController {
      * @return The new review object.
      */
     @PostMapping("/addReview")
-    public Review createReview(@RequestBody Review review) {
+    public ReviewResponseDto createReview(@RequestBody ReviewRequestDto review) {
         //Logic to add the review to the DB
-        return reviewService.createReview(review); //no need to create a response entity because command will al
+        Review createdReview = new Review(review.getRating(), review.getComment(), review.getAmountOfLikes());
+        return new ReviewResponseDto(createdReview); //no need to create a response entity because command will al
     }
 
     /**
@@ -57,40 +59,19 @@ public class ReviewController {
      * @return The updated review with the given ID.
      */
     @PutMapping("/{id}")
-    public ResponseEntity<Review> updateReview(@PathVariable int id, @RequestBody Review reviewDetails) {
-        try {
-            Review updatedReview = reviewService.updateReview(id, reviewDetails);
-            return ResponseEntity.ok(updatedReview);
-        } catch (RuntimeException e) { //if this review id does not exist
-            return ResponseEntity.notFound().build();
-        }
+    public ReviewResponseDto updateReview(@PathVariable int id, @RequestBody Review reviewDetails) {
+        Review updatedReview = reviewService.updateReview(id, reviewDetails);
+        return new ReviewResponseDto(updatedReview);
     }
 
     /**
-     * Return the response entity of the review like.
-     *
-     * @param id the id of the review to like.
-     * @return The response entity of the review like.
-     */
-    @PutMapping("/{id}")
-    public ResponseEntity<Review> updateReviewLikes(@PathVariable int id){
-        try {
-            Review likedReview = reviewService.likeReview(id);
-            return ResponseEntity.ok(likedReview);
-        } catch (RuntimeException e) { //if this review id does not exist
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    /**
-     * Return the response entity of the review deletion.
+     * Return the response DTO of the review deletion.
      *
      * @param id the id of the review to delete.
-     * @return The response entity of the review deletion.
+     * @return The response DTO of the review deletion.
      */
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteReview(@PathVariable int id) {
+    @DeleteMapping("/{id}") //IS THIS THE RIGHT RETURN TYPE
+    public void deleteReview(@PathVariable int id) {
         reviewService.deleteReview(id);
-        return ResponseEntity.noContent().build();
     }
 }

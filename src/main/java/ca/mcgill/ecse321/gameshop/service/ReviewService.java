@@ -2,11 +2,12 @@ package ca.mcgill.ecse321.gameshop.service;
 
 import ca.mcgill.ecse321.gameshop.model.Review;
 import ca.mcgill.ecse321.gameshop.repository.ReviewRepository;
+import jakarta.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ReviewService {
@@ -14,18 +15,24 @@ public class ReviewService {
     @Autowired
     private ReviewRepository reviewRepository;
 
-    public List<Review> getAllReviews() {
-        return reviewRepository.findAll();
+    public List<Review> getAllReviews(){
+        return (List<Review>)reviewRepository.findAll();
     }
 
-    public Optional<Review> getReviewById(int id) {
-        return reviewRepository.findById(id);
+    public Review getReviewById(int id) {
+        Review review = reviewRepository.findReviewByReviewId(id);
+        if (review == null){
+            throw new IllegalArgumentException("There is no payment with ID" + id + ".");
+        }
+        return review;
     }
 
-    public Review createReview(Review review) {
-        return reviewRepository.save(review);
+    public Review createReview(Review.StarRating aRating, String aComment, int aAmountOfLikes) {
+        Review newReview = new Review(aRating,aComment,aAmountOfLikes);
+        return reviewRepository.save(newReview);
     }
 
+    @Transactional
     public Review updateReview(int id, Review reviewDetails) {
         Review review = reviewRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Review not found"));
@@ -34,12 +41,6 @@ public class ReviewService {
         review.setAmountOfLikes(reviewDetails.getAmountOfLikes());
         review.setReply(reviewDetails.getReply());
         return reviewRepository.save(review);
-    }
-
-    public void likeReview(int id) {
-        Review review = reviewRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Review not found"));
-        review.setRating(review.getAmountOfLikes() + 1);
     }
 
     public void deleteReview(int id) {
