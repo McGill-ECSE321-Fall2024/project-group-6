@@ -3,7 +3,9 @@ package ca.mcgill.ecse321.gameshop.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import ca.mcgill.ecse321.gameshop.model.Game;
 import ca.mcgill.ecse321.gameshop.model.Guest;
+import ca.mcgill.ecse321.gameshop.repository.GameRepository;
 import ca.mcgill.ecse321.gameshop.repository.GuestRepository;
 import jakarta.transaction.Transactional;
 
@@ -12,6 +14,8 @@ public class GuestService {
     // Inject GuestRepository dependency to interact with the database
     @Autowired
     private GuestRepository guestRepo;
+    @Autowired
+    private GameRepository gameRepo;
 
     // Create a new guest and save it to the repository
     @Transactional
@@ -45,5 +49,13 @@ public class GuestService {
     public void deleteGuest(int id) {
         Guest g = guestRepo.findGuestByGuestId(id);
         guestRepo.delete(g);
+    }
+
+    // Create a review for a game
+    @Transactional
+    public Guest addGame(int gameID, Guest aGuest) {
+        Game game = gameRepo.findGameByGameId(gameID);
+        aGuest.addGame(game);
+        return guestRepo.save(aGuest);
     }
 }
