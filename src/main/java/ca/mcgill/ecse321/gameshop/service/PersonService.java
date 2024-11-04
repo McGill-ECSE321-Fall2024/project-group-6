@@ -16,10 +16,6 @@ public class PersonService {
     // Create a new person and save it in the repository
     @Transactional
     public Person createPerson(String aUsername, String aEmail, String aPassword, String aPhone) {
-        if (aUsername == null || aEmail == null || aPassword == null || aPhone == null) {
-            throw new IllegalArgumentException("You can't enter a null value for those fields.");
-        }
-        
         Person p = new Person(aUsername, aEmail, aPassword, aPhone);
         return personRepo.save(p);
     }
@@ -46,10 +42,6 @@ public class PersonService {
     public Person updatePerson(int id, String aUsername, String aEmail, String aPassword, String aPhone) {
         Person p = personRepo.findPersonByUserId(id);
 
-        if (p == null) {
-            throw new IllegalArgumentException("Person with ID " + id + " does not exist.");
-        }
-
         p.setUsername(aUsername);
         p.setEmail(aEmail);
         p.setPassword(aPassword);
@@ -62,11 +54,6 @@ public class PersonService {
     @Transactional
     public void deletePerson(int id) {
         Person p = personRepo.findPersonByUserId(id);
-
-        if (p == null) {
-            throw new IllegalArgumentException("Person with ID " + id + " does not exist.");
-        }
-
         personRepo.delete(p);
     }
 }

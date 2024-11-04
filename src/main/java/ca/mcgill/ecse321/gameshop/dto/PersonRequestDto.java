@@ -1,12 +1,19 @@
 package ca.mcgill.ecse321.gameshop.dto;
 
 import ca.mcgill.ecse321.gameshop.model.Person;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
 public class PersonRequestDto {
     //Person Attributes
+    @NotBlank(message="Person name is required.")
     private String username;
+    @NotBlank(message = "Email address is required.")
+	@Email(message = "Invalid email address.")
     private String email;
+    @NotBlank(message="A phone number is required.")
     private String phone;
+    @NotBlank(message="A password is required.")
     private String password;
 
     public PersonRequestDto(Person person) {

@@ -28,12 +28,6 @@ public class GuestService {
     // Find a guest by their ID
     public Guest findGuestByID(int id) {
         Guest g = guestRepo.findGuestByGuestId(id);
-
-        // Throw an exception if no guest is found
-        if (g == null) {
-            throw new IllegalArgumentException("Guest with ID " + id + " does not exist.");
-        }
-
         return g;
     }
 
@@ -41,14 +35,8 @@ public class GuestService {
     @Transactional
     public Guest updateGuest(int id) {
         Guest g = guestRepo.findGuestByGuestId(id);
-
-        if (g == null) {
-            throw new IllegalArgumentException("Guest with ID " + id + " does not exist.");
-        }
-
         // Set the guest's ID to the one provided
         g.setGuestId(id);
-
         return guestRepo.save(g);
     }
 
@@ -56,11 +44,6 @@ public class GuestService {
     @Transactional
     public void deleteGuest(int id) {
         Guest g = guestRepo.findGuestByGuestId(id);
-
-        if (g == null) {
-            throw new IllegalArgumentException("Guest with ID " + id + " does not exist.");
-        }
-
         guestRepo.delete(g);
     }
 }
