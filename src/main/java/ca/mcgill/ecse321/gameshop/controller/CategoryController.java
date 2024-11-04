@@ -40,7 +40,7 @@ public class CategoryController {
         return new CategoryListDto(categories);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/categories")
     public void deleteCategory(@PathVariable int cId){
         categoryService.deleteCategory(cId);
     }

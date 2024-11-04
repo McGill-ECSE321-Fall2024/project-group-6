@@ -3,17 +3,10 @@ package ca.mcgill.ecse321.gameshop.dto;
 import ca.mcgill.ecse321.gameshop.model.Payment;
 
 public class CommandRequestDto {
-    private int id;
-    private String commandDate;
     private float total;
     private Payment payment;
 
-    public int getId(){
-        return id;
-    }
-    public String getCommandDate(){
-        return commandDate;
-    }
+
     public float getTotal(){
         return total;
     }

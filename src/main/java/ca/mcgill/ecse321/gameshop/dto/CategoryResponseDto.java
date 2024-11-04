@@ -25,6 +25,7 @@ public class CategoryResponseDto {
     public List<Game> getCategoryGames(){
         return games;
     }
+
     public void setName(String newName){
         this.name=newName;
     }
