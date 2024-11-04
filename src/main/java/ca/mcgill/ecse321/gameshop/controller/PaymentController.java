@@ -2,11 +2,13 @@ package ca.mcgill.ecse321.gameshop.controller;
 
 import ca.mcgill.ecse321.gameshop.dto.PaymentRequestDto;
 import ca.mcgill.ecse321.gameshop.dto.PaymentResponseDto;
+import ca.mcgill.ecse321.gameshop.dto.PaymentsResponseDto;
 import ca.mcgill.ecse321.gameshop.model.Payment;
 import ca.mcgill.ecse321.gameshop.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -44,7 +46,7 @@ public class PaymentController {
      *@param paymentId the id of the payment to delete.
      * @return The response DTO of the payment deletion.
      */
-    @DeleteMapping("/{paymentId}") //IS THIS THE RIGHT RETURN TYPE
+    @DeleteMapping("/{paymentId}")
     public void deletePayment(@PathVariable int paymentId) {
         paymentService.deletePayment(paymentId);
     }
@@ -66,10 +68,15 @@ public class PaymentController {
      *
      * @return Return all payments.
      */
-    @GetMapping //IS THIS RIGHT RETURN TYPE
-    public List<Payment> getAllPayments() {
+    @GetMapping
+    public PaymentsResponseDto getAllPayments() {
         List<Payment> payments = paymentService.getAllPayments();
-        return payments;
+        List<PaymentResponseDto> responseList = new ArrayList<>();
+        for (Payment p : payments){
+            PaymentResponseDto response = new PaymentResponseDto(p);
+            responseList.add(response);
+        }
+        return new PaymentsResponseDto(responseList);
     }
 
 }

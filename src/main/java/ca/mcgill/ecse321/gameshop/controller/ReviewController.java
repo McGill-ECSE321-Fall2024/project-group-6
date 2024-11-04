@@ -1,12 +1,12 @@
 package ca.mcgill.ecse321.gameshop.controller;
 
-import ca.mcgill.ecse321.gameshop.dto.ReviewRequestDto;
-import ca.mcgill.ecse321.gameshop.dto.ReviewResponseDto;
+import ca.mcgill.ecse321.gameshop.dto.*;
 import ca.mcgill.ecse321.gameshop.model.Review;
 import ca.mcgill.ecse321.gameshop.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -21,9 +21,15 @@ public class ReviewController {
      *
      * @return Return all reviews.
      */
-    @GetMapping //IS THIS THE RIGHT RETURN TYPE
-    public List<Review> getAllReviews() {
-        return reviewService.getAllReviews();
+    @GetMapping
+    public ReviewsResponseDto getAllReviews() {
+        List<Review> reviews = reviewService.getAllReviews();
+        List<ReviewResponseDto> responseList = new ArrayList<>();
+        for (Review r : reviews){
+            ReviewResponseDto response = new ReviewResponseDto(r);
+            responseList.add(response);
+        }
+        return new ReviewsResponseDto(responseList);
     }
 
 
