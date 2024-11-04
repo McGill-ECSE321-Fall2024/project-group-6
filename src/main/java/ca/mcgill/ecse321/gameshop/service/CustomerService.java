@@ -8,7 +8,6 @@ import ca.mcgill.ecse321.gameshop.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import ca.mcgill.ecse321.gameshop.model.Person;
 import jakarta.transaction.Transactional;
 
 
@@ -16,8 +15,6 @@ public class CustomerService {
 
     @Autowired
     private CustomerRepository customerrepo;
-    @Autowired
-    private CategoryRepository catrepo;
     @Autowired
     private GameRepository gamerepo;
     @Autowired
