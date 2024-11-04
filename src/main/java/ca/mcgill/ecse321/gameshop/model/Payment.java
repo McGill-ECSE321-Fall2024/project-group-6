@@ -52,13 +52,13 @@ public class Payment
     commands = new ArrayList<Command>();
 
   }
-  public Payment(String aBillingAddress, int aCreditCardNb, String aExpirationDate, int aCvc, int aPaymentId, Customer aCustomer)
+  public Payment(String aBillingAddress, int aCreditCardNb, String aExpirationDate, int aCvc,  Customer aCustomer)
   {
     billingAddress = aBillingAddress;
     creditCardNb = aCreditCardNb;
     expirationDate = aExpirationDate;
     cvc = aCvc;
-    paymentId = aPaymentId;
+   // paymentId = aPaymentId;
     boolean didAddCustomer = setCustomer(aCustomer);
     if (!didAddCustomer)
     {
@@ -286,4 +286,5 @@ public class Payment
             "paymentId" + ":" + getPaymentId()+ "]" + System.getProperties().getProperty("line.separator") +
             "  " + "customer = "+(getCustomer()!=null?Integer.toHexString(System.identityHashCode(getCustomer())):"null");
   }
+
 }
