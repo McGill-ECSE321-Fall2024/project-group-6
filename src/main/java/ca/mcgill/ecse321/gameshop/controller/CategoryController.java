@@ -1,11 +1,15 @@
 package ca.mcgill.ecse321.gameshop.controller;
 
+import ca.mcgill.ecse321.gameshop.dto.CategoryListDto;
 import ca.mcgill.ecse321.gameshop.dto.CategoryRequestDto;
 import ca.mcgill.ecse321.gameshop.dto.CategoryResponseDto;
 import ca.mcgill.ecse321.gameshop.model.Category;
 import ca.mcgill.ecse321.gameshop.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 public class CategoryController {
@@ -28,8 +32,12 @@ public class CategoryController {
     }
 
     @GetMapping("/categories")
-    public Iterable<Category> getAllCategories(@PathVariable int cId){
-        return categoryService.getAllCategories();
+    public CategoryListDto getAllCategories(@PathVariable int cId){
+        List<CategoryResponseDto> categories = new ArrayList<>();
+        for (Category c: categoryService.getAllCategories()){
+            categories.add(new CategoryResponseDto(c));
+        }
+        return new CategoryListDto(categories);
     }
 
     @DeleteMapping
