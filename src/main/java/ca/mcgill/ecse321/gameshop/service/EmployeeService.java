@@ -40,7 +40,7 @@ public class EmployeeService {
     @Transactional
     public Game addGameWithApproval(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL, Category allCategories) {
         boolean tobeAdded = false; // Manager approval is missing so game is added to DB but not shown to users
-        Game game = new Game(aName,aDescription,aPrice,aStockQuantity,aPhotoURL,tobeAdded,allCategories);
+        Game game = new Game(aName,aDescription,aPrice,aStockQuantity,aPhotoURL);
         return gamerepo.save(game);
     }
 

@@ -14,7 +14,7 @@ import jakarta.transaction.Transactional;
 public class CustomerService {
 
     @Autowired
-    private CustomerRepository customerrepo;
+    private CustomerRepository customerRepo;
     @Autowired
     private GameRepository gamerepo;
     @Autowired
@@ -72,10 +72,10 @@ public class CustomerService {
 
     // Create a review for a game
     @Transactional
-    public Review createReview(int gameId, Review.StarRating aRating, String aComment, int aAmountOfLikes) {
-        Game game = gamerepo.findGameByGameId(gameId);
-        Review review = new Review(aRating, aComment,aAmountOfLikes);
-        return reviewrepo.save(review);
+    public Customer createReview(int reviewID,Customer aCustomer) {
+        Review review = reviewrepo.findReviewByReviewId(reviewID);
+        aCustomer.addReview(review);
+        return customerRepo.save(aCustomer);
     }
 
 }
