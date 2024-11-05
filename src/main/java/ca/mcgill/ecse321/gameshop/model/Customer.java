@@ -32,7 +32,8 @@ public class Customer extends Role
   private List<Review> reviews;
   @OneToMany
   private List<Payment> payments;
-
+  @OneToMany
+  private List<Command> commands;
   //------------------------
   // CONSTRUCTOR
   //------------------------
@@ -45,6 +46,7 @@ public Customer(){
     shippingAddress = aShippingAddress;
     reviews = new ArrayList<Review>();
     payments = new ArrayList<Payment>();
+    commands = new ArrayList<Command>();
   }
   public Customer( Person aPerson, String aShippingAddress, List<Game> aWishlist, List<Game> aCart)
   {
@@ -54,6 +56,7 @@ public Customer(){
     cart = aCart;
     reviews = new ArrayList<Review>();
     payments = new ArrayList<Payment>();
+    commands = new ArrayList<Command>();
   }
 
   //------------------------
@@ -158,6 +161,33 @@ public Customer(){
     int index = payments.indexOf(aPayment);
     return index;
   }
+
+  public Command getCommand(int index)
+  {
+    Command aCommand = commands.get(index);
+    return aCommand;
+  }
+  public List<Command> getCommands()
+  {
+    List<Command> newCommands = Collections.unmodifiableList(commands);
+    return newCommands;
+  }
+  public int numberOfCommands()
+  {
+    int number = commands.size();
+    return number;
+  }
+  public boolean hasCommands()
+  {
+    boolean has = commands.size() > 0;
+    return has;
+  }
+  public int indexOfCommand(Command aCommand)
+  {
+    int index = commands.indexOf(aCommand);
+    return index;
+  }
+
   /* Code from template association_MinimumNumberOfMethod */
   public static int minimumNumberOfReviews()
   {
@@ -236,9 +266,9 @@ public Customer(){
     return 0;
   }
   /* Code from template association_AddManyToOne */
-  public Payment addPayment(String aBillingAddress, int aCreditCardNb, String aExpirationDate, int aCvc, int aPaymentId, Command aCommand)
+  public Payment addPayment(String aBillingAddress, int aCreditCardNb, String aExpirationDate, int aCvc)
   {
-    return new Payment(aBillingAddress, aCreditCardNb, aExpirationDate, aCvc,  this, aCommand);
+    return new Payment(aBillingAddress, aCreditCardNb, aExpirationDate, aCvc);
   }
 
   public boolean addPayment(Payment aPayment)
@@ -303,6 +333,76 @@ public Customer(){
     return wasAdded;
   }
 
+  /* Code from template association_MinimumNumberOfMethod */
+  public static int minimumNumberOfCommands()
+  {
+    return 0;
+  }
+  /* Code from template association_AddManyToOne */
+  public Command addCommand( String aCommandDate, float aTotalPrice)
+  {
+    return new Command( aCommandDate, aTotalPrice, this);
+  }
+  public boolean addCommand(Command aCommand)
+  {
+    boolean wasAdded = false;
+    if (commands.contains(aCommand)) { return false; }
+    Customer existingCustomer = aCommand.getCustomer();
+    boolean isNewCustomer = existingCustomer != null && !this.equals(existingCustomer);
+    if (isNewCustomer)
+    {
+      aCommand.setCustomer(this);
+    }
+    else
+    {
+      commands.add(aCommand);
+    }
+    wasAdded = true;
+    return wasAdded;
+  }
+  public boolean removeCommand(Command aCommand)
+  {
+    boolean wasRemoved = false;
+    //Unable to remove aCommand, as it must always have a customer
+    if (!this.equals(aCommand.getCustomer()))
+    {
+      commands.remove(aCommand);
+      wasRemoved = true;
+    }
+    return wasRemoved;
+  }
+  /* Code from template association_AddIndexControlFunctions */
+  public boolean addCommandAt(Command aCommand, int index)
+  {
+    boolean wasAdded = false;
+    if(addCommand(aCommand))
+    {
+      if(index < 0 ) { index = 0; }
+      if(index > numberOfCommands()) { index = numberOfCommands() - 1; }
+      commands.remove(aCommand);
+      commands.add(index, aCommand);
+      wasAdded = true;
+    }
+    return wasAdded;
+  }
+  public boolean addOrMoveCommandAt(Command aCommand, int index)
+  {
+    boolean wasAdded = false;
+    if(commands.contains(aCommand))
+    {
+      if(index < 0 ) { index = 0; }
+      if(index > numberOfCommands()) { index = numberOfCommands() - 1; }
+      commands.remove(aCommand);
+      commands.add(index, aCommand);
+      wasAdded = true;
+    }
+    else
+    {
+      wasAdded = addCommandAt(aCommand, index);
+    }
+    return wasAdded;
+  }
+
   public void delete()
   {
     for(int i=reviews.size(); i > 0; i--)
@@ -314,6 +414,11 @@ public Customer(){
     {
       Payment aPayment = payments.get(i - 1);
       aPayment.delete();
+    }
+    for(int i=commands.size(); i > 0; i--)
+    {
+      Command aCommand = commands.get(i - 1);
+      aCommand.delete();
     }
     super.delete();
   }

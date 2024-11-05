@@ -21,7 +21,7 @@ public class Employee extends Role
   //------------------------
 
   //Employee Attributes
-  private String assignedTasks;
+  private List <String> assignedTasks;
   private boolean activated;
 
   //Employee Associations
@@ -34,9 +34,9 @@ public class Employee extends Role
 public Employee(){
 
 }
-  public Employee( Person aPerson, String aAssignedTasks)
+  public Employee( Person aPerson, List<String> aAssignedTasks)
   {
-    super( aPerson);
+    super(aPerson);
     assignedTasks = aAssignedTasks;
     created = new ArrayList<Game>();
   }
@@ -47,9 +47,9 @@ public Employee(){
     activated = aActivated;
     created = new ArrayList<Game>();
   }
-  public Employee( Person aPerson, String aAssignedTasks, boolean aActivated)
+  public Employee( Person aPerson, List<String> aAssignedTasks, boolean aActivated)
   {
-    super( aPerson);
+    super(aPerson);
     assignedTasks = aAssignedTasks;
     activated = aActivated;
     created = new ArrayList<Game>();
@@ -59,13 +59,14 @@ public Employee(){
   // INTERFACE
   //------------------------
 
-  public boolean setAssignedTasks(String aAssignedTasks)
+  public boolean setAssignedTasks(List<String> aAssignedTasks)
   {
     boolean wasSet = false;
     assignedTasks = aAssignedTasks;
     wasSet = true;
     return wasSet;
   }
+
 
   public boolean setActivated(boolean aActivated)
   {
@@ -75,7 +76,7 @@ public Employee(){
     return wasSet;
   }
 
-  public String getAssignedTasks()
+  public List<String> getAssignedTasks()
   {
     return assignedTasks;
   }
@@ -203,10 +204,11 @@ public Employee(){
   }
 
 
+
   public String toString()
   {
     return super.toString() + "["+
-            "assignedTasks" + ":" + getAssignedTasks()+ "," +
-            "activated" + ":" + getActivated()+ "]";
+            "activated" + ":" + getActivated()+ "]" + System.getProperties().getProperty("line.separator") +
+            "  " + "assignedTasks" + "=" + (getAssignedTasks() != null ? !getAssignedTasks().equals(this)  ? getAssignedTasks().toString().replaceAll("  ","    ") : "this" : "null");
   }
 }
