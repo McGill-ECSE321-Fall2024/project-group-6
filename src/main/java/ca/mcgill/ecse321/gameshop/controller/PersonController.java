@@ -44,9 +44,11 @@ public class PersonController {
     @GetMapping("/person")
     public PersonListDto getAllPeople() {
         List<PersonResponseDto> people = new ArrayList<>();
+
         for (Person p: personService.getAllPeople()) {
             people.add(new PersonResponseDto(p));
         }
+        
         return new PersonListDto(people);
     }
     
@@ -81,7 +83,7 @@ public class PersonController {
      * @return void.
      */
     @DeleteMapping("/person/{id}")
-    public void deletePerson(@PathVariable int id, @RequestBody PersonRequestDto person) {
+    public void deletePerson(@PathVariable int id) {
         personService.deletePerson(id);
     }
 }

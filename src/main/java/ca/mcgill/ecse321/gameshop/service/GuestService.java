@@ -49,6 +49,11 @@ public class GuestService {
     @Transactional
     public Guest updateGuest(int id) {
         Guest g = guestRepo.findGuestByGuestId(id);
+
+        if (g == null) {
+            throw new RuntimeException("Guest with ID " + id + "does not exist.");
+        }
+        
         return guestRepo.save(g);
     }
 
@@ -57,7 +62,6 @@ public class GuestService {
     public void deleteGuest(int id) {
         Guest g = guestRepo.findGuestByGuestId(id);
 
-        // Exception if no guest is found
         if (g == null) {
             throw new RuntimeException("Guest with ID " + id + "does not exist.");
         }

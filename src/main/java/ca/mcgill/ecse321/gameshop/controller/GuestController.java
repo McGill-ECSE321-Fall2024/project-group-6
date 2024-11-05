@@ -39,9 +39,11 @@ public class GuestController {
     @GetMapping("/guest")
     public GuestListDto getAllGuests() {
         List<GuestResponseDto> guests = new ArrayList<>();
+
         for (Guest g: guestService.getAllGuests()) {
             guests.add(new GuestResponseDto(g));
         }
+        
         return new GuestListDto(guests);
     }
 
@@ -52,7 +54,7 @@ public class GuestController {
     }
 
     @DeleteMapping("/guest/{id}")
-    public void deleteGuest(@PathVariable int id, @RequestBody GuestRequestDto guest) {
+    public void deleteGuest(@PathVariable int id) {
         guestService.deleteGuest(id);
     }
 }

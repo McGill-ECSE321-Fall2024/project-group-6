@@ -45,9 +45,11 @@ public class CustomerController {
     @GetMapping("/customer")
     public CustomerListDto getAllCustomers() {
         List<CustomerResponseDto> customers = new ArrayList<>();
+
         for (Customer c: customerService.getAllCustomers()) {
             customers.add(new CustomerResponseDto(c));
         }
+        
         return new CustomerListDto(customers);
     }
 
@@ -83,7 +85,7 @@ public class CustomerController {
      * @return void.
      */
     @DeleteMapping("/customer/{id}")
-    public void deleteCustomer(@PathVariable int id, @RequestBody CustomerRequestDto customer) {
+    public void deleteCustomer(@PathVariable int id) {
         customerService.deleteCustomer(id);
     }
 }

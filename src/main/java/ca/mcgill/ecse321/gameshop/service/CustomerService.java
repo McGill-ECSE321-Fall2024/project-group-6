@@ -44,7 +44,6 @@ public class CustomerService {
     public Customer updateCustomer(int id, Person aPerson, String aShippingAddress) {
         Customer c = customerRepo.findCustomerByRoleId(id);
 
-        // Exception if no customer is found
         if (c == null) {
             throw new RuntimeException("Customer with ID " + id + "does not exist.");
         }
@@ -60,7 +59,6 @@ public class CustomerService {
     public void deleteCustomer(int id) {
         Customer c = customerRepo.findCustomerByRoleId(id);
 
-        // Exception if no customer is found
         if (c == null) {
             throw new RuntimeException("Customer with ID " + id + "does not exist.");
         }

@@ -42,7 +42,6 @@ public class PersonService {
     public Person updatePerson(int id, String aUsername, String aEmail, String aPassword, String aPhone) {
         Person p = personRepo.findPersonByUserId(id);
 
-        // Throw an exception if no person is found
         if (p == null) {
             throw new IllegalArgumentException("Person with ID " + id + " does not exist.");
         }
@@ -60,7 +59,6 @@ public class PersonService {
     public void deletePerson(int id) {
         Person p = personRepo.findPersonByUserId(id);
 
-        // Throw an exception if no person is found
         if (p == null) {
             throw new IllegalArgumentException("Person with ID " + id + " does not exist.");
         }
