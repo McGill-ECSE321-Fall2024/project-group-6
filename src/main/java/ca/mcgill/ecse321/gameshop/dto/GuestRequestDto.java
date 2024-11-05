@@ -3,7 +3,6 @@ package ca.mcgill.ecse321.gameshop.dto;
 import java.util.List;
 
 import ca.mcgill.ecse321.gameshop.model.Game;
-import ca.mcgill.ecse321.gameshop.model.Guest;
 import jakarta.validation.constraints.NotBlank;
 
 public class GuestRequestDto {
@@ -14,8 +13,8 @@ public class GuestRequestDto {
     private GuestRequestDto() {
     }
 
-    public GuestRequestDto(Guest guest) {
-        this.games = guest.getGames();
+    public GuestRequestDto(List<Game> games) {
+        this.games = games;
     }
 
     public List<Game> getGames() {

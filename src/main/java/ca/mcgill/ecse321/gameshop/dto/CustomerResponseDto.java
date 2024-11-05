@@ -1,44 +1,64 @@
 package ca.mcgill.ecse321.gameshop.dto;
 
-import java.util.List;
 import ca.mcgill.ecse321.gameshop.model.Customer;
-import ca.mcgill.ecse321.gameshop.model.Game;
 
 public class CustomerResponseDto {
+    private String shippingAddress;
+    private String username;
+    private String email;
+    private String phone;
     private int customerId;
-    private List<Game> wishlistGames;
-    private List<Game> cartGames;
 
-    @SuppressWarnings("unused") // default constructor is needed but does not need to be public
+    // Jackson needs a default constructor, but it doesn't need to be public
+    @SuppressWarnings("unused")
+    private CustomerResponseDto() {
+    }
 
     public CustomerResponseDto(Customer customer) {
         this.customerId = customer.getRoleId();
-        this.wishlistGames = customer.getWishlist().getGames();
-        this.cartGames = customer.getCart().getGames();
+        this.username = customer.getPerson().getUsername();
+        this.email = customer.getPerson().getEmail();
+        this.phone = customer.getPerson().getPhone();
+        this.shippingAddress = customer.getShippingAddress();
+    }
+
+    public String getShippingAddress() {
+        return shippingAddress;
+    }
+    
+    public String getUsername() {
+        return username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPhone() {
+        return phone;
     }
 
     public int getCustomerId() {
         return customerId;
     }
 
+    public void setShippingAddress(String shippingAddress) {
+        this.shippingAddress = shippingAddress;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
     public void setCustomerId(int id) {
         this.customerId = id;
     }
-
-    public List<Game> getWishlistGames() {
-        return wishlistGames;
-    }
-
-    public void setWishlistGames(List<Game> wishlistGames) {
-        this.wishlistGames = wishlistGames;
-    }
-
-    public List<Game> getCartGames() {
-        return cartGames;
-    }
-
-    public void setCartGames(List<Game> cartGames) {
-        this.cartGames = cartGames;
-    }
-
 }

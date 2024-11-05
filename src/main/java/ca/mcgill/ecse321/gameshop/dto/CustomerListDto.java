@@ -16,5 +16,4 @@ public class CustomerListDto {
     public void setCustomers(List<CustomerResponseDto> customers) {
         this.customers = customers;
     }
-
 }

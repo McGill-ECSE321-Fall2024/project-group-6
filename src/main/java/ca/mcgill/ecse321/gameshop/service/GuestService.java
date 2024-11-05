@@ -36,6 +36,12 @@ public class GuestService {
     // Find a guest by their ID
     public Guest findGuestByID(int id) {
         Guest g = guestRepo.findGuestByGuestId(id);
+
+        // Exception if no guest is found
+        if (g == null) {
+            throw new RuntimeException("Guest with ID " + id + "does not exist.");
+        }
+
         return g;
     }
 
@@ -43,8 +49,6 @@ public class GuestService {
     @Transactional
     public Guest updateGuest(int id) {
         Guest g = guestRepo.findGuestByGuestId(id);
-        // Set the guest's ID to the one provided
-        g.setGuestId(id);
         return guestRepo.save(g);
     }
 
@@ -52,14 +56,12 @@ public class GuestService {
     @Transactional
     public void deleteGuest(int id) {
         Guest g = guestRepo.findGuestByGuestId(id);
-        guestRepo.delete(g);
-    }
 
-    // Create a review for a game
-    @Transactional
-    public Guest addGame(int gameID, Guest aGuest) {
-        Game game = gameRepo.findGameByGameId(gameID);
-        aGuest.addGame(game);
-        return guestRepo.save(aGuest);
+        // Exception if no guest is found
+        if (g == null) {
+            throw new RuntimeException("Guest with ID " + id + "does not exist.");
+        }
+
+        guestRepo.delete(g);
     }
 }

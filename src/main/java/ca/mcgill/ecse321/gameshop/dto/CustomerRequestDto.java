@@ -1,33 +1,70 @@
 package ca.mcgill.ecse321.gameshop.dto;
 
-import java.util.List;
-import ca.mcgill.ecse321.gameshop.model.Customer;
-import ca.mcgill.ecse321.gameshop.model.Game;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
 public class CustomerRequestDto {
+    @NotBlank(message="Customer address is required.")
+    private String shippingAddress;
+    @NotBlank(message="Person name is required.")
+    private String username;
+    @NotBlank(message = "Email address is required.")
+	@Email(message = "Invalid email address.")
+    private String email;
+    @NotBlank(message="A phone number is required.")
+    private String phone;
+    @NotBlank(message="A password is required.")
+    private String password;
 
-    private List<Game> wishlistGames;
-    private List<Game> cartGames;
-
-    public CustomerRequestDto(Customer customer) {
-        this.wishlistGames = customer.getWishlist().getGames();
-        this.cartGames = customer.getCart().getGames();
+    @SuppressWarnings("unused")
+    private CustomerRequestDto() {
     }
 
-    public List<Game> getCartGames() {
-        return cartGames;
+    public CustomerRequestDto(String shippingAddress, String username, String email, String phone, String password) {
+        this.shippingAddress = shippingAddress;
+        this.username = username;
+        this.email = email;
+        this.phone = phone;
+        this.password = password;
     }
 
-    public void setCartGames(List<Game> cartGames) {
-        this.cartGames = cartGames;
+    public String getShippingAddress() {
+        return shippingAddress;
     }
 
-    public List<Game> getWishlistGames() {
-        return wishlistGames;
+    public String getUsername() {
+        return username;
     }
 
-    public void setWishlistGames(List<Game> wishlistGames) {
-        this.wishlistGames = wishlistGames;
+    public String getEmail() {
+        return email;
     }
 
+    public String getPhone() {
+        return phone;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setShippingAddress(String shippingAddress) {
+        this.shippingAddress = shippingAddress;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }

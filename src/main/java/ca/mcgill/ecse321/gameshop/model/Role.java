@@ -3,10 +3,13 @@
 
 
 package ca.mcgill.ecse321.gameshop.model;
-import java.util.*;
-
-
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.ManyToOne;
 /**
  * Abstract Role class
  */
@@ -27,7 +30,7 @@ public abstract class Role
   private int roleId;
 
   //Role Associations
-  @ManyToOne
+  @ManyToOne(cascade = CascadeType.ALL)
   private Person person;
 
   //------------------------

@@ -37,10 +37,15 @@ public class PersonService {
         return p;
     }
 
-    // Update an existing person's details by ID
+    // Update an existing person by ID
     @Transactional
     public Person updatePerson(int id, String aUsername, String aEmail, String aPassword, String aPhone) {
         Person p = personRepo.findPersonByUserId(id);
+
+        // Throw an exception if no person is found
+        if (p == null) {
+            throw new IllegalArgumentException("Person with ID " + id + " does not exist.");
+        }
 
         p.setUsername(aUsername);
         p.setEmail(aEmail);
@@ -54,6 +59,12 @@ public class PersonService {
     @Transactional
     public void deletePerson(int id) {
         Person p = personRepo.findPersonByUserId(id);
+
+        // Throw an exception if no person is found
+        if (p == null) {
+            throw new IllegalArgumentException("Person with ID " + id + " does not exist.");
+        }
+        
         personRepo.delete(p);
     }
 }
