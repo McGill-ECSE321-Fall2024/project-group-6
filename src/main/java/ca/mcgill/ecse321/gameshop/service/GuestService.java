@@ -29,6 +29,10 @@ public class GuestService {
         return guestRepo.findAll();
     }
 
+    public Iterable<Game> getAllGames() {
+        return gameRepo.findAll();
+    }
+
     // Find a guest by their ID
     public Guest findGuestByID(int id) {
         Guest g = guestRepo.findGuestByGuestId(id);

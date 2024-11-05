@@ -16,6 +16,10 @@ public class PersonRequestDto {
     @NotBlank(message="A password is required.")
     private String password;
 
+    @SuppressWarnings("unused")
+    private PersonRequestDto() {
+    }
+
     public PersonRequestDto(Person person) {
         this.username = person.getUsername();
         this.email = person.getEmail();

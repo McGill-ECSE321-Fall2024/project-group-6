@@ -10,6 +10,10 @@ public class GuestRequestDto {
     @NotBlank(message="A list of games is required.")
     private List<Game> games;
 
+    @SuppressWarnings("unused")
+    private GuestRequestDto() {
+    }
+
     public GuestRequestDto(Guest guest) {
         this.games = guest.getGames();
     }
