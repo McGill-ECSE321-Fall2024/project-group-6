@@ -30,7 +30,7 @@ public class PersonController {
      * @param person The person to create.
      * @return The created person, including their ID.
      */
-    @PostMapping("/person")
+    @PostMapping("/people")
     public PersonResponseDto createPerson(@RequestBody PersonRequestDto person) {
         Person p = personService.createPerson(person.getUsername(), person.getEmail(), person.getPassword(), person.getPhone());
         return new PersonResponseDto(p);
@@ -41,7 +41,7 @@ public class PersonController {
      *
      * @return All the people.
      */
-    @GetMapping("/person")
+    @GetMapping("/people")
     public PersonListDto getAllPeople() {
         List<PersonResponseDto> people = new ArrayList<>();
         for (Person p: personService.getAllPeople()) {
@@ -56,7 +56,7 @@ public class PersonController {
      * @param id The primary key of the person to find.
      * @return The person with the given ID.
      */
-    @GetMapping("/person/{id}")
+    @GetMapping("/people/{id}")
     public PersonResponseDto getPersonByID(@PathVariable int id) {
         Person p = personService.getPersonByID(id);
         return new PersonResponseDto(p);
@@ -68,7 +68,7 @@ public class PersonController {
      * @param id The primary key of the person to find.
      * @return The updated person with the given ID.
      */
-    @PutMapping("/person/{id}")
+    @PutMapping("/people/{id}")
     public PersonResponseDto updatePerson(@PathVariable int id, @RequestBody PersonRequestDto person) {
         Person p = personService.updatePerson(id, person.getUsername(), person.getEmail(), person.getPhone(), person.getPassword());
         return new PersonResponseDto(p);
@@ -80,7 +80,7 @@ public class PersonController {
      * @param id The primary key of the person to find.
      * @return void.
      */
-    @DeleteMapping("/person/{id}")
+    @DeleteMapping("/people/{id}")
     public void deletePerson(@PathVariable int id, @RequestBody PersonRequestDto person) {
         personService.deletePerson(id);
     }
