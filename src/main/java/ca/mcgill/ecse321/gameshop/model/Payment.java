@@ -3,10 +3,11 @@
 
 
 package ca.mcgill.ecse321.gameshop.model;
-import java.util.*;
 
-
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 /**
  * Payment class
  */
@@ -33,8 +34,8 @@ public class Payment
   //Payment Associations
   @ManyToOne
   private Customer customer;
-  @OneToMany
-  private List<Command> commands;
+  @ManyToOne
+  private Command command;
 
   //------------------------
   // CONSTRUCTOR
@@ -49,22 +50,24 @@ public class Payment
     creditCardNb = aCreditCardNb;
     expirationDate = aExpirationDate;
     cvc = aCvc;
-    commands = new ArrayList<Command>();
 
   }
-  public Payment(String aBillingAddress, int aCreditCardNb, String aExpirationDate, int aCvc,  Customer aCustomer)
+  public Payment(String aBillingAddress, int aCreditCardNb, String aExpirationDate, int aCvc,  Customer aCustomer, Command aCommand)
   {
     billingAddress = aBillingAddress;
     creditCardNb = aCreditCardNb;
     expirationDate = aExpirationDate;
     cvc = aCvc;
-   // paymentId = aPaymentId;
     boolean didAddCustomer = setCustomer(aCustomer);
     if (!didAddCustomer)
     {
       throw new RuntimeException("Unable to create payment due to customer. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
     }
-    commands = new ArrayList<Command>();
+    boolean didAddCommand = setCommand(aCommand);
+    if (!didAddCommand)
+    {
+      throw new RuntimeException("Unable to create payment due to command. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
+    }
   }
 
   //------------------------
@@ -140,35 +143,10 @@ public class Payment
   {
     return customer;
   }
-  /* Code from template association_GetMany */
-  public Command getCommand(int index)
+  /* Code from template association_GetOne */
+  public Command getCommand()
   {
-    Command aCommand = commands.get(index);
-    return aCommand;
-  }
-
-  public List<Command> getCommands()
-  {
-    List<Command> newCommands = Collections.unmodifiableList(commands);
-    return newCommands;
-  }
-
-  public int numberOfCommands()
-  {
-    int number = commands.size();
-    return number;
-  }
-
-  public boolean hasCommands()
-  {
-    boolean has = commands.size() > 0;
-    return has;
-  }
-
-  public int indexOfCommand(Command aCommand)
-  {
-    int index = commands.indexOf(aCommand);
-    return index;
+    return command;
   }
   /* Code from template association_SetOneToMany */
   public boolean setCustomer(Customer aCustomer)
@@ -189,76 +167,24 @@ public class Payment
     wasSet = true;
     return wasSet;
   }
-  /* Code from template association_MinimumNumberOfMethod */
-  public static int minimumNumberOfCommands()
+  /* Code from template association_SetOneToMany */
+  public boolean setCommand(Command aCommand)
   {
-    return 0;
-  }
-  /* Code from template association_AddManyToOptionalOne */
-  public boolean addCommand(Command aCommand)
-  {
-    boolean wasAdded = false;
-    if (commands.contains(aCommand)) { return false; }
-    Payment existingPayment = aCommand.getPayment();
-    if (existingPayment == null)
+    boolean wasSet = false;
+    if (aCommand == null)
     {
-      aCommand.setPayment(this);
+      return wasSet;
     }
-    else if (!this.equals(existingPayment))
-    {
-      existingPayment.removeCommand(aCommand);
-      addCommand(aCommand);
-    }
-    else
-    {
-      commands.add(aCommand);
-    }
-    wasAdded = true;
-    return wasAdded;
-  }
 
-  public boolean removeCommand(Command aCommand)
-  {
-    boolean wasRemoved = false;
-    if (commands.contains(aCommand))
+    Command existingCommand = command;
+    command = aCommand;
+    if (existingCommand != null && !existingCommand.equals(aCommand))
     {
-      commands.remove(aCommand);
-      aCommand.setPayment(null);
-      wasRemoved = true;
+      existingCommand.removePayment(this);
     }
-    return wasRemoved;
-  }
-  /* Code from template association_AddIndexControlFunctions */
-  public boolean addCommandAt(Command aCommand, int index)
-  {
-    boolean wasAdded = false;
-    if(addCommand(aCommand))
-    {
-      if(index < 0 ) { index = 0; }
-      if(index > numberOfCommands()) { index = numberOfCommands() - 1; }
-      commands.remove(aCommand);
-      commands.add(index, aCommand);
-      wasAdded = true;
-    }
-    return wasAdded;
-  }
-
-  public boolean addOrMoveCommandAt(Command aCommand, int index)
-  {
-    boolean wasAdded = false;
-    if(commands.contains(aCommand))
-    {
-      if(index < 0 ) { index = 0; }
-      if(index > numberOfCommands()) { index = numberOfCommands() - 1; }
-      commands.remove(aCommand);
-      commands.add(index, aCommand);
-      wasAdded = true;
-    }
-    else
-    {
-      wasAdded = addCommandAt(aCommand, index);
-    }
-    return wasAdded;
+    command.addPayment(this);
+    wasSet = true;
+    return wasSet;
   }
 
   public void delete()
@@ -269,9 +195,11 @@ public class Payment
     {
       placeholderCustomer.removePayment(this);
     }
-    while( !commands.isEmpty() )
+    Command placeholderCommand = command;
+    this.command = null;
+    if(placeholderCommand != null)
     {
-      commands.get(0).setPayment(null);
+      placeholderCommand.removePayment(this);
     }
   }
 
@@ -284,7 +212,7 @@ public class Payment
             "expirationDate" + ":" + getExpirationDate()+ "," +
             "cvc" + ":" + getCvc()+ "," +
             "paymentId" + ":" + getPaymentId()+ "]" + System.getProperties().getProperty("line.separator") +
-            "  " + "customer = "+(getCustomer()!=null?Integer.toHexString(System.identityHashCode(getCustomer())):"null");
+            "  " + "customer = "+(getCustomer()!=null?Integer.toHexString(System.identityHashCode(getCustomer())):"null") + System.getProperties().getProperty("line.separator") +
+            "  " + "command = "+(getCommand()!=null?Integer.toHexString(System.identityHashCode(getCommand())):"null");
   }
-
 }
