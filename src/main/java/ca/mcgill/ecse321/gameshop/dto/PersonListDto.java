@@ -12,8 +12,4 @@ public class PersonListDto {
     public List<PersonResponseDto> getPeople() {
         return people;
     }
-
-    public void setPeople(List<PersonResponseDto> people) {
-        this.people = people;
-    }
 }

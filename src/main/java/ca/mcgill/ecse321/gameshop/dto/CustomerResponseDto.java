@@ -41,24 +41,4 @@ public class CustomerResponseDto {
     public int getCustomerId() {
         return customerId;
     }
-
-    public void setShippingAddress(String shippingAddress) {
-        this.shippingAddress = shippingAddress;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public void setCustomerId(int id) {
-        this.customerId = id;
-    }
 }

@@ -1,50 +1,67 @@
 package ca.mcgill.ecse321.gameshop.service;
 
-import ca.mcgill.ecse321.gameshop.model.Payment;
-import ca.mcgill.ecse321.gameshop.repository.PaymentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import jakarta.transaction.Transactional;
 
-import java.util.List;
+import ca.mcgill.ecse321.gameshop.model.Payment;
+import ca.mcgill.ecse321.gameshop.repository.PaymentRepository;
+import jakarta.transaction.Transactional;
 
 @Service
 public class PaymentService {
-
+    // Inject PaymentRepository to handle database operations
     @Autowired
-    private PaymentRepository paymentRepository;
+    private PaymentRepository paymentRepo;
 
+    // Create a new payment and save it in the repository
     @Transactional
-    public Payment createPayment(String aBillingAddress, int aCreditCardNb, String aExpirationDate, int aCvc, int aTotal) {
-        Payment newPayment = new Payment(aBillingAddress, aCreditCardNb, aExpirationDate, aCvc, aTotal);
-        return paymentRepository.save(newPayment);
+    public Payment createPayment(String aBillingAddress, int aCreditCardNb, String aExpirationDate, int aCvc) {
+        Payment p = new Payment(aBillingAddress, aCreditCardNb, aExpirationDate, aCvc);
+        return paymentRepo.save(p);
     }
 
-    public Payment updatePayment(int id, Payment paymentDetails) {
-        Payment payment = paymentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Review not found"));
-        payment.setBillingAddress(payment.getBillingAddress());
-        payment.setCreditCardNb(paymentDetails.getCreditCardNb());
-        payment.setExpirationDate(paymentDetails.getExpirationDate());
-        payment.setCvc(paymentDetails.getCvc());
-        payment.setTotal(payment.getTotal());
-        return paymentRepository.save(payment);
+    // Retrieve all payments from the repository
+    public Iterable<Payment> getAllPayments() {
+        return paymentRepo.findAll();
     }
 
-    public void deletePayment(int paymentId) {
-        paymentRepository.deleteById(paymentId);
-    }
+    // Find a payment by its id
+    public Payment getPaymentById(int id) {
+        Payment p = paymentRepo.findPaymentByPaymentId(id);
 
-    public Payment getPaymentById(int paymentId) {
-        Payment payment = paymentRepository.findPaymentByPaymentId(paymentId);
-        if (payment == null){
-            throw new IllegalArgumentException("There is no payment with ID" + paymentId + ".");
+        // Throw an exception if no payment is found
+        if (p == null){
+            throw new IllegalArgumentException("Payment with ID " + id + " does not exist.");
         }
-        return payment;
+
+        return p;
     }
 
-    public List<Payment> getAllPayments() {
-        return (List<Payment>) paymentRepository.findAll();
+    // Update an existing payment by ID
+    @Transactional
+    public Payment updatePayment(int id, String aBillingAddress, int aCreditCardNb, String aExpirationDate, int aCvc) {
+        Payment p = paymentRepo.findPaymentByPaymentId(id);
+
+        if (p == null){
+            throw new IllegalArgumentException("Payment with ID " + id + " does not exist.");
+        }
+
+        p.setBillingAddress(aBillingAddress);
+        p.setCreditCardNb(aCreditCardNb);
+        p.setExpirationDate(aExpirationDate);
+        p.setCvc(aCvc);
+        
+        return paymentRepo.save(p);
     }
 
+    // Delete a person by their id
+    public void deletePayment(int id) {
+        Payment p = paymentRepo.findPaymentByPaymentId(id);
+
+        if (p == null){
+            throw new IllegalArgumentException("Payment with ID " + id + " does not exist.");
+        }
+
+        paymentRepo.delete(p);
+    }
 }

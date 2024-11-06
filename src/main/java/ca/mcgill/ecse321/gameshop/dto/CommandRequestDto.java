@@ -18,8 +18,4 @@ public class CommandRequestDto {
     public float getTotal(){
         return total;
     }
-
-    public void setTotal(float total){
-        this.total = total;
-    }
 }

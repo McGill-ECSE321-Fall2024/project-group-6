@@ -12,8 +12,4 @@ public class GuestListDto {
     public List<GuestResponseDto> getGuests() {
         return guests;
     }
-
-    public void setGuests(List<GuestResponseDto> guests) {
-        this.guests = guests;
-    }
 }

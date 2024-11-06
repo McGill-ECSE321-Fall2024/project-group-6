@@ -30,8 +30,4 @@ public class CommandResponseDto {
     public float getTotal(){
         return total;
     }
-
-    public void setTotal(float total){
-        this.total = total;
-    }
 }

@@ -26,12 +26,4 @@ public class GuestResponseDto {
     public List<Game> getGames() {
         return games;
     }
-
-    public void setUserId(int id) {
-        this.guestId = id;
-    }
-
-    public void setGames(List<Game> games) {
-        this.games = games;
-    }
 }
