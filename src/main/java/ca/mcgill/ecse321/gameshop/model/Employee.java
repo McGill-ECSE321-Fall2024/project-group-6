@@ -126,9 +126,9 @@ public Employee(){
     return 0;
   }
   /* Code from template association_AddManyToOne */
-  public Game addCreated(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL, int aGameId, boolean aToBeAdded, boolean aToBeRemoved, Manager aManager, Category... allCategories)
+  public Game addCreated(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL)
   {
-    return new Game(aName, aDescription, aPrice, aStockQuantity, aPhotoURL,  aToBeAdded, aToBeRemoved, aManager, this, allCategories);
+    return new Game(aName, aDescription, aPrice, aStockQuantity, aPhotoURL);
   }
 
   public boolean addCreated(Game aCreated)

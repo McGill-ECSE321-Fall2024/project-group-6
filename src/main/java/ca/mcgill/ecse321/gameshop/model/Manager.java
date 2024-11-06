@@ -182,9 +182,9 @@ public Manager(){
     return 0;
   }
   /* Code from template association_AddManyToOne */
-  public Game addGame(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL, int aGameId, boolean aToBeAdded, boolean aToBeRemoved, Employee aCreator, Category... allCategories)
+  public Game addGame(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL)
   {
-    return new Game(aName, aDescription, aPrice, aStockQuantity, aPhotoURL, aToBeAdded, aToBeRemoved, this, aCreator, allCategories);
+    return new Game(aName, aDescription, aPrice, aStockQuantity, aPhotoURL);
   }
 
   public boolean addGame(Game aGame)

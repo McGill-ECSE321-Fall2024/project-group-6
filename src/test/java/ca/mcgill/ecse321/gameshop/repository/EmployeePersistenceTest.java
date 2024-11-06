@@ -35,13 +35,13 @@ public class EmployeePersistenceTest {
         personRepo.deleteAll();
     }
 
-  @Test
+    @Test
     public void testCreateAndReadEmployee() {
 
         Person person = new Person("johndoe", "joseph.roustom@mail.mcgill.ca", "password123", "555-1234");
         person = personRepo.save(person);
 
-        String task ="Add a game to the store";
+        //String task ="Add a game to the store";
         Employee employee = new Employee(person,true);
         employee = employeeRepo.save(employee);
         Employee employeeFromDB = employeeRepo.findEmployeeByRoleId(employee.getRoleId());

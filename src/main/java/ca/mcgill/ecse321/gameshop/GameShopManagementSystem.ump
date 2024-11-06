@@ -21,10 +21,9 @@ class Customer {
   isA Role;
   shippingAddress;
   List<Game>  wishlist;
-   List<Game>  cart;
   1 -- * Review;
   1 -- * Payment;
-
+  * -- * Game gameCart;
 }
 
 // Employee class extending Role
@@ -47,7 +46,8 @@ class Command {
   int commandId;
   String commandDate;
   float totalPrice;
-  1 -- * Payment;
+  * -- 0..1 Payment;
+  * -- 1 Customer;
 }
 
 // Guest class
