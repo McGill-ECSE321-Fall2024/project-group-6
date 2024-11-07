@@ -23,7 +23,7 @@ To run the tests:
 2) Go to the resources folder and open the application.properties document.
 3) You can either create a database with the specified name on the specified port or change the properties any way that suits you.
    
-Table 1 : Roles of each team member : <br/>
+Table 1 : Roles of each team member Deliverable 1: <br/>
 | **Name**    | **Role**                                            | **Number of Hours** |
 |-------------|-----------------------------------------------------|---------------------|
 | Laurence    | Creating the README file                            | 2                   |
@@ -53,3 +53,35 @@ Table 1 : Roles of each team member : <br/>
 |             | Conception of the Use Case Diagrams                 | 1.5                 |
 |             | Write test cases (Persistence layer)                | 3                   |
 |             | Installing the personal PostgreSQL                   | 0.5                 |
+
+Table 2 : Roles of each team member Deliverable 2: <br/>
+| **Name**    | **Role**                                            | **Number of Hours** |
+|-------------|-----------------------------------------------------|---------------------|
+| Laurence    | RESTful API methods for Game and Role               |                    |
+|             | README file update                                  |                    |
+|             | Unit tests for Game and Role                        |                  |
+|             |                                                     |                |
+|             |                                                      |                    |
+| Annabelle   | Software Quality Assurance Plan                     |                    |
+|             | Unit tests for Payment and Review                    |                 |
+|             | RESTful API methods for Payment and Review           |                   |
+|             |                                                      |                  |
+| Marine      | RESTful API methods for Employee and Customer        |                   |
+|             | Software Quality Assurance Plan                      |                  |
+|             |                                                      |                  |
+|             |                                                      |                   |
+|             |                                                      |                  |
+| Maissa      | RESTful API methods for Command and Category         |                    |
+|             | Unit tests for Command and Category                  |                  |
+|             |                                                      |                 |
+|             |                                                      |                  |
+| Joseph      | RESTful API methods for Manager                      |                 |
+|             | Unit tests for Manager, Employee and Customer        |                  |
+|             |                                                      |                    |
+|             |                                                      |                    |
+|             |                                                      |                 |
+| Mario       | RESTful API methods for Person and Guest             |                  |
+|             | Unit tests for Person and Guest                      |                  |
+|             |                                                      |                    |
+|             |                                                      |                  |
+
