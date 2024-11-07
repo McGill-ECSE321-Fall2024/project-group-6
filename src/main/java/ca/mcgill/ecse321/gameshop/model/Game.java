@@ -45,16 +45,7 @@ public class Game
   private List<Guest> guests;
   @ManyToMany
   private List<Category> categories;
-  /*
-  @OneToMany
-  private List<Review> reviews;
-  @ManyToOne
-  private Manager manager;
-  @ManyToOne
-  private Employee creator;
-  @ManyToMany
-  private List<Category> categories;
-*/
+
   //------------------------
   // CONSTRUCTOR
   //------------------------
@@ -74,9 +65,9 @@ public Game(){
     categories = new ArrayList<Category>();
 
   }
-
-  public Game(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,  boolean aToBeAdded, boolean aToBeRemoved, Manager aManager, Employee aCreator, Category... allCategories)
+  public Game(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,  boolean aToBeAdded, boolean aToBeRemoved, float aPromotion, Category... allCategories)
   {
+    //aName, aDescription, aPrice, aStockQuantity, aPhotoURL,  aToBeAdded, aToBeRemoved, aManager, this, allCategories
     name = aName;
     description = aDescription;
     price = aPrice;
@@ -84,6 +75,30 @@ public Game(){
     photoURL = aPhotoURL;
     toBeAdded = aToBeAdded;
     toBeRemoved = aToBeRemoved;
+    promotion=aPromotion;
+    reviews = new ArrayList<Review>();
+
+    boolean didAddCategories = setCategories(allCategories);
+    if (!didAddCategories)
+    {
+      throw new RuntimeException("Unable to create Game, must have at least 1 categories. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
+    }
+    guests = new ArrayList<Guest>();
+    categories = new ArrayList<Category>();
+
+  }
+
+  public Game(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,  boolean aToBeAdded, boolean aToBeRemoved, float aPromotion, Manager aManager, Employee aCreator, Category... allCategories)
+  {
+    //aName, aDescription, aPrice, aStockQuantity, aPhotoURL,  aToBeAdded, aToBeRemoved, aManager, this, allCategories
+    name = aName;
+    description = aDescription;
+    price = aPrice;
+    stockQuantity = aStockQuantity;
+    photoURL = aPhotoURL;
+    toBeAdded = aToBeAdded;
+    toBeRemoved = aToBeRemoved;
+    promotion=aPromotion;
     reviews = new ArrayList<Review>();
     boolean didAddManager = setManager(aManager);
     if (!didAddManager)
@@ -244,6 +259,7 @@ public Game(String aName, String aDescription, float aPrice, int aStockQuantity,
   {
     return promotion;
   }
+
   /* Code from template attribute_IsBoolean */
   public boolean isToBeAdded()
   {

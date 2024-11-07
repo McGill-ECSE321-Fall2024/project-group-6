@@ -1,5 +1,8 @@
 package ca.mcgill.ecse321.gameshop.repository;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -32,17 +35,20 @@ public class EmployeePersistenceTest {
         personRepo.deleteAll();
     }
 
-  @Test
+    @Test
     public void testCreateAndReadEmployee() {
 
         Person person = new Person("johndoe", "joseph.roustom@mail.mcgill.ca", "password123", "555-1234");
         person = personRepo.save(person);
-
-        String task ="Add a game to the store";
-        Employee employee = new Employee(person,true);
+        List <String> tasks= new ArrayList<>();
+        tasks.add("hey");
+        tasks.add("bye");
+        //String task ="Add a game to the store";
+        Employee employee = new Employee(person,tasks);
         employee = employeeRepo.save(employee);
         Employee employeeFromDB = employeeRepo.findEmployeeByRoleId(employee.getRoleId());
         assertNotNull(employeeFromDB);
-        assertEquals(employeeFromDB.getActivated(),true);
+        assertEquals(employeeFromDB.getActivated(),false);
+        assertEquals(employeeFromDB.getAssignedTasks(),tasks);
     }
 }
