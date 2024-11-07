@@ -1,9 +1,19 @@
+/*PLEASE DO NOT EDIT THIS CODE*/
+/*This code was generated using the UMPLE 1.35.0.7523.c616a4dce modeling language!*/
+
+
 package ca.mcgill.ecse321.gameshop.model;
-import java.sql.Date;
+import java.util.*;
+
+
 import jakarta.persistence.*;
-// line 88 "model.ump"
-// line 163 "model.ump"
+/**
+ * Payment class
+ */
+// line 92 "model.ump"
+
 @Entity
+
 public class Payment
 {
 
@@ -13,10 +23,9 @@ public class Payment
 
   //Payment Attributes
   private String billingAddress;
-  private int creditCardNb;
+  private long creditCardNb;
   private String expirationDate;
   private int cvc;
-  private int total;
   @Id
   @GeneratedValue
   private int paymentId;
@@ -24,64 +33,38 @@ public class Payment
   //Payment Associations
   @ManyToOne
   private Customer customer;
-  @OneToOne
-  private Command command;
-  //------------------------
-  // MEMBER VARIABLES
-  //------------------------
+  @OneToMany
+  private List<Command> commands;
+
   //------------------------
   // CONSTRUCTOR
   //------------------------
-public Payment(){
 
-}
-
-  public Payment(String aBillingAddress, int aCreditCardNb, String aExpirationDate, int aCvc, int aTotal)
-  {
-    billingAddress = aBillingAddress;
-    creditCardNb = aCreditCardNb;
-    expirationDate = aExpirationDate;
-    cvc = aCvc;
-    total = aTotal;
-
+  public Payment(){
 
   }
-
-
-  public Payment(String aBillingAddress, int aCreditCardNb, String aExpirationDate, int aCvc, int aTotal, Customer aCustomer, Command aCommand)
+  public Payment(String aBillingAddress, long aCreditCardNb, String aExpirationDate, int aCvc)
   {
     billingAddress = aBillingAddress;
     creditCardNb = aCreditCardNb;
     expirationDate = aExpirationDate;
     cvc = aCvc;
-    total = aTotal;
+    commands = new ArrayList<Command>();
 
+  }
+  public Payment(String aBillingAddress, long aCreditCardNb, String aExpirationDate, int aCvc,  Customer aCustomer)
+  {
+    billingAddress = aBillingAddress;
+    creditCardNb = aCreditCardNb;
+    expirationDate = aExpirationDate;
+    cvc = aCvc;
+   // paymentId = aPaymentId;
     boolean didAddCustomer = setCustomer(aCustomer);
     if (!didAddCustomer)
     {
       throw new RuntimeException("Unable to create payment due to customer. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
     }
-    if (aCommand == null || aCommand.getPayment() != null)
-    {
-      throw new RuntimeException("Unable to create Payment due to aCommand. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
-    }
-    command = aCommand;
-  }
-
-  public Payment(String aBillingAddress, int aCreditCardNb, String aExpirationDate, int aCvc, int aTotal,  Customer aCustomer, int aCommandIdForCommand, String aCommandDateForCommand, float aTotalPriceForCommand, Cart aCartForCommand)
-  {
-    billingAddress = aBillingAddress;
-    creditCardNb = aCreditCardNb;
-    expirationDate = aExpirationDate;
-    cvc = aCvc;
-    total = aTotal;
-
-    boolean didAddCustomer = setCustomer(aCustomer);
-    if (!didAddCustomer)
-    {
-      throw new RuntimeException("Unable to create payment due to customer. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
-    }
-    command = new Command( aCommandDateForCommand, aTotalPriceForCommand, this, aCartForCommand);
+    commands = new ArrayList<Command>();
   }
 
   //------------------------
@@ -96,7 +79,7 @@ public Payment(){
     return wasSet;
   }
 
-  public boolean setCreditCardNb(int aCreditCardNb)
+  public boolean setCreditCardNb(long aCreditCardNb)
   {
     boolean wasSet = false;
     creditCardNb = aCreditCardNb;
@@ -120,22 +103,20 @@ public Payment(){
     return wasSet;
   }
 
-  public boolean setTotal(int aTotal)
+  public boolean setPaymentId(int aPaymentId)
   {
     boolean wasSet = false;
-    total = aTotal;
+    paymentId = aPaymentId;
     wasSet = true;
     return wasSet;
   }
-
-
 
   public String getBillingAddress()
   {
     return billingAddress;
   }
 
-  public int getCreditCardNb()
+  public long getCreditCardNb()
   {
     return creditCardNb;
   }
@@ -150,11 +131,6 @@ public Payment(){
     return cvc;
   }
 
-  public int getTotal()
-  {
-    return total;
-  }
-
   public int getPaymentId()
   {
     return paymentId;
@@ -164,10 +140,35 @@ public Payment(){
   {
     return customer;
   }
-  /* Code from template association_GetOne */
-  public Command getCommand()
+  /* Code from template association_GetMany */
+  public Command getCommand(int index)
   {
-    return command;
+    Command aCommand = commands.get(index);
+    return aCommand;
+  }
+
+  public List<Command> getCommands()
+  {
+    List<Command> newCommands = Collections.unmodifiableList(commands);
+    return newCommands;
+  }
+
+  public int numberOfCommands()
+  {
+    int number = commands.size();
+    return number;
+  }
+
+  public boolean hasCommands()
+  {
+    boolean has = commands.size() > 0;
+    return has;
+  }
+
+  public int indexOfCommand(Command aCommand)
+  {
+    int index = commands.indexOf(aCommand);
+    return index;
   }
   /* Code from template association_SetOneToMany */
   public boolean setCustomer(Customer aCustomer)
@@ -188,6 +189,77 @@ public Payment(){
     wasSet = true;
     return wasSet;
   }
+  /* Code from template association_MinimumNumberOfMethod */
+  public static int minimumNumberOfCommands()
+  {
+    return 0;
+  }
+  /* Code from template association_AddManyToOptionalOne */
+  public boolean addCommand(Command aCommand)
+  {
+    boolean wasAdded = false;
+    if (commands.contains(aCommand)) { return false; }
+    Payment existingPayment = aCommand.getPayment();
+    if (existingPayment == null)
+    {
+      aCommand.setPayment(this);
+    }
+    else if (!this.equals(existingPayment))
+    {
+      existingPayment.removeCommand(aCommand);
+      addCommand(aCommand);
+    }
+    else
+    {
+      commands.add(aCommand);
+    }
+    wasAdded = true;
+    return wasAdded;
+  }
+
+  public boolean removeCommand(Command aCommand)
+  {
+    boolean wasRemoved = false;
+    if (commands.contains(aCommand))
+    {
+      commands.remove(aCommand);
+      aCommand.setPayment(null);
+      wasRemoved = true;
+    }
+    return wasRemoved;
+  }
+  /* Code from template association_AddIndexControlFunctions */
+  public boolean addCommandAt(Command aCommand, int index)
+  {
+    boolean wasAdded = false;
+    if(addCommand(aCommand))
+    {
+      if(index < 0 ) { index = 0; }
+      if(index > numberOfCommands()) { index = numberOfCommands() - 1; }
+      commands.remove(aCommand);
+      commands.add(index, aCommand);
+      wasAdded = true;
+    }
+    return wasAdded;
+  }
+
+  public boolean addOrMoveCommandAt(Command aCommand, int index)
+  {
+    boolean wasAdded = false;
+    if(commands.contains(aCommand))
+    {
+      if(index < 0 ) { index = 0; }
+      if(index > numberOfCommands()) { index = numberOfCommands() - 1; }
+      commands.remove(aCommand);
+      commands.add(index, aCommand);
+      wasAdded = true;
+    }
+    else
+    {
+      wasAdded = addCommandAt(aCommand, index);
+    }
+    return wasAdded;
+  }
 
   public void delete()
   {
@@ -197,11 +269,9 @@ public Payment(){
     {
       placeholderCustomer.removePayment(this);
     }
-    Command existingCommand= command;
-    command = null;
-    if (existingCommand != null)
+    while( !commands.isEmpty() )
     {
-      existingCommand.delete();
+      commands.get(0).setPayment(null);
     }
   }
 
@@ -211,11 +281,10 @@ public Payment(){
     return super.toString() + "["+
             "billingAddress" + ":" + getBillingAddress()+ "," +
             "creditCardNb" + ":" + getCreditCardNb()+ "," +
+            "expirationDate" + ":" + getExpirationDate()+ "," +
             "cvc" + ":" + getCvc()+ "," +
-            "total" + ":" + getTotal()+ "," +
             "paymentId" + ":" + getPaymentId()+ "]" + System.getProperties().getProperty("line.separator") +
-            "  " + "expirationDate" + "=" + (getExpirationDate() != null ? !getExpirationDate().equals(this)  ? getExpirationDate().toString().replaceAll("  ","    ") : "this" : "null") + System.getProperties().getProperty("line.separator") +
-            "  " + "customer = "+(getCustomer()!=null?Integer.toHexString(System.identityHashCode(getCustomer())):"null") + System.getProperties().getProperty("line.separator") +
-            "  " + "command = "+(getCommand()!=null?Integer.toHexString(System.identityHashCode(getCommand())):"null");
+            "  " + "customer = "+(getCustomer()!=null?Integer.toHexString(System.identityHashCode(getCustomer())):"null");
   }
+
 }

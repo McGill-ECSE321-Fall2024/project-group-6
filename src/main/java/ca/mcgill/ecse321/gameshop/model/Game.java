@@ -1,7 +1,17 @@
+/*PLEASE DO NOT EDIT THIS CODE*/
+/*This code was generated using the UMPLE 1.35.0.7523.c616a4dce modeling language!*/
+
+
 package ca.mcgill.ecse321.gameshop.model;
 import java.util.*;
+
+
 import jakarta.persistence.*;
-// line 52 "model.ump"
+
+/**
+ * Game class
+ */
+// line 59 "model.ump"
 // line 138 "model.ump"
 @Entity
 public class Game
@@ -17,109 +27,55 @@ public class Game
   private float price;
   private int stockQuantity;
   private String photoURL;
-  private boolean toBeAdded;
-  private boolean toBeRemoved;
-  private float promotion;
   @Id
   @GeneratedValue
   private int gameId;
+  private boolean toBeAdded;
+  private boolean toBeRemoved;
+  private float promotion;
 
   //Game Associations
   @OneToMany
   private List<Review> reviews;
   @ManyToOne
   private Manager manager;
+  @ManyToOne
+  private Employee creator;
   @ManyToMany
-  private List<Wishlist> wishlists;
+  private List<Guest> guests;
+  @ManyToMany
+  private List<Category> categories;
+  /*
+  @OneToMany
+  private List<Review> reviews;
+  @ManyToOne
+  private Manager manager;
   @ManyToOne
   private Employee creator;
   @ManyToMany
   private List<Category> categories;
-  @ManyToMany
-  private List<Cart> carts;
-
-
-  //------------------------
-  // MEMBER VARIABLES
-  //------------------------
-
-
-
+*/
   //------------------------
   // CONSTRUCTOR
   //------------------------
 public Game(){
 
 }
-  public Game(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL)
+  public Game(String aName, String aDescription, float aPrice, int aStockQuantity,String aPhotoURL)
   {
     name = aName;
     description = aDescription;
     price = aPrice;
-    stockQuantity = aStockQuantity;
     photoURL = aPhotoURL;
+    stockQuantity = aStockQuantity;
     reviews = new ArrayList<Review>();
 
-    wishlists = new ArrayList<Wishlist>();
-
-
-    carts = new ArrayList<Cart>();
-  }
-  public Game(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,  Manager aManager,  Category... allCategories)
-  {
-    name = aName;
-    description = aDescription;
-    price = aPrice;
-    stockQuantity = aStockQuantity;
-    photoURL = aPhotoURL;
-
-    reviews = new ArrayList<Review>();
-    boolean didAddManager = setManager(aManager);
-    if (!didAddManager)
-    {
-      throw new RuntimeException("Unable to create game due to manager. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
-    }
-    wishlists = new ArrayList<Wishlist>();
-
+    guests = new ArrayList<Guest>();
     categories = new ArrayList<Category>();
-    boolean didAddCategories = setCategories(allCategories);
-    if (!didAddCategories)
-    {
-      throw new RuntimeException("Unable to create Game, must have at least 1 categories. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
-    }
-    carts = new ArrayList<Cart>();
+
   }
 
-  public Game(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,  Manager aManager, Employee aCreator, Category... allCategories)
-  {
-    name = aName;
-    description = aDescription;
-    price = aPrice;
-    stockQuantity = aStockQuantity;
-    photoURL = aPhotoURL;
-
-    reviews = new ArrayList<Review>();
-    boolean didAddManager = setManager(aManager);
-    if (!didAddManager)
-    {
-      throw new RuntimeException("Unable to create game due to manager. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
-    }
-    wishlists = new ArrayList<Wishlist>();
-    boolean didAddCreator = setCreator(aCreator);
-    if (!didAddCreator)
-    {
-      throw new RuntimeException("Unable to create created due to creator. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
-    }
-    categories = new ArrayList<Category>();
-    boolean didAddCategories = setCategories(allCategories);
-    if (!didAddCategories)
-    {
-      throw new RuntimeException("Unable to create Game, must have at least 1 categories. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
-    }
-    carts = new ArrayList<Cart>();
-  }
-
-  public Game(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,  boolean aToBeAdded, boolean aToBeRemoved, float aPromotion, Manager aManager, Employee aCreator, Category... allCategories)
+  public Game(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,  boolean aToBeAdded, boolean aToBeRemoved, Manager aManager, Employee aCreator, Category... allCategories)
   {
     name = aName;
     description = aDescription;
@@ -128,28 +84,46 @@ public Game(){
     photoURL = aPhotoURL;
     toBeAdded = aToBeAdded;
     toBeRemoved = aToBeRemoved;
-    promotion = aPromotion;
     reviews = new ArrayList<Review>();
     boolean didAddManager = setManager(aManager);
     if (!didAddManager)
     {
       throw new RuntimeException("Unable to create game due to manager. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
     }
-    wishlists = new ArrayList<Wishlist>();
     boolean didAddCreator = setCreator(aCreator);
     if (!didAddCreator)
     {
       throw new RuntimeException("Unable to create created due to creator. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
     }
+    guests = new ArrayList<Guest>();
     categories = new ArrayList<Category>();
     boolean didAddCategories = setCategories(allCategories);
     if (!didAddCategories)
     {
       throw new RuntimeException("Unable to create Game, must have at least 1 categories. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
     }
-    carts = new ArrayList<Cart>();
   }
+//(aName,aDescription,aPrice,aStockQuantity,aPhotoURL,tobeAdded,allCategories)
+public Game(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,  boolean aToBeAdded, Category... allCategories)
+{
+  name = aName;
+  description = aDescription;
+  price = aPrice;
+  stockQuantity = aStockQuantity;
+  photoURL = aPhotoURL;
+  toBeAdded = aToBeAdded;
 
+  reviews = new ArrayList<Review>();
+
+
+  guests = new ArrayList<Guest>();
+  categories = new ArrayList<Category>();
+  boolean didAddCategories = setCategories(allCategories);
+  if (!didAddCategories)
+  {
+    throw new RuntimeException("Unable to create Game, must have at least 1 categories. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
+  }
+}
   //------------------------
   // INTERFACE
   //------------------------
@@ -194,6 +168,13 @@ public Game(){
     return wasSet;
   }
 
+  public boolean setGameId(int aGameId)
+  {
+    boolean wasSet = false;
+    gameId = aGameId;
+    wasSet = true;
+    return wasSet;
+  }
 
   public boolean setToBeAdded(boolean aToBeAdded)
   {
@@ -263,7 +244,6 @@ public Game(){
   {
     return promotion;
   }
-
   /* Code from template attribute_IsBoolean */
   public boolean isToBeAdded()
   {
@@ -274,7 +254,6 @@ public Game(){
   {
     return toBeRemoved;
   }
-
   /* Code from template association_GetMany */
   public Review getReview(int index)
   {
@@ -310,40 +289,40 @@ public Game(){
   {
     return manager;
   }
-  /* Code from template association_GetMany */
-  public Wishlist getWishlist(int index)
-  {
-    Wishlist aWishlist = wishlists.get(index);
-    return aWishlist;
-  }
-
-  public List<Wishlist> getWishlists()
-  {
-    List<Wishlist> newWishlists = Collections.unmodifiableList(wishlists);
-    return newWishlists;
-  }
-
-  public int numberOfWishlists()
-  {
-    int number = wishlists.size();
-    return number;
-  }
-
-  public boolean hasWishlists()
-  {
-    boolean has = wishlists.size() > 0;
-    return has;
-  }
-
-  public int indexOfWishlist(Wishlist aWishlist)
-  {
-    int index = wishlists.indexOf(aWishlist);
-    return index;
-  }
   /* Code from template association_GetOne */
   public Employee getCreator()
   {
     return creator;
+  }
+  /* Code from template association_GetMany */
+  public Guest getGuest(int index)
+  {
+    Guest aGuest = guests.get(index);
+    return aGuest;
+  }
+
+  public List<Guest> getGuests()
+  {
+    List<Guest> newGuests = Collections.unmodifiableList(guests);
+    return newGuests;
+  }
+
+  public int numberOfGuests()
+  {
+    int number = guests.size();
+    return number;
+  }
+
+  public boolean hasGuests()
+  {
+    boolean has = guests.size() > 0;
+    return has;
+  }
+
+  public int indexOfGuest(Guest aGuest)
+  {
+    int index = guests.indexOf(aGuest);
+    return index;
   }
   /* Code from template association_GetMany */
   public Category getCategory(int index)
@@ -375,45 +354,15 @@ public Game(){
     int index = categories.indexOf(aCategory);
     return index;
   }
-  /* Code from template association_GetMany */
-  public Cart getCart(int index)
-  {
-    Cart aCart = carts.get(index);
-    return aCart;
-  }
-
-  public List<Cart> getCarts()
-  {
-    List<Cart> newCarts = Collections.unmodifiableList(carts);
-    return newCarts;
-  }
-
-  public int numberOfCarts()
-  {
-    int number = carts.size();
-    return number;
-  }
-
-  public boolean hasCarts()
-  {
-    boolean has = carts.size() > 0;
-    return has;
-  }
-
-  public int indexOfCart(Cart aCart)
-  {
-    int index = carts.indexOf(aCart);
-    return index;
-  }
   /* Code from template association_MinimumNumberOfMethod */
   public static int minimumNumberOfReviews()
   {
     return 0;
   }
   /* Code from template association_AddManyToOne */
-  public Review addReview(Review.StarRating aRating, String aComment, int aAmountOfLikes,  Customer aCustomer, Manager aManager)
+  public Review addReview(Review.StarRating aRating, String aComment, int aAmountOfLikes,  String aReply, Customer aCustomer, Manager aManager)
   {
-    return new Review(aRating, aComment, aAmountOfLikes,  aCustomer, aManager, this);
+    return new Review(aRating, aComment, aAmountOfLikes,  aReply, aCustomer, aManager, this);
   }
 
   public boolean addReview(Review aReview)
@@ -447,7 +396,7 @@ public Game(){
   }
   /* Code from template association_AddIndexControlFunctions */
   public boolean addReviewAt(Review aReview, int index)
-  {
+  {  
     boolean wasAdded = false;
     if(addReview(aReview))
     {
@@ -470,8 +419,8 @@ public Game(){
       reviews.remove(aReview);
       reviews.add(index, aReview);
       wasAdded = true;
-    }
-    else
+    } 
+    else 
     {
       wasAdded = addReviewAt(aReview, index);
     }
@@ -496,88 +445,6 @@ public Game(){
     wasSet = true;
     return wasSet;
   }
-  /* Code from template association_MinimumNumberOfMethod */
-  public static int minimumNumberOfWishlists()
-  {
-    return 0;
-  }
-  /* Code from template association_AddManyToManyMethod */
-  public boolean addWishlist(Wishlist aWishlist)
-  {
-    boolean wasAdded = false;
-    if (wishlists.contains(aWishlist)) { return false; }
-    wishlists.add(aWishlist);
-    if (aWishlist.indexOfGame(this) != -1)
-    {
-      wasAdded = true;
-    }
-    else
-    {
-      wasAdded = aWishlist.addGame(this);
-      if (!wasAdded)
-      {
-        wishlists.remove(aWishlist);
-      }
-    }
-    return wasAdded;
-  }
-  /* Code from template association_RemoveMany */
-  public boolean removeWishlist(Wishlist aWishlist)
-  {
-    boolean wasRemoved = false;
-    if (!wishlists.contains(aWishlist))
-    {
-      return wasRemoved;
-    }
-
-    int oldIndex = wishlists.indexOf(aWishlist);
-    wishlists.remove(oldIndex);
-    if (aWishlist.indexOfGame(this) == -1)
-    {
-      wasRemoved = true;
-    }
-    else
-    {
-      wasRemoved = aWishlist.removeGame(this);
-      if (!wasRemoved)
-      {
-        wishlists.add(oldIndex,aWishlist);
-      }
-    }
-    return wasRemoved;
-  }
-  /* Code from template association_AddIndexControlFunctions */
-  public boolean addWishlistAt(Wishlist aWishlist, int index)
-  {
-    boolean wasAdded = false;
-    if(addWishlist(aWishlist))
-    {
-      if(index < 0 ) { index = 0; }
-      if(index > numberOfWishlists()) { index = numberOfWishlists() - 1; }
-      wishlists.remove(aWishlist);
-      wishlists.add(index, aWishlist);
-      wasAdded = true;
-    }
-    return wasAdded;
-  }
-
-  public boolean addOrMoveWishlistAt(Wishlist aWishlist, int index)
-  {
-    boolean wasAdded = false;
-    if(wishlists.contains(aWishlist))
-    {
-      if(index < 0 ) { index = 0; }
-      if(index > numberOfWishlists()) { index = numberOfWishlists() - 1; }
-      wishlists.remove(aWishlist);
-      wishlists.add(index, aWishlist);
-      wasAdded = true;
-    }
-    else
-    {
-      wasAdded = addWishlistAt(aWishlist, index);
-    }
-    return wasAdded;
-  }
   /* Code from template association_SetOneToMany */
   public boolean setCreator(Employee aCreator)
   {
@@ -596,6 +463,88 @@ public Game(){
     creator.addCreated(this);
     wasSet = true;
     return wasSet;
+  }
+  /* Code from template association_MinimumNumberOfMethod */
+  public static int minimumNumberOfGuests()
+  {
+    return 0;
+  }
+  /* Code from template association_AddManyToManyMethod */
+  public boolean addGuest(Guest aGuest)
+  {
+    boolean wasAdded = false;
+    if (guests.contains(aGuest)) { return false; }
+    guests.add(aGuest);
+    if (aGuest.indexOfGame(this) != -1)
+    {
+      wasAdded = true;
+    }
+    else
+    {
+      wasAdded = aGuest.addGame(this);
+      if (!wasAdded)
+      {
+        guests.remove(aGuest);
+      }
+    }
+    return wasAdded;
+  }
+  /* Code from template association_RemoveMany */
+  public boolean removeGuest(Guest aGuest)
+  {
+    boolean wasRemoved = false;
+    if (!guests.contains(aGuest))
+    {
+      return wasRemoved;
+    }
+
+    int oldIndex = guests.indexOf(aGuest);
+    guests.remove(oldIndex);
+    if (aGuest.indexOfGame(this) == -1)
+    {
+      wasRemoved = true;
+    }
+    else
+    {
+      wasRemoved = aGuest.removeGame(this);
+      if (!wasRemoved)
+      {
+        guests.add(oldIndex,aGuest);
+      }
+    }
+    return wasRemoved;
+  }
+  /* Code from template association_AddIndexControlFunctions */
+  public boolean addGuestAt(Guest aGuest, int index)
+  {  
+    boolean wasAdded = false;
+    if(addGuest(aGuest))
+    {
+      if(index < 0 ) { index = 0; }
+      if(index > numberOfGuests()) { index = numberOfGuests() - 1; }
+      guests.remove(aGuest);
+      guests.add(index, aGuest);
+      wasAdded = true;
+    }
+    return wasAdded;
+  }
+
+  public boolean addOrMoveGuestAt(Guest aGuest, int index)
+  {
+    boolean wasAdded = false;
+    if(guests.contains(aGuest))
+    {
+      if(index < 0 ) { index = 0; }
+      if(index > numberOfGuests()) { index = numberOfGuests() - 1; }
+      guests.remove(aGuest);
+      guests.add(index, aGuest);
+      wasAdded = true;
+    } 
+    else 
+    {
+      wasAdded = addGuestAt(aGuest, index);
+    }
+    return wasAdded;
   }
   /* Code from template association_IsNumberOfValidMethod */
   public boolean isNumberOfCategoriesValid()
@@ -701,7 +650,7 @@ public Game(){
   }
   /* Code from template association_AddIndexControlFunctions */
   public boolean addCategoryAt(Category aCategory, int index)
-  {
+  {  
     boolean wasAdded = false;
     if(addCategory(aCategory))
     {
@@ -724,92 +673,10 @@ public Game(){
       categories.remove(aCategory);
       categories.add(index, aCategory);
       wasAdded = true;
-    }
-    else
+    } 
+    else 
     {
       wasAdded = addCategoryAt(aCategory, index);
-    }
-    return wasAdded;
-  }
-  /* Code from template association_MinimumNumberOfMethod */
-  public static int minimumNumberOfCarts()
-  {
-    return 0;
-  }
-  /* Code from template association_AddManyToManyMethod */
-  public boolean addCart(Cart aCart)
-  {
-    boolean wasAdded = false;
-    if (carts.contains(aCart)) { return false; }
-    carts.add(aCart);
-    if (aCart.indexOfGame(this) != -1)
-    {
-      wasAdded = true;
-    }
-    else
-    {
-      wasAdded = aCart.addGame(this);
-      if (!wasAdded)
-      {
-        carts.remove(aCart);
-      }
-    }
-    return wasAdded;
-  }
-  /* Code from template association_RemoveMany */
-  public boolean removeCart(Cart aCart)
-  {
-    boolean wasRemoved = false;
-    if (!carts.contains(aCart))
-    {
-      return wasRemoved;
-    }
-
-    int oldIndex = carts.indexOf(aCart);
-    carts.remove(oldIndex);
-    if (aCart.indexOfGame(this) == -1)
-    {
-      wasRemoved = true;
-    }
-    else
-    {
-      wasRemoved = aCart.removeGame(this);
-      if (!wasRemoved)
-      {
-        carts.add(oldIndex,aCart);
-      }
-    }
-    return wasRemoved;
-  }
-  /* Code from template association_AddIndexControlFunctions */
-  public boolean addCartAt(Cart aCart, int index)
-  {
-    boolean wasAdded = false;
-    if(addCart(aCart))
-    {
-      if(index < 0 ) { index = 0; }
-      if(index > numberOfCarts()) { index = numberOfCarts() - 1; }
-      carts.remove(aCart);
-      carts.add(index, aCart);
-      wasAdded = true;
-    }
-    return wasAdded;
-  }
-
-  public boolean addOrMoveCartAt(Cart aCart, int index)
-  {
-    boolean wasAdded = false;
-    if(carts.contains(aCart))
-    {
-      if(index < 0 ) { index = 0; }
-      if(index > numberOfCarts()) { index = numberOfCarts() - 1; }
-      carts.remove(aCart);
-      carts.add(index, aCart);
-      wasAdded = true;
-    }
-    else
-    {
-      wasAdded = addCartAt(aCart, index);
     }
     return wasAdded;
   }
@@ -827,29 +694,23 @@ public Game(){
     {
       placeholderManager.removeGame(this);
     }
-    ArrayList<Wishlist> copyOfWishlists = new ArrayList<Wishlist>(wishlists);
-    wishlists.clear();
-    for(Wishlist aWishlist : copyOfWishlists)
-    {
-      aWishlist.removeGame(this);
-    }
     Employee placeholderCreator = creator;
     this.creator = null;
     if(placeholderCreator != null)
     {
       placeholderCreator.removeCreated(this);
     }
+    ArrayList<Guest> copyOfGuests = new ArrayList<Guest>(guests);
+    guests.clear();
+    for(Guest aGuest : copyOfGuests)
+    {
+      aGuest.removeGame(this);
+    }
     ArrayList<Category> copyOfCategories = new ArrayList<Category>(categories);
     categories.clear();
     for(Category aCategory : copyOfCategories)
     {
       aCategory.removeGame(this);
-    }
-    ArrayList<Cart> copyOfCarts = new ArrayList<Cart>(carts);
-    carts.clear();
-    for(Cart aCart : copyOfCarts)
-    {
-      aCart.removeGame(this);
     }
   }
 

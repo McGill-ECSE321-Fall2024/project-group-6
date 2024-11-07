@@ -15,8 +15,8 @@ public class PaymentService {
     private PaymentRepository paymentRepository;
 
     @Transactional
-    public Payment createPayment(String aBillingAddress, int aCreditCardNb, String aExpirationDate, int aCvc, int aTotal) { //add exceptions for invalid fields here
-        Payment newPayment = new Payment(aBillingAddress, aCreditCardNb, aExpirationDate, aCvc, aTotal);
+    public Payment createPayment(String aBillingAddress, long aCreditCardNb, String aExpirationDate, int aCvc) { //add exceptions for invalid fields here
+        Payment newPayment = new Payment(aBillingAddress, aCreditCardNb, aExpirationDate, aCvc);
         return paymentRepository.save(newPayment);
     }
 
@@ -27,7 +27,6 @@ public class PaymentService {
         payment.setCreditCardNb(paymentDetails.getCreditCardNb());
         payment.setExpirationDate(paymentDetails.getExpirationDate());
         payment.setCvc(paymentDetails.getCvc());
-        payment.setTotal(payment.getTotal());
         return paymentRepository.save(payment);
     }
 

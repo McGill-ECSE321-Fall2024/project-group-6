@@ -37,10 +37,10 @@ public class PaymentUnitTest {
         String exp = "04/27";
         int cvc = 345;
         double total = 45.66; //have to change to a double
-        Payment payment = new Payment(billingAddress, creditCardNb, exp, cvc, total);
+        Payment payment = new Payment(billingAddress, creditCardNb, exp, cvc);
 
         //Act
-        Payment createdPayment = service.createPayment(billingAddress, creditCardNb, exp, cvc, total);
+        Payment createdPayment = service.createPayment(billingAddress, creditCardNb, exp, cvc);
 
         //Assert
         assertNotNull(createdPayment);
@@ -48,7 +48,6 @@ public class PaymentUnitTest {
         assertEquals(creditCardNb, createdPayment.getCreditCardNb());
         assertEquals(exp, createdPayment.getExpirationDate());
         assertEquals(cvc, createdPayment.getCvc());
-        assertEquals(total, createdPayment.getTotal());
         verify(repo, times(1)).save(payment);
     }
 
@@ -56,7 +55,7 @@ public class PaymentUnitTest {
     public void testReadPaymentByValidId() {
         //Arrange
         int id = 3;
-        Payment payment = new Payment("555 Sherbrooke West, Montreal", 1111222233334444L, "04/27", 345, 45.66 );
+        Payment payment = new Payment("555 Sherbrooke West, Montreal", 1111222233334444L, "04/27", 345 );
         when(repo.findPaymentByPaymentId(id)).thenReturn(payment);
 
         //Act
@@ -68,7 +67,6 @@ public class PaymentUnitTest {
         assertEquals(payment.getCreditCardNb(), paymentToGet.getCreditCardNb());
         assertEquals(payment.getExpirationDate(), paymentToGet.getExpirationDate());
         assertEquals(payment.getCvc(), paymentToGet.getCvc());
-        assertEquals(payment.getTotal(), paymentToGet.getTotal());
     }
 
     @Test
@@ -88,8 +86,8 @@ public class PaymentUnitTest {
     public void testUpdatePaymentValidId() {
         // Arrange
         int paymentId = 1;
-        Payment existingPayment = new Payment("Old Address", 1111222233334444, "04/27", 123, 100);
-        Payment updatedDetails = new Payment("New Address", 5555666677778888L, "12/30", 456, 200);
+        Payment existingPayment = new Payment("Old Address", 1111222233334444L, "04/27", 123);
+        Payment updatedDetails = new Payment("New Address", 5555666677778888L, "12/30", 456);
         when(repo.findById(paymentId)).thenReturn(Optional.of(existingPayment));
         when(repo.save(any(Payment.class))).thenReturn(updatedDetails);
 
@@ -102,7 +100,6 @@ public class PaymentUnitTest {
         assertEquals(updatedDetails.getCreditCardNb(), updatedPayment.getCreditCardNb());
         assertEquals(updatedDetails.getExpirationDate(), updatedPayment.getExpirationDate());
         assertEquals(updatedDetails.getCvc(), updatedPayment.getCvc());
-        assertEquals(updatedDetails.getTotal(), updatedPayment.getTotal());
         verify(repo, times(1)).findById(paymentId);
         verify(repo, times(1)).save(any(Payment.class));
     }
@@ -111,7 +108,7 @@ public class PaymentUnitTest {
     public void testUpdatePaymentInvalidId() {
         // Arrange
         int invalidPaymentId = 99;
-        Payment updatedDetails = new Payment("New Address", 5555666677778888L, "12/30", 456, 200);
+        Payment updatedDetails = new Payment("New Address", 5555666677778888L, "12/30", 456);
 
         // Mock findById to return an empty Optional, simulating a non-existent payment
         when(repo.findById(invalidPaymentId)).thenReturn(Optional.empty());
@@ -142,8 +139,8 @@ public class PaymentUnitTest {
     @Test
     public void testGetAllPayments() {
         // Arrange
-        Payment payment1 = new Payment("Address 1", 1111222233334444L, "05/28", 123, 100);
-        Payment payment2 = new Payment("Address 2", 5555666677778888L, "06/29", 456, 200);
+        Payment payment1 = new Payment("Address 1", 1111222233334444L, "05/28", 123);
+        Payment payment2 = new Payment("Address 2", 5555666677778888L, "06/29", 456);
         List<Payment> payments = Arrays.asList(payment1, payment2);
         when(repo.findAll()).thenReturn(payments);
 

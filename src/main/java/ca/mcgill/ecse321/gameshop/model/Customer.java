@@ -1,53 +1,62 @@
-package ca.mcgill.ecse321.gameshop.model;
+package ca.mcgill.ecse321.gameshop.model;/*PLEASE DO NOT EDIT THIS CODE*/
+/*This code was generated using the UMPLE 1.35.0.7523.c616a4dce modeling language!*/
+
 import java.util.*;
-import java.sql.Date;
+
+
 import jakarta.persistence.*;
-// line 17 "model.ump"
-// line 109 "model.ump"
+
+
+/**
+ * Customer class extending Role
+ */
+// line 19 "model.ump"
+// line 113 "model.ump"
 @Entity
-public class Customer extends Role {
+public class Customer extends Role
+{
 
   //------------------------
   // MEMBER VARIABLES
   //------------------------
 
   //Customer Attributes
-
   private String shippingAddress;
+  @ElementCollection
+  private List<Game> wishlist;
+  @ElementCollection
+  private List<Game> cart;
 
   //Customer Associations
-  @OneToOne(cascade = CascadeType.ALL)
-  private Cart cart;
-  @OneToOne (cascade = CascadeType.ALL)
-  private Wishlist wishlist;
   @OneToMany
   private List<Review> reviews;
   @OneToMany
   private List<Payment> payments;
-
+  @OneToMany
+  private List<Command> commands;
   //------------------------
   // CONSTRUCTOR
   //------------------------
-  public Customer(){
-      super();
+public Customer(){
 
-  }
+}
   public Customer( Person aPerson, String aShippingAddress)
   {
-    super( aPerson);
+    super(aPerson);
     shippingAddress = aShippingAddress;
     reviews = new ArrayList<Review>();
     payments = new ArrayList<Payment>();
+    commands = new ArrayList<Command>();
   }
-
-  public Customer( Person aPerson, String aShippingAddress,  Guest aGuestForCart)
+  public Customer( Person aPerson, String aShippingAddress, List<Game> aWishlist, List<Game> aCart)
   {
-    super( aPerson);
+    super(aPerson);
     shippingAddress = aShippingAddress;
-    cart = new Cart(this);
-    wishlist = new Wishlist( this);
+    wishlist = aWishlist;
+    cart = aCart;
     reviews = new ArrayList<Review>();
     payments = new ArrayList<Payment>();
+    commands = new ArrayList<Command>();
   }
 
   //------------------------
@@ -62,19 +71,35 @@ public class Customer extends Role {
     return wasSet;
   }
 
+  public boolean setWishlist(List<Game> aWishlist)
+  {
+    boolean wasSet = false;
+    wishlist = aWishlist;
+    wasSet = true;
+    return wasSet;
+  }
+
+  public boolean setCart(List<Game> aCart)
+  {
+    boolean wasSet = false;
+    cart = aCart;
+    wasSet = true;
+    return wasSet;
+  }
+
   public String getShippingAddress()
   {
     return shippingAddress;
   }
-  /* Code from template association_GetOne */
-  public Cart getCart()
-  {
-    return cart;
-  }
-  /* Code from template association_GetOne */
-  public Wishlist getWishlist()
+
+  public List<Game> getWishlist()
   {
     return wishlist;
+  }
+
+  public List<Game> getCart()
+  {
+    return cart;
   }
   /* Code from template association_GetMany */
   public Review getReview(int index)
@@ -136,15 +161,42 @@ public class Customer extends Role {
     int index = payments.indexOf(aPayment);
     return index;
   }
+
+  public Command getCommand(int index)
+  {
+    Command aCommand = commands.get(index);
+    return aCommand;
+  }
+  public List<Command> getCommands()
+  {
+    List<Command> newCommands = Collections.unmodifiableList(commands);
+    return newCommands;
+  }
+  public int numberOfCommands()
+  {
+    int number = commands.size();
+    return number;
+  }
+  public boolean hasCommands()
+  {
+    boolean has = commands.size() > 0;
+    return has;
+  }
+  public int indexOfCommand(Command aCommand)
+  {
+    int index = commands.indexOf(aCommand);
+    return index;
+  }
+
   /* Code from template association_MinimumNumberOfMethod */
   public static int minimumNumberOfReviews()
   {
     return 0;
   }
   /* Code from template association_AddManyToOne */
-  public Review addReview(Review.StarRating aRating, String aComment, int aAmountOfLikes,  Manager aManager, Game aGame)
+  public Review addReview(Review.StarRating aRating, String aComment, int aAmountOfLikes, int aReviewId, String aReply, Manager aManager, Game aGame)
   {
-    return new Review(aRating, aComment, aAmountOfLikes,  this, aManager, aGame);
+    return new Review(aRating, aComment, aAmountOfLikes,  aReply, this, aManager, aGame);
   }
 
   public boolean addReview(Review aReview)
@@ -178,7 +230,7 @@ public class Customer extends Role {
   }
   /* Code from template association_AddIndexControlFunctions */
   public boolean addReviewAt(Review aReview, int index)
-  {
+  {  
     boolean wasAdded = false;
     if(addReview(aReview))
     {
@@ -201,8 +253,8 @@ public class Customer extends Role {
       reviews.remove(aReview);
       reviews.add(index, aReview);
       wasAdded = true;
-    }
-    else
+    } 
+    else 
     {
       wasAdded = addReviewAt(aReview, index);
     }
@@ -214,9 +266,9 @@ public class Customer extends Role {
     return 0;
   }
   /* Code from template association_AddManyToOne */
-  public Payment addPayment(String aBillingAddress, int aCreditCardNb, String aExpirationDate, int aCvc, int aTotal, Command aCommand)
+  public Payment addPayment(String aBillingAddress, int aCreditCardNb, String aExpirationDate, int aCvc)
   {
-    return new Payment(aBillingAddress, aCreditCardNb, aExpirationDate, aCvc, aTotal,  this, aCommand);
+    return new Payment(aBillingAddress, aCreditCardNb, aExpirationDate, aCvc);
   }
 
   public boolean addPayment(Payment aPayment)
@@ -250,7 +302,7 @@ public class Customer extends Role {
   }
   /* Code from template association_AddIndexControlFunctions */
   public boolean addPaymentAt(Payment aPayment, int index)
-  {
+  {  
     boolean wasAdded = false;
     if(addPayment(aPayment))
     {
@@ -273,28 +325,86 @@ public class Customer extends Role {
       payments.remove(aPayment);
       payments.add(index, aPayment);
       wasAdded = true;
-    }
-    else
+    } 
+    else 
     {
       wasAdded = addPaymentAt(aPayment, index);
     }
     return wasAdded;
   }
 
+  /* Code from template association_MinimumNumberOfMethod */
+  public static int minimumNumberOfCommands()
+  {
+    return 0;
+  }
+  /* Code from template association_AddManyToOne */
+  public Command addCommand( String aCommandDate, float aTotalPrice)
+  {
+    return new Command( aCommandDate, aTotalPrice, this);
+  }
+  public boolean addCommand(Command aCommand)
+  {
+    boolean wasAdded = false;
+    if (commands.contains(aCommand)) { return false; }
+    Customer existingCustomer = aCommand.getCustomer();
+    boolean isNewCustomer = existingCustomer != null && !this.equals(existingCustomer);
+    if (isNewCustomer)
+    {
+      aCommand.setCustomer(this);
+    }
+    else
+    {
+      commands.add(aCommand);
+    }
+    wasAdded = true;
+    return wasAdded;
+  }
+  public boolean removeCommand(Command aCommand)
+  {
+    boolean wasRemoved = false;
+    //Unable to remove aCommand, as it must always have a customer
+    if (!this.equals(aCommand.getCustomer()))
+    {
+      commands.remove(aCommand);
+      wasRemoved = true;
+    }
+    return wasRemoved;
+  }
+  /* Code from template association_AddIndexControlFunctions */
+  public boolean addCommandAt(Command aCommand, int index)
+  {
+    boolean wasAdded = false;
+    if(addCommand(aCommand))
+    {
+      if(index < 0 ) { index = 0; }
+      if(index > numberOfCommands()) { index = numberOfCommands() - 1; }
+      commands.remove(aCommand);
+      commands.add(index, aCommand);
+      wasAdded = true;
+    }
+    return wasAdded;
+  }
+  public boolean addOrMoveCommandAt(Command aCommand, int index)
+  {
+    boolean wasAdded = false;
+    if(commands.contains(aCommand))
+    {
+      if(index < 0 ) { index = 0; }
+      if(index > numberOfCommands()) { index = numberOfCommands() - 1; }
+      commands.remove(aCommand);
+      commands.add(index, aCommand);
+      wasAdded = true;
+    }
+    else
+    {
+      wasAdded = addCommandAt(aCommand, index);
+    }
+    return wasAdded;
+  }
+
   public void delete()
   {
-    Cart existingCart = cart;
-    cart = null;
-    if (existingCart != null)
-    {
-      existingCart.delete();
-    }
-    Wishlist existingWishlist = wishlist;
-    wishlist = null;
-    if (existingWishlist != null)
-    {
-      existingWishlist.delete();
-    }
     for(int i=reviews.size(); i > 0; i--)
     {
       Review aReview = reviews.get(i - 1);
@@ -305,6 +415,11 @@ public class Customer extends Role {
       Payment aPayment = payments.get(i - 1);
       aPayment.delete();
     }
+    for(int i=commands.size(); i > 0; i--)
+    {
+      Command aCommand = commands.get(i - 1);
+      aCommand.delete();
+    }
     super.delete();
   }
 
@@ -313,9 +428,7 @@ public class Customer extends Role {
   {
     return super.toString() + "["+
             "shippingAddress" + ":" + getShippingAddress()+ "]" + System.getProperties().getProperty("line.separator") +
-            "  " + "cart = "+(getCart()!=null?Integer.toHexString(System.identityHashCode(getCart())):"null") + System.getProperties().getProperty("line.separator") +
-            "  " + "wishlist = "+(getWishlist()!=null?Integer.toHexString(System.identityHashCode(getWishlist())):"null");
+            "  " + "wishlist" + "=" + (getWishlist() != null ? !getWishlist().equals(this)  ? getWishlist().toString().replaceAll("  ","    ") : "this" : "null") + System.getProperties().getProperty("line.separator") +
+            "  " + "cart" + "=" + (getCart() != null ? !getCart().equals(this)  ? getCart().toString().replaceAll("  ","    ") : "this" : "null");
   }
 }
-
-

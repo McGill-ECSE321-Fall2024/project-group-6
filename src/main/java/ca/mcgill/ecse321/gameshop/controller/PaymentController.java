@@ -26,7 +26,7 @@ public class PaymentController {
      */
     @PostMapping
     public PaymentResponseDto createPayment(@RequestBody PaymentRequestDto payment) {
-        Payment createdPayment = paymentService.createPayment(payment.getBillingAddress(), payment.getCreditCardNb(), payment.getExpirationDate(), payment.getCvc(), payment.getTotal());
+        Payment createdPayment = paymentService.createPayment(payment.getBillingAddress(), payment.getCreditCardNb(), payment.getExpirationDate(), payment.getCvc());
         return new PaymentResponseDto(createdPayment);
     }
 

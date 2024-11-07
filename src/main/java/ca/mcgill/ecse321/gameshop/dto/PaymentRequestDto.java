@@ -5,12 +5,12 @@ import ca.mcgill.ecse321.gameshop.model.Payment;
 public class PaymentRequestDto {
 
     private String billingAddress;
-    private int creditCardNb;
+    private long creditCardNb;
     private String expirationDate;
     private int cvc;
     private int total;
     private int customerId;
-    private int commandId;
+    //private int commandId;
     //no payment id for request dto
 
     public PaymentRequestDto() {
@@ -21,9 +21,8 @@ public class PaymentRequestDto {
         this.creditCardNb = payment.getCreditCardNb();
         this.expirationDate = payment.getExpirationDate();
         this.cvc = payment.getCvc();
-        this.total = payment.getTotal();
         this.customerId = payment.getCustomer().getRoleId();
-        this.commandId = payment.getCommand().getCommandId();
+        //this.commandId = payment.getCommand().getCommandId();
     }
 
     public String getBillingAddress() {
@@ -34,7 +33,7 @@ public class PaymentRequestDto {
         this.billingAddress = billingAddress;
     }
 
-   public int getCreditCardNb() {
+   public long getCreditCardNb() {
         return creditCardNb;
     }
 
@@ -74,14 +73,13 @@ public class PaymentRequestDto {
         this.customerId = customerId;
     }
 
-    public int getCommandId() {
-        return commandId;
-    }
+    //public int getCommandId() {
+        //return commandId;
+    //}
 
-    public void setCommandId(int commandId) {
-        this.commandId = commandId;
-    }
-
+    //public void setCommandId(int commandId) {
+        //this.commandId = commandId;
+    //}
 }
 
 

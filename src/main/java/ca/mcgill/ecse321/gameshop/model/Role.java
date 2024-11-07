@@ -1,46 +1,61 @@
+/*PLEASE DO NOT EDIT THIS CODE*/
+/*This code was generated using the UMPLE 1.35.0.7523.c616a4dce modeling language!*/
+
+
 package ca.mcgill.ecse321.gameshop.model;
+import java.util.*;
 
 
 import jakarta.persistence.*;
-
 /**
  * Abstract Role class
  */
 // line 12 "model.ump"
-// line 101 "model.ump"
+// line 108 "model.ump"
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public abstract class Role {
+public abstract class Role
+{
 
-  @Id
- @GeneratedValue
-  private int roleId;
-  //Role Associations
-  @OneToOne
-  private Person person;
   //------------------------
+  // MEMBER VARIABLES
+  //------------------------
+
+  //Role Attributes
+  @Id
+  @GeneratedValue
+  private int roleId;
+
+  //Role Associations
+  @ManyToOne
+  private Person person;
 
   //------------------------
   // CONSTRUCTOR
   //------------------------
+public Role (){
 
+}
   public Role( Person aPerson)
   {
+
     if (!setPerson(aPerson))
     {
       throw new RuntimeException("Unable to create Role due to aPerson. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
     }
   }
 
-  public Role() {
-
-  }
-
   //------------------------
   // INTERFACE
   //------------------------
 
-
+  public boolean setRoleId(int aRoleId)
+  {
+    boolean wasSet = false;
+    roleId = aRoleId;
+    wasSet = true;
+    return wasSet;
+  }
 
   public int getRoleId()
   {
