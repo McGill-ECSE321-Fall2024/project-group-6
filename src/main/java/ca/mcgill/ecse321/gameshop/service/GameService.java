@@ -1,68 +1,130 @@
-import ca.mcgill.ecse321.gameshop.dto.GameDTO;
+package ca.mcgill.ecse321.gameshop.service;
+
+import ca.mcgill.ecse321.gameshop.model.Category;
 import ca.mcgill.ecse321.gameshop.model.Game;
+import ca.mcgill.ecse321.gameshop.repository.*;
+import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Objects;
 
 @Service
 public class GameService {
 
-    // Conversion method from Game to GameDTO
-    private GameDTO convertToDTO(Game game) {
-        GameDTO gameDTO = new GameDTO();
-        gameDTO.setId(game.getId());
-        gameDTO.setName(game.getName());
-        gameDTO.setDescription(game.getDescription());
-        gameDTO.setPrice(game.getPrice());
-        gameDTO.setStockQuantity(game.getStockQuantity());
-        gameDTO.setPhotoURL(game.getPhotoURL());
-        gameDTO.setCategory(game.getCategory());
-        return gameDTO;
+    @Autowired
+    private GameRepository gameRepository;
+
+
+    @Transactional
+    public Game addGame(String name, String description, float price, int stockQuantity, String photoURL, boolean tobeAdded, Category... allCategories) {
+        tobeAdded = true;
+        Game game = new Game(name, description, price, stockQuantity, photoURL, tobeAdded, allCategories);
+        return gameRepository.save(game);
     }
 
-    // Conversion method from GameDTO to Game
-    private Game convertToEntity(GameDTO gameDTO) {
-        Game game = new Game();
-        game.setId(gameDTO.getId());
-        game.setName(gameDTO.getName());
-        game.setDescription(gameDTO.getDescription());
-        game.setPrice(gameDTO.getPrice());
-        game.setStockQuantity(gameDTO.getStockQuantity());
-        game.setPhotoURL(gameDTO.getPhotoURL());
-        game.setCategory(gameDTO.getCategory());
-        return game;
+    @Transactional
+    public Game addGameByEmployee(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL, boolean tobeAdded, Category... allCategories) {
+        tobeAdded = false;
+        Game game = new Game(aName, aDescription, aPrice, aStockQuantity, aPhotoURL, tobeAdded, allCategories);
+        return gameRepository.save(game);
     }
 
-    // Create or update a game
-    public GameDTO saveGame(GameDTO gameDTO) {
-        Game game = convertToEntity(gameDTO);
-        Game savedGame = gameRepository.save(game);
-        return convertToDTO(savedGame);
+
+    @Transactional
+    public Game updateGame(int id, String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL, boolean aToBeAdded, boolean aToBeRemoved, float aPromotion, Category... allCategories) {
+        Game game = gameRepository.findGameByGameId(id);
+
+        if (game == null) {
+            throw new IllegalArgumentException("Game with ID " + id + " does not exist.");
+        }
+
+        game.setPrice(aPrice);
+        game.setToBeRemoved(aToBeRemoved);
+        game.setPromotion(aPromotion);
+        game.setCategories(allCategories);
+        game.setName(aName);
+        game.setDescription(aDescription);
+        game.setStockQuantity(aStockQuantity);
+        game.setPhotoURL(aPhotoURL);
+        game.setToBeAdded(aToBeAdded);
+
+        return gameRepository.save(game);
     }
 
     // Get all games
-    public List<GameDTO> getAllGames() {
+    @Transactional
+    public List<Game> getAllGames() {
         List<Game> games = (List<Game>) gameRepository.findAll();
-        return games.stream().map(this::convertToDTO).toList();
+        return games;
     }
 
     // Find a game by ID
-    public Optional<GameDTO> getGameById(int gameId) {
-        return gameRepository.findById(gameId).map(this::convertToDTO);
+    @Transactional
+    public Game getGame(int id) {
+        Game gameFromDb = gameRepository.findGameByGameId(id);
+        return gameFromDb;
     }
 
-    public GameDTO getGameByName(String name) {
-        Game game = gameRepository.findByName(name)
-                .orElseThrow(() -> new ResourceNotFoundException("Game not found with name: " + name));
-        return new GameDTO(game.getId(), game.getName(), game.getCategory(), game.getPrice());
+    @Transactional
+    public Game getGameByName(String name) {
+        List<Game> games = (List<Game>) gameRepository.findAll();
+
+        for (Game game : games) {
+            if (Objects.equals(game.getName(), name)) {
+                return game;
+
+            }
+
+        }
+        return null;
+
     }
-    
+
+    @Transactional
+    public List<Game> getGamesByCategory(String category) {
+        List<Game> games = (List<Game>) gameRepository.findAll();
+        for (Game game : games) {
+            if (!game.getCategories().contains(category)) {
+                games.remove(games);
+
+            }
+
+        }
+        return games;
+    }
+
     // Delete a game by ID
+    @Transactional
     public void deleteGame(int gameId) {
         gameRepository.deleteById(gameId);
     }
 
-    public List<GameDTO> getGamesByCategory(String category) {
-        List<Game> games = gameRepository.findByCategory(category);
-        return games.stream().map(this::convertToDTO).toList();
+    @Transactional
+    public boolean approvalToAddGame(int id) {
+        Game gameFromDb = gameRepository.findGameByGameId(id);
+        if (gameFromDb == null) {
+            throw new RuntimeException("The game does not exist in the database");
+        } else if (gameFromDb.getToBeAdded()) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
+    // Remove Game
+    @Transactional
+    public boolean approvalToRemoveGame(int id) {
+        Game gameFromDb = gameRepository.findGameByGameId(id);
+        if (gameFromDb == null) {
+            throw new RuntimeException("The game does not exist in the database");
+        } else if (gameFromDb.getToBeRemoved()) {
+            return true;
+        } else {
+            return false;
+        }
+
     }
 }
-
