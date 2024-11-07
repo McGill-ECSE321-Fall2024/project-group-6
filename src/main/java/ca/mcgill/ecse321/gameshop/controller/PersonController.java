@@ -59,8 +59,8 @@ public class PersonController {
      * @return The person with the given ID.
      */
     @GetMapping("/person/{id}")
-    public PersonResponseDto getPersonByID(@PathVariable int id) {
-        Person p = personService.getPersonByID(id);
+    public PersonResponseDto findPersonByUserId(@PathVariable int id) {
+        Person p = personService.findPersonByUserId(id);
         return new PersonResponseDto(p);
     }
 
