@@ -1,69 +1,69 @@
-import ca.mcgill.ecse321.gameshop.dto.GameDTO;
-import ca.mcgill.ecse321.gameshop.service.GameService;
+package ca.mcgill.ecse321.gameshop.controller;
+
+
+import ca.mcgill.ecse321.gameshop.dto.*;
+import ca.mcgill.ecse321.gameshop.model.*;
+import ca.mcgill.ecse321.gameshop.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/games")
 public class GameController {
-
     @Autowired
     private GameService gameService;
 
-    // Create a new game
-    @PostMapping
-    public GameDTO createGame(@RequestBody GameDTO gameDTO) {
-        return gameService.saveGame(gameDTO);
+    @PostMapping("/games")
+    public GameResponseDTO createGameByManager(@RequestBody GameResponseDTO g){
+        Game game = gameService.addGame(g.getName(),g.getDescription(),g.getPrice(),g.getStockQuantity(),g.getPhotoURL(),g.getToBeAdded(), (Category) g.getCategories());
+        return  new GameResponseDTO(game);
+    }
+    @PostMapping("/employees/games")
+    public GameResponseDTO createGameByEmployee(@RequestBody GameResponseDTO g){
+
+        Game game = gameService.addGameByEmployee(g.getName(), g.getDescription(), g.getPrice(), g.getStockQuantity(), g.getPhotoURL(), g.getToBeAdded(), (Category) g.getCategories());
+        return new GameResponseDTO(game);
+
     }
 
-    // Update an existing game
-    @PutMapping("/{id}")
-    public ResponseEntity<GameDTO> updateGame(@PathVariable Integer id, @RequestBody GameDTO gameDetails) {
-        return gameService.getGameById(id)
-                .map(existingGame -> {
-                    gameDetails.setId(id);  // Ensure the ID is set for update
-                    return ResponseEntity.ok(gameService.saveGame(gameDetails));
-                })
-                .orElse(ResponseEntity.notFound().build());
-    }
 
-    // Delete a game
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteGame(@PathVariable Integer id) {
-        if (gameService.getGameById(id).isPresent()) {
-            gameService.deleteGame(id);
-            return ResponseEntity.ok().build();
+    @GetMapping("/games/{id}")
+    public GameResponseDTO findGameById(@PathVariable int id){
+        return new GameResponseDTO(gameService.getGame(id));
+    }
+    @GetMapping("/games")
+    public  GamesResponseDTO findAllGames(){
+        List<GameResponseDTO> games = new ArrayList<>();
+        for (Game g: gameService.getAllGames()) {
+            games.add(new GameResponseDTO(g));
         }
-        return ResponseEntity.notFound().build();
+        return new GamesResponseDTO(games);
+    }
+    @GetMapping("/games/{name}")
+    public GameResponseDTO findGameByName(@PathVariable String name){
+        return new GameResponseDTO(gameService.getGameByName(name));
+    }
+    @GetMapping("/games/{category}")
+    public GamesResponseDTO findGamesByCategory(@PathVariable String category){
+        List<GameResponseDTO> games = new ArrayList<>();
+        List<Game>gamesCopy= gameService.getGamesByCategory(category);
+        for (Game g: gamesCopy) {
+            games.add(new GameResponseDTO(g));
+        }
+        return new GamesResponseDTO(games);
     }
 
-    // Get all games
-    @GetMapping
-    public List<GameDTO> getAllGames() {
-        return gameService.getAllGames();
+    @PutMapping("/games/{id}")
+    public GameResponseDTO updateEmployee(@PathVariable int id, @RequestBody GameRequestDTO game) {
+        Game g = gameService.updateGame(id,game.getName(),game.getDescription(),game.getPrice(),game.getStockQuantity(),game.getPhotoURL(),game.getToBeAdded(),game.getToBeRemoved(),game.getPromotion(),(Category) game.getCategories());
+
+        return new GameResponseDTO(g);
     }
 
-    // Get a game by ID
-    @GetMapping("/{id}")
-    public ResponseEntity<GameDTO> getGameById(@PathVariable Integer id) {
-        return gameService.getGameById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
-
-    @GetMapping("/name/{name}")
-    public ResponseEntity<GameDTO> getGameByName(@PathVariable String name) {
-        GameDTO gameDTO = gameService.getGameByName(name);
-        return ResponseEntity.ok(gameDTO);
-    }
-
-    // Get games by category
-    @GetMapping("/category")
-    public List<GameDTO> getGamesByCategory(@RequestParam String category) {
-        return gameService.getGamesByCategory(category);
+    @DeleteMapping("/games/{id}")
+    public void deleteGame(@PathVariable int id){
+        gameService.deleteGame(id);
     }
 }
-
