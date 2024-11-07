@@ -45,18 +45,16 @@ public class PersonServiceTests {
         when(repo.save(any(Person.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
 
         // Act
-        try{
-            Person createdPerson = service.createPerson(VALID_NAME, VALID_EMAIL, VALID_PASSWORD, VALID_PHONE);
-            // Assert
-            assertNotNull(createdPerson);
-            assertEquals(VALID_NAME, createdPerson.getUsername());
-            assertEquals(VALID_PASSWORD, createdPerson.getPassword());
-            assertEquals(VALID_PHONE, createdPerson.getPhone());
-            // Check that save() was called exactly once with given argument
-            verify(repo, times(1)).save(createdPerson);
-        } catch (Exception e) {
-            System.out.println("Hi");
-        }
+        Person createdPerson = service.createPerson(VALID_NAME, VALID_EMAIL, VALID_PASSWORD, VALID_PHONE);
+
+        // Assert
+        assertNotNull(createdPerson);
+        assertEquals(VALID_NAME, createdPerson.getUsername());
+        assertEquals(VALID_PASSWORD, createdPerson.getPassword());
+        assertEquals(VALID_PHONE, createdPerson.getPhone());
+
+        // Check that save() was called exactly once with given argument
+        verify(repo, times(1)).save(createdPerson);
     }
 
     @Test
