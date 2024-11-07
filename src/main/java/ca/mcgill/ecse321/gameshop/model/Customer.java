@@ -266,9 +266,9 @@ public Customer(){
     return 0;
   }
   /* Code from template association_AddManyToOne */
-  public Payment addPayment(String aBillingAddress, int aCreditCardNb, String aExpirationDate, int aCvc, int aPaymentId, Command aCommand)
+  public Payment addPayment(String aBillingAddress, int aCreditCardNb, String aExpirationDate, int aCvc)
   {
-    return new Payment(aBillingAddress, aCreditCardNb, aExpirationDate, aCvc,  this, aCommand);
+    return new Payment(aBillingAddress, aCreditCardNb, aExpirationDate, aCvc);
   }
 
   public boolean addPayment(Payment aPayment)
