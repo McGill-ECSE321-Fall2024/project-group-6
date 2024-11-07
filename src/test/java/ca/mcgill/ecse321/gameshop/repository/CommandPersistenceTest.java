@@ -1,19 +1,18 @@
 package ca.mcgill.ecse321.gameshop.repository;
 
-import ca.mcgill.ecse321.gameshop.model.*;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.AfterEach;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.sql.Date;
-import java.util.Random;
+import ca.mcgill.ecse321.gameshop.model.Command;
+import ca.mcgill.ecse321.gameshop.model.Customer;
+import ca.mcgill.ecse321.gameshop.model.Payment;
+import ca.mcgill.ecse321.gameshop.model.Person;
 
 @SpringBootTest
 public class CommandPersistenceTest {

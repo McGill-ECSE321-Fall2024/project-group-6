@@ -17,7 +17,7 @@ public class PaymentService {
 
     // Create a new payment and save it in the repository
     @Transactional
-    public Payment createPayment(String aBillingAddress, int aCreditCardNb, String aExpirationDate, int aCvc) {
+    public Payment createPayment(String aBillingAddress, long aCreditCardNb, String aExpirationDate, int aCvc) {
         Payment p = new Payment(aBillingAddress, aCreditCardNb, aExpirationDate, aCvc);
         return paymentRepo.save(p);
     }
@@ -41,7 +41,7 @@ public class PaymentService {
 
     // Update an existing payment by ID
     @Transactional
-    public Payment updatePayment(int id, String aBillingAddress, int aCreditCardNb, String aExpirationDate, int aCvc) {
+    public Payment updatePayment(int id, String aBillingAddress, long aCreditCardNb, String aExpirationDate, int aCvc) {
         Payment p = paymentRepo.findPaymentByPaymentId(id);
 
         if (p == null) {

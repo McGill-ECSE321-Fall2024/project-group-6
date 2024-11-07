@@ -7,7 +7,7 @@ public class PaymentRequestDto {
     @NotBlank(message="Billing Address is required.")
     private String billingAddress;
     @NotBlank(message="Credit card number is required.")
-    private int creditCardNumber;
+    private long creditCardNumber;
     @NotBlank(message="Expiration date is required.")
     private String expirationDate;
     @NotBlank(message="CVC is required.")
@@ -16,7 +16,7 @@ public class PaymentRequestDto {
     public PaymentRequestDto() {
     }
 
-    public PaymentRequestDto(String billingAddress, int creditCardNumber, String expirationDate, int cvc) {
+    public PaymentRequestDto(String billingAddress, long creditCardNumber, String expirationDate, int cvc) {
         this.billingAddress = billingAddress;
         this.creditCardNumber = creditCardNumber;
         this.expirationDate = expirationDate;
@@ -27,7 +27,7 @@ public class PaymentRequestDto {
         return billingAddress;
     }
 
-    public int getCreditCardNumber() {
+    public long getCreditCardNumber() {
         return creditCardNumber;
     }
 

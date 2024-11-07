@@ -23,7 +23,7 @@ public class Payment
 
   //Payment Attributes
   private String billingAddress;
-  private int creditCardNb;
+  private long creditCardNb;
   private String expirationDate;
   private int cvc;
   @Id
@@ -43,7 +43,7 @@ public class Payment
   public Payment(){
 
   }
-  public Payment(String aBillingAddress, int aCreditCardNb, String aExpirationDate, int aCvc)
+  public Payment(String aBillingAddress, long aCreditCardNb, String aExpirationDate, int aCvc)
   {
     billingAddress = aBillingAddress;
     creditCardNb = aCreditCardNb;
@@ -52,7 +52,7 @@ public class Payment
     commands = new ArrayList<Command>();
 
   }
-  public Payment(String aBillingAddress, int aCreditCardNb, String aExpirationDate, int aCvc,  Customer aCustomer)
+  public Payment(String aBillingAddress, long aCreditCardNb, String aExpirationDate, int aCvc,  Customer aCustomer)
   {
     billingAddress = aBillingAddress;
     creditCardNb = aCreditCardNb;
@@ -79,7 +79,7 @@ public class Payment
     return wasSet;
   }
 
-  public boolean setCreditCardNb(int aCreditCardNb)
+  public boolean setCreditCardNb(long aCreditCardNb)
   {
     boolean wasSet = false;
     creditCardNb = aCreditCardNb;
@@ -116,7 +116,7 @@ public class Payment
     return billingAddress;
   }
 
-  public int getCreditCardNb()
+  public long getCreditCardNb()
   {
     return creditCardNb;
   }

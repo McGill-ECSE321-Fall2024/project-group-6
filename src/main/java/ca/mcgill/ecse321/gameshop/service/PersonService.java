@@ -28,7 +28,7 @@ public class PersonService {
     }
 
     // Find a person by their ID
-    public Person findPersonByUserId(int id) {
+    public Person getPersonByUserId(int id) {
         Person p = personRepo.findPersonByUserId(id);
 
         // Throw an exception if no person is found

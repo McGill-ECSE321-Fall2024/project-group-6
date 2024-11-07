@@ -47,18 +47,6 @@ public class GuestService {
         return g;
     }
 
-    // Update an existing guest's details by their ID
-    @Transactional
-    public Guest updateGuest(int id) {
-        Guest g = guestRepo.findGuestByGuestId(id);
-
-        if (g == null) {
-			throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Guest with ID " + id + " does not exist."));
-        }
-        
-        return guestRepo.save(g);
-    }
-
     // Delete a guest by their ID
     @Transactional
     public void deleteGuest(int id) {

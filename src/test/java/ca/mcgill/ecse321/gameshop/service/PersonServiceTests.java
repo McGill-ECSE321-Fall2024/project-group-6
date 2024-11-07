@@ -45,11 +45,12 @@ public class PersonServiceTests {
         when(repo.save(any(Person.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
 
         // Act
-        Person createdPerson = service.createPerson(VALID_NAME, VALID_EMAIL, VALID_PASSWORD, VALID_PHONE);
+        Person createdPerson = service.createPerson(VALID_NAME, "mario@gmail.com", VALID_PASSWORD, VALID_PHONE);
 
         // Assert
         assertNotNull(createdPerson);
         assertEquals(VALID_NAME, createdPerson.getUsername());
+        assertEquals("mario@gmail.com", createdPerson.getEmail());
         assertEquals(VALID_PASSWORD, createdPerson.getPassword());
         assertEquals(VALID_PHONE, createdPerson.getPhone());
 
@@ -63,7 +64,7 @@ public class PersonServiceTests {
         when(repo.findPersonByUserId(ID)).thenReturn(new Person(VALID_NAME, VALID_EMAIL, VALID_PASSWORD, VALID_PHONE));
 
         // Act
-        Person p = service.findPersonByUserId(ID);
+        Person p = service.getPersonByUserId(ID);
 
         // Assert
         assertNotNull(p);
@@ -74,12 +75,12 @@ public class PersonServiceTests {
     }
 
     @Test
-    public void testReadPersonByInvalidId() {
+    public void testGetPersonByInvalidId() {
         // Arrange
         // Act
         // Assert
 		GameShopException ex = assertThrows(GameShopException.class,
-				() -> service.findPersonByUserId(ID));
+				() -> service.getPersonByUserId(ID));
 		assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
 		assertEquals("Person with ID " + ID + " does not exist.", ex.getMessage());
     }
@@ -87,7 +88,7 @@ public class PersonServiceTests {
     @Test
     public void testGetAllPeople() {
         // Arrange
-        Person p1 = new Person(VALID_NAME, VALID_EMAIL, VALID_PASSWORD, VALID_PHONE);
+        Person p1 = new Person(VALID_NAME, "test@mail.mcgill.ca", VALID_PASSWORD, VALID_PHONE);
         Person p2 = new Person("Alice", "alice@mail.mcgill.ca", "password123", "+1(514)9876543");
         List<Person> personList = Arrays.asList(p1, p2);
         when(repo.findAll()).thenReturn(personList);
@@ -113,30 +114,27 @@ public class PersonServiceTests {
         String updatedPhone = "+1(514)7654321";
         
         Person existingPerson = new Person(VALID_NAME, VALID_EMAIL, VALID_PASSWORD, VALID_PHONE);
-    
+        
+        // Simulate finding the person by ID
         when(repo.findPersonByUserId(ID)).thenReturn(existingPerson);
-        // Mock the save method to return the updated person when save() is called
-        when(repo.save(any(Person.class))).thenAnswer((InvocationOnMock iom) -> {
-        Person updatedPerson = iom.getArgument(0);
-        updatedPerson.setUsername(updatedName);
-        updatedPerson.setEmail(updatedEmail);
-        updatedPerson.setPassword(updatedPassword);
-        updatedPerson.setPhone(updatedPhone);
-        return updatedPerson;
-    });
-
-    // Act
-    Person updatedPerson = service.updatePerson(ID, updatedName, updatedEmail, updatedPassword, updatedPhone);
-
-    // Assert
-    assertNotNull(updatedPerson);
-    assertEquals(updatedName, updatedPerson.getUsername());
-    assertEquals(updatedEmail, updatedPerson.getEmail());
-    assertEquals(updatedPassword, updatedPerson.getPassword());
-    assertEquals(updatedPhone, updatedPerson.getPhone());
-
-    verify(repo, times(1)).save(updatedPerson);
+        
+        // Simulate the save operation returning the existing (now updated) person
+        when(repo.save(any(Person.class))).thenReturn(existingPerson);
+    
+        // Act
+        Person updatedPerson = service.updatePerson(ID, updatedName, updatedEmail, updatedPassword, updatedPhone);
+    
+        // Assert
+        assertNotNull(updatedPerson);
+        assertEquals(updatedName, updatedPerson.getUsername());
+        assertEquals(updatedEmail, updatedPerson.getEmail());
+        assertEquals(updatedPassword, updatedPerson.getPassword());
+        assertEquals(updatedPhone, updatedPerson.getPhone());
+    
+        // Verify that the save method was called exactly once with the updated person
+        verify(repo, times(1)).save(existingPerson);
     }
+    
 
     @Test
     public void testUpdatePersonByInvalidId() {
@@ -152,7 +150,7 @@ public class PersonServiceTests {
     @Test
     public void testDeletePersonByValidId() {
         // Arrange
-        Person existingPerson = new Person(VALID_NAME, VALID_EMAIL, VALID_PASSWORD, VALID_PHONE);
+        Person existingPerson = new Person(VALID_NAME, "test@gmail.com", VALID_PASSWORD, VALID_PHONE);
     
         when(repo.findPersonByUserId(ID)).thenReturn(existingPerson);
 

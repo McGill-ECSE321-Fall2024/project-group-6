@@ -60,7 +60,7 @@ public class PersonController {
      */
     @GetMapping("/person/{id}")
     public PersonResponseDto findPersonByUserId(@PathVariable int id) {
-        Person p = personService.findPersonByUserId(id);
+        Person p = personService.getPersonByUserId(id);
         return new PersonResponseDto(p);
     }
 
