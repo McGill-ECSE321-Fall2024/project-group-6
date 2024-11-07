@@ -1,6 +1,5 @@
 namespace ca.mcgill.ecse321.gameshop.model;
 
-// Defining the Person class
 class Person {
   username;
   unique email;
@@ -29,7 +28,7 @@ class Customer {
 // Employee class extending Role
 class Employee {
   isA Role;
-  assignedTasks;
+  lazy List <String> assignedTasks;
 
 Boolean activated;
 1 creator -- * Game created;

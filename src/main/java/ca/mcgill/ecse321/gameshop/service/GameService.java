@@ -1,6 +1,7 @@
 package ca.mcgill.ecse321.gameshop.service;
 
 import ca.mcgill.ecse321.gameshop.model.Category;
+import ca.mcgill.ecse321.gameshop.model.Employee;
 import ca.mcgill.ecse321.gameshop.model.Game;
 import ca.mcgill.ecse321.gameshop.repository.*;
 import jakarta.transaction.Transactional;
@@ -15,7 +16,7 @@ public class GameService {
 
     @Autowired
     private GameRepository gameRepository;
-    // Conversion method from Game to GameDTO
+
 
 
     @Transactional
@@ -25,39 +26,48 @@ public class GameService {
         return gameRepository.save(game);
     }
     @Transactional
-    public void removeGame(int id) {
-        gameRepository.deleteById(id);
+    public Game addGameByEmployee(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,boolean tobeAdded,Category... allCategories) {
+        tobeAdded=false;
+        Game game= new Game(aName,aDescription,aPrice,aStockQuantity,aPhotoURL,tobeAdded,allCategories);
+        return gameRepository.save(game);
     }
+
 
     @Transactional
-    public Game addPromotion(float promotion, int id) {
+    public Game updateGame(int id,String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,  boolean aToBeAdded, boolean aToBeRemoved, float aPromotion, Category... allCategories){
+        Game game = gameRepository.findGameByGameId(id);
 
-        Game gameFromDB= gameRepository.findGameByGameId(id);
-        promotion=promotion/100;
-        gameFromDB.setPromotion(promotion);
-        return gameRepository.save(gameFromDB);
+        if (game== null) {
+            throw new IllegalArgumentException("Game with ID " + id + " does not exist.");
+        }
+
+        game.setPrice(aPrice);
+        game.setToBeRemoved(aToBeRemoved);
+        game.setPromotion(aPromotion);
+        game.setCategories(allCategories);
+        game.setName(aName);
+        game.setDescription(aDescription);
+        game.setStockQuantity(aStockQuantity);
+        game.setPhotoURL(aPhotoURL);
+        game.setToBeAdded(aToBeAdded);
+
+        return gameRepository.save(game);
     }
 
-    @Transactional
-    public Game removePromotion(int id) {
-
-        Game gameFromDB= gameRepository.findGameByGameId(id);
-        //promotion=promotion/100;
-        gameFromDB.setPromotion(0);
-        return gameRepository.save(gameFromDB);
-    }
     // Get all games
+    @Transactional
     public List<Game> getAllGames() {
         List<Game> games = (List<Game>) gameRepository.findAll();
         return games;
     }
 
     // Find a game by ID
-    public Game getGameById(int id) {
+    @Transactional
+    public Game getGame(int id) {
         Game gameFromDb=gameRepository.findGameByGameId(id);
         return gameFromDb;
     }
-
+@Transactional
     public Game getGameByName(String name) {
         List<Game> games = (List<Game>) gameRepository.findAll();
 
@@ -71,23 +81,26 @@ public class GameService {
         return null;
 
     }
-
-    // Delete a game by ID
-    public void deleteGame(int gameId) {
-        gameRepository.deleteById(gameId);
-    }
-
+    @Transactional
     public List<Game> getGamesByCategory(String category) {
         List<Game> games = (List<Game>) gameRepository.findAll();
         for (Game game : games) {
             if (!game.getCategories().contains(category)) {
-                game.delete();
+                games.remove(games);
 
             }
 
         }
         return games;
     }
+
+    // Delete a game by ID
+    @Transactional
+    public void deleteGame(int gameId) {
+        gameRepository.deleteById(gameId);
+    }
+
+
 
     /**
      * @author joseph
@@ -129,6 +142,7 @@ public class GameService {
         }
 
     }
+    /*
     @Transactional
     public Game approveToBeAdded(int id) {
         Game gameFromDB= gameRepository.findGameByGameId(id);
@@ -145,6 +159,8 @@ public class GameService {
         return gameRepository.save(gameFromDB);
     }
 
+     */
+/*
     @Transactional
     public Game approveToBeDeleted(int id) {
         Game gameFromDB= gameRepository.findGameByGameId(id);
@@ -163,6 +179,30 @@ public class GameService {
 
         return gameRepository.save(gameFromDB);
     }
+
+ */
+    /*
+    @Transactional
+    public Game removePromotion(int id) {
+
+        Game gameFromDB= gameRepository.findGameByGameId(id);
+        //promotion=promotion/100;
+        gameFromDB.setPromotion(0);
+        return gameRepository.save(gameFromDB);
+    }
+
+ */
+    /*
+    @Transactional
+    public Game addPromotion(float promotion, int id) {
+
+        Game gameFromDB= gameRepository.findGameByGameId(id);
+        promotion=promotion/100;
+        gameFromDB.setPromotion(promotion);
+        return gameRepository.save(gameFromDB);
+    }
+
+ */
 
 
 

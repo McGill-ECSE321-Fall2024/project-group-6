@@ -107,10 +107,12 @@ public class EmployeeController {
      * @param eid
      * @param taskToDelete
      */
-
+/*
     @DeleteMapping("/employees/{eid}/tasks")
     public void deleteTask(@PathVariable int eid,String taskToDelete) {
 
         employeeService.deleteTask(eid,taskToDelete);
     }
+
+ */
 }

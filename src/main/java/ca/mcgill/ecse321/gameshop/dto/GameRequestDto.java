@@ -3,6 +3,9 @@ package ca.mcgill.ecse321.gameshop.dto;
 import ca.mcgill.ecse321.gameshop.model.*;
 import jakarta.validation.constraints.NotBlank;
 
+import java.util.Collections;
+import java.util.List;
+
 public class GameRequestDto {
 
     @NotBlank(message = "Name of the game can not be empty")
@@ -20,8 +23,9 @@ public class GameRequestDto {
 
     private boolean toBeRemoved;
     private float promotion;
+    private List<Category> categories;
 
-    public GameRequestDto(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,  boolean aToBeAdded, boolean aToBeRemoved, float aPromotion) {
+    public GameRequestDto(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,  boolean aToBeAdded, boolean aToBeRemoved, float aPromotion,Category... allCategories) {
         this.description = aDescription;
         this.name = aName;
         this.photoURL = aPhotoURL;
@@ -30,6 +34,7 @@ public class GameRequestDto {
         this.toBeAdded = aToBeAdded;
         this.toBeRemoved = aToBeRemoved;
         this.stockQuantity =aStockQuantity;
+        this.categories= List.of(allCategories);
     }
 
     public boolean setName(String aName) {
@@ -128,5 +133,10 @@ public class GameRequestDto {
     public float getPromotion() {
 
         return promotion;
+    }
+    public List<Category> getCategories()
+    {
+        List<Category> newCategories = Collections.unmodifiableList(categories);
+        return newCategories;
     }
 }

@@ -65,6 +65,28 @@ public Game(){
     categories = new ArrayList<Category>();
 
   }
+  public Game(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,  boolean aToBeAdded, boolean aToBeRemoved, float aPromotion, Category... allCategories)
+  {
+    //aName, aDescription, aPrice, aStockQuantity, aPhotoURL,  aToBeAdded, aToBeRemoved, aManager, this, allCategories
+    name = aName;
+    description = aDescription;
+    price = aPrice;
+    stockQuantity = aStockQuantity;
+    photoURL = aPhotoURL;
+    toBeAdded = aToBeAdded;
+    toBeRemoved = aToBeRemoved;
+    promotion=aPromotion;
+    reviews = new ArrayList<Review>();
+
+    boolean didAddCategories = setCategories(allCategories);
+    if (!didAddCategories)
+    {
+      throw new RuntimeException("Unable to create Game, must have at least 1 categories. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
+    }
+    guests = new ArrayList<Guest>();
+    categories = new ArrayList<Category>();
+
+  }
 
   public Game(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,  boolean aToBeAdded, boolean aToBeRemoved, float aPromotion, Manager aManager, Employee aCreator, Category... allCategories)
   {

@@ -2,6 +2,9 @@ package ca.mcgill.ecse321.gameshop.dto;
 
 import ca.mcgill.ecse321.gameshop.model.*;
 
+import java.util.Collections;
+import java.util.List;
+
 
 public class GameResponseDto {
 
@@ -17,6 +20,9 @@ public class GameResponseDto {
     private boolean toBeRemoved;
     private float promotion;
 
+    private List<Category> categories;
+
+
     public GameResponseDto(Game game) {
         this.gameId=game.getGameId();
         this.description = game.getDescription();
@@ -27,6 +33,7 @@ public class GameResponseDto {
         this.toBeAdded = game.getToBeAdded();
         this.toBeRemoved = game.getToBeRemoved();
         this.stockQuantity = game.getStockQuantity();
+        this.categories=game.getCategories();
     }
 
     public boolean setName(String aName) {
@@ -127,5 +134,10 @@ public class GameResponseDto {
 
     public float getPromotion() {
         return promotion;
+    }
+    public List<Category> getCategories()
+    {
+        List<Category> newCategories = Collections.unmodifiableList(categories);
+        return newCategories;
     }
 }

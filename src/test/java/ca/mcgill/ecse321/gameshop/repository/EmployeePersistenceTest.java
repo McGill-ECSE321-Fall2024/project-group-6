@@ -12,7 +12,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.Random;
+import java.util.ArrayList;
+import java.util.*;
 
 @SpringBootTest
 public class EmployeePersistenceTest {
@@ -40,12 +41,15 @@ public class EmployeePersistenceTest {
 
         Person person = new Person("johndoe", "joseph.roustom@mail.mcgill.ca", "password123", "555-1234");
         person = personRepo.save(person);
-
+        List <String> tasks= new ArrayList<>();
+        tasks.add("hey");
+        tasks.add("bye");
         //String task ="Add a game to the store";
-        Employee employee = new Employee(person,true);
+        Employee employee = new Employee(person,tasks);
         employee = employeeRepo.save(employee);
         Employee employeeFromDB = employeeRepo.findEmployeeByRoleId(employee.getRoleId());
         assertNotNull(employeeFromDB);
-        assertEquals(employeeFromDB.getActivated(),true);
+        assertEquals(employeeFromDB.getActivated(),false);
+        assertEquals(employeeFromDB.getAssignedTasks(),tasks);
     }
 }

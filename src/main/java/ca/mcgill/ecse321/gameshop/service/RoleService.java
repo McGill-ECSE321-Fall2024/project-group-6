@@ -25,16 +25,19 @@ public class RoleService {
     @Autowired
     private EmployeeRepository employeeRepository;
 
-    public Role createRole(String username, String emailAddress, String phone, String password,String address) {
+    public Role createRoleCustomer(String username, String emailAddress, String phone, String password,String address) {
 
         Person person = new Person(username, emailAddress, phone, password);
-        if(address==null){
-            Employee employee= new Employee(person,true);
-            return employee;
-        }else{
-            Customer customer= new Customer(person,address);
-            return customer;
-        }
+            Customer c= new Customer(person,address);
+            return roleRepository.save(c);
+
+    }
+    public Role createRoleEmployee(String username, String emailAddress, String phone, String password) {
+
+        Person person = new Person(username, emailAddress, phone, password);
+            Employee e= new Employee(person,true);
+            return roleRepository.save(e);
+
     }
 
     public List<Role> getAllRoles() {
