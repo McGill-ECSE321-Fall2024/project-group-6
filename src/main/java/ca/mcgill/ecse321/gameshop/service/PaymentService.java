@@ -1,8 +1,10 @@
 package ca.mcgill.ecse321.gameshop.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import ca.mcgill.ecse321.gameshop.exception.GameShopException;
 import ca.mcgill.ecse321.gameshop.model.Payment;
 import ca.mcgill.ecse321.gameshop.repository.PaymentRepository;
 import jakarta.transaction.Transactional;
@@ -30,8 +32,8 @@ public class PaymentService {
         Payment p = paymentRepo.findPaymentByPaymentId(id);
 
         // Throw an exception if no payment is found
-        if (p == null){
-            throw new IllegalArgumentException("Payment with ID " + id + " does not exist.");
+        if (p == null) {
+			throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Payment with ID " + id + " does not exist."));
         }
 
         return p;
@@ -42,8 +44,8 @@ public class PaymentService {
     public Payment updatePayment(int id, String aBillingAddress, int aCreditCardNb, String aExpirationDate, int aCvc) {
         Payment p = paymentRepo.findPaymentByPaymentId(id);
 
-        if (p == null){
-            throw new IllegalArgumentException("Payment with ID " + id + " does not exist.");
+        if (p == null) {
+			throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Payment with ID " + id + " does not exist."));
         }
 
         p.setBillingAddress(aBillingAddress);
@@ -58,8 +60,8 @@ public class PaymentService {
     public void deletePayment(int id) {
         Payment p = paymentRepo.findPaymentByPaymentId(id);
 
-        if (p == null){
-            throw new IllegalArgumentException("Payment with ID " + id + " does not exist.");
+        if (p == null) {
+			throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Payment with ID " + id + " does not exist."));
         }
 
         paymentRepo.delete(p);

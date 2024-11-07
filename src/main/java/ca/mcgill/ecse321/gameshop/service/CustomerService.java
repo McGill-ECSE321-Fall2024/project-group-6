@@ -1,8 +1,10 @@
 package ca.mcgill.ecse321.gameshop.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import ca.mcgill.ecse321.gameshop.exception.GameShopException;
 import ca.mcgill.ecse321.gameshop.model.Customer;
 import ca.mcgill.ecse321.gameshop.model.Person;
 import ca.mcgill.ecse321.gameshop.repository.CustomerRepository;
@@ -33,7 +35,7 @@ public class CustomerService {
 
         // Exception if no customer is found
         if (c == null) {
-            throw new RuntimeException("Customer with ID " + id + "does not exist.");
+			throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Customer with ID " + id + " does not exist."));
         }
 
         return c;
@@ -45,7 +47,7 @@ public class CustomerService {
         Customer c = customerRepo.findCustomerByRoleId(id);
 
         if (c == null) {
-            throw new RuntimeException("Customer with ID " + id + "does not exist.");
+			throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Customer with ID " + id + " does not exist."));
         }
 
         c.setPerson(aPerson);
@@ -60,7 +62,7 @@ public class CustomerService {
         Customer c = customerRepo.findCustomerByRoleId(id);
 
         if (c == null) {
-            throw new RuntimeException("Customer with ID " + id + "does not exist.");
+			throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Customer with ID " + id + " does not exist."));
         }
         
         customerRepo.delete(c);

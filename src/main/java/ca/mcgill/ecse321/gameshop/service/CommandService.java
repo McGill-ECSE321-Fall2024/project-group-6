@@ -4,8 +4,10 @@ import java.sql.Date;
 import java.time.LocalDate;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import ca.mcgill.ecse321.gameshop.exception.GameShopException;
 import ca.mcgill.ecse321.gameshop.model.Command;
 import ca.mcgill.ecse321.gameshop.repository.CommandRepository;
 import jakarta.transaction.Transactional;
@@ -40,7 +42,7 @@ public class CommandService {
         Command c = commandRepo.findCommandByCommandId(id);
 
         if (c == null) {
-            throw new IllegalArgumentException("Category with ID " + id + " does not exist.");
+			throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Category with ID " + id + " does not exist."));
         }
 
         return c;
@@ -51,7 +53,7 @@ public class CommandService {
         Command c = commandRepo.findCommandByCommandId(id);
 
         if (c == null) {
-            throw new IllegalArgumentException("Command with ID " + id + " does not exist.");
+			throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Category with ID " + id + " does not exist."));
         }
 
         commandRepo.delete(c);

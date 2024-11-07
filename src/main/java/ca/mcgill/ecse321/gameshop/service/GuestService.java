@@ -1,8 +1,10 @@
 package ca.mcgill.ecse321.gameshop.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import ca.mcgill.ecse321.gameshop.exception.GameShopException;
 import ca.mcgill.ecse321.gameshop.model.Game;
 import ca.mcgill.ecse321.gameshop.model.Guest;
 import ca.mcgill.ecse321.gameshop.repository.GameRepository;
@@ -39,7 +41,7 @@ public class GuestService {
 
         // Exception if no guest is found
         if (g == null) {
-            throw new RuntimeException("Guest with ID " + id + "does not exist.");
+			throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Guest with ID " + id + " does not exist."));
         }
 
         return g;
@@ -51,7 +53,7 @@ public class GuestService {
         Guest g = guestRepo.findGuestByGuestId(id);
 
         if (g == null) {
-            throw new RuntimeException("Guest with ID " + id + "does not exist.");
+			throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Guest with ID " + id + " does not exist."));
         }
         
         return guestRepo.save(g);
@@ -63,7 +65,7 @@ public class GuestService {
         Guest g = guestRepo.findGuestByGuestId(id);
 
         if (g == null) {
-            throw new RuntimeException("Guest with ID " + id + "does not exist.");
+			throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Guest with ID " + id + " does not exist."));
         }
 
         guestRepo.delete(g);

@@ -1,8 +1,10 @@
 package ca.mcgill.ecse321.gameshop.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import ca.mcgill.ecse321.gameshop.exception.GameShopException;
 import ca.mcgill.ecse321.gameshop.model.Person;
 import ca.mcgill.ecse321.gameshop.repository.PersonRepository;
 import jakarta.transaction.Transactional;
@@ -31,7 +33,7 @@ public class PersonService {
 
         // Throw an exception if no person is found
         if (p == null) {
-            throw new IllegalArgumentException("Person with ID " + id + " does not exist.");
+			throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Person with ID " + id + " does not exist."));
         }
 
         return p;
@@ -43,7 +45,7 @@ public class PersonService {
         Person p = personRepo.findPersonByUserId(id);
 
         if (p == null) {
-            throw new IllegalArgumentException("Person with ID " + id + " does not exist.");
+			throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Person with ID " + id + " does not exist."));
         }
 
         p.setUsername(aUsername);
@@ -60,7 +62,7 @@ public class PersonService {
         Person p = personRepo.findPersonByUserId(id);
 
         if (p == null) {
-            throw new IllegalArgumentException("Person with ID " + id + " does not exist.");
+			throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Person with ID " + id + " does not exist."));
         }
         
         personRepo.delete(p);
