@@ -60,7 +60,7 @@ Table 2 : Roles of each team member Deliverable 2: <br/>
 | Laurence    | RESTful API methods for Game and Role               |                    |
 |             | README file update                                  |                    |
 |             | Unit tests for Game and Role                        |                  |
-|             |                                                     |                |
+|             | Updating the key decisions                          |                |
 |             |                                                      |                    |
 | Annabelle   | Software Quality Assurance Plan                     |                    |
 |             | Unit tests for Payment and Review                    |                 |
@@ -68,7 +68,7 @@ Table 2 : Roles of each team member Deliverable 2: <br/>
 |             |                                                      |                  |
 | Marine      | RESTful API methods for Employee and Customer        |                   |
 |             | Software Quality Assurance Plan                      |                  |
-|             |                                                      |                  |
+|             | Recording the meeting minutes                        |                  |
 |             |                                                      |                   |
 |             |                                                      |                  |
 | Maissa      | RESTful API methods for Command and Category         |                    |
