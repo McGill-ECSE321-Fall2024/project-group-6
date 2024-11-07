@@ -27,7 +27,8 @@ public class CategoryServiceTests {
     private CategoryRepository repo;
     @InjectMocks
     private CategoryService service;
-    String name = "Action";
+    private String name = "Action";
+    private int ID =3;
 
     @Test
     public void testCreateValidCategory(){
@@ -42,6 +43,18 @@ public class CategoryServiceTests {
     }
 
     @Test
+    public void testCreateDuplicateCategory(){
+
+        Iterable<Category> categories = List.of(new Category(name));
+        when(repo.findAll()).thenReturn(categories);
+
+        GameShopException ex = assertThrows(GameShopException.class,()-> service.createCategory(name));
+
+        assertEquals(HttpStatus.NOT_FOUND,ex.getStatus());
+        assertEquals("Category already exists.",ex.getMessage());
+    }
+
+    @Test
     public void testCreateInvalidCategory(){
         GameShopException ex = assertThrows(GameShopException.class, () -> service.createCategory(null));
 
@@ -53,9 +66,9 @@ public class CategoryServiceTests {
 
     @Test
     public void testGetCategoryByValidId(){
-        when(repo.findCategoryByCategoryId(3)).thenReturn(new Category(name));
+        when(repo.findCategoryByCategoryId(ID)).thenReturn(new Category(name));
 
-        Category foundCategory = service.findCategoryById(3);
+        Category foundCategory = service.findCategoryById(ID);
 
         assertNotNull(foundCategory);
         assertEquals(name,foundCategory.getCategoryName());
@@ -63,78 +76,79 @@ public class CategoryServiceTests {
 
     @Test
     public void testGetCategoryByInvalidId(){
-        when(repo.findCategoryByCategoryId(-1)).thenReturn(null);
         GameShopException ex = assertThrows(GameShopException.class, () -> service.findCategoryById(-1));
 
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
-        assertEquals("Category ID is not valid", ex.getMessage());
+        assertEquals("The Category ID "+ -1 +"is not valid", ex.getMessage());
     }
 
     @Test
     public void testGetCategoryByNonExistentId(){
-        when(repo.findCategoryByCategoryId(3)).thenReturn(null);
-        GameShopException ex = assertThrows(GameShopException.class, () -> service.findCategoryById(3));
+        when(repo.findCategoryByCategoryId(ID)).thenReturn(null);
+        GameShopException ex = assertThrows(GameShopException.class, () -> service.findCategoryById(ID));
 
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
-        assertEquals("Category does not exist", ex.getMessage());
+        assertEquals("There is no Category with ID "+ ID+".", ex.getMessage());
     }
 
     @Test
     public void testUpdateValidCategory(){
         Category c= new Category(name);
-        when(repo.findCategoryByCategoryId(3)).thenReturn(c);
-        Category updatedCategory = service.updateCategory(3,"Sports");
+        when(repo.findCategoryByCategoryId(ID)).thenReturn(c);
+        when(repo.save(any(Category.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
+        Category updatedCategory = service.updateCategory(ID,"Sports");
 
-        //assertNotNull(updatedCategory);
-        assertEquals(name,updatedCategory.getCategoryName());
+        assertNotNull(updatedCategory);
+        assertEquals("Sports",updatedCategory.getCategoryName());
         verify(repo,times(1)).save(updatedCategory);
     }
 
     @Test
     public void testUpdateNonExistentCategory(){
-        when(repo.findCategoryByCategoryId(3)).thenReturn(null);
-        GameShopException ex = assertThrows(GameShopException.class, () -> service.updateCategory(3,"Sports"));
+        when(repo.findCategoryByCategoryId(ID)).thenReturn(null);
+        GameShopException ex = assertThrows(GameShopException.class, () -> service.updateCategory(ID,"Sports"));
 
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
-        assertEquals("Category does not exist", ex.getMessage());
+        assertEquals("There is no Category with ID"+ ID+".", ex.getMessage());
     }
 
     @Test
     public void testUpdateDuplicateCategory(){
-        when(repo.findCategoryByCategoryId(3)).thenReturn(new Category(name));
-        service.createCategory("Sports");
-        GameShopException ex = assertThrows(GameShopException.class, () -> service.updateCategory(3,"Sports"));
+
+        Category c = new Category(name);
+        Iterable<Category> categories = List.of(c, new Category("Sports"));
+        when(repo.findAll()).thenReturn(categories);
+        when(repo.findCategoryByCategoryId(ID)).thenReturn(c);
+
+        GameShopException ex = assertThrows(GameShopException.class, () -> service.updateCategory(ID,"Sports"));
 
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
-        assertEquals("Category already exists", ex.getMessage());
+        assertEquals("Category already exists.", ex.getMessage());
     }
 
     @Test
     public void testDeleteValidCategory(){
-        when(repo.findCategoryByCategoryId(3)).thenReturn(new Category(name));
-        service.deleteCategory(3);
+        when(repo.findCategoryByCategoryId(ID)).thenReturn(new Category(name));
+        service.deleteCategory(ID);
 
-        verify(repo, times(1)).findCategoryByCategoryId(3);
-        verify(repo, times(1)).deleteById(3);
+        verify(repo, times(1)).findCategoryByCategoryId(ID);
+        verify(repo, times(1)).deleteById(ID);
 
     }
     @Test
     public void testDeleteInvalidCategory(){
-        when(repo.findCategoryByCategoryId(-1)).thenReturn(null);
         GameShopException ex = assertThrows(GameShopException.class, () -> service.deleteCategory(-1));
 
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
-        assertEquals("Category ID is not valid.", ex.getMessage());
-
+        assertEquals("The Category ID "+ -1 +"is not valid", ex.getMessage());
     }
 
     @Test
     public void testDeleteNonExistentCategory(){
-        when(repo.findCategoryByCategoryId(3)).thenReturn(null);
-        GameShopException ex = assertThrows(GameShopException.class, () -> service.deleteCategory(3));
+        GameShopException ex = assertThrows(GameShopException.class, () -> service.deleteCategory(ID));
 
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
-        assertEquals("Category does not exist", ex.getMessage());
+        assertEquals("There is no Category with ID "+ ID+".", ex.getMessage());
     }
 
     @Test
