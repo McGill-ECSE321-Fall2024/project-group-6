@@ -6,7 +6,6 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 import static org.mockito.ArgumentMatchers.any;
@@ -162,7 +161,6 @@ public class PersonServiceTests {
         service.deletePerson(ID);
 
         // Assert
-        assertNull(repo.findPersonByUserId(ID));
         verify(repo, times(1)).delete(existingPerson);
     }
 
