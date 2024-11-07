@@ -15,7 +15,7 @@ public class PaymentService {
     private PaymentRepository paymentRepository;
 
     @Transactional
-    public Payment createPayment(String aBillingAddress, int aCreditCardNb, String aExpirationDate, int aCvc, int aTotal) {
+    public Payment createPayment(String aBillingAddress, int aCreditCardNb, String aExpirationDate, int aCvc, int aTotal) { //add exceptions for invalid fields here
         Payment newPayment = new Payment(aBillingAddress, aCreditCardNb, aExpirationDate, aCvc, aTotal);
         return paymentRepository.save(newPayment);
     }
@@ -33,7 +33,7 @@ public class PaymentService {
 
     public void deletePayment(int paymentId) {
         paymentRepository.deleteById(paymentId);
-    }
+    } //if the id does not exist, the crudRepo throws an IllegalArgumentException automatically
 
     public Payment getPaymentById(int paymentId) {
         Payment payment = paymentRepository.findPaymentByPaymentId(paymentId);

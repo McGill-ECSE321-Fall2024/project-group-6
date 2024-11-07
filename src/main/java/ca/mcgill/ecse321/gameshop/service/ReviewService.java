@@ -46,4 +46,10 @@ public class ReviewService {
     public void deleteReview(int id) {
         reviewRepository.deleteById(id);
     }
+
+    public void likeReview(int id) {
+        Review review = reviewRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Review not found"));
+        review.setAmountOfLikes(review.getAmountOfLikes() + 1);
+    }
 }
