@@ -1,10 +1,11 @@
 /*PLEASE DO NOT EDIT THIS CODE*/
 /*This code was generated using the UMPLE 1.35.0.7523.c616a4dce modeling language!*/
 package ca.mcgill.ecse321.gameshop.model;
-import java.util.*;
 
-
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 
 
 
@@ -29,8 +30,8 @@ public class Command
     private float totalPrice;
 
     //Command Associations
-    @OneToMany
-    private List<Payment> payments;
+    @ManyToOne
+    private Payment payment;
     @ManyToOne
     private Customer customer;
     //------------------------
@@ -39,23 +40,22 @@ public class Command
     public Command (){
 
     }
-    public Command( String aCommandDate, float aTotalPrice, Customer aCustomer)
+    public Command( String aCommandDate, float aTotalPrice)
     {
-        // commandId = aCommandId;
         commandDate = aCommandDate;
         totalPrice = aTotalPrice;
-        payments = new ArrayList<Payment>();
+        //payments = new ArrayList<Payment>();
+    }
+    public Command( String aCommandDate, float aTotalPrice, Customer aCustomer)
+    {
+        //commandId = aCommandId;
+        commandDate = aCommandDate;
+        totalPrice = aTotalPrice;
         boolean didAddCustomer = setCustomer(aCustomer);
         if (!didAddCustomer)
         {
             throw new RuntimeException("Unable to create command due to customer. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
         }
-    }
-    public Command( String aCommandDate, float aTotalPrice)
-    {
-        commandDate = aCommandDate;
-        totalPrice = aTotalPrice;
-        payments = new ArrayList<Payment>();
     }
 
     //------------------------
@@ -100,112 +100,38 @@ public class Command
     {
         return totalPrice;
     }
-    /* Code from template association_GetMany */
-    public Payment getPayment(int index)
+    /* Code from template association_GetOne */
+    public Payment getPayment()
     {
-        Payment aPayment = payments.get(index);
-        return aPayment;
+        return payment;
     }
 
-    public List<Payment> getPayments()
+    public boolean hasPayment()
     {
-        List<Payment> newPayments = Collections.unmodifiableList(payments);
-        return newPayments;
-    }
-
-    public int numberOfPayments()
-    {
-        int number = payments.size();
-        return number;
-    }
-
-    public boolean hasPayments()
-    {
-        boolean has = payments.size() > 0;
+        boolean has = payment != null;
         return has;
-    }
-
-    public int indexOfPayment(Payment aPayment)
-    {
-        int index = payments.indexOf(aPayment);
-        return index;
     }
     /* Code from template association_GetOne */
     public Customer getCustomer()
     {
         return customer;
     }
-    /* Code from template association_MinimumNumberOfMethod */
-    public static int minimumNumberOfPayments()
+    /* Code from template association_SetOptionalOneToMany */
+    public boolean setPayment(Payment aPayment)
     {
-        return 0;
-    }
-    /* Code from template association_AddManyToOne */
-    public Payment addPayment(String aBillingAddress, int aCreditCardNb, String aExpirationDate, int aCvc, int aPaymentId, Customer aCustomer)
-    {
-        return new Payment(aBillingAddress, aCreditCardNb, aExpirationDate, aCvc, aCustomer, this);
-    }
-
-    public boolean addPayment(Payment aPayment)
-    {
-        boolean wasAdded = false;
-        if (payments.contains(aPayment)) { return false; }
-        Command existingCommand = aPayment.getCommand();
-        boolean isNewCommand = existingCommand != null && !this.equals(existingCommand);
-        if (isNewCommand)
+        boolean wasSet = false;
+        Payment existingPayment = payment;
+        payment = aPayment;
+        if (existingPayment != null && !existingPayment.equals(aPayment))
         {
-            aPayment.setCommand(this);
+            existingPayment.removeCommand(this);
         }
-        else
+        if (aPayment != null)
         {
-            payments.add(aPayment);
+            aPayment.addCommand(this);
         }
-        wasAdded = true;
-        return wasAdded;
-    }
-
-    public boolean removePayment(Payment aPayment)
-    {
-        boolean wasRemoved = false;
-        //Unable to remove aPayment, as it must always have a command
-        if (!this.equals(aPayment.getCommand()))
-        {
-            payments.remove(aPayment);
-            wasRemoved = true;
-        }
-        return wasRemoved;
-    }
-    /* Code from template association_AddIndexControlFunctions */
-    public boolean addPaymentAt(Payment aPayment, int index)
-    {
-        boolean wasAdded = false;
-        if(addPayment(aPayment))
-        {
-            if(index < 0 ) { index = 0; }
-            if(index > numberOfPayments()) { index = numberOfPayments() - 1; }
-            payments.remove(aPayment);
-            payments.add(index, aPayment);
-            wasAdded = true;
-        }
-        return wasAdded;
-    }
-
-    public boolean addOrMovePaymentAt(Payment aPayment, int index)
-    {
-        boolean wasAdded = false;
-        if(payments.contains(aPayment))
-        {
-            if(index < 0 ) { index = 0; }
-            if(index > numberOfPayments()) { index = numberOfPayments() - 1; }
-            payments.remove(aPayment);
-            payments.add(index, aPayment);
-            wasAdded = true;
-        }
-        else
-        {
-            wasAdded = addPaymentAt(aPayment, index);
-        }
-        return wasAdded;
+        wasSet = true;
+        return wasSet;
     }
     /* Code from template association_SetOneToMany */
     public boolean setCustomer(Customer aCustomer)
@@ -215,6 +141,7 @@ public class Command
         {
             return wasSet;
         }
+
         Customer existingCustomer = customer;
         customer = aCustomer;
         if (existingCustomer != null && !existingCustomer.equals(aCustomer))
@@ -228,10 +155,11 @@ public class Command
 
     public void delete()
     {
-        for(int i=payments.size(); i > 0; i--)
+        if (payment != null)
         {
-            Payment aPayment = payments.get(i - 1);
-            aPayment.delete();
+            Payment placeholderPayment = payment;
+            this.payment = null;
+            placeholderPayment.removeCommand(this);
         }
         Customer placeholderCustomer = customer;
         this.customer = null;
@@ -248,6 +176,7 @@ public class Command
                 "commandId" + ":" + getCommandId()+ "," +
                 "commandDate" + ":" + getCommandDate()+ "," +
                 "totalPrice" + ":" + getTotalPrice()+ "]" + System.getProperties().getProperty("line.separator") +
+                "  " + "payment = "+(getPayment()!=null?Integer.toHexString(System.identityHashCode(getPayment())):"null") + System.getProperties().getProperty("line.separator") +
                 "  " + "customer = "+(getCustomer()!=null?Integer.toHexString(System.identityHashCode(getCustomer())):"null");
     }
 }
