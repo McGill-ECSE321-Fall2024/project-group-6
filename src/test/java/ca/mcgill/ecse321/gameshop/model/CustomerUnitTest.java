@@ -1,14 +1,10 @@
 package ca.mcgill.ecse321.gameshop.model;
 
-import ca.mcgill.ecse321.gameshop.model.*;
 import ca.mcgill.ecse321.gameshop.repository.CustomerRepository;
 import ca.mcgill.ecse321.gameshop.service.CustomerService;
-import org.assertj.core.api.IterableSizeAssert;
-import org.assertj.core.internal.Iterables;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
@@ -45,7 +41,7 @@ public class CustomerUnitTest {
     }
 
     @Test
-    public void testFindCustomerByIdValid() {
+    public void testFindCustomerByValidId() {
         // Arrange
         int id = 1;
         Customer customer = new Customer(new Person("John Doe","johndoe@gmail.com", "123ABC","8195126548"), "123 Sherbrooke West");
@@ -59,7 +55,7 @@ public class CustomerUnitTest {
     }
 
     @Test
-    public void testFindCustomerByIdInvalid() {
+    public void testFindCustomerByInvalidId() {
         // Arrange
         int id = 2;
         when(repo.findById(id)).thenReturn(Optional.empty());
