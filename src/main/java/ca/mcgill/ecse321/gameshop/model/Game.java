@@ -360,9 +360,9 @@ public Game(String aName, String aDescription, float aPrice, int aStockQuantity,
     return 0;
   }
   /* Code from template association_AddManyToOne */
-  public Review addReview(Review.StarRating aRating, String aComment, int aAmountOfLikes,  String aReply, Customer aCustomer, Manager aManager)
+  public Review addReview(Review.StarRating aRating, String aComment,  String aReply, Customer aCustomer, Manager aManager)
   {
-    return new Review(aRating, aComment, aAmountOfLikes,  aReply, aCustomer, aManager, this);
+    return new Review(aRating, aComment,  aReply, aCustomer, aManager, this);
   }
 
   public boolean addReview(Review aReview)

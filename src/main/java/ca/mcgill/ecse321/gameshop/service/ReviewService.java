@@ -19,8 +19,12 @@ public class ReviewService {
 
     // Create a new review and save it in the repository
     @Transactional
-    public Review createReview(Review.StarRating aRating, String aComment, int aAmountOfLikes) {
-        Review r = new Review(aRating, aComment, aAmountOfLikes);
+    public Review createReview(Review.StarRating aRating, String aComment) {
+        // check if rating is empty
+        if (aRating == null) {
+            throw new GameShopException(HttpStatus.BAD_REQUEST, "Rating cannot be empty");
+        }
+        Review r = new Review(aRating, aComment);
         return reviewRepo.save(r);
     }
 
@@ -69,9 +73,10 @@ public class ReviewService {
         reviewRepo.delete(r);
     }
 
-    public void likeReview(int id) {
+    public Review likeReview(int id) {
         Review review = reviewRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Review not found"));
         review.setAmountOfLikes(review.getAmountOfLikes() + 1);
+        return reviewRepo.save(review);
     }
 }

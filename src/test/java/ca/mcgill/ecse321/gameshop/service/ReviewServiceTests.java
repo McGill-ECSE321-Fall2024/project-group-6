@@ -1,4 +1,4 @@
-package ca.mcgill.ecse321.gameshop.model;
+package ca.mcgill.ecse321.gameshop.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 
 import ca.mcgill.ecse321.gameshop.dto.ReviewRequestDto;
 import ca.mcgill.ecse321.gameshop.exception.GameShopException;
+import ca.mcgill.ecse321.gameshop.model.Review;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -20,9 +21,10 @@ import ca.mcgill.ecse321.gameshop.service.ReviewService;
 
 import java.util.List;
 import java.util.Arrays;
+import java.util.Optional;
 
 @SpringBootTest
-public class ReviewUnitTest {
+public class ReviewServiceTests {
 
     @Mock
     private ReviewRepository repo;
@@ -33,8 +35,8 @@ public class ReviewUnitTest {
     @Test
     public void testGetAllReviews() {
         // Arrange
-        Review review1 = new Review(Review.StarRating.FiveStar, "Great product!", 10);
-        Review review2 = new Review(Review.StarRating.ThreeStar, "Average experience", 5);
+        Review review1 = new Review(Review.StarRating.FiveStar, "Great product!");
+        Review review2 = new Review(Review.StarRating.ThreeStar, "Average experience");
         when(repo.findAll()).thenReturn(Arrays.asList(review1, review2));
 
         // Act
@@ -51,7 +53,7 @@ public class ReviewUnitTest {
     public void testGetReviewById_ValidId() {
         // Arrange
         int reviewId = 1;
-        Review review = new Review(Review.StarRating.FourStar, "Good service", 8);
+        Review review = new Review(Review.StarRating.FourStar, "Good service");
         when(repo.findReviewByReviewId(reviewId)).thenReturn(review);
 
         // Act
@@ -61,7 +63,7 @@ public class ReviewUnitTest {
         assertNotNull(foundReview);
         assertEquals("Good service", foundReview.getComment());
         assertEquals(Review.StarRating.FourStar, foundReview.getRating());
-        assertEquals(8, foundReview.getAmountOfLikes());
+        assertEquals(0, foundReview.getAmountOfLikes());
     }
 
     @Test
@@ -82,27 +84,26 @@ public class ReviewUnitTest {
         // Arrange
         Review.StarRating rating = Review.StarRating.FiveStar;
         String comment = "Amazing experience!";
-        int likes = 15;
-        Review review = new Review(rating, comment, likes);
+        Review review = new Review(rating, comment);
         when(repo.save(any(Review.class))).thenReturn(review);
 
         // Act
-        Review createdReview = service.createReview(rating, comment, likes);
+        Review createdReview = service.createReview(rating, comment);
 
         // Assert
         assertNotNull(createdReview);
         assertEquals(rating, createdReview.getRating());
         assertEquals(comment, createdReview.getComment());
-        assertEquals(likes, createdReview.getAmountOfLikes());
+        assertEquals(0, createdReview.getAmountOfLikes());
         verify(repo, times(1)).save(any(Review.class));
     }
 
     @Test
-    public void testUpdateReview_ValidId() {
+    public void testUpdateReviewValidId() {
         // Arrange
         int reviewId = 1;
-        Review existingReview = new Review(Review.StarRating.ThreeStar, "Okay product", 3);
-        Review newReview = new Review(Review.StarRating.FourStar, "Better than expected", 6);
+        Review existingReview = new Review(Review.StarRating.ThreeStar, "Okay product");
+        Review newReview = new Review(Review.StarRating.FourStar, "Better than expected");
         ReviewRequestDto reviewRequestDto = new ReviewRequestDto(newReview);
 
         when(repo.findReviewByReviewId(reviewId)).thenReturn(existingReview);
@@ -115,15 +116,15 @@ public class ReviewUnitTest {
         assertNotNull(updatedReview);
         assertEquals(Review.StarRating.FourStar, updatedReview.getRating());
         assertEquals("Better than expected", updatedReview.getComment());
-        assertEquals(6, updatedReview.getAmountOfLikes());
+        assertEquals(0, updatedReview.getAmountOfLikes());
         verify(repo, times(1)).save(existingReview);
     }
 
     @Test
-    public void testUpdateReview_InvalidId() {
+    public void testUpdateReviewInvalidId() {
         // Arrange
         int invalidReviewId = 99;
-        Review review = new Review(Review.StarRating.TwoStar, "Not good", 1);
+        Review review = new Review(Review.StarRating.TwoStar, "Not good");
         ReviewRequestDto reviewRequestDto = new ReviewRequestDto(review);
 
         when(repo.findReviewByReviewId(invalidReviewId)).thenReturn(null);
@@ -133,14 +134,14 @@ public class ReviewUnitTest {
                 service.updateReview(invalidReviewId, reviewRequestDto)
         );
         assertEquals("Review with ID " + invalidReviewId + " does not exist.", e.getMessage());
-        verify(repo, times(0)).save(any(Review.class)); // Ensure save is not called
+        verify(repo, times(0)).save(any(Review.class)); // ensure save is not called
     }
 
     @Test
-    public void testDeleteReview_ValidId() {
+    public void testDeleteReviewValidId() {
         // Arrange
         int reviewId = 1;
-        Review review = new Review(Review.StarRating.FiveStar, "Great product!", 10);
+        Review review = new Review(Review.StarRating.FiveStar, "Great product!");
 
         when(repo.findReviewByReviewId(reviewId)).thenReturn(review);
 
@@ -149,5 +150,35 @@ public class ReviewUnitTest {
 
         // Assert
         verify(repo, times(1)).delete(review);
+    }
+
+    @Test
+    public void testLikeValidReview() {
+        // Arrange
+        int reviewId = 1; // Assume this ID is generated in the database
+        Review review = new Review(Review.StarRating.FourStar, "Great product");
+        when(repo.findById(reviewId)).thenReturn(Optional.of(review));
+
+        // Act
+        service.likeReview(reviewId);
+
+        // Assert
+        assertEquals(1, review.getAmountOfLikes(), "The amount of likes should increase by 1");
+        verify(repo, times(1)).findById(reviewId);
+        verify(repo, times(1)).save(review); // check if save method was called
+    }
+
+    @Test
+    public void testLikeInvalidReview() {
+        // Arrange
+        int nonExistingReviewId = 999;
+        when(repo.findById(nonExistingReviewId)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            service.likeReview(nonExistingReviewId);
+        });
+        assertEquals("Review not found", exception.getMessage());
+        verify(repo, times(1)).findById(nonExistingReviewId);
     }
 }

@@ -10,6 +10,10 @@ import ca.mcgill.ecse321.gameshop.model.Payment;
 import ca.mcgill.ecse321.gameshop.repository.PaymentRepository;
 import jakarta.transaction.Transactional;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+
 @Service
 public class PaymentService {
     // Inject PaymentRepository to handle database operations
@@ -19,6 +23,35 @@ public class PaymentService {
     // Create a new payment and save it in the repository
     @Transactional
     public Payment createPayment(String aBillingAddress, long aCreditCardNb, String aExpirationDate, int aCvc) {
+        // check that billing address is valid
+        if (aBillingAddress == null || aBillingAddress.trim().isEmpty()) {
+            throw new GameShopException(HttpStatus.BAD_REQUEST, "Billing address cannot be empty");
+        }
+
+        // check that the credit card number has 16 digits
+        String creditCardString = String.valueOf(aCreditCardNb);
+        if (creditCardString.length() != 16) {
+            throw new GameShopException(HttpStatus.BAD_REQUEST, "Credit card number must be 16 digits");
+        }
+
+        // check the format of the expiration date (MM/YY )
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/yy");
+        try {
+            LocalDate expiryDate = LocalDate.parse("01/" + aExpirationDate, DateTimeFormatter.ofPattern("dd/MM/yy"));
+            if (!expiryDate.isAfter(LocalDate.now())) {
+                throw new GameShopException(HttpStatus.BAD_REQUEST, "Expiration date must be in the future");
+            }
+        } catch (DateTimeParseException e) {
+            throw new GameShopException(HttpStatus.BAD_REQUEST, "Invalid expiration date format. Use MM/YY");
+        }
+
+        // check if CVC is in the right format (3 digits)
+        String cvcString = String.valueOf(aCvc);
+        if (cvcString.length() != 3) {
+            throw new GameShopException(HttpStatus.BAD_REQUEST, "CVC must be 3 digits");
+        }
+
+        //if all inputs are correct, create the new payment
         Payment p = new Payment(aBillingAddress, aCreditCardNb, aExpirationDate, aCvc);
         return paymentRepo.save(p);
     }

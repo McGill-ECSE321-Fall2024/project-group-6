@@ -1,4 +1,4 @@
-package ca.mcgill.ecse321.gameshop.model;
+package ca.mcgill.ecse321.gameshop.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -18,10 +18,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 import java.util.Arrays;
-import java.util.Optional;
+import org.springframework.http.HttpStatus;
 
 @SpringBootTest
-public class PaymentUnitTest {
+public class PaymentServiceTests {
     @Mock
     private PaymentRepository repo;
 
@@ -49,6 +49,70 @@ public class PaymentUnitTest {
         assertEquals(exp, createdPayment.getExpirationDate());
         assertEquals(cvc, createdPayment.getCvc());
         verify(repo, times(1)).save(any(Payment.class));
+    }
+
+    @Test
+    public void testCreatePaymentWithInvalidBillingAddress() {
+        // Arrange
+        String billingAddress = ""; // Invalid billing address
+        long creditCardNb = 1111222233334444L;
+        String exp = "04/27";
+        int cvc = 345;
+
+        // Act & Assert
+        GameShopException exception = assertThrows(GameShopException.class, () -> {
+            service.createPayment(billingAddress, creditCardNb, exp, cvc);
+        });
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
+        assertEquals("Billing address cannot be empty", exception.getMessage());
+    }
+
+    @Test
+    public void testCreatePaymentWithInvalidCreditCardNumber() {
+        // Arrange
+        String billingAddress = "555 Sherbrooke West, Montreal";
+        long creditCardNb = 12345L; // Invalid credit card number
+        String exp = "04/27";
+        int cvc = 345;
+
+        // Act & Assert
+        GameShopException exception = assertThrows(GameShopException.class, () -> {
+            service.createPayment(billingAddress, creditCardNb, exp, cvc);
+        });
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
+        assertEquals("Credit card number must be 16 digits", exception.getMessage());
+    }
+
+    @Test
+    public void testCreatePaymentWithInvalidExpirationDate() {
+        // Arrange
+        String billingAddress = "555 Sherbrooke West, Montreal";
+        long creditCardNb = 1111222233334444L;
+        String exp = "04/20"; // Invalid expiration date (in the past)
+        int cvc = 345;
+
+        // Act & Assert
+        GameShopException exception = assertThrows(GameShopException.class, () -> {
+            service.createPayment(billingAddress, creditCardNb, exp, cvc);
+        });
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
+        assertEquals("Expiration date must be in the future", exception.getMessage());
+    }
+
+    @Test
+    public void testCreatePaymentWithInvalidCVC() {
+        // Arrange
+        String billingAddress = "555 Sherbrooke West, Montreal";
+        long creditCardNb = 1111222233334444L;
+        String exp = "04/27";
+        int cvc = 12; // Invalid CVC (only 2 digits)
+
+        // Act & Assert
+        GameShopException exception = assertThrows(GameShopException.class, () -> {
+            service.createPayment(billingAddress, creditCardNb, exp, cvc);
+        });
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
+        assertEquals("CVC must be 3 digits", exception.getMessage());
     }
 
     @Test

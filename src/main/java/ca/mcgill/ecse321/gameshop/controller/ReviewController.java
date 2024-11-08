@@ -31,7 +31,7 @@ public class ReviewController {
      */
     @PostMapping("/review")
     public ReviewResponseDto createReview(@RequestBody ReviewRequestDto review) {
-        Review r = reviewService.createReview(review.getRating(), review.getComment(), review.getAmountOfLikes());
+        Review r = reviewService.createReview(review.getRating(), review.getComment());
         return new ReviewResponseDto(r);
     }
 
