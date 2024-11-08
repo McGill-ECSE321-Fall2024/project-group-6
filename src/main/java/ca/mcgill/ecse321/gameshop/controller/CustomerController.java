@@ -3,6 +3,7 @@ package ca.mcgill.ecse321.gameshop.controller;
 import ca.mcgill.ecse321.gameshop.dto.CustomerResponseDto;
 import ca.mcgill.ecse321.gameshop.model.Review;
 import ca.mcgill.ecse321.gameshop.model.Customer;
+import ca.mcgill.ecse321.gameshop.model.Person;
 import ca.mcgill.ecse321.gameshop.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -27,8 +28,8 @@ public class CustomerController {
 
     // Create new customer
     @PostMapping("/customer")
-    public CustomerResponseDto createCustomer(@RequestBody CustomerRequestDto customer) {
-        Customer c = customerService.createCustomer();
+    public CustomerResponseDto createCustomer(@PathVariable Person person,@RequestParam String aShippingAddress) {
+        Customer c = customerService.createCustomer(person,aShippingAddress);
         return new CustomerResponseDto(c);
     }
 
@@ -51,8 +52,8 @@ public class CustomerController {
 
     // Update customer by their ID
     @PutMapping("/customer/{id}")
-    public CustomerResponseDto updateCustomer(@PathVariable int id, @RequestBody CustomerRequestDto customer) {
-        Customer c = customerService.updateCustomer(id);
+    public CustomerResponseDto updateCustomer(@PathVariable int id, Customer customerDetails) {
+        Customer c = customerService.updateCustomer(id, customerDetails);
         return new CustomerResponseDto(c);
     }
 

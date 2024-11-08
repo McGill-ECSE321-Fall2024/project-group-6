@@ -1,5 +1,6 @@
 package ca.mcgill.ecse321.gameshop.service;
 
+import ca.mcgill.ecse321.gameshop.model.Person;
 import ca.mcgill.ecse321.gameshop.model.Review;
 import ca.mcgill.ecse321.gameshop.model.Customer;
 import ca.mcgill.ecse321.gameshop.repository.*;
@@ -18,7 +19,7 @@ public class CustomerService {
 
     // Create new customer
     @Transactional
-    public Customer createCustomer() {
+    public Customer createCustomer(Person person, String shippingAddress) {
         Customer customer = new Customer();
         return customerRepo.save(customer);
     }
@@ -43,13 +44,14 @@ public class CustomerService {
 
     // Update an existing customer by their ID
     @Transactional
-    public Customer updateCustomer(int id) {
+    public Customer updateCustomer(int id, Customer customerDetails) {
         Customer customer = customerRepo.findCustomerByRoleId(id);
-
         // Exception if no customer is found
         if (customer == null) {
             throw new RuntimeException("Customer with the following ID does not exist:" + id);
         }
+        customer.setPerson(customerDetails.getPerson());
+        customer.setShippingAddress(customerDetails.getShippingAddress());
         return customerRepo.save(customer);
     }
 
