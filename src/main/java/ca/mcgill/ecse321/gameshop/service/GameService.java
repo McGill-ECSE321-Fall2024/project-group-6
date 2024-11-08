@@ -32,7 +32,6 @@ public class GameService {
         return gameRepository.save(game);
     }
 
-
     @Transactional
     public Game updateGame(int id,String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,  boolean aToBeAdded, boolean aToBeRemoved, float aPromotion, Category... allCategories){
         Game game = gameRepository.findGameByGameId(id);
@@ -79,7 +78,6 @@ public class GameService {
 
         }
         return null;
-
     }
     @Transactional
     public List<Game> getGamesByCategory(String category) {

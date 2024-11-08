@@ -3,6 +3,7 @@ package ca.mcgill.ecse321.gameshop.dto;
 import ca.mcgill.ecse321.gameshop.dto.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import org.hibernate.validator.constraints.Length;
 
 public class ManagerRequestDto {
 
@@ -13,7 +14,7 @@ public class ManagerRequestDto {
     private String email;
     @NotBlank(message="A phone number is required.")
     private String phone;
-    @NotBlank(message="A password is required.")
+    @NotBlank
     private String password;
 
     @SuppressWarnings("unused")
