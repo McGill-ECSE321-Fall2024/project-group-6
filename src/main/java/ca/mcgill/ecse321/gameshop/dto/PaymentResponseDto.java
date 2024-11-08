@@ -15,10 +15,9 @@ public class PaymentResponseDto {
 
     public PaymentResponseDto(Payment payment) {
         this.billingAddress = payment.getBillingAddress();
-        this.total = payment.getTotal();
         this.paymentId = payment.getPaymentId();
         this.customerId = payment.getCustomer().getRoleId();
-        this.commandId = payment.getCommand().getCommandId();
+        //this.commandId = payment.getCommand().getCommandId();
     }
 
     public String getBillingAddress() {
@@ -53,13 +52,13 @@ public class PaymentResponseDto {
         this.customerId = customerId;
     }
 
-    public int getCommandId() {
-        return commandId;
-    }
+    //public int getCommandId() {
+        //return commandId;
+    //}
 
-    public void setCommandId(int commandId) {
-        this.commandId = commandId;
-    }
+    //public void setCommandId(int commandId) {
+        //this.commandId = commandId;
+    //}
 
 }
 

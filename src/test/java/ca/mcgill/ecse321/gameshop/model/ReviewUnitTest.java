@@ -8,18 +8,18 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import ca.mcgill.ecse321.gameshop.dto.ReviewRequestDto;
+import ca.mcgill.ecse321.gameshop.exception.GameShopException;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import ca.mcgill.ecse321.gameshop.model.Review;
 import ca.mcgill.ecse321.gameshop.repository.ReviewRepository;
 import ca.mcgill.ecse321.gameshop.service.ReviewService;
 
 import java.util.List;
 import java.util.Arrays;
-import java.util.Optional;
 
 @SpringBootTest
 public class ReviewUnitTest {
@@ -38,7 +38,7 @@ public class ReviewUnitTest {
         when(repo.findAll()).thenReturn(Arrays.asList(review1, review2));
 
         // Act
-        List<Review> reviews = service.getAllReviews();
+        List<Review> reviews = (List<Review>) service.getAllReviews();
 
         // Assert
         assertNotNull(reviews);
@@ -71,10 +71,10 @@ public class ReviewUnitTest {
         when(repo.findReviewByReviewId(invalidReviewId)).thenReturn(null);
 
         // Act & Assert
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+        GameShopException e = assertThrows(GameShopException.class, () ->
                 service.getReviewById(invalidReviewId)
         );
-        assertEquals("There is no payment with ID" + invalidReviewId + ".", exception.getMessage());
+        assertEquals("Review with ID " + invalidReviewId + " does not exist.", e.getMessage());
     }
 
     @Test
@@ -102,13 +102,14 @@ public class ReviewUnitTest {
         // Arrange
         int reviewId = 1;
         Review existingReview = new Review(Review.StarRating.ThreeStar, "Okay product", 3);
-        Review updatedDetails = new Review(Review.StarRating.FourStar, "Better than expected", 6);
+        Review newReview = new Review(Review.StarRating.FourStar, "Better than expected", 6);
+        ReviewRequestDto reviewRequestDto = new ReviewRequestDto(newReview);
 
-        when(repo.findById(reviewId)).thenReturn(Optional.of(existingReview));
+        when(repo.findReviewByReviewId(reviewId)).thenReturn(existingReview);
         when(repo.save(any(Review.class))).thenReturn(existingReview);
 
         // Act
-        Review updatedReview = service.updateReview(reviewId, updatedDetails);
+        Review updatedReview = service.updateReview(reviewId, reviewRequestDto);
 
         // Assert
         assertNotNull(updatedReview);
@@ -122,15 +123,16 @@ public class ReviewUnitTest {
     public void testUpdateReview_InvalidId() {
         // Arrange
         int invalidReviewId = 99;
-        Review updatedDetails = new Review(Review.StarRating.TwoStar, "Not good", 1);
+        Review review = new Review(Review.StarRating.TwoStar, "Not good", 1);
+        ReviewRequestDto reviewRequestDto = new ReviewRequestDto(review);
 
-        when(repo.findById(invalidReviewId)).thenReturn(Optional.empty());
+        when(repo.findReviewByReviewId(invalidReviewId)).thenReturn(null);
 
         // Act & Assert
-        RuntimeException exception = assertThrows(RuntimeException.class, () ->
-                service.updateReview(invalidReviewId, updatedDetails)
+        GameShopException e = assertThrows(GameShopException.class, () ->
+                service.updateReview(invalidReviewId, reviewRequestDto)
         );
-        assertEquals("Review not found", exception.getMessage());
+        assertEquals("Review with ID " + invalidReviewId + " does not exist.", e.getMessage());
         verify(repo, times(0)).save(any(Review.class)); // Ensure save is not called
     }
 
@@ -138,11 +140,14 @@ public class ReviewUnitTest {
     public void testDeleteReview_ValidId() {
         // Arrange
         int reviewId = 1;
+        Review review = new Review(Review.StarRating.FiveStar, "Great product!", 10);
+
+        when(repo.findReviewByReviewId(reviewId)).thenReturn(review);
 
         // Act
         service.deleteReview(reviewId);
 
         // Assert
-        verify(repo, times(1)).deleteById(reviewId);
+        verify(repo, times(1)).delete(review);
     }
 }

@@ -22,9 +22,13 @@ public class ReviewRequestDto {
         this.comment = review.getComment();
         this.amountOfLikes = review.getAmountOfLikes();
         this.reply = review.getReply();
-        this.customerId = review.getCustomer().getRoleId();
-        this.managerId = review.getManager().getRoleId();
-        this.gameId = review.getGame().getGameId();
+        //this.customerId = review.getCustomer().getRoleId();
+        if (review.getManager() != null){
+            this.managerId = review.getManager().getRoleId();
+        }
+        if (review.getCustomer() != null){
+            this.gameId = review.getGame().getGameId();
+        }
     }
 
     public Review.StarRating getRating() {

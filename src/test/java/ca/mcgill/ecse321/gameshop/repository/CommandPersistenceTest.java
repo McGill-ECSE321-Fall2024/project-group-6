@@ -23,8 +23,7 @@ public class CommandPersistenceTest {
 
     @Autowired
     private CommandRepository commandRepo;
-    @Autowired
-    private CartRepository cartRepo;
+
     @Autowired
     private CustomerRepository customerRepo;
 
@@ -39,7 +38,7 @@ public class CommandPersistenceTest {
     public void clearDatabase() {
 
         commandRepo.deleteAll();
-        cartRepo.deleteAll();
+
         paymentRepo.deleteAll();
         customerRepo.deleteAll();
         personRepo.deleteAll();
@@ -55,13 +54,12 @@ public class CommandPersistenceTest {
 
         Customer customer = new Customer(person, "1234 Montreal");
         customer = customerRepo.save(customer);
-        Cart cart = new Cart(customer);
-        cart = cartRepo.save(cart);
 
-        Payment payment = new Payment("1234 Toronto",123456789,"05/27",444,50);
+
+        Payment payment = new Payment("1234 Toronto",123456789,"05/27",444);
         payment = paymentRepo.save(payment);
 
-        Command command=new Command( "13-10-2024", 75.6F, payment, cart);
+        Command command=new Command( "13-10-2024", 75.6F);
         command=commandRepo.save(command);
 
 
@@ -73,7 +71,7 @@ public class CommandPersistenceTest {
         /**
          * Relationship test
          */
-        assertEquals(commandFromDb.getCart().getCartId(),cart.getCartId());
+       // assertEquals(commandFromDb.getCart().getCartId(),cart.getCartId());
         /**
          * variable test
          */

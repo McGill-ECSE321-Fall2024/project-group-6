@@ -1,20 +1,25 @@
 package ca.mcgill.ecse321.gameshop.controller;
 
-import ca.mcgill.ecse321.gameshop.dto.PaymentRequestDto;
-import ca.mcgill.ecse321.gameshop.dto.PaymentResponseDto;
-import ca.mcgill.ecse321.gameshop.dto.PaymentsResponseDto;
-import ca.mcgill.ecse321.gameshop.model.Payment;
-import ca.mcgill.ecse321.gameshop.service.PaymentService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
-@RestController
-@RequestMapping("/api/payments")
-public class PaymentController {
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
+import ca.mcgill.ecse321.gameshop.dto.PaymentListDto;
+import ca.mcgill.ecse321.gameshop.dto.PaymentRequestDto;
+import ca.mcgill.ecse321.gameshop.dto.PaymentResponseDto;
+import ca.mcgill.ecse321.gameshop.model.Payment;
+import ca.mcgill.ecse321.gameshop.service.PaymentService;
+
+@RestController
+public class PaymentController {
     @Autowired
     private PaymentService paymentService;
 
@@ -24,43 +29,10 @@ public class PaymentController {
      * @param payment The payment object.
      * @return The new payment object.
      */
-    @PostMapping
+    @PostMapping("/payment")
     public PaymentResponseDto createPayment(@RequestBody PaymentRequestDto payment) {
-        Payment createdPayment = paymentService.createPayment(payment.getBillingAddress(), payment.getCreditCardNb(), payment.getExpirationDate(), payment.getCvc());
-        return new PaymentResponseDto(createdPayment);
-    }
-
-    /**
-     * Return the updated payment with the given ID.
-     *
-     * @param paymentId the ID of the review
-     * @return the updated payment with the given ID.
-     */
-    @PutMapping("/{paymentId}")
-    public PaymentResponseDto updatePayment(@PathVariable int paymentId, @RequestBody Payment payment) {
-        Payment updatedPayment = paymentService.updatePayment(paymentId, payment);
-        return new PaymentResponseDto(updatedPayment);
-    }
-
-    /**
-     *@param paymentId the id of the payment to delete.
-     * @return The response DTO of the payment deletion.
-     */
-    @DeleteMapping("/{paymentId}")
-    public void deletePayment(@PathVariable int paymentId) {
-        paymentService.deletePayment(paymentId);
-    }
-
-    /**
-     * Return the payment with the given ID.
-     *
-     * @param paymentId the ID of the review
-     * @return the payment with the given ID.
-     */
-    @GetMapping("/{paymentId}")
-    public PaymentResponseDto getPaymentById(@PathVariable int paymentId) {
-        Payment payment = paymentService.getPaymentById(paymentId);
-        return new PaymentResponseDto(payment);
+        Payment p = paymentService.createPayment(payment.getBillingAddress(), payment.getCreditCardNb(), payment.getExpirationDate(), payment.getCvc());
+        return new PaymentResponseDto(p);
     }
 
     /**
@@ -68,15 +40,49 @@ public class PaymentController {
      *
      * @return Return all payments.
      */
-    @GetMapping
-    public PaymentsResponseDto getAllPayments() {
-        List<Payment> payments = paymentService.getAllPayments();
-        List<PaymentResponseDto> responseList = new ArrayList<>();
-        for (Payment p : payments){
-            PaymentResponseDto response = new PaymentResponseDto(p);
-            responseList.add(response);
+    @GetMapping("/payment")
+    public PaymentListDto getAllPayments() {
+        List<PaymentResponseDto> payments = new ArrayList<>();
+
+        for (Payment p: paymentService.getAllPayments()) {
+            payments.add(new PaymentResponseDto(p));
         }
-        return new PaymentsResponseDto(responseList);
+
+        return new PaymentListDto(payments);
     }
 
+    /**
+     * Return the payment with the given ID.
+     *
+     * @param id the ID of the review
+     * @return the payment with the given ID.
+     */
+    @GetMapping("/payment/{id}")
+    public PaymentResponseDto getPaymentById(@PathVariable int id) {
+        Payment p = paymentService.getPaymentById(id);
+        return new PaymentResponseDto(p);
+    }
+
+    /**
+     * Update the payment with the given ID.
+     *
+     * @param id the ID of the review
+     * @return the updated payment with the given ID.
+     */
+    @PutMapping("/payment/{id}")
+    public PaymentResponseDto updatePayment(@PathVariable int id, @RequestBody PaymentRequestDto payment) {
+        Payment p = paymentService.updatePayment(id, payment);
+        return new PaymentResponseDto(p);
+    }
+
+    /**
+     * Delete the payment with the given id.
+     * 
+     *@param "/payment/{Id}" the id of the payment to delete.
+     * @return The response DTO of the payment deletion.
+     */
+    @DeleteMapping("/payment/{id}")
+    public void deletePayment(@PathVariable int id) {
+        paymentService.deletePayment(id);
+    }
 }

@@ -4,81 +4,81 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.*;
 
+import ca.mcgill.ecse321.gameshop.dto.PaymentRequestDto;
+import ca.mcgill.ecse321.gameshop.exception.GameShopException;
+import ca.mcgill.ecse321.gameshop.model.Payment;
+import ca.mcgill.ecse321.gameshop.repository.PaymentRepository;
 import ca.mcgill.ecse321.gameshop.service.PaymentService;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import ca.mcgill.ecse321.gameshop.repository.PaymentRepository;
-import java.util.Optional;
 import java.util.List;
 import java.util.Arrays;
+import java.util.Optional;
 
 @SpringBootTest
 public class PaymentUnitTest {
     @Mock
     private PaymentRepository repo;
+
     @InjectMocks
     private PaymentService service;
 
-    @SuppressWarnings("null")
     @Test
-
     public void testCreateValidPayment() {
-        //Arrange
+        // Arrange
         String billingAddress = "555 Sherbrooke West, Montreal";
-        long creditCardNb = 1111222233334444L; //had to change to long
+        long creditCardNb = 1111222233334444L;
         String exp = "04/27";
         int cvc = 345;
-        double total = 45.66; //have to change to a double
         Payment payment = new Payment(billingAddress, creditCardNb, exp, cvc);
 
-        //Act
+        when(repo.save(any(Payment.class))).thenReturn(payment);
+
+        // Act
         Payment createdPayment = service.createPayment(billingAddress, creditCardNb, exp, cvc);
 
-        //Assert
+        // Assert
         assertNotNull(createdPayment);
         assertEquals(billingAddress, createdPayment.getBillingAddress());
         assertEquals(creditCardNb, createdPayment.getCreditCardNb());
         assertEquals(exp, createdPayment.getExpirationDate());
         assertEquals(cvc, createdPayment.getCvc());
-        verify(repo, times(1)).save(payment);
+        verify(repo, times(1)).save(any(Payment.class));
     }
 
     @Test
     public void testReadPaymentByValidId() {
-        //Arrange
+        // Arrange
         int id = 3;
-        Payment payment = new Payment("555 Sherbrooke West, Montreal", 1111222233334444L, "04/27", 345 );
+        Payment payment = new Payment("555 Sherbrooke West, Montreal", 1111222233334444L, "04/27", 345);
         when(repo.findPaymentByPaymentId(id)).thenReturn(payment);
 
-        //Act
+        // Act
         Payment paymentToGet = service.getPaymentById(id);
 
-        //Assert
+        // Assert
         assertNotNull(paymentToGet);
         assertEquals(payment.getBillingAddress(), paymentToGet.getBillingAddress());
         assertEquals(payment.getCreditCardNb(), paymentToGet.getCreditCardNb());
         assertEquals(payment.getExpirationDate(), paymentToGet.getExpirationDate());
         assertEquals(payment.getCvc(), paymentToGet.getCvc());
+        verify(repo, times(1)).findPaymentByPaymentId(id);
     }
 
     @Test
     public void testReadPaymentByInvalidId() {
-        //Arrange
+        // Arrange
         int id = 3;
         when(repo.findPaymentByPaymentId(id)).thenReturn(null);
 
-        //Act
-        //Assert
-        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () ->service.getPaymentById(id));
-        assertEquals("There is no person with ID " + id + ".", e.getMessage());
+        // Act & Assert
+        GameShopException e = assertThrows(GameShopException.class, () -> service.getPaymentById(id));
+        assertEquals("Payment with ID " + id + " does not exist.", e.getMessage());
         verify(repo, times(1)).findPaymentByPaymentId(id);
     }
 
@@ -88,11 +88,12 @@ public class PaymentUnitTest {
         int paymentId = 1;
         Payment existingPayment = new Payment("Old Address", 1111222233334444L, "04/27", 123);
         Payment updatedDetails = new Payment("New Address", 5555666677778888L, "12/30", 456);
-        when(repo.findById(paymentId)).thenReturn(Optional.of(existingPayment));
+        PaymentRequestDto paymentRequestDto = new PaymentRequestDto(updatedDetails);
+        when(repo.findPaymentByPaymentId(paymentId)).thenReturn(existingPayment);
         when(repo.save(any(Payment.class))).thenReturn(updatedDetails);
 
         // Act
-        Payment updatedPayment = service.updatePayment(paymentId, updatedDetails);
+        Payment updatedPayment = service.updatePayment(paymentId, paymentRequestDto);
 
         // Assert
         assertNotNull(updatedPayment);
@@ -100,7 +101,7 @@ public class PaymentUnitTest {
         assertEquals(updatedDetails.getCreditCardNb(), updatedPayment.getCreditCardNb());
         assertEquals(updatedDetails.getExpirationDate(), updatedPayment.getExpirationDate());
         assertEquals(updatedDetails.getCvc(), updatedPayment.getCvc());
-        verify(repo, times(1)).findById(paymentId);
+        verify(repo, times(1)).findPaymentByPaymentId(paymentId);
         verify(repo, times(1)).save(any(Payment.class));
     }
 
@@ -108,32 +109,45 @@ public class PaymentUnitTest {
     public void testUpdatePaymentInvalidId() {
         // Arrange
         int invalidPaymentId = 99;
-        Payment updatedDetails = new Payment("New Address", 5555666677778888L, "12/30", 456);
-
-        // Mock findById to return an empty Optional, simulating a non-existent payment
-        when(repo.findById(invalidPaymentId)).thenReturn(Optional.empty());
+        PaymentRequestDto paymentRequestDto = new PaymentRequestDto();
+        when(repo.findPaymentByPaymentId(invalidPaymentId)).thenReturn(null);
 
         // Act & Assert
-        RuntimeException exception = assertThrows(RuntimeException.class, () ->
-                service.updatePayment(invalidPaymentId, updatedDetails)
+        GameShopException e = assertThrows(GameShopException.class, () ->
+                service.updatePayment(invalidPaymentId, paymentRequestDto)
         );
-        assertEquals("Review not found", exception.getMessage());
-
-        verify(repo, times(1)).findById(invalidPaymentId);
-        verify(repo, times(0)).save(any(Payment.class)); // Ensure save is not called
+        assertEquals("Payment with ID " + invalidPaymentId + " does not exist.", e.getMessage());
+        verify(repo, times(1)).findPaymentByPaymentId(invalidPaymentId);
+        verify(repo, times(0)).save(any(Payment.class));
     }
 
     @Test
-    public void testDeletePayment() {
+    public void testDeletePaymentValidId() {
         // Arrange
         int paymentId = 1;
-        doNothing().when(repo).deleteById(paymentId);
+        Payment payment = new Payment("Address", 1111222233334444L, "04/27", 123);
+        when(repo.findPaymentByPaymentId(paymentId)).thenReturn(payment);
+        doNothing().when(repo).delete(payment);
 
         // Act
         service.deletePayment(paymentId);
 
         // Assert
-        verify(repo, times(1)).deleteById(paymentId);
+        verify(repo, times(1)).findPaymentByPaymentId(paymentId);
+        verify(repo, times(1)).delete(payment);
+    }
+
+    @Test
+    public void testDeletePaymentInvalidId() {
+        // Arrange
+        int invalidPaymentId = 99;
+        when(repo.findPaymentByPaymentId(invalidPaymentId)).thenReturn(null);
+
+        // Act & Assert
+        GameShopException e = assertThrows(GameShopException.class, () -> service.deletePayment(invalidPaymentId));
+        assertEquals("Payment with ID " + invalidPaymentId + " does not exist.", e.getMessage());
+        verify(repo, times(1)).findPaymentByPaymentId(invalidPaymentId);
+        verify(repo, times(0)).delete(any(Payment.class));
     }
 
     @Test
@@ -145,7 +159,7 @@ public class PaymentUnitTest {
         when(repo.findAll()).thenReturn(payments);
 
         // Act
-        List<Payment> allPayments = service.getAllPayments();
+        List<Payment> allPayments = (List<Payment>)service.getAllPayments();
 
         // Assert
         assertNotNull(allPayments);

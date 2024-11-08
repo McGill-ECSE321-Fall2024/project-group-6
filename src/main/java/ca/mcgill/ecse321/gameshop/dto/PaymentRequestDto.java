@@ -9,7 +9,7 @@ public class PaymentRequestDto {
     private String expirationDate;
     private int cvc;
     private int total;
-    private int customerId;
+    //private int customerId;
     //private int commandId;
     //no payment id for request dto
 
@@ -21,7 +21,7 @@ public class PaymentRequestDto {
         this.creditCardNb = payment.getCreditCardNb();
         this.expirationDate = payment.getExpirationDate();
         this.cvc = payment.getCvc();
-        this.customerId = payment.getCustomer().getRoleId();
+        //this.customerId = payment.getCustomer().getRoleId();
         //this.commandId = payment.getCommand().getCommandId();
     }
 
@@ -65,13 +65,13 @@ public class PaymentRequestDto {
         this.total = total;
     }
 
-    public int getCustomerId() {
-        return customerId;
-    }
+    //public int getCustomerId() {
+        //return customerId;
+    //}
 
-    public void setCustomerId(int customerId) {
-        this.customerId = customerId;
-    }
+    //public void setCustomerId(int customerId) {
+        //this.customerId = customerId;
+    //}
 
     //public int getCommandId() {
         //return commandId;
