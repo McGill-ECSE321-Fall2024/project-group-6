@@ -50,19 +50,19 @@ public class Review
 public Review(){
 
 }
-  public Review(StarRating aRating, String aComment)
+  public Review(StarRating aRating, String aComment, int aAmountOfLikes)
   {
     rating = aRating;
     comment = aComment;
-    amountOfLikes = 0;
+    amountOfLikes = aAmountOfLikes;
 
 
   }
-  public Review(StarRating aRating, String aComment,  String aReply, Customer aCustomer, Manager aManager, Game aGame)
+  public Review(StarRating aRating, String aComment, int aAmountOfLikes,  String aReply, Customer aCustomer, Manager aManager, Game aGame)
   {
     rating = aRating;
     comment = aComment;
-    amountOfLikes = 0;
+    amountOfLikes = aAmountOfLikes;
 
     reply = aReply;
     boolean didAddCustomer = setCustomer(aCustomer);

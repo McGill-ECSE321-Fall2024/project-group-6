@@ -194,9 +194,9 @@ public Customer(){
     return 0;
   }
   /* Code from template association_AddManyToOne */
-  public Review addReview(Review.StarRating aRating, String aComment, int aReviewId, String aReply, Manager aManager, Game aGame)
+  public Review addReview(Review.StarRating aRating, String aComment, int aAmountOfLikes, int aReviewId, String aReply, Manager aManager, Game aGame)
   {
-    return new Review(aRating, aComment,  aReply, this, aManager, aGame);
+    return new Review(aRating, aComment, aAmountOfLikes,  aReply, this, aManager, aGame);
   }
 
   public boolean addReview(Review aReview)

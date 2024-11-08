@@ -35,8 +35,8 @@ public class ReviewServiceTests {
     @Test
     public void testGetAllReviews() {
         // Arrange
-        Review review1 = new Review(Review.StarRating.FiveStar, "Great product!");
-        Review review2 = new Review(Review.StarRating.ThreeStar, "Average experience");
+        Review review1 = new Review(Review.StarRating.FiveStar, "Great product!", 0);
+        Review review2 = new Review(Review.StarRating.ThreeStar, "Average experience", 0);
         when(repo.findAll()).thenReturn(Arrays.asList(review1, review2));
 
         // Act
@@ -53,7 +53,7 @@ public class ReviewServiceTests {
     public void testGetReviewById_ValidId() {
         // Arrange
         int reviewId = 1;
-        Review review = new Review(Review.StarRating.FourStar, "Good service");
+        Review review = new Review(Review.StarRating.FourStar, "Good service", 0);
         when(repo.findReviewByReviewId(reviewId)).thenReturn(review);
 
         // Act
@@ -84,7 +84,7 @@ public class ReviewServiceTests {
         // Arrange
         Review.StarRating rating = Review.StarRating.FiveStar;
         String comment = "Amazing experience!";
-        Review review = new Review(rating, comment);
+        Review review = new Review(rating, comment, 0);
         when(repo.save(any(Review.class))).thenReturn(review);
 
         // Act
@@ -102,8 +102,8 @@ public class ReviewServiceTests {
     public void testUpdateReviewValidId() {
         // Arrange
         int reviewId = 1;
-        Review existingReview = new Review(Review.StarRating.ThreeStar, "Okay product");
-        Review newReview = new Review(Review.StarRating.FourStar, "Better than expected");
+        Review existingReview = new Review(Review.StarRating.ThreeStar, "Okay product", 0);
+        Review newReview = new Review(Review.StarRating.FourStar, "Better than expected", 0);
         ReviewRequestDto reviewRequestDto = new ReviewRequestDto(newReview);
 
         when(repo.findReviewByReviewId(reviewId)).thenReturn(existingReview);
@@ -124,7 +124,7 @@ public class ReviewServiceTests {
     public void testUpdateReviewInvalidId() {
         // Arrange
         int invalidReviewId = 99;
-        Review review = new Review(Review.StarRating.TwoStar, "Not good");
+        Review review = new Review(Review.StarRating.TwoStar, "Not good", 0);
         ReviewRequestDto reviewRequestDto = new ReviewRequestDto(review);
 
         when(repo.findReviewByReviewId(invalidReviewId)).thenReturn(null);
@@ -141,7 +141,7 @@ public class ReviewServiceTests {
     public void testDeleteReviewValidId() {
         // Arrange
         int reviewId = 1;
-        Review review = new Review(Review.StarRating.FiveStar, "Great product!");
+        Review review = new Review(Review.StarRating.FiveStar, "Great product!", 0);
 
         when(repo.findReviewByReviewId(reviewId)).thenReturn(review);
 
@@ -156,7 +156,7 @@ public class ReviewServiceTests {
     public void testLikeValidReview() {
         // Arrange
         int reviewId = 1; // Assume this ID is generated in the database
-        Review review = new Review(Review.StarRating.FourStar, "Great product");
+        Review review = new Review(Review.StarRating.FourStar, "Great product", 0);
         when(repo.findById(reviewId)).thenReturn(Optional.of(review));
 
         // Act

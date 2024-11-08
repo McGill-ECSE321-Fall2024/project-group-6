@@ -38,7 +38,7 @@ public class ReviewPersistenceTest {
     public void testCreateAndReadReview() {
 
 
-        Review review = new Review(Review.StarRating.OneStar, "Amazing game");
+        Review review = new Review(Review.StarRating.OneStar, "Amazing game", 0);
         review = reviewRepo.save(review);
         Review reviewFromDB = reviewRepo.findReviewByReviewId(review.getReviewId());
         assertNotNull(reviewFromDB);

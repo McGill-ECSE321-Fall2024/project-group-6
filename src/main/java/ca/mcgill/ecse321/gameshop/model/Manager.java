@@ -109,9 +109,9 @@ public Manager(){
     return 0;
   }
   /* Code from template association_AddManyToOne */
-  public Review addReview(Review.StarRating aRating, String aComment,  String aReply, Customer aCustomer, Game aGame)
+  public Review addReview(Review.StarRating aRating, String aComment, int aAmountOfLikes,  String aReply, Customer aCustomer, Game aGame)
   {
-    return new Review(aRating, aComment,  aReply, aCustomer, this,aGame);
+    return new Review(aRating, aComment, aAmountOfLikes,  aReply, aCustomer, this,aGame);
    // (aRating, aComment, aAmountOfLikes,  aReply, aCustomer, aManager, this)
   }
 

@@ -24,7 +24,7 @@ public class ReviewService {
         if (aRating == null) {
             throw new GameShopException(HttpStatus.BAD_REQUEST, "Rating cannot be empty");
         }
-        Review r = new Review(aRating, aComment);
+        Review r = new Review(aRating, aComment, 0);
         return reviewRepo.save(r);
     }
 
