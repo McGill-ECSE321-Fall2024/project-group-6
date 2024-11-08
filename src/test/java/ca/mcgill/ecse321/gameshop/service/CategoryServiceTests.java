@@ -84,7 +84,6 @@ public class CategoryServiceTests {
 
     @Test
     public void testGetCategoryByNonExistentId(){
-        when(repo.findCategoryByCategoryId(ID)).thenReturn(null);
         GameShopException ex = assertThrows(GameShopException.class, () -> service.findCategoryById(ID));
 
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
