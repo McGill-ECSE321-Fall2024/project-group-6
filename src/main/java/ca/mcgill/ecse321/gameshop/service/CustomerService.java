@@ -68,6 +68,7 @@ public class CustomerService {
     }
 
 
+    // Potential duplicate with ReviewService
     // Create a review for a game
     @Transactional
     public Customer createReview(int reviewID,Customer aCustomer) {

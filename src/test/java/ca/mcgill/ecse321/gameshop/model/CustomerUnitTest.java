@@ -79,7 +79,7 @@ public class CustomerUnitTest {
         Iterable<Customer> allCostumers = service.getAllCustomers();
         // Assert
         assertNotNull(allCostumers);
-        List<Customer> customerList = StreamSupport.stream(allCostumers.spliterator(), false).collect(Collectors.toList());
+        List<Customer> customerList = StreamSupport.stream(allCostumers.spliterator(), false).toList();
         assertEquals(2, customerList.size());
         verify(repo,times(1)).findAll();
     }
@@ -112,7 +112,7 @@ public class CustomerUnitTest {
         when(repo.findCustomerByRoleId(invalidId)).thenReturn(null);
         // Act & Assert
         RuntimeException exception = assertThrows(RuntimeException.class, () -> service.updateCustomer(invalidId,updatedDetails));
-        assertEquals("Customer with this ID could not be updated:", invalidId, exception.getMessage());
+        assertEquals("Customer with this ID could not be updated:", exception.getMessage());
         verify(repo,times(1)).findCustomerByRoleId(invalidId);
         verify(repo,times(0)).save(any(Customer.class));
 
