@@ -39,7 +39,6 @@ public class EmployeePersistenceTest {
     public void testCreateAndReadEmployee() {
 
         Person person = new Person("johndoe", "joseph.roustom@mail.mcgill.ca", "password123", "555-1234");
-        person = personRepo.save(person);
         List <String> tasks= new ArrayList<>();
         tasks.add("hey");
         tasks.add("bye");

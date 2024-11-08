@@ -24,7 +24,7 @@ public class GuestController {
     private GuestService guestService;
 
     @PostMapping("/guest")
-    public GuestResponseDto createGuest(@RequestBody GuestRequestDto guest) {
+    public GuestResponseDto createGuest(@RequestBody GuestRequestDto guestRequest) {
         Guest g = guestService.createGuest();
         return new GuestResponseDto(g);
     }

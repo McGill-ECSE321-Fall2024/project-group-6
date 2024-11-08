@@ -48,11 +48,7 @@ public Person (){
     username = aUsername;
     password = aPassword;
     phone = aPhone;
-
-    if (!setEmail(aEmail))
-    {
-      throw new RuntimeException("Cannot create due to duplicate email. See https://manual.umple.org?RE003ViolationofUniqueness.html");
-    }
+    email = aEmail;
   }
 
   //------------------------

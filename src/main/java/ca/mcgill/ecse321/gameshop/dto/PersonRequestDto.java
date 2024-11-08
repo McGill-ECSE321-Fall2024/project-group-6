@@ -19,11 +19,11 @@ public class PersonRequestDto {
     private PersonRequestDto() {
     }
 
-    public PersonRequestDto(String username, String email, String phone, String password) {
+    public PersonRequestDto(String username, String email, String password, String phone) {
         this.username = username;
         this.email = email;
-        this.phone = phone;
         this.password = password;
+        this.phone = phone;
     }
 
     public String getUsername() {
@@ -34,11 +34,11 @@ public class PersonRequestDto {
         return email;
     }
 
-    public String getPhone() {
-        return phone;
-    }
-
     public String getPassword() {
         return password;
+    }
+
+    public String getPhone() {
+        return phone;
     }
 }

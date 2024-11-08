@@ -15,6 +15,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.invocation.InvocationOnMock;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 
@@ -23,6 +25,7 @@ import ca.mcgill.ecse321.gameshop.model.Payment;
 import ca.mcgill.ecse321.gameshop.repository.PaymentRepository;
 
 @SpringBootTest
+@MockitoSettings(strictness = Strictness.STRICT_STUBS)
 public class PaymentServiceTests {
     @Mock
     private PaymentRepository repo;

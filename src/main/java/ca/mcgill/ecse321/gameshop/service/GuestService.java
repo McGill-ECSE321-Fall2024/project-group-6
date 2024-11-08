@@ -5,9 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import ca.mcgill.ecse321.gameshop.exception.GameShopException;
-import ca.mcgill.ecse321.gameshop.model.Game;
 import ca.mcgill.ecse321.gameshop.model.Guest;
-import ca.mcgill.ecse321.gameshop.repository.GameRepository;
 import ca.mcgill.ecse321.gameshop.repository.GuestRepository;
 import jakarta.transaction.Transactional;
 
@@ -16,8 +14,6 @@ public class GuestService {
     // Inject GuestRepository dependency to interact with the database
     @Autowired
     private GuestRepository guestRepo;
-    @Autowired
-    private GameRepository gameRepo;
 
     // Create a new guest and save it to the repository
     @Transactional
@@ -29,10 +25,6 @@ public class GuestService {
     // Retrieve all guests from the repository
     public Iterable<Guest> getAllGuests() {
         return guestRepo.findAll();
-    }
-
-    public Iterable<Game> getAllGames() {
-        return gameRepo.findAll();
     }
 
     // Find a guest by their ID

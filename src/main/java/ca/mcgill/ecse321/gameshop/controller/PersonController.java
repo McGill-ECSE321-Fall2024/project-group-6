@@ -72,7 +72,7 @@ public class PersonController {
      */
     @PutMapping("/person/{id}")
     public PersonResponseDto updatePerson(@PathVariable int id, @RequestBody PersonRequestDto person) {
-        Person p = personService.updatePerson(id, person.getUsername(), person.getEmail(), person.getPhone(), person.getPassword());
+        Person p = personService.updatePerson(id, person.getUsername(), person.getEmail(), person.getPassword(), person.getPhone());
         return new PersonResponseDto(p);
     }
 

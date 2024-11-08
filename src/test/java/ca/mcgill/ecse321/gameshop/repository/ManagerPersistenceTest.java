@@ -36,7 +36,7 @@ public class ManagerPersistenceTest {
     public void testCreateAndReadManager() {
 
         Person person = new Person("joseph", "joe.roustom@mcgill.ca", "password123", "555-1234");
-        person = personRepo.save(person);
+        //person = personRepo.save(person);
 
         Manager manager = new Manager(person);
         manager = managerRepo.save(manager);

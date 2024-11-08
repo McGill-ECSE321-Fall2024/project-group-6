@@ -35,8 +35,6 @@ public class CustomerPersistenceTest {
     public void testCreateAndReadCustomer() {
 
         Person person = new Person("johndoe", "john.doe@gmail.com", "password123", "555-1234");
-        person = personRepo.save(person);
-
 
         Customer customer = new Customer( person, "1234 Montreal");
         customer = customerRepo.save(customer);

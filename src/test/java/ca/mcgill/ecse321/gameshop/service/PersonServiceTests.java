@@ -134,7 +134,6 @@ public class PersonServiceTests {
         // Verify that the save method was called exactly once with the updated person
         verify(repo, times(1)).save(existingPerson);
     }
-    
 
     @Test
     public void testUpdatePersonByInvalidId() {

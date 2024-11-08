@@ -38,8 +38,6 @@ public class RolePersistenceTest {
 
 
         Person person = new Person("johndoe", "john@hotmail.com", "password123", "555-1234");
-        person = personRepo.save(person);
-
 
         Customer customer = new Customer( person, "1234 Montreal");
 

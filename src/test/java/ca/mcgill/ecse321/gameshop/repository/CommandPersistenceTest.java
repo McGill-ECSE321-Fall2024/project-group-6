@@ -10,9 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import ca.mcgill.ecse321.gameshop.model.Command;
-import ca.mcgill.ecse321.gameshop.model.Customer;
-import ca.mcgill.ecse321.gameshop.model.Payment;
-import ca.mcgill.ecse321.gameshop.model.Person;
 
 @SpringBootTest
 public class CommandPersistenceTest {
@@ -46,17 +43,6 @@ public class CommandPersistenceTest {
 
     @Test
     public void testCreateAndReadCommand() {
-
-        Person person = new Person("johndoe", "r@email.com", "password123", "555-1234");
-        person = personRepo.save(person);
-
-
-        Customer customer = new Customer(person, "1234 Montreal");
-        customer = customerRepo.save(customer);
-
-
-        Payment payment = new Payment("1234 Toronto",123456789,"05/27",444);
-        payment = paymentRepo.save(payment);
 
         Command command=new Command( "13-10-2024", 75.6F);
         command=commandRepo.save(command);
