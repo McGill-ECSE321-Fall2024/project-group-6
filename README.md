@@ -75,8 +75,8 @@ Table 2 : Roles of each team member Deliverable 2: <br/>
 |             | Unit tests for Command and Category                  |                  |
 |             |                                                      |                 |
 |             |                                                      |                  |
-| Joseph      | RESTful API methods for Manager                      |                 |
-|             | Unit tests for Manager, Employee and Customer        |                  |
+| Joseph      | RESTful API methods for Manager, Role, and Employee                     |                 |
+|             | Unit tests for Role, Manager, Employee, and Customer        |                  |
 |             |                                                      |                    |
 |             |                                                      |                    |
 |             |                                                      |                 |
