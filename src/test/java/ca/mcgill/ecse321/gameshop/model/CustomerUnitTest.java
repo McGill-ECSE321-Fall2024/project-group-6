@@ -14,6 +14,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.StreamSupport;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -81,7 +83,8 @@ public class CustomerUnitTest {
         Iterable<Customer> allCostumers = service.getAllCustomers();
         // Assert
         assertNotNull(allCostumers);
-        assertEquals(2, Iterables.size(allCostumers));
+        List<Customer> customerList = StreamSupport.stream(allCostumers.spliterator(), false).collect(Collectors.toList());
+        assertEquals(2, customerList.size());
         verify(repo,times(1)).findAll();
     }
 
