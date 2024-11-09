@@ -19,6 +19,21 @@ public class PersonService {
     @Transactional
     public Person createPerson(String aUsername, String aEmail, String aPassword, String aPhone) {
         Person p = new Person(aUsername, aEmail, aPassword, aPhone);
+
+        if(aPassword.length() < 10){
+            throw new GameShopException(HttpStatus.LENGTH_REQUIRED, String.format("Password needs to be at least 10 characters long"));
+        }
+        if(aEmail == null){
+            throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Email can not be null"));
+        }
+
+        if(aPhone == null){
+            throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Phone number can not be null"));
+        }
+        if(aUsername == null){
+            throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Username can not be null"));
+        }
+
         return personRepo.save(p);
     }
 
@@ -46,6 +61,22 @@ public class PersonService {
 
         if (p == null) {
 			throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Person with ID " + id + " does not exist."));
+        }
+
+        if(aPassword.length()<10){
+            throw new GameShopException(HttpStatus.LENGTH_REQUIRED, String.format("Password needs to be at least 10 characters long"));
+        }
+
+        if(aEmail == null){
+            throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Email can not be null"));
+        }
+
+        if(aPhone == null){
+            throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Phone number can not be null"));
+        }
+
+        if(aUsername == null){
+            throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Username can not be null"));
         }
 
         p.setUsername(aUsername);

@@ -34,7 +34,7 @@ public class PersonIntegrationTests {
 
     private static final String VALID_NAME = "Bob";
     private static final String VALID_EMAIL = "bob@mail.mcgill.ca";
-    private static final String VALID_PASSWORD = "12345678";
+    private static final String VALID_PASSWORD = "12345678910";
     private static final String VALID_PHONE = "+1(514)1234567";
     private int id;
 

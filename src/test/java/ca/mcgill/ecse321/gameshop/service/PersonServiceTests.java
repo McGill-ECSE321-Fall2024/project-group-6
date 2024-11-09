@@ -28,13 +28,13 @@ import ca.mcgill.ecse321.gameshop.repository.PersonRepository;
 @MockitoSettings(strictness = Strictness.STRICT_STUBS)
 public class PersonServiceTests {
     @Mock
-    private PersonRepository repo;
+    private PersonRepository mockRepo;
     @InjectMocks
     private PersonService service;
 
     private static final String VALID_NAME = "Bob";
     private static final String VALID_EMAIL = "bob@mail.mcgill.ca";
-    private static final String VALID_PASSWORD = "12345678";
+    private static final String VALID_PASSWORD = "12345678910";
     private static final String VALID_PHONE = "+1(514)1234567";
     private static final int ID = 10;
 
@@ -42,7 +42,7 @@ public class PersonServiceTests {
     public void testCreateValidPerson() {
         // Arrange
         // Return object when repo.save() is called
-        when(repo.save(any(Person.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
+        when(mockRepo.save(any(Person.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
 
         // Act
         Person createdPerson = service.createPerson(VALID_NAME, "mario@gmail.com", VALID_PASSWORD, VALID_PHONE);
@@ -55,13 +55,59 @@ public class PersonServiceTests {
         assertEquals(VALID_PHONE, createdPerson.getPhone());
 
         // Check that save() was called exactly once with given argument
-        verify(repo, times(1)).save(createdPerson);
+        verify(mockRepo, times(1)).save(createdPerson);
+    }
+
+    @Test
+    public void testCreatePersonWithInvalidPhone() {
+        // Arrange
+        // Whenever mockRepo.save(p) is called, return p
+        // when(mockRepo.save(any(Manager.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
+        String email="qrstuvwxyz@gmail.com";
+
+        GameShopException ex = assertThrows(GameShopException.class,
+                () -> service.createPerson(VALID_NAME, email, VALID_PASSWORD, null));
+        assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
+        assertEquals("Phone number can not be null", ex.getMessage());
+    }
+
+    @Test
+    public void testCreatePersonWithInvalidUsername() {
+        String email="qrstuvwxy@gmail.com";
+
+        GameShopException ex = assertThrows(GameShopException.class,
+                () -> service.createPerson(null, email, VALID_PASSWORD, VALID_PHONE));
+
+        assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
+        assertEquals("Username can not be null", ex.getMessage());
+    }
+
+    @Test
+    public void testCreatePersonWithInvalidEmail() {
+        // Arrange
+        // Whenever mockRepo.save(p) is called, return p
+        GameShopException ex = assertThrows(GameShopException.class,
+                () -> service.createPerson(VALID_NAME, null, VALID_PASSWORD, VALID_PHONE));
+        assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
+        assertEquals("Email can not be null", ex.getMessage());
+    }
+
+    @Test
+    public void testCreatePersonWithInvalidPassword() {
+        // Arrange
+        // Whenever mockRepo.save(p) is called, return p
+        String email="qrstuvwx@gmail.com";
+
+        GameShopException ex = assertThrows(GameShopException.class,
+                () -> service.createPerson(VALID_NAME, email, "123", VALID_PHONE));
+        assertEquals(HttpStatus.LENGTH_REQUIRED, ex.getStatus());
+        assertEquals("Password needs to be at least 10 characters long", ex.getMessage());
     }
 
     @Test
     public void testGetPersonByValidId() {
         // Arrange
-        when(repo.findPersonByUserId(ID)).thenReturn(new Person(VALID_NAME, VALID_EMAIL, VALID_PASSWORD, VALID_PHONE));
+        when(mockRepo.findPersonByUserId(ID)).thenReturn(new Person(VALID_NAME, VALID_EMAIL, VALID_PASSWORD, VALID_PHONE));
 
         // Act
         Person p = service.getPersonByUserId(ID);
@@ -91,7 +137,7 @@ public class PersonServiceTests {
         Person p1 = new Person(VALID_NAME, "test@mail.mcgill.ca", VALID_PASSWORD, VALID_PHONE);
         Person p2 = new Person("Alice", "alice@mail.mcgill.ca", "password123", "+1(514)9876543");
         List<Person> personList = Arrays.asList(p1, p2);
-        when(repo.findAll()).thenReturn(personList);
+        when(mockRepo.findAll()).thenReturn(personList);
 
         // Act
         Iterable<Person> peopleIterable = service.getAllPeople();
@@ -113,17 +159,17 @@ public class PersonServiceTests {
         String updatedPassword = "newpassword123";
         String updatedPhone = "+1(514)7654321";
         
-        Person existingPerson = new Person(VALID_NAME, VALID_EMAIL, VALID_PASSWORD, VALID_PHONE);
+        Person existingPerson = new Person(VALID_NAME, "test@mail.com", VALID_PASSWORD, VALID_PHONE);
         
         // Simulate finding the person by ID
-        when(repo.findPersonByUserId(ID)).thenReturn(existingPerson);
+        when(mockRepo.findPersonByUserId(ID)).thenReturn(existingPerson);
         
         // Simulate the save operation returning the existing (now updated) person
-        when(repo.save(any(Person.class))).thenReturn(existingPerson);
+        when(mockRepo.save(any(Person.class))).thenReturn(existingPerson);
     
         // Act
         Person updatedPerson = service.updatePerson(ID, updatedName, updatedEmail, updatedPassword, updatedPhone);
-    
+
         // Assert
         assertNotNull(updatedPerson);
         assertEquals(updatedName, updatedPerson.getUsername());
@@ -132,7 +178,75 @@ public class PersonServiceTests {
         assertEquals(updatedPhone, updatedPerson.getPhone());
     
         // Verify that the save method was called exactly once with the updated person
-        verify(repo, times(1)).save(existingPerson);
+        verify(mockRepo, times(1)).save(existingPerson);
+    }
+
+    @Test
+    public void testUpdatePersonByInvalidPasswordLength() {
+        // Arrange
+        String updatedPassword = "123";
+        
+        Person existingPerson = new Person(VALID_NAME, VALID_EMAIL, VALID_PASSWORD, VALID_PHONE);
+        
+        // Simulate finding the person by ID
+        when(mockRepo.findPersonByUserId(ID)).thenReturn(existingPerson);
+
+        // Act
+        // Assert
+		GameShopException ex = assertThrows(GameShopException.class,
+				() -> service.updatePerson(ID, VALID_NAME, VALID_EMAIL, updatedPassword, VALID_PHONE));
+		assertEquals(HttpStatus.LENGTH_REQUIRED, ex.getStatus());
+        assertEquals("Password needs to be at least 10 characters long", ex.getMessage());
+    }
+
+    @Test
+    public void testUpdatePersonByNullUsername() {
+        String updatedName = null;
+
+        String email = "qrstu@gmail.com";
+        Person existingPerson = new Person(VALID_NAME, email, VALID_PASSWORD, VALID_PHONE);
+
+        when(mockRepo.findPersonByUserId(ID)).thenReturn(existingPerson);
+
+        // Assert
+        GameShopException ex = assertThrows(GameShopException.class,
+                () -> service.updatePerson(ID, updatedName, VALID_EMAIL, VALID_PASSWORD, VALID_PHONE));
+        assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
+        assertEquals("Username can not be null", ex.getMessage());
+    }
+
+    @Test
+    public void testUpdatePersonByNullPhone() {
+        // Arrange
+        String updatedPhone = null;
+
+        String email = "qrstu@gmail.com";
+        Person existingPerson = new Person(VALID_NAME, email, VALID_PASSWORD, VALID_PHONE);
+
+        when(mockRepo.findPersonByUserId(ID)).thenReturn(existingPerson);
+
+        // Assert
+        GameShopException ex = assertThrows(GameShopException.class,
+                () -> service.updatePerson(ID, VALID_NAME, VALID_EMAIL, VALID_PASSWORD, updatedPhone));
+        assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
+        assertEquals("Phone number can not be null", ex.getMessage());
+    }
+
+    @Test
+    public void testUpdatePersonByNullEmail() {
+        // Arrange
+        String updatedEmail = null;
+
+        String email = "qrstu@gmail.com";
+        Person existingPerson = new Person(VALID_NAME, email, VALID_PASSWORD, VALID_PHONE);
+
+        when(mockRepo.findPersonByUserId(ID)).thenReturn(existingPerson);
+
+        // Assert
+        GameShopException ex = assertThrows(GameShopException.class,
+                () -> service.updatePerson(ID, VALID_NAME, updatedEmail, VALID_PASSWORD, VALID_PHONE));
+        assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
+        assertEquals("Email can not be null", ex.getMessage());
     }
 
     @Test
@@ -141,7 +255,7 @@ public class PersonServiceTests {
         // Act
         // Assert
 		GameShopException ex = assertThrows(GameShopException.class,
-				() -> service.updatePerson(ID, VALID_NAME, VALID_EMAIL, VALID_PASSWORD, VALID_PHONE));
+				() -> service.deletePerson(ID));
 		assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
 		assertEquals("Person with ID " + ID + " does not exist.", ex.getMessage());
     }
@@ -151,13 +265,13 @@ public class PersonServiceTests {
         // Arrange
         Person existingPerson = new Person(VALID_NAME, "test@gmail.com", VALID_PASSWORD, VALID_PHONE);
     
-        when(repo.findPersonByUserId(ID)).thenReturn(existingPerson);
+        when(mockRepo.findPersonByUserId(ID)).thenReturn(existingPerson);
 
         // Act
         service.deletePerson(ID);
 
         // Assert
-        verify(repo, times(1)).delete(existingPerson);
+        verify(mockRepo, times(1)).delete(existingPerson);
     }
 
     @Test
