@@ -8,7 +8,6 @@ public class PaymentRequestDto {
     private long creditCardNb;
     private String expirationDate;
     private int cvc;
-    private int total;
     //private int customerId;
     //private int commandId;
     //no payment id for request dto
@@ -55,14 +54,6 @@ public class PaymentRequestDto {
 
     public void setCvc(int cvc) {
         this.cvc = cvc;
-    }
-
-    public int getTotal() {
-        return total;
-    }
-
-    public void setTotal(int total) {
-        this.total = total;
     }
 
     //public int getCustomerId() {

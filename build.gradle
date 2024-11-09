@@ -30,9 +30,26 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
-jacocoTestReport {
-	reports {
-		xml.required = true
-		html.required = true
+tasks.named('test') {
+	useJUnitPlatform()
+	testLogging {
+		exceptionFormat "full"
+		events "passed", "failed"
 	}
+	finalizedBy jacocoTestReport
+}
+
+tasks.named('jacocoTestReport') {
+	dependsOn test // tests are required to run before generating the report
+}
+
+tasks.named('jacocoTestCoverageVerification') {
+	violationRules {
+		rule {
+			limit {
+				minimum = 0.6
+			}
+		}
+	}
+	dependsOn test // tests are required to run before checking code coverage.
 }

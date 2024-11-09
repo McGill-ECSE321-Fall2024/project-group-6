@@ -39,6 +39,7 @@ public class PaymentPersistenceTest {
 
 
         Payment payment = new Payment("1234 Montreal",1234567891234567L,"05/27",444);
+       // String aBillingAddress, long aCreditCardNb, String aExpirationDate, int aCvc)
         payment = paymentRepo.save(payment);
         Payment paymentFromDB = paymentRepo.findPaymentByPaymentId(payment.getPaymentId());
         assertNotNull(paymentFromDB);

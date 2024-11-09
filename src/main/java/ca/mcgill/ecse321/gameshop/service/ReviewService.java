@@ -54,9 +54,13 @@ public class ReviewService {
 			throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Review with ID " + id + " does not exist."));
         }
 
+        if (reviewRequest.getRating() == null){
+            throw new GameShopException(HttpStatus.BAD_REQUEST, "Rating cannot be empty");
+        }
+
         r.setRating(reviewRequest.getRating());
         r.setComment(reviewRequest.getComment());
-        r.setAmountOfLikes(reviewRequest.getAmountOfLikes());
+        //r.setAmountOfLikes(reviewRequest.getAmountOfLikes()); commented out because the user should not be able to change the amount of likes
 
         return reviewRepo.save(r);
     }
