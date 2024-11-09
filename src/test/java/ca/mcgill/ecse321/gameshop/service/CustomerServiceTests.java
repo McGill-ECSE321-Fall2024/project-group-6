@@ -221,6 +221,45 @@ public class CustomerServiceTests {
 
         verify(mockRepo, times(1)).save(updatedCustomer);
     }
+    @Test
+    public void testUpdateCustomerToDisable() {
+        // Arrange
+        String updatedName = "UpdatedBob";
+        String updatedEmail = "updatedbob@yahoo.com";
+        String updatedPassword = "disabled";
+        String updatedPhone = "+1(514)7654321";
+
+        String email="abcdefghij@yahoo.com";
+        Person aPerson= new Person(VALID_NAME, email,VALID_PASSWORD, VALID_PHONE);
+
+        Customer existingCustomer=new Customer(aPerson,VALID_ADDRESS);
+
+        when(mockRepo.findCustomerByRoleId(ID)).thenReturn(existingCustomer);
+        // Mock the save method to return the updated person when save() is called
+        when(mockRepo.save(any(Customer.class))).thenAnswer((InvocationOnMock iom) -> {
+            Customer updatedCustomer = iom.getArgument(0);
+            updatedCustomer.getPerson().setUsername(updatedName);
+            updatedCustomer.getPerson().setEmail(updatedEmail);
+            updatedCustomer.getPerson().setPassword(updatedPassword);
+            updatedCustomer.getPerson().setPhone(updatedPhone);
+            updatedCustomer.setShippingAddress("123 Sherbrooke East");
+
+            return updatedCustomer;
+        });
+
+        // Act
+        Customer updatedCustomer = service.updateCustomer(ID, updatedName,updatedEmail,updatedPassword,updatedPhone,"123 Sherbrooke East");
+
+        // Assert
+        assertNotNull(updatedCustomer);
+        assertEquals(updatedName, updatedCustomer.getPerson().getUsername());
+        assertEquals(updatedEmail, updatedCustomer.getPerson().getEmail());
+        assertEquals("disabled", updatedCustomer.getPerson().getPassword());
+        assertEquals(updatedPhone, updatedCustomer.getPerson().getPhone());
+        assertEquals("123 Sherbrooke East", updatedCustomer.getShippingAddress());
+
+        verify(mockRepo, times(1)).save(updatedCustomer);
+    }
 
 
     @Test

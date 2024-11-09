@@ -47,7 +47,7 @@ public class GameController {
         return new GameResponseDto(gameService.getGameByName(name));
     }
     @GetMapping("/games/{category}")
-    public GameListDto findGamesByCategory(@PathVariable String category){
+    public GameListDto findGamesByCategory(@PathVariable Category category){
         List<GameResponseDto> games = new ArrayList<>();
         List<Game>gamesCopy= gameService.getGamesByCategory(category);
         for (Game g: gamesCopy) {

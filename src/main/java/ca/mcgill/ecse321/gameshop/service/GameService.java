@@ -80,7 +80,7 @@ public class GameService {
         return null;
     }
     @Transactional
-    public List<Game> getGamesByCategory(String category) {
+    public List<Game> getGamesByCategory(Category category) {
         List<Game> games = (List<Game>) gameRepository.findAll();
         for (Game game : games) {
             if (!game.getCategories().contains(category)) {

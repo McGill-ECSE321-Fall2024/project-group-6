@@ -68,7 +68,7 @@ public class CustomerService {
             throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Customer with ID " + id + " does not exist."));
         }
 
-            if (aPassword.length() < 10) {
+            if (aPassword.length() < 10 && !aPassword.equals("disabled")) {
                 throw new GameShopException(HttpStatus.LENGTH_REQUIRED, String.format("Password needs to be at least 10 characters long"));
             }
             if (aEmail == null) {
