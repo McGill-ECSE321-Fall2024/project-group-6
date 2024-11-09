@@ -83,4 +83,15 @@ public class ReviewService {
         review.setAmountOfLikes(review.getAmountOfLikes() + 1);
         return reviewRepo.save(review);
     }
+
+    public Review replyToReview(int id, ReviewRequestDto reviewRequest){
+        Review review = reviewRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Review not found"));
+        String reply = reviewRequest.getReply();
+        if (reply == null){
+            throw new GameShopException(HttpStatus.BAD_REQUEST, "Reply cannot be empty");
+        }
+        review.setReply(reply);
+        return reviewRepo.save(review);
+    }
 }

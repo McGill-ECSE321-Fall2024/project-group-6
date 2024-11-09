@@ -82,7 +82,7 @@ public class ReviewController {
      * @param id the id of the review to delete.
      * @return void.
      */
-    @DeleteMapping("/review/{id}") //IS THIS THE RIGHT RETURN TYPE
+    @DeleteMapping("/review/{id}")
     public void deleteReview(@PathVariable int id) {
         reviewService.deleteReview(id);
     }

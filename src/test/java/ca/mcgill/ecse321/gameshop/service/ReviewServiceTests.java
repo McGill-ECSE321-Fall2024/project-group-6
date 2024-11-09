@@ -217,4 +217,60 @@ public class ReviewServiceTests {
         assertEquals("Review not found", exception.getMessage());
         verify(repo, times(1)).findById(nonExistingReviewId);
     }
+
+    @Test
+    public void testReplyToReviewValidId() {
+        // Arrange
+        int reviewId = 1;
+        Review existingReview = new Review(Review.StarRating.ThreeStar, "Okay product", 10);
+        ReviewRequestDto reviewRequestDto = new ReviewRequestDto();
+        reviewRequestDto.setReply("Thank you for your feedback!");
+
+        when(repo.findById(reviewId)).thenReturn(Optional.of(existingReview));
+        when(repo.save(any(Review.class))).thenReturn(existingReview);
+
+        // Act
+        Review updatedReview = service.replyToReview(reviewId, reviewRequestDto);
+
+        // Assert
+        assertNotNull(updatedReview);
+        assertEquals("Thank you for your feedback!", updatedReview.getReply());
+        verify(repo, times(1)).save(existingReview);
+    }
+
+    @Test
+    public void testReplyToReviewInvalidId() {
+        // Arrange
+        int invalidReviewId = 99;
+        ReviewRequestDto reviewRequestDto = new ReviewRequestDto();
+        reviewRequestDto.setReply("Thank you for your feedback!");
+
+        when(repo.findById(invalidReviewId)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        RuntimeException e = assertThrows(RuntimeException.class, () ->
+                service.replyToReview(invalidReviewId, reviewRequestDto)
+        );
+        assertEquals("Review not found", e.getMessage());
+        verify(repo, times(0)).save(any(Review.class));
+    }
+
+    @Test
+    public void testReplyToReviewNullReply() {
+        // Arrange
+        int reviewId = 1;
+        Review existingReview = new Review(Review.StarRating.TwoStar, "Not good", 10);
+        ReviewRequestDto reviewRequestDto = new ReviewRequestDto();
+        reviewRequestDto.setReply(null);
+
+        when(repo.findById(reviewId)).thenReturn(Optional.of(existingReview));
+
+        // Act & Assert
+        GameShopException exception = assertThrows(GameShopException.class, () -> {
+            service.replyToReview(reviewId, reviewRequestDto);
+        });
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
+        assertEquals("Reply cannot be empty", exception.getMessage());
+        verify(repo, times(0)).save(any(Review.class));
+    }
 }
