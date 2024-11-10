@@ -12,9 +12,4 @@ public class CustomerListDto {
     public List<CustomerResponseDto> getCustomers() {
         return customers;
     }
-
-    public void setCustomers(List<CustomerResponseDto> customers) {
-        this.customers = customers;
-    }
-
 }
