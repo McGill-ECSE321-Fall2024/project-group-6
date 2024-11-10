@@ -24,8 +24,6 @@ import org.springframework.http.ResponseEntity;
 import ca.mcgill.ecse321.gameshop.GameshopApplication;
 import ca.mcgill.ecse321.gameshop.repository.*;
 import ca.mcgill.ecse321.gameshop.dto.*;
-import ca.mcgill.ecse321.gameshop.model.*;
-import ca.mcgill.ecse321.gameshop.service.*;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = GameshopApplication.class)
 @TestMethodOrder(OrderAnnotation.class)
@@ -102,6 +100,7 @@ public class CustomerIntegrationTests {
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
+    @SuppressWarnings("null")
     @Test
     @Order(4)
     public void testUpdateCustomer() {
@@ -123,6 +122,7 @@ public class CustomerIntegrationTests {
         assertEquals(updatedDetails.getShippingAddress(), response.getBody().getShippingAddress());
     }
 
+    @SuppressWarnings("null")
     @Test
     @Order(5)
     public void testDeleteCustomerByValidId() {
@@ -141,6 +141,7 @@ public class CustomerIntegrationTests {
         assertEquals(HttpStatus.NOT_FOUND, deletedCustomer.getStatusCode());
     }
 
+    @SuppressWarnings("null")
     @Test
     @Order(6)
     public void testDeleteCustomerByInvalidId() {

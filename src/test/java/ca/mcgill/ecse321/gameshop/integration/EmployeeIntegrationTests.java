@@ -35,123 +35,162 @@ public class EmployeeIntegrationTests {
     @Autowired
     private TestRestTemplate client;
     @Autowired
-    private EmployeeService employeeService;
-    @Autowired
-    private ManagerService managerService;
-    @Autowired
-    private GameService gameService;
+    private EmployeeRepository employeeRepo;
 
     private int employeeId;
-    private int managerId;
-    private int gameId;
-    private static final String VALID_USERNAME = "employee1";
-    private static final String VALID_PASSWORD = "password123";
-    private static final String VALID_EMAIL = "employee1@gmail.com";
-    private static final String VALID_PHONE = "4912561548";
-    private static final String VALID_MANAGER_USERNAME = "manager1";
-    private static final String VALID_MANAGER_PASSWORD = "managerpassword";
-    private static final String VALID_MANAGER_EMAIL = "manager@gmail.com";
-    private static final String VALID_MANAGER_PHONE = "819987954";
+    private static final String VALID_NAME = "Jane";
+    private static final String VALID_EMAIL = "jane@mail.mcgill.ca";
+    private static final String VALID_PASSWORD = "12345678910";
+    private static final String VALID_PHONE = "6138548577";
+
+    private static final String NEW_NAME = "Jack";
+    private static final String NEW_EMAIL = "jack@mail.mcgill.ca";
+    private static final String NEW_PASSWORD = "825456bdja";
+    private static final String NEW_PHONE = "852741963";
 
     @AfterAll
     public void clearDatabase() {
-        employeeService.deleteAll();
-        gameService.deleteAll();
+        employeeRepo.deleteAll();
     }
 
+    @SuppressWarnings("null")
     @Test
     @Order(1)
-    public void testCreateValidEmployee() {
+    public void CreateValidEmployee() {
         // Arrange
-        Manager manager = new Manager(new Person(VALID_MANAGER_USERNAME, VALID_MANAGER_EMAIL, VALID_MANAGER_PASSWORD, VALID_MANAGER_PHONE));
-        managerService.createManager(manager);
+        EmployeeRequestDto request = new EmployeeRequestDto(VALID_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD);
 
         // Act
-        Employee employee = new Employee(new Person(VALID_USERNAME, VALID_EMAIL, VALID_PASSWORD, VALID_PHONE),null, true);
-        employeeService.addEmployee(employee);
+        ResponseEntity<EmployeeResponseDto> response = client.postForEntity("/employees", request, EmployeeResponseDto.class);
 
         // Assert
-        assertNotNull(employee);
-        this.employeeId = employee.getId();
-        this.managerId = manager.getId();
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        this.employeeId = response.getBody().getEmployeeId();
     }
 
+    @SuppressWarnings("null")
     @Test
     @Order(2)
-    public void testAddGameAfterManagerApproval() {
+    public void testGetEmployeeByValidId() {
         // Arrange
-        Manager manager = managerService.getManagerById(this.managerId);
-        Game game = new Game("New Game", "boardgame", 20, 10, "www.photo.ca");
-
-        // Simulate manager approval for adding game
-        boolean isApproved = manager.approvalToAddGame(gameId);
-        assertTrue(isApproved);
+        String url = String.format("/employees/%d", this.employeeId);
 
         // Act
-        gameService.addGameByEmployee(game, employeeService.getEmployeeById(this.employeeId));
+        ResponseEntity<EmployeeResponseDto> response = client.getForEntity(url, EmployeeResponseDto.class);
 
         // Assert
-        Game addedGame = gameService.getGameById(game.getId());
-        assertNotNull(addedGame);
-        assertEquals("New Game", addedGame.getName());
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(this.employeeId, response.getBody().getEmployeeId());
     }
 
+    @SuppressWarnings("null")
     @Test
     @Order(3)
-    public void testRemoveGameAfterManagerApproval() {
+    public void testGetEmployeeByInvalidId() {
         // Arrange
-        Manager manager = managerService.getManagerById(this.managerId);
-        Game game = new Game();
-        gameService.addGame(game);
-
-        // Simulate manager approval for removing game
-        boolean isApproved = manager.approvalToRemoveGame(gameId);
-        assertTrue(isApproved);
+        String url = String.format("/employees/%d", -1);
 
         // Act
-        employeeService.removeGame(gameId);
+        ResponseEntity<EmployeeResponseDto> response = client.getForEntity(url, EmployeeResponseDto.class);
 
         // Assert
-        Game removedGame = gameService.getGameById(game.getId());
-        assertEquals(null, removedGame);  // Game should be removed from the catalog
+        assertNotNull(response);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
+    @SuppressWarnings("null")
     @Test
     @Order(4)
-    public void testAddGameToCatalog() {
+    public void testUpdateEmployee() {
         // Arrange
-        Game game = new Game();
+        String url = String.format("/employees/%d", this.employeeId);
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer validToken");
+        headers.setContentType(MediaType.APPLICATION_JSON);
 
-        HttpEntity<Game> request = new HttpEntity<>(game, headers);
+        // Set up the updated details
+        EmployeeRequestDto updatedDetails = new EmployeeRequestDto(NEW_NAME, NEW_EMAIL, NEW_PHONE, NEW_PASSWORD);
+        HttpEntity<EmployeeRequestDto> entity = new HttpEntity<>(updatedDetails, headers);
 
         // Act
-        ResponseEntity<Game> response = client.exchange("/employee/{employeeId}/addGame", HttpMethod.POST, request, Game.class, this.employeeId);
+        ResponseEntity<EmployeeResponseDto> response = client.exchange(url, HttpMethod.PUT, entity, EmployeeResponseDto.class);
 
         // Assert
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Action Game", response.getBody().getName());
+        assertEquals(updatedDetails.getEmail(), response.getBody().getEmail());
     }
 
+    @SuppressWarnings("null")
     @Test
     @Order(5)
-    public void testRemoveGameFromCatalog() {
+    public void testDeleteEmployeeByValidId() {
         // Arrange
-        Game game = new Game();
-        gameService.saveGame(game);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer validToken");
-
-        HttpEntity<Game> request = new HttpEntity<>(game, headers);
+        String url = String.format("/employees/%d", this.employeeId);
 
         // Act
-        ResponseEntity<Void> response = client.exchange("/employee/{employeeId}/removeGame", HttpMethod.POST, request, Void.class, this.employeeId);
+        ResponseEntity<Void> response = client.exchange(url, HttpMethod.DELETE, null, Void.class);
 
         // Assert
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        // Verify the Employee was actually deleted by trying to fetch it again
+        ResponseEntity<EmployeeResponseDto> deletedEmployee = client.getForEntity(url, EmployeeResponseDto.class);
+        assertEquals(HttpStatus.NOT_FOUND, deletedEmployee.getStatusCode());
+    }
+
+    @SuppressWarnings("null")
+    @Test
+    @Order(6)
+    public void testDeleteEmployeeByInvalidId() {
+        // Arrange
+        String url = String.format("/employees/%d", -1);
+
+        // Act
+        ResponseEntity<Void> response = client.exchange(url, HttpMethod.DELETE, null, Void.class);
+
+        // Assert
+        assertNotNull(response);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @SuppressWarnings("null")
+    @Test
+    @Order(7)
+    public void testAssignTaskToEmployee() {
+        // Arrange
+        String url = String.format("/employees/%d/tasks", this.employeeId);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        // Setting up a task to add to employee
+        String task = "Process new orders";
+        HttpEntity<String> entity = new HttpEntity<>(task, headers);
+
+        // Act
+        ResponseEntity<EmployeeResponseDto> response = client.exchange(url, HttpMethod.PUT, entity, EmployeeResponseDto.class);
+
+        // Assert
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(task, response.getBody().getTasks().get(0));
+    }
+
+    @SuppressWarnings("null")
+    @Test
+    @Order(8)
+    public void testGetTasksForEmployee() {
+        // Arrange
+        String url = String.format("/employees/%d/tasks", this.employeeId);
+
+        // Act
+        ResponseEntity<List> response = client.exchange(url, HttpMethod.GET, null, List.class);
+
+        // Assert
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(1, response.getBody().size());  // Should contain the task we assigned earlier
     }
 }
