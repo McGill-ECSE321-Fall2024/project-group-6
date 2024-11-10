@@ -751,9 +751,7 @@ public class CustomerServiceTests {
     }
     @Test
     public void testGetGameFromCustomerWishlistWithInvalidId() {
-        // Arrange
-        // Act
-        // Assert
+
         Game game = new Game("FC 24", "Soccer Game", 50.0F, 1, "https://image.peg");
         GameShopException ex = assertThrows(GameShopException.class,
                 () -> service.getCustomerWishlist(ID));

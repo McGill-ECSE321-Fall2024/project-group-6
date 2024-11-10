@@ -1,11 +1,14 @@
 package ca.mcgill.ecse321.gameshop.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import ca.mcgill.ecse321.gameshop.exception.GameShopException;
 import ca.mcgill.ecse321.gameshop.model.Person;
 import ca.mcgill.ecse321.gameshop.repository.PersonRepository;
 import jakarta.transaction.Transactional;
+import java.util.*;
 
 @Service
 public class PersonService {
@@ -17,6 +20,21 @@ public class PersonService {
     @Transactional
     public Person createPerson(String aUsername, String aEmail, String aPassword, String aPhone) {
         Person p = new Person(aUsername, aEmail, aPassword, aPhone);
+
+        if(aPassword.length() < 10){
+            throw new GameShopException(HttpStatus.LENGTH_REQUIRED, String.format("Password needs to be at least 10 characters long"));
+        }
+        if(aEmail == null){
+            throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Email can not be null"));
+        }
+
+        if(aPhone == null){
+            throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Phone number can not be null"));
+        }
+        if(aUsername == null){
+            throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Username can not be null"));
+        }
+
         return personRepo.save(p);
     }
 
@@ -26,12 +44,12 @@ public class PersonService {
     }
 
     // Find a person by their ID
-    public Person getPersonByID(int id) {
+    public Person getPersonByUserId(int id) {
         Person p = personRepo.findPersonByUserId(id);
 
         // Throw an exception if no person is found
         if (p == null) {
-            throw new IllegalArgumentException("Person with ID " + id + " does not exist.");
+            throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Person with ID " + id + " does not exist."));
         }
 
         return p;
@@ -43,7 +61,23 @@ public class PersonService {
         Person p = personRepo.findPersonByUserId(id);
 
         if (p == null) {
-            throw new IllegalArgumentException("Person with ID " + id + " does not exist.");
+            throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Person with ID " + id + " does not exist."));
+        }
+
+        if(aPassword.length()<10){
+            throw new GameShopException(HttpStatus.LENGTH_REQUIRED, String.format("Password needs to be at least 10 characters long"));
+        }
+
+        if(aEmail == null){
+            throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Email can not be null"));
+        }
+
+        if(aPhone == null){
+            throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Phone number can not be null"));
+        }
+
+        if(aUsername == null){
+            throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Username can not be null"));
         }
 
         p.setUsername(aUsername);
@@ -60,9 +94,25 @@ public class PersonService {
         Person p = personRepo.findPersonByUserId(id);
 
         if (p == null) {
-            throw new IllegalArgumentException("Person with ID " + id + " does not exist.");
+            throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Person with ID " + id + " does not exist."));
         }
 
         personRepo.delete(p);
+    }
+    @Transactional
+    public boolean login(String email, String password) {
+      Person p= personRepo.findPersonByEmail(email);
+
+      if(p==null){
+          throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Person with Email " + email + " does not exist."));
+      }
+      else if(p.getPassword()==password){
+          return true;
+      }
+      else {
+          throw new GameShopException(HttpStatus.UNAUTHORIZED, String.format("Wrong Password"));
+
+
+      }
     }
 }
