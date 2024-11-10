@@ -1,8 +1,6 @@
 package ca.mcgill.ecse321.gameshop.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -202,7 +200,7 @@ String email="abcdefghijklmno@gmail.com";
         service.deleteRole(ID);
 
         // Assert
-
+       // assertNull(mockRepo.findRoleByRoleId(ID));
         verify(mockRepo, times(1)).delete(existingManagerRole);
     }
 

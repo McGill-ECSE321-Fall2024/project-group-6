@@ -1,5 +1,6 @@
 package ca.mcgill.ecse321.gameshop.service;
 
+import ca.mcgill.ecse321.gameshop.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -9,6 +10,9 @@ import ca.mcgill.ecse321.gameshop.model.Customer;
 import ca.mcgill.ecse321.gameshop.model.Person;
 import ca.mcgill.ecse321.gameshop.repository.CustomerRepository;
 import jakarta.transaction.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class CustomerService {
@@ -105,5 +109,102 @@ public class CustomerService {
         }
 
         customerRepo.delete(c);
+    }
+    @Transactional
+    public Customer addGameToCustomerCart(int id, Game game) {
+        Customer customerFromDB= customerRepo.findCustomerByRoleId(id);
+        if (customerFromDB== null) {
+            throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Customer with ID " + id + " does not exist."));
+        }
+        if(game==null){
+            throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Game can not be null"));
+        }
+        List<Game> gamesCart= customerFromDB.getCart();
+        if(customerFromDB.getCart()==null){
+            gamesCart=  new ArrayList<>();
+        }
+        gamesCart.add(game);
+        customerFromDB.setCart(gamesCart);
+
+        return customerRepo.save(customerFromDB);
+    }
+    @Transactional
+    public Customer deleteGameFromCustomerCart(int id,Game game) {
+        Customer customerFromDB= customerRepo.findCustomerByRoleId(id);
+        if (customerFromDB== null) {
+            throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Customer with ID " + id + " does not exist."));
+        }
+        if(game==null){
+            throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Game can not be null"));
+        }
+        List<Game> gamesCart = customerFromDB.getCart();
+        if (gamesCart == null) {
+            gamesCart = new ArrayList<>();
+        }
+
+        gamesCart.remove(game);
+        customerFromDB.setCart(gamesCart);
+
+        return customerRepo.save(customerFromDB);
+    }
+    @Transactional
+    public Customer addGameToCustomerWishList(int id, Game game) {
+        Customer customerFromDB= customerRepo.findCustomerByRoleId(id);
+        if (customerFromDB== null) {
+            throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Customer with ID " + id + " does not exist."));
+        }
+        if(game==null){
+            throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Game can not be null"));
+        }
+        List<Game> gamesWishlist= customerFromDB.getWishlist();
+        if(customerFromDB.getWishlist()==null){
+            gamesWishlist=  new ArrayList<>();
+        }
+        gamesWishlist.add(game);
+        customerFromDB.setWishlist(gamesWishlist);
+
+        return customerRepo.save(customerFromDB);
+    }
+    @Transactional
+    public Customer deleteGameFromCustomerWishList(int id,Game game) {
+        Customer customerFromDB= customerRepo.findCustomerByRoleId(id);
+        if (customerFromDB== null) {
+            throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Customer with ID " + id + " does not exist."));
+        }
+        if(game==null){
+            throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Game can not be null"));
+        }
+        List<Game> gamesWishlist = customerFromDB.getCart();
+        if (gamesWishlist == null) {
+            gamesWishlist = new ArrayList<>();
+        }
+
+        for(int i=0; i<gamesWishlist.size();i++){
+            if(gamesWishlist.get(i).equals(game)){
+                gamesWishlist.remove(game);
+                break;
+            }
+        }
+        customerFromDB.setWishlist(gamesWishlist);
+
+        return customerRepo.save(customerFromDB);
+    }
+    @Transactional
+    public List<Game> getCustomerCart(int id) {
+        Customer customerFromDB= customerRepo.findCustomerByRoleId(id);
+        if (customerFromDB== null) {
+            throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Customer with ID " + id + " does not exist."));
+        }
+
+        return customerFromDB.getCart();
+    }
+    @Transactional
+    public List<Game> getCustomerWishlist(int id) {
+        Customer customerFromDB= customerRepo.findCustomerByRoleId(id);
+        if (customerFromDB== null) {
+            throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Customer with ID " + id + " does not exist."));
+        }
+
+        return customerFromDB.getWishlist();
     }
 }

@@ -62,6 +62,38 @@ public class CustomerController {
 
         return new CustomerResponseDto(c);
     }
+    @PutMapping("/customers/{cid}/cart")
+    public CustomerResponseDto addGameToCart(@PathVariable int cid, Game game) {
+        Customer c = customerService.addGameToCustomerCart(cid,game);
+        return new CustomerResponseDto(c);
+    }
+
+    @GetMapping("/customers/{cid}/cart")
+    public List <Game> getAllGamesInCart(@PathVariable int cid) {
+
+        return customerService.getCustomerCart(cid);
+    }
+    @PutMapping("/customers/{cid}/cart/game")
+    public CustomerResponseDto DeleteGameFromCart(@PathVariable int cid, Game game) {
+        Customer c = customerService.deleteGameFromCustomerCart(cid,game);
+        return new CustomerResponseDto(c);
+    }
+    @PutMapping("/customers/{cid}/wishlist")
+    public CustomerResponseDto addGameToWishlist(@PathVariable int cid, Game game) {
+        Customer c = customerService.addGameToCustomerWishList(cid,game);
+        return new CustomerResponseDto(c);
+    }
+
+    @GetMapping("/customers/{cid}/wishlist")
+    public List <Game> getAllGamesInWishlist(@PathVariable int cid) {
+
+        return customerService.getCustomerWishlist(cid);
+    }
+    @PutMapping("/customers/{cid}/wishlist/game")
+    public CustomerResponseDto DeleteGameFromWishlist(@PathVariable int cid, Game game) {
+        Customer c = customerService.deleteGameFromCustomerWishList(cid,game);
+        return new CustomerResponseDto(c);
+    }
 
 
 }

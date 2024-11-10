@@ -394,7 +394,7 @@ public class CustomerServiceTests {
     }
 
     @Test
-    public void testDeleteManagerByValidId() {
+    public void testDeleteCustomerByValidId() {
         // Arrange
         String email="abcd@hotmail.com";
         Person aPerson = new Person(VALID_NAME, email, VALID_PASSWORD, VALID_PHONE);
@@ -406,11 +406,12 @@ public class CustomerServiceTests {
         service.deleteCustomer(ID);
 
         // Assert
+
         verify(mockRepo, times(1)).delete(existingCustomer);
     }
 
     @Test
-    public void testDeleteManagerByInvalidId() {
+    public void testDeleteCustomerByInvalidId() {
         // Arrange
         // Act
         // Assert
@@ -419,4 +420,345 @@ public class CustomerServiceTests {
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Customer with ID " + ID + " does not exist.", ex.getMessage());
     }
+    @Test
+    public void testValidAdditionOfGameToCustomerCart() {
+        String updatedName = "UpdatedBob";
+        String updatedEmail = "onetwofive@yahoo.com";
+        String updatedPassword = "newpassword123";
+        String updatedPhone = "+1(514)7654321";
+
+        String email="qzyx@render.com";
+        Person aPerson= new Person(VALID_NAME, email,VALID_PASSWORD, VALID_PHONE);
+
+        Customer exstingCustomer=new Customer(aPerson,VALID_ADDRESS);
+        Game game= new Game("FC 24","Soccer Game",50.0F,1,"https://image.peg");
+      //  String aName, String aDescription, float aPrice, int aStockQuantity,String aPhotoURL
+        when(mockRepo.findCustomerByRoleId(ID)).thenReturn(exstingCustomer);
+        // Mock the save method to return the updated person when save() is called
+        when(mockRepo.save(any(Customer.class))).thenAnswer((InvocationOnMock iom) -> {
+            Customer updatedCustomer = iom.getArgument(0);
+            updatedCustomer.getPerson().setUsername(updatedName);
+            updatedCustomer.getPerson().setEmail(updatedEmail);
+            updatedCustomer.getPerson().setPassword(updatedPassword);
+            updatedCustomer.getPerson().setPhone(updatedPhone);
+            return updatedCustomer;
+        });
+
+        // Act
+        Customer updatedCustomerCartAfterAddition = service.addGameToCustomerCart(ID,game);
+
+        // Assert
+        assertNotNull(updatedCustomerCartAfterAddition);
+        assertEquals(true, updatedCustomerCartAfterAddition.getCart().contains(game));
+
+        verify(mockRepo, times(1)).save(updatedCustomerCartAfterAddition);
+    }
+    @Test
+    public void testValidAdditionOfGameToCustomerWishlist() {
+
+        when(mockRepo.save(any(Customer.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
+
+        String email="qzy@render.com";
+        Person person= new Person(VALID_NAME, email,VALID_PASSWORD, VALID_PHONE);
+        Customer existingCustomer = service.createCustomer(person,VALID_ADDRESS);
+
+
+        Game game= new Game("FC 24","Soccer Game",50.0F,1,"https://image.peg");
+        //  String aName, String aDescription, float aPrice, int aStockQuantity,String aPhotoURL
+        when(mockRepo.findCustomerByRoleId(ID)).thenReturn(existingCustomer);
+        // Mock the save method to return the updated person when save() is called
+
+
+        // Act
+        Customer updatedCustomerWishlistAfterAddition = service.addGameToCustomerWishList(ID,game);
+
+        // Assert
+        assertNotNull(updatedCustomerWishlistAfterAddition);
+        assertEquals(true, updatedCustomerWishlistAfterAddition.getWishlist().contains(game));
+        verify(mockRepo, times(2)).save(any(Customer.class));
+
+
+    }
+    @Test
+    public void testInvalidAdditionOfGameToCustomerCartWithInvalidID() {
+
+        Game game= new Game("FC 24","Soccer Game",50.0F,1,"https://image.peg");
+
+        GameShopException ex = assertThrows(GameShopException.class,
+                () -> service.addGameToCustomerCart(ID,game));
+        assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
+        assertEquals("Customer with ID " + ID + " does not exist.", ex.getMessage());
+    }
+    @Test
+    public void testInvalidAdditionOfGameToCustomerCartWithInvalidGame() {
+
+
+
+        String email="qz@render.com";
+        Person aPerson= new Person(VALID_NAME, email,VALID_PASSWORD, VALID_PHONE);
+
+        Customer exstingCustomer=new Customer(aPerson,VALID_ADDRESS);
+        Game game= null;
+        //  String aName, String aDescription, float aPrice, int aStockQuantity,String aPhotoURL
+        when(mockRepo.findCustomerByRoleId(ID)).thenReturn(exstingCustomer);
+        // Mock the save method to return the updated person when save() is called
+
+        // Act
+        GameShopException ex = assertThrows(GameShopException.class,
+                () -> service.addGameToCustomerCart(ID,game));
+        assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
+        assertEquals("Game can not be null", ex.getMessage());
+    }
+    @Test
+    public void testInvalidAdditionOfGameToCustomerWishlistWithInvalidID() {
+
+        Game game= new Game("FC 24","Soccer Game",50.0F,1,"https://image.peg");
+
+        GameShopException ex = assertThrows(GameShopException.class,
+                () -> service.addGameToCustomerWishList(ID,game));
+        assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
+        assertEquals("Customer with ID " + ID + " does not exist.", ex.getMessage());
+    }
+    @Test
+    public void testInvalidAdditionOfGameToCustomerWishlistWithInvalidGame() {
+
+
+
+        String email="q@render.com";
+        Person aPerson= new Person(VALID_NAME, email,VALID_PASSWORD, VALID_PHONE);
+
+        Customer exstingCustomer=new Customer(aPerson,VALID_ADDRESS);
+        Game game= null;
+        //  String aName, String aDescription, float aPrice, int aStockQuantity,String aPhotoURL
+        when(mockRepo.findCustomerByRoleId(ID)).thenReturn(exstingCustomer);
+        // Mock the save method to return the updated person when save() is called
+
+        // Act
+        GameShopException ex = assertThrows(GameShopException.class,
+                () -> service.addGameToCustomerWishList(ID,game));
+        assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
+        assertEquals("Game can not be null", ex.getMessage());
+    }
+    @Test
+    public void testDeleteCustomerCartByValidId() {
+        // Arrange
+        // Mock the save method to return the passed Customer object
+        when(mockRepo.save(any(Customer.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
+
+
+        String email = "abcdefg@render.com";
+        Person person = new Person(VALID_NAME, email, VALID_PASSWORD, VALID_PHONE);
+        Customer existingCustomer = service.createCustomer(person, VALID_ADDRESS);
+
+        assertNotNull(existingCustomer);
+        assertEquals(email, existingCustomer.getPerson().getEmail());
+
+
+        when(mockRepo.findCustomerByRoleId(ID)).thenReturn(existingCustomer);
+
+        Game game = new Game("FC 24", "Soccer Game", 50.0F, 1, "https://image.peg");
+        Customer updatedCustomerCartAfterAddition = service.addGameToCustomerCart(ID, game);
+
+        assertNotNull(updatedCustomerCartAfterAddition);
+        assertTrue(updatedCustomerCartAfterAddition.getCart().contains(game));
+
+        service.deleteGameFromCustomerCart(ID, game);
+
+        assertFalse(updatedCustomerCartAfterAddition.getCart().contains(game));
+
+        verify(mockRepo, times(3)).save(any(Customer.class));
+
+    }
+    @Test
+    public void testDeleteCustomerWishlistByValidId() {
+        // Arrange
+        // Mock the save method to return the passed Customer object
+        when(mockRepo.save(any(Customer.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
+
+
+        String email = "abcdefg@render.com";
+        Person person = new Person(VALID_NAME, email, VALID_PASSWORD, VALID_PHONE);
+        Customer existingCustomer = service.createCustomer(person, VALID_ADDRESS);
+
+        assertNotNull(existingCustomer);
+        assertEquals(email, existingCustomer.getPerson().getEmail());
+
+
+        when(mockRepo.findCustomerByRoleId(ID)).thenReturn(existingCustomer);
+
+        Game game = new Game("FC 24", "Soccer Game", 50.0F, 1, "https://image.peg");
+        Customer updatedCustomerWishlistAfterAddition = service.addGameToCustomerWishList(ID, game);
+
+        assertNotNull(updatedCustomerWishlistAfterAddition);
+        assertTrue(updatedCustomerWishlistAfterAddition.getWishlist().contains(game));
+
+        service.deleteGameFromCustomerWishList(ID, game);
+
+        assertFalse(updatedCustomerWishlistAfterAddition.getWishlist().contains(game));
+
+        verify(mockRepo, times(3)).save(any(Customer.class));
+
+    }
+    @Test
+    public void testDeleteGameFromCustomerCartWithInvalidId() {
+        // Arrange
+        // Act
+        // Assert
+        Game game = new Game("FC 24", "Soccer Game", 50.0F, 1, "https://image.peg");
+        GameShopException ex = assertThrows(GameShopException.class,
+                () -> service.deleteGameFromCustomerCart(ID,game));
+        assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
+        assertEquals("Customer with ID " + ID + " does not exist.", ex.getMessage());
+    }
+    @Test
+    public void testDeleteGameFromCustomerWishlistWithInvalidId() {
+        // Arrange
+        // Act
+        // Assert
+        Game game = new Game("FC 24", "Soccer Game", 50.0F, 1, "https://image.peg");
+        GameShopException ex = assertThrows(GameShopException.class,
+                () -> service.deleteGameFromCustomerWishList(ID,game));
+        assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
+        assertEquals("Customer with ID " + ID + " does not exist.", ex.getMessage());
+    }
+    @Test
+    public void testDeleteGameFromCustomerCartWithInvalidGame() {
+        // Arrange
+        // Mock the save method to return the passed Customer object
+        when(mockRepo.save(any(Customer.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
+
+
+        String email = "abcdefg@render.com";
+        Person person = new Person(VALID_NAME, email, VALID_PASSWORD, VALID_PHONE);
+        Customer existingCustomer = service.createCustomer(person, VALID_ADDRESS);
+
+        assertNotNull(existingCustomer);
+        assertEquals(email, existingCustomer.getPerson().getEmail());
+
+
+        when(mockRepo.findCustomerByRoleId(ID)).thenReturn(existingCustomer);
+
+        Game game = new Game("FC 24", "Soccer Game", 50.0F, 1, "https://image.peg");;
+        Customer updatedCustomerCartAfterAddition = service.addGameToCustomerCart(ID, game);
+
+        assertNotNull(updatedCustomerCartAfterAddition);
+        assertTrue(updatedCustomerCartAfterAddition.getCart().contains(game));
+
+        GameShopException ex = assertThrows(GameShopException.class,
+                () -> service.deleteGameFromCustomerWishList(ID,null));
+        assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
+        assertEquals("Game can not be null", ex.getMessage());
+    }
+    @Test
+    public void testDeleteGameFromCustomerWishlistWithInvalidGame() {
+// Arrange
+        // Mock the save method to return the passed Customer object
+        when(mockRepo.save(any(Customer.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
+
+
+        String email = "abcdefg@render.com";
+        Person person = new Person(VALID_NAME, email, VALID_PASSWORD, VALID_PHONE);
+        Customer existingCustomer = service.createCustomer(person, VALID_ADDRESS);
+
+        assertNotNull(existingCustomer);
+        assertEquals(email, existingCustomer.getPerson().getEmail());
+
+
+        when(mockRepo.findCustomerByRoleId(ID)).thenReturn(existingCustomer);
+
+        Game game = new Game("FC 24", "Soccer Game", 50.0F, 1, "https://image.peg");;
+        Customer updatedCustomerWishlistAfterAddition = service.addGameToCustomerWishList(ID, game);
+
+        assertNotNull(updatedCustomerWishlistAfterAddition);
+        assertTrue(updatedCustomerWishlistAfterAddition.getWishlist().contains(game));
+
+
+        GameShopException ex = assertThrows(GameShopException.class,
+                () -> service.deleteGameFromCustomerWishList(ID,null));
+        assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
+        assertEquals("Game can not be null", ex.getMessage());
+    }
+    @Test
+    public void testGetCustomerCartByValidId() {
+        // Arrange
+        // Mock the save method to return the passed Customer object
+        when(mockRepo.save(any(Customer.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
+
+
+        String email = "abcdefg@render.com";
+        Person person = new Person(VALID_NAME, email, VALID_PASSWORD, VALID_PHONE);
+        Customer existingCustomer = service.createCustomer(person, VALID_ADDRESS);
+
+        assertNotNull(existingCustomer);
+        assertEquals(email, existingCustomer.getPerson().getEmail());
+
+
+        when(mockRepo.findCustomerByRoleId(ID)).thenReturn(existingCustomer);
+
+        Game game = new Game("FC 24", "Soccer Game", 50.0F, 1, "https://image.peg");
+        Customer updatedCustomerCartAfterAddition = service.addGameToCustomerCart(ID, game);
+
+        assertNotNull(updatedCustomerCartAfterAddition);
+        assertTrue(updatedCustomerCartAfterAddition.getCart().contains(game));
+
+      List <Game> customerCart= service.getCustomerCart(ID);
+
+        assertEquals(game,customerCart.get(0));
+
+        verify(mockRepo, times(2)).save(any(Customer.class));
+
+    }
+    @Test
+    public void testGetCustomerWishlistByValidId() {
+        // Arrange
+        // Mock the save method to return the passed Customer object
+        when(mockRepo.save(any(Customer.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
+
+
+        String email = "abcdefg@render.com";
+        Person person = new Person(VALID_NAME, email, VALID_PASSWORD, VALID_PHONE);
+        Customer existingCustomer = service.createCustomer(person, VALID_ADDRESS);
+
+        assertNotNull(existingCustomer);
+        assertEquals(email, existingCustomer.getPerson().getEmail());
+
+
+        when(mockRepo.findCustomerByRoleId(ID)).thenReturn(existingCustomer);
+
+        Game game = new Game("FC 24", "Soccer Game", 50.0F, 1, "https://image.peg");
+        Customer updatedCustomerWishlistAfterAddition = service.addGameToCustomerWishList(ID, game);
+
+        assertNotNull(updatedCustomerWishlistAfterAddition);
+        assertTrue(updatedCustomerWishlistAfterAddition.getWishlist().contains(game));
+
+        List <Game> customerWishList= service.getCustomerWishlist(ID);
+
+        assertEquals(game,customerWishList.get(0));
+
+        verify(mockRepo, times(2)).save(any(Customer.class));
+
+    }
+    @Test
+    public void testGetGameFromCustomerCartWithInvalidId() {
+        // Arrange
+        // Act
+        // Assert
+        Game game = new Game("FC 24", "Soccer Game", 50.0F, 1, "https://image.peg");
+        GameShopException ex = assertThrows(GameShopException.class,
+                () -> service.getCustomerCart(ID));
+        assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
+        assertEquals("Customer with ID " + ID + " does not exist.", ex.getMessage());
+    }
+    @Test
+    public void testGetGameFromCustomerWishlistWithInvalidId() {
+        // Arrange
+        // Act
+        // Assert
+        Game game = new Game("FC 24", "Soccer Game", 50.0F, 1, "https://image.peg");
+        GameShopException ex = assertThrows(GameShopException.class,
+                () -> service.getCustomerWishlist(ID));
+        assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
+        assertEquals("Customer with ID " + ID + " does not exist.", ex.getMessage());
+    }
+
 }
