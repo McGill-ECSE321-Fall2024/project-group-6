@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.*;
 //import ca.mcgill.ecse321.eventregistration.dto.RegistrationResponseDto;
 import ca.mcgill.ecse321.gameshop.model.*;
-
+import ca.mcgill.ecse321.gameshop.repository.*;
 import ca.mcgill.ecse321.gameshop.service.*;
 
 @RestController
@@ -21,6 +21,8 @@ public class ManagerController {
 
         @Autowired
         private ManagerService managerService;
+    @Autowired
+    private PersonRepository personRepo;
 
 
     /**
@@ -31,6 +33,7 @@ public class ManagerController {
         @PostMapping("/manager")
         public ManagerResponseDto createManager(@Valid @RequestBody ManagerRequestDto managerToCreate) {
             Person person= new Person(managerToCreate.getUsername(),managerToCreate.getEmail(),managerToCreate.getPassword(),managerToCreate.getPhone());
+            person=personRepo.save(person);
             Manager manager = managerService.createManager(person);
 
             return new ManagerResponseDto(manager);
@@ -67,7 +70,9 @@ public class ManagerController {
      */
     @PutMapping("/manager/{id}")
     public ManagerResponseDto updateManager(@PathVariable int id, @RequestBody ManagerRequestDto manager) {
-        Manager m = managerService.updateManager(id, manager.getUsername(), manager.getEmail(), manager.getPhone(), manager.getPassword());
+
+
+        Manager m = managerService.updateManager(id, manager.getUsername(), manager.getEmail(), manager.getPassword(), manager.getPhone());
 
         return new ManagerResponseDto(m);
     }

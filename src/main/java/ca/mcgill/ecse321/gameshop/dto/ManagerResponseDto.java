@@ -1,8 +1,6 @@
 package ca.mcgill.ecse321.gameshop.dto;
 
-import ca.mcgill.ecse321.gameshop.dto.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
+
 import ca.mcgill.ecse321.gameshop.model.*;
 public class ManagerResponseDto {
 
@@ -38,18 +36,6 @@ public class ManagerResponseDto {
 
     public String getPhone() {
         return phone;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
     }
 
 
