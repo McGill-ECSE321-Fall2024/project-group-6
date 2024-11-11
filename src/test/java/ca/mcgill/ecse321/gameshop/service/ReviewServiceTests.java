@@ -8,7 +8,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ca.mcgill.ecse321.gameshop.dto.ReviewRequestDto;
 import ca.mcgill.ecse321.gameshop.exception.GameShopException;
 import ca.mcgill.ecse321.gameshop.model.Review;
 import org.junit.jupiter.api.Test;
@@ -17,7 +16,9 @@ import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import ca.mcgill.ecse321.gameshop.repository.ReviewRepository;
-import ca.mcgill.ecse321.gameshop.service.ReviewService;
+import ca.mcgill.ecse321.gameshop.dto.ReviewListDto;
+import ca.mcgill.ecse321.gameshop.dto.ReviewRequestDto;
+import ca.mcgill.ecse321.gameshop.dto.ReviewResponseDto;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
@@ -70,14 +71,13 @@ public class ReviewServiceTests {
         // Arrange
         int reviewId = 1;
         Review existingReview = new Review(Review.StarRating.ThreeStar, "Okay product", 10);
-        Review newReview = new Review(Review.StarRating.FourStar, "Better than expected", 10);
-        ReviewRequestDto reviewRequestDto = new ReviewRequestDto(newReview);
+        ReviewRequestDto reviewRequestDto = new ReviewRequestDto(Review.StarRating.FourStar, "Better than expected", 10, "");
 
         when(repo.findReviewByReviewId(reviewId)).thenReturn(existingReview);
         when(repo.save(any(Review.class))).thenReturn(existingReview);
 
         // Act
-        Review updatedReview = service.updateReview(reviewId, reviewRequestDto);
+        Review updatedReview = service.updateReview(reviewId, reviewRequestDto.getRating(), reviewRequestDto.getComment(), reviewRequestDto.getReply());
 
         // Assert
         assertNotNull(updatedReview);
@@ -91,14 +91,13 @@ public class ReviewServiceTests {
     public void testUpdateReviewInvalidId() {
         // Arrange
         int invalidReviewId = 99;
-        Review review = new Review(Review.StarRating.TwoStar, "Not good", 0);
-        ReviewRequestDto reviewRequestDto = new ReviewRequestDto(review);
+        ReviewRequestDto reviewRequestDto = new ReviewRequestDto(Review.StarRating.TwoStar, "Not good", 0, "");
 
         when(repo.findReviewByReviewId(invalidReviewId)).thenReturn(null);
 
         // Act & Assert
         GameShopException e = assertThrows(GameShopException.class, () ->
-                service.updateReview(invalidReviewId, reviewRequestDto)
+                service.updateReview(invalidReviewId, reviewRequestDto.getRating(), reviewRequestDto.getComment(), reviewRequestDto.getReply())
         );
         assertEquals("Review with ID " + invalidReviewId + " does not exist.", e.getMessage());
         verify(repo, times(0)).save(any(Review.class)); // ensure save is not called
@@ -110,14 +109,13 @@ public class ReviewServiceTests {
         int reviewId = 1;
         Review.StarRating rating = null;
         Review currentReview = new Review(Review.StarRating.TwoStar, "Not good", 10);
-        Review updatedReview = new Review(null, "Not good", 10);
-        ReviewRequestDto reviewRequest = new ReviewRequestDto(updatedReview);
+        ReviewRequestDto reviewRequest = new ReviewRequestDto(null, "Not good", 10, "");
 
         when(repo.findReviewByReviewId(reviewId)).thenReturn(currentReview);
 
         // Act & Assert
         GameShopException exception = assertThrows(GameShopException.class, () -> {
-            service.updateReview(reviewId, reviewRequest);
+            service.updateReview(reviewId, reviewRequest.getRating(), reviewRequest.getComment(), reviewRequest.getReply());
         });
         assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
         assertEquals("Rating cannot be empty", exception.getMessage());
@@ -223,14 +221,13 @@ public class ReviewServiceTests {
         // Arrange
         int reviewId = 1;
         Review existingReview = new Review(Review.StarRating.ThreeStar, "Okay product", 10);
-        ReviewRequestDto reviewRequestDto = new ReviewRequestDto();
-        reviewRequestDto.setReply("Thank you for your feedback!");
+        ReviewRequestDto reviewRequestDto = new ReviewRequestDto(Review.StarRating.ThreeStar, "Okay product", 10, "Thank you for your feedback!");
 
         when(repo.findById(reviewId)).thenReturn(Optional.of(existingReview));
         when(repo.save(any(Review.class))).thenReturn(existingReview);
 
         // Act
-        Review updatedReview = service.replyToReview(reviewId, reviewRequestDto);
+        Review updatedReview = service.replyToReview(reviewId, Review.StarRating.ThreeStar, "Okay product", 10, "Thank you for your feedback!");
 
         // Assert
         assertNotNull(updatedReview);
@@ -242,14 +239,13 @@ public class ReviewServiceTests {
     public void testReplyToReviewInvalidId() {
         // Arrange
         int invalidReviewId = 99;
-        ReviewRequestDto reviewRequestDto = new ReviewRequestDto();
-        reviewRequestDto.setReply("Thank you for your feedback!");
+        ReviewRequestDto reviewRequestDto = new ReviewRequestDto(Review.StarRating.ThreeStar, "Okay product", 10, "Thank you for your feedback!");
 
         when(repo.findById(invalidReviewId)).thenReturn(Optional.empty());
 
         // Act & Assert
         RuntimeException e = assertThrows(RuntimeException.class, () ->
-                service.replyToReview(invalidReviewId, reviewRequestDto)
+                service.replyToReview(invalidReviewId, Review.StarRating.ThreeStar, "Okay product", 10, "Thank you for your feedback!")
         );
         assertEquals("Review not found", e.getMessage());
         verify(repo, times(0)).save(any(Review.class));
@@ -260,14 +256,13 @@ public class ReviewServiceTests {
         // Arrange
         int reviewId = 1;
         Review existingReview = new Review(Review.StarRating.TwoStar, "Not good", 10);
-        ReviewRequestDto reviewRequestDto = new ReviewRequestDto();
-        reviewRequestDto.setReply(null);
+        ReviewRequestDto reviewRequestDto = new ReviewRequestDto(Review.StarRating.ThreeStar, "Okay product", 10, null);
 
         when(repo.findById(reviewId)).thenReturn(Optional.of(existingReview));
 
         // Act & Assert
         GameShopException exception = assertThrows(GameShopException.class, () -> {
-            service.replyToReview(reviewId, reviewRequestDto);
+            service.replyToReview(reviewId, Review.StarRating.ThreeStar, "Okay product", 10, null);
         });
         assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
         assertEquals("Reply cannot be empty", exception.getMessage());

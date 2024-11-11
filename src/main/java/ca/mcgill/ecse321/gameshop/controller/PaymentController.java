@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+
 import ca.mcgill.ecse321.gameshop.dto.PaymentListDto;
 import ca.mcgill.ecse321.gameshop.dto.PaymentRequestDto;
 import ca.mcgill.ecse321.gameshop.dto.PaymentResponseDto;
@@ -31,7 +32,7 @@ public class PaymentController {
      */
     @PostMapping("/payment")
     public PaymentResponseDto createPayment(@RequestBody PaymentRequestDto payment) {
-        Payment p = paymentService.createPayment(payment.getBillingAddress(), payment.getCreditCardNb(), payment.getExpirationDate(), payment.getCvc());
+        Payment p = paymentService.createPayment(payment.getBillingAddress(), payment.getCreditCardNumber(), payment.getExpirationDate(), payment.getCvc());
         return new PaymentResponseDto(p);
     }
 
@@ -71,7 +72,7 @@ public class PaymentController {
      */
     @PutMapping("/payment/{id}")
     public PaymentResponseDto updatePayment(@PathVariable int id, @RequestBody PaymentRequestDto payment) {
-        Payment p = paymentService.updatePayment(id, payment);
+        Payment p = paymentService.updatePayment(id, payment.getBillingAddress(), payment.getCreditCardNumber(), payment.getExpirationDate(), payment.getCvc());
         return new PaymentResponseDto(p);
     }
 

@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import ca.mcgill.ecse321.gameshop.model.Review;
+import ca.mcgill.ecse321.gameshop.service.ReviewService;
 import ca.mcgill.ecse321.gameshop.dto.ReviewListDto;
 import ca.mcgill.ecse321.gameshop.dto.ReviewRequestDto;
 import ca.mcgill.ecse321.gameshop.dto.ReviewResponseDto;
-import ca.mcgill.ecse321.gameshop.model.Review;
-import ca.mcgill.ecse321.gameshop.service.ReviewService;
 
 @RestController
 public class ReviewController {
@@ -72,7 +72,7 @@ public class ReviewController {
      */
     @PutMapping("/review/{id}")
     public ReviewResponseDto updateReview(@PathVariable int id, @RequestBody ReviewRequestDto review) {
-        Review r = reviewService.updateReview(id, review);
+        Review r = reviewService.updateReview(id, review.getRating(), review.getComment(), review.getReply());
         return new ReviewResponseDto(r);
     }
 

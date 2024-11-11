@@ -6,12 +6,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-import ca.mcgill.ecse321.gameshop.dto.PaymentRequestDto;
 import ca.mcgill.ecse321.gameshop.exception.GameShopException;
 import ca.mcgill.ecse321.gameshop.model.Payment;
-import ca.mcgill.ecse321.gameshop.model.Review;
 import ca.mcgill.ecse321.gameshop.repository.PaymentRepository;
-import ca.mcgill.ecse321.gameshop.service.PaymentService;
+import ca.mcgill.ecse321.gameshop.dto.PaymentResponseDto;
+import ca.mcgill.ecse321.gameshop.dto.PaymentRequestDto;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -153,12 +152,12 @@ public class PaymentServiceTests {
         int paymentId = 1;
         Payment existingPayment = new Payment("Old Address", 1111222233334444L, "04/27", 123);
         Payment updatedDetails = new Payment("New Address", 5555666677778888L, "12/30", 456);
-        PaymentRequestDto paymentRequestDto = new PaymentRequestDto(updatedDetails);
+        PaymentRequestDto paymentRequestDto = new PaymentRequestDto("New Address", 5555666677778888L, "12/30", 456);
         when(repo.findPaymentByPaymentId(paymentId)).thenReturn(existingPayment);
         when(repo.save(any(Payment.class))).thenReturn(updatedDetails);
 
         // Act
-        Payment updatedPayment = service.updatePayment(paymentId, paymentRequestDto);
+        Payment updatedPayment = service.updatePayment(paymentId, "New Address", 5555666677778888L, "12/30", 456);
 
         // Assert
         assertNotNull(updatedPayment);
@@ -179,7 +178,7 @@ public class PaymentServiceTests {
 
         // Act & Assert
         GameShopException e = assertThrows(GameShopException.class, () ->
-                service.updatePayment(invalidPaymentId, paymentRequestDto)
+                service.updatePayment(invalidPaymentId, "New Address", 5555666677778888L, "12/30", 456)
         );
         assertEquals("Payment with ID " + invalidPaymentId + " does not exist.", e.getMessage());
         verify(repo, times(1)).findPaymentByPaymentId(invalidPaymentId);
@@ -192,13 +191,13 @@ public class PaymentServiceTests {
         int paymentId = 1;
         Payment existingPayment = new Payment("555 Sherbrooke West, Montreal", 1111222233334444L, "04/27", 345);
         Payment payment = new Payment("", 1111222233334444L, "04/27", 345); // Invalid billing address (empty))
-        PaymentRequestDto paymentRequest = new PaymentRequestDto(payment);
+        PaymentRequestDto paymentRequest = new PaymentRequestDto("", 1111222233334444L, "04/27", 345);
 
         when(repo.findPaymentByPaymentId(paymentId)).thenReturn(existingPayment);
 
         // Act & Assert
         GameShopException exception = assertThrows(GameShopException.class, () -> {
-            service.updatePayment(paymentId, paymentRequest);
+            service.updatePayment(paymentId, "", 1111222233334444L, "04/27", 345);
         });
         assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
         assertEquals("Billing address cannot be empty", exception.getMessage());
@@ -211,13 +210,13 @@ public class PaymentServiceTests {
         int paymentId = 1;
         Payment existingPayment = new Payment("555 Sherbrooke West, Montreal", 1111222233334444L, "04/27", 345);
         Payment payment = new Payment("555 Sherbrooke West, Montreal", 12345L, "05/27", 345);
-        PaymentRequestDto paymentRequest = new PaymentRequestDto(payment); // Invalid credit card number
+        PaymentRequestDto paymentRequest = new PaymentRequestDto("555 Sherbrooke West, Montreal", 12345L, "05/27", 345); // Invalid credit card number
 
         when(repo.findPaymentByPaymentId(paymentId)).thenReturn(existingPayment);
 
         // Act & Assert
         GameShopException exception = assertThrows(GameShopException.class, () -> {
-            service.updatePayment(paymentId, paymentRequest);
+            service.updatePayment(paymentId, "555 Sherbrooke West, Montreal", 12345L, "05/27", 345);
         });
         assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
         assertEquals("Credit card number must be 16 digits", exception.getMessage());
@@ -230,13 +229,13 @@ public class PaymentServiceTests {
         int paymentId = 1;
         Payment existingPayment = new Payment("555 Sherbrooke West, Montreal", 1111222233334444L, "04/27", 345);
         Payment payment = new Payment("555 Sherbrooke West, Montreal", 1111222233334444L, "04/20", 345);
-        PaymentRequestDto paymentRequest = new PaymentRequestDto(payment); // Expired expiration date
+        PaymentRequestDto paymentRequest = new PaymentRequestDto("555 Sherbrooke West, Montreal", 1111222233334444L, "04/20", 345); // Expired expiration date
 
         when(repo.findPaymentByPaymentId(paymentId)).thenReturn(existingPayment);
 
         // Act & Assert
         GameShopException exception = assertThrows(GameShopException.class, () -> {
-            service.updatePayment(paymentId, paymentRequest);
+            service.updatePayment(paymentId, "555 Sherbrooke West, Montreal", 1111222233334444L, "04/20", 345);
         });
         assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
         assertEquals("Expiration date must be in the future", exception.getMessage());
@@ -249,13 +248,13 @@ public class PaymentServiceTests {
         int paymentId = 1;
         Payment existingPayment = new Payment("555 Sherbrooke West, Montreal", 1111222233334444L, "04/27", 345);
         Payment payment = new Payment("555 Sherbrooke West, Montreal", 1111222233334444L, "04/27", 12);
-        PaymentRequestDto paymentRequest = new PaymentRequestDto(payment); // Invalid CVC (only 2 digits)
+        PaymentRequestDto paymentRequest = new PaymentRequestDto("555 Sherbrooke West, Montreal", 1111222233334444L, "04/27", 12); // Invalid CVC (only 2 digits)
 
         when(repo.findPaymentByPaymentId(paymentId)).thenReturn(existingPayment);
 
         // Act & Assert
         GameShopException exception = assertThrows(GameShopException.class, () -> {
-            service.updatePayment(paymentId, paymentRequest);
+            service.updatePayment(paymentId, "555 Sherbrooke West, Montreal", 1111222233334444L, "04/27", 12);
         });
         assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
         assertEquals("CVC must be 3 digits", exception.getMessage());

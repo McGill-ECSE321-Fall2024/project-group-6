@@ -1,6 +1,5 @@
 package ca.mcgill.ecse321.gameshop.service;
 
-import ca.mcgill.ecse321.gameshop.dto.PaymentRequestDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -8,6 +7,9 @@ import org.springframework.stereotype.Service;
 import ca.mcgill.ecse321.gameshop.exception.GameShopException;
 import ca.mcgill.ecse321.gameshop.model.Payment;
 import ca.mcgill.ecse321.gameshop.repository.PaymentRepository;
+import ca.mcgill.ecse321.gameshop.dto.PaymentListDto;
+import ca.mcgill.ecse321.gameshop.dto.PaymentRequestDto;
+import ca.mcgill.ecse321.gameshop.dto.PaymentResponseDto;
 import jakarta.transaction.Transactional;
 
 import java.time.LocalDate;
@@ -75,7 +77,7 @@ public class PaymentService {
 
     // Update an existing payment by ID
     @Transactional
-    public Payment updatePayment(int id, PaymentRequestDto paymentDetails) {
+    public Payment updatePayment(int id, String aBillingAddress, long aCreditCardNb, String aExpirationDate, int aCvc) {
         Payment p = paymentRepo.findPaymentByPaymentId(id);
 
         if (p == null) {
@@ -83,13 +85,12 @@ public class PaymentService {
         }
 
         // check that billing address is valid
-        String aBillingAddress = paymentDetails.getBillingAddress();
         if (aBillingAddress == null || aBillingAddress.trim().isEmpty()) {
             throw new GameShopException(HttpStatus.BAD_REQUEST, "Billing address cannot be empty");
         }
 
         // check that the credit card number has 16 digits
-        String creditCardString = String.valueOf(paymentDetails.getCreditCardNb());
+        String creditCardString = String.valueOf(aCreditCardNb);
         if (creditCardString.length() != 16) {
             throw new GameShopException(HttpStatus.BAD_REQUEST, "Credit card number must be 16 digits");
         }
@@ -97,7 +98,7 @@ public class PaymentService {
         // check the format of the expiration date (MM/YY )
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/yy");
         try {
-            LocalDate expiryDate = LocalDate.parse("01/" + paymentDetails.getExpirationDate(), DateTimeFormatter.ofPattern("dd/MM/yy"));
+            LocalDate expiryDate = LocalDate.parse("01/" + aExpirationDate, DateTimeFormatter.ofPattern("dd/MM/yy"));
             if (!expiryDate.isAfter(LocalDate.now())) {
                 throw new GameShopException(HttpStatus.BAD_REQUEST, "Expiration date must be in the future");
             }
@@ -106,15 +107,15 @@ public class PaymentService {
         }
 
         // check if CVC is in the right format (3 digits)
-        String cvcString = String.valueOf(paymentDetails.getCvc());
+        String cvcString = String.valueOf(aCvc);
         if (cvcString.length() != 3) {
             throw new GameShopException(HttpStatus.BAD_REQUEST, "CVC must be 3 digits");
         }
 
-        p.setBillingAddress(paymentDetails.getBillingAddress());
-        p.setCreditCardNb(paymentDetails.getCreditCardNb());
-        p.setExpirationDate(paymentDetails.getExpirationDate());
-        p.setCvc(paymentDetails.getCvc());
+        p.setBillingAddress(aBillingAddress);
+        p.setCreditCardNb(aCreditCardNb);
+        p.setExpirationDate(aExpirationDate);
+        p.setCvc(aCvc);
         
         return paymentRepo.save(p);
     }

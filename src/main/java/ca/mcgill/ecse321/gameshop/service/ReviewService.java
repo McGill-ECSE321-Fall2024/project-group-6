@@ -1,13 +1,11 @@
 package ca.mcgill.ecse321.gameshop.service;
 
-import ca.mcgill.ecse321.gameshop.dto.ReviewRequestDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import ca.mcgill.ecse321.gameshop.exception.GameShopException;
 import ca.mcgill.ecse321.gameshop.model.Review;
-import ca.mcgill.ecse321.gameshop.model.Customer;
 import ca.mcgill.ecse321.gameshop.repository.ReviewRepository;
 import jakarta.transaction.Transactional;
 
@@ -25,6 +23,7 @@ public class ReviewService {
             throw new GameShopException(HttpStatus.BAD_REQUEST, "Rating cannot be empty");
         }
         Review r = new Review(aRating, aComment, 0);
+        r.setReply(r.getReply() != null ? r.getReply() : ""); //if reply is not initialized, server sets it to ""
         return reviewRepo.save(r);
     }
 
@@ -47,19 +46,21 @@ public class ReviewService {
 
     // Update an existing review by ID
     @Transactional
-    public Review updateReview(int id, ReviewRequestDto reviewRequest) {
+    public Review updateReview(int id, Review.StarRating aRating, String aComment, String aReply) {
         Review r = reviewRepo.findReviewByReviewId(id);
 
         if (r == null) {
 			throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Review with ID " + id + " does not exist."));
         }
 
-        if (reviewRequest.getRating() == null){
+        if (aRating == null){
             throw new GameShopException(HttpStatus.BAD_REQUEST, "Rating cannot be empty");
         }
 
-        r.setRating(reviewRequest.getRating());
-        r.setComment(reviewRequest.getComment());
+        r.setRating(aRating);
+        r.setComment(aComment);
+        r.setReply(aReply);
+        //r.setReply(r.getReply() != null ? r.getReply() : ""); //if reply is not initialized, server sets it to ""
         //r.setAmountOfLikes(reviewRequest.getAmountOfLikes()); commented out because the user should not be able to change the amount of likes
 
         return reviewRepo.save(r);
@@ -84,10 +85,9 @@ public class ReviewService {
         return reviewRepo.save(review);
     }
 
-    public Review replyToReview(int id, ReviewRequestDto reviewRequest){
+    public Review replyToReview(int id, Review.StarRating aRating, String aComment, int aAmountOfLikes, String reply){
         Review review = reviewRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Review not found"));
-        String reply = reviewRequest.getReply();
         if (reply == null){
             throw new GameShopException(HttpStatus.BAD_REQUEST, "Reply cannot be empty");
         }
