@@ -12,17 +12,16 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestMethodOrder(OrderAnnotation.class)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 
 public class CategoryIntegrationTests {
     @Autowired
-    private TestRestTemplate order;
+    private TestRestTemplate client;
     @Autowired
     private CategoryRepository repo;
 
@@ -35,7 +34,6 @@ public class CategoryIntegrationTests {
         repo.deleteAll();
     }
 
-    @SuppressWarnings("null")
     @Test
     @Order(1)
     public void testCreateValidCategory() {
@@ -43,7 +41,9 @@ public class CategoryIntegrationTests {
         CategoryRequestDto category = new CategoryRequestDto(name);
 
         // Act
-        ResponseEntity<CategoryResponseDto> response = order.postForEntity("/categories", category, CategoryResponseDto.class);
+        ResponseEntity<CategoryResponseDto> response = client.postForEntity("/categories", category, CategoryResponseDto.class);
+        System.out.println(response.getBody());
+        System.out.println(response.getBody().getName());
 
         // Assert
         assertNotNull(response);
@@ -62,7 +62,7 @@ public class CategoryIntegrationTests {
         System.out.println(String.format("URL: %s", url));
 
         // Act
-        ResponseEntity<CategoryResponseDto> response = order.getForEntity(url, CategoryResponseDto.class);
+        ResponseEntity<CategoryResponseDto> response = client.getForEntity(url, CategoryResponseDto.class);
 
         // Assert
         assertNotNull(response);
@@ -77,7 +77,7 @@ public class CategoryIntegrationTests {
         String url = String.format("/categories/%d", -1);
 
         // Act
-        ResponseEntity<CategoryResponseDto> response = order.getForEntity(url, CategoryResponseDto.class);
+        ResponseEntity<CategoryResponseDto> response = client.getForEntity(url, CategoryResponseDto.class);
 
         // Assert
         assertNotNull(response);
@@ -94,10 +94,10 @@ public class CategoryIntegrationTests {
         String url = String.format("/categories/%d", this.ID);
 
         // Act
-        order.put(url, updatedCategoryDto);
+        client.put(url, updatedCategoryDto);
 
         // Fetch updated person
-        ResponseEntity<CategoryResponseDto> response = order.getForEntity(url, CategoryResponseDto.class);
+        ResponseEntity<CategoryResponseDto> response = client.getForEntity(url, CategoryResponseDto.class);
 
         // Assert
         assertNotNull(response);
@@ -112,7 +112,7 @@ public class CategoryIntegrationTests {
         CategoryRequestDto updatedCategoryDto = new CategoryRequestDto(newName);
 
         // Act
-        ResponseEntity<CategoryResponseDto> response = order.exchange(url, HttpMethod.PUT, new HttpEntity<>(updatedCategoryDto), CategoryResponseDto.class);
+        ResponseEntity<CategoryResponseDto> response = client.exchange(url, HttpMethod.PUT, new HttpEntity<>(updatedCategoryDto), CategoryResponseDto.class);
 
         // Assert
         assertNotNull(response);
@@ -126,14 +126,14 @@ public class CategoryIntegrationTests {
         String url = String.format("/categories/%d", this.ID);
 
         // Act
-        ResponseEntity<Void> response = order.exchange(url, HttpMethod.DELETE, null, Void.class);
+        ResponseEntity<Void> response = client.exchange(url, HttpMethod.DELETE, null, Void.class);
 
         // Assert
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
         // Verify that the person was actually deleted by trying to fetch it again
-        ResponseEntity<CategoryResponseDto> deletedCategory = order.getForEntity(url, CategoryResponseDto.class);
+        ResponseEntity<CategoryResponseDto> deletedCategory = client.getForEntity(url, CategoryResponseDto.class);
         assertEquals(HttpStatus.NOT_FOUND, deletedCategory.getStatusCode());
     }
 
@@ -144,12 +144,14 @@ public class CategoryIntegrationTests {
         String url = String.format("/categories/%d", -1);
 
         // Act
-        ResponseEntity<Void> response = order.exchange(url, HttpMethod.DELETE, null, Void.class);
+        ResponseEntity<Void> response = client.exchange(url, HttpMethod.DELETE, null, Void.class);
 
         // Assert
         assertNotNull(response);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
+
+
 
 
 

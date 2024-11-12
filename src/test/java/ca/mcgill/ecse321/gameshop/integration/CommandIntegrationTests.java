@@ -53,6 +53,7 @@ public class CommandIntegrationTests {
     @Test
     @Order(1)
     public void testCreateValidCommand() {
+
         // Arrange
         CommandRequestDto command = new CommandRequestDto(tim);
 

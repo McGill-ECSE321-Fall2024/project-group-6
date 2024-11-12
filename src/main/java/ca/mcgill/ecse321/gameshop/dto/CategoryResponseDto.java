@@ -6,7 +6,7 @@ public class CategoryResponseDto {
     private int id;
     private String name;
 
-    private CategoryResponseDto() {
+    public CategoryResponseDto() {
     }
 
     public CategoryResponseDto(Category c){
