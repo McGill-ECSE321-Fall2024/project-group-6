@@ -1,19 +1,20 @@
 package ca.mcgill.ecse321.gameshop.controller;
 
 
-import ca.mcgill.ecse321.gameshop.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.*;
-import jakarta.validation.*;
-//import ca.mcgill.ecse321.eventregistration.dto.RegistrationResponseDto;
-import ca.mcgill.ecse321.gameshop.model.*;
 
-import ca.mcgill.ecse321.gameshop.service.*;
+import ca.mcgill.ecse321.gameshop.dto.ManagerRequestDto;
+import ca.mcgill.ecse321.gameshop.dto.ManagerResponseDto;
+import ca.mcgill.ecse321.gameshop.model.Manager;
+import ca.mcgill.ecse321.gameshop.model.Person;
+import ca.mcgill.ecse321.gameshop.service.ManagerService;
 
 @RestController
 public class ManagerController {
@@ -29,7 +30,7 @@ public class ManagerController {
      * @return
      */
         @PostMapping("/manager")
-        public ManagerResponseDto createManager(@Valid @RequestBody ManagerRequestDto managerToCreate) {
+        public ManagerResponseDto createManager(@RequestBody ManagerRequestDto managerToCreate) {
             Person person= new Person(managerToCreate.getUsername(),managerToCreate.getEmail(),managerToCreate.getPassword(),managerToCreate.getPhone());
             Manager manager = managerService.createManager(person);
 

@@ -1,19 +1,23 @@
 package ca.mcgill.ecse321.gameshop.controller;
 
 
-import ca.mcgill.ecse321.gameshop.dto.*;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.*;
-import jakarta.validation.*;
-//import ca.mcgill.ecse321.eventregistration.dto.RegistrationResponseDto;
-import ca.mcgill.ecse321.gameshop.model.*;
-import java.util.*;
-import ca.mcgill.ecse321.gameshop.service.*;
+
+import ca.mcgill.ecse321.gameshop.dto.EmployeeListDto;
+import ca.mcgill.ecse321.gameshop.dto.EmployeeRequestDto;
+import ca.mcgill.ecse321.gameshop.dto.EmployeeResponseDto;
+import ca.mcgill.ecse321.gameshop.model.Employee;
+import ca.mcgill.ecse321.gameshop.service.EmployeeService;
 
 @RestController
 public class EmployeeController {
@@ -29,7 +33,7 @@ public class EmployeeController {
      * @return
      */
     @PostMapping("/employees")
-    public EmployeeResponseDto createEmployee(@Valid @RequestBody EmployeeRequestDto employeeToCreate) {
+    public EmployeeResponseDto createEmployee(@RequestBody EmployeeRequestDto employeeToCreate) {
 
         Employee employee = employeeService.addEmployee(employeeToCreate.getUsername(),employeeToCreate.getEmail(),employeeToCreate.getPassword(),employeeToCreate.getPhone());
 
@@ -47,6 +51,7 @@ public class EmployeeController {
 
         return new EmployeeResponseDto(employee);
     }
+
     @GetMapping("/employees")
     public EmployeeListDto getAllEmployees() {
         List<EmployeeResponseDto> employees = new ArrayList<>();
@@ -101,18 +106,4 @@ public class EmployeeController {
 
         return employeeService.getTasks(eid);
     }
-
-    /**
-     *
-     * @param eid
-     * @param taskToDelete
-     */
-/*
-    @DeleteMapping("/employees/{eid}/tasks")
-    public void deleteTask(@PathVariable int eid,String taskToDelete) {
-
-        employeeService.deleteTask(eid,taskToDelete);
-    }
-
- */
 }
