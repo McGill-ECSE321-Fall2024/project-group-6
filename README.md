@@ -62,9 +62,10 @@ Table 2 : Roles of each team member Deliverable 2: <br/>
 |             | Unit tests for Game and Role                        |                    |
 |             | Updating the key decisions                          |                    |
 |             |                                                     |                    |
-| Annabelle   | Software Quality Assurance Plan                     |                    |
-|             | Unit tests for Payment and Review                    |                   |
-|             | RESTful API methods for Payment and Review           |                   |
+| Annabelle   | Software Quality Assurance Plan                     |  1                 |
+|             | Unit tests for Payment and Review                    | 1.5               |
+|             | RESTful API methods for Payment and Review           | 2                 |
+|             | Integration Tests for Payment and Review             | 1.5               |
 |             |                                                      |                   |
 | Marine      | RESTful API methods for Employee and Customer        | 3                 |
 |             | Software Quality Assurance Plan                      | 2.5               |
