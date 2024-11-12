@@ -59,29 +59,29 @@ Table 2 : Roles of each team member Deliverable 2: <br/>
 |-------------|-----------------------------------------------------|---------------------|
 | Laurence    | RESTful API methods for Game and Role               |                    |
 |             | README file update                                  |                    |
-|             | Unit tests for Game and Role                        |                  |
-|             | Updating the key decisions                          |                |
-|             |                                                      |                    |
+|             | Unit tests for Game and Role                        |                    |
+|             | Updating the key decisions                          |                    |
+|             |                                                     |                    |
 | Annabelle   | Software Quality Assurance Plan                     |                    |
-|             | Unit tests for Payment and Review                    |                 |
+|             | Unit tests for Payment and Review                    |                   |
 |             | RESTful API methods for Payment and Review           |                   |
-|             |                                                      |                  |
-| Marine      | RESTful API methods for Employee and Customer        |                   |
-|             | Software Quality Assurance Plan                      |                  |
-|             | Recording the meeting minutes                        |                  |
 |             |                                                      |                   |
-|             |                                                      |                  |
-| Maissa      | RESTful API methods for Command and Category         |                    |
-|             | Unit tests for Command and Category                  |                  |
-|             |                                                      |                 |
-|             |                                                      |                  |
-| Joseph      | RESTful API methods for Manager, Role, and Employee                     |                 |
-|             | Unit tests for Role, Manager, Employee, and Customer        |                  |
-|             |                                                      |                    |
-|             |                                                      |                    |
-|             |                                                      |                 |
-| Mario       | RESTful API methods for Person and Guest             |                  |
-|             | Unit tests for Person and Guest                      |                  |
-|             |                                                      |                    |
-|             |                                                      |                  |
+| Marine      | RESTful API methods for Employee and Customer        | 3                 |
+|             | Software Quality Assurance Plan                      | 2.5               |
+|             | Recording the meeting minutes                        | 1                 |
+|             | Unit tests for Employee and Customer                 | 2                 |
+|             |                                                      |                   |
+| Maissa      | RESTful API methods for Command and Category         |                   |
+|             | Unit tests for Command and Category                  |                   |
+|             |                                                      |                   |
+|             |                                                      |                   |
+| Joseph      | RESTful API methods for Manager, Role, and Employee  |                   |
+|             | Unit tests for Role, Manager, Employee, and Customer |                   |
+|             |                                                      |                   |
+|             |                                                      |                   |
+|             |                                                      |                   |
+| Mario       | RESTful API methods for Person and Guest             |                   |
+|             | Unit tests for Person and Guest                      |                   |
+|             |                                                      |                   |
+|             |                                                      |                   |
 
