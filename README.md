@@ -73,7 +73,7 @@ Table 2 : Roles of each team member Deliverable 2: <br/>
 |             | Unit tests for Employee and Customer                 | 2                 |
 |             |                                                      |                   |
 | Maissa      | RESTful API methods for Command and Category         |                   |
-|             | Unit tests for Command and Category                  |                   |
+|             | Unit tests for Command, Category and Game            |                   |
 |             |                                                      |                   |
 |             |                                                      |                   |
 | Joseph      | RESTful API methods for Manager, Role, and Employee  |                   |
