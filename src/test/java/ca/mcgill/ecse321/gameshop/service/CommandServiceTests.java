@@ -127,4 +127,6 @@ public class CommandServiceTests {
         assertEquals(commands, foundCommands);
         verify(repo, times(1)).findAll();
     }
+
+
 }

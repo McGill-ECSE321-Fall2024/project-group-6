@@ -19,6 +19,7 @@ import ca.mcgill.ecse321.gameshop.model.Category;
 import ca.mcgill.ecse321.gameshop.service.CategoryService;
 
 @RestController
+@RequestMapping("/categories")
 public class CategoryController {
     @Autowired
     private CategoryService categoryService;
@@ -31,7 +32,7 @@ public class CategoryController {
     @PostMapping("/categories")
     public CategoryResponseDto createCategory(@RequestBody CategoryRequestDto c){
         Category createdCategory = categoryService.createCategory(c.getCategoryName());
-        return  new CategoryResponseDto(createdCategory);
+        return new CategoryResponseDto(createdCategory);
     }
 
     /**
@@ -61,7 +62,7 @@ public class CategoryController {
      * @return
      */
     @GetMapping("/categories")
-    public CategoryListDto getAllCategories(@PathVariable int cId){
+    public CategoryListDto getAllCategories(){
         List<CategoryResponseDto> categories = new ArrayList<>();
         for (Category c: categoryService.getAllCategories()){
             categories.add(new CategoryResponseDto(c));

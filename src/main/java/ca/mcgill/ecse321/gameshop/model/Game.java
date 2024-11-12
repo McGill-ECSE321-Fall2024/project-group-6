@@ -3,10 +3,12 @@
 
 
 package ca.mcgill.ecse321.gameshop.model;
-import java.util.*;
-
 
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Game class
@@ -119,14 +121,14 @@ public Game(){
     }
   }
 //(aName,aDescription,aPrice,aStockQuantity,aPhotoURL,tobeAdded,allCategories)
-public Game(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,  boolean aToBeAdded, Category... allCategories)
+public Game(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL, Category... allCategories)
 {
   name = aName;
   description = aDescription;
   price = aPrice;
   stockQuantity = aStockQuantity;
   photoURL = aPhotoURL;
-  toBeAdded = aToBeAdded;
+  toBeAdded = true;
 
   reviews = new ArrayList<Review>();
 

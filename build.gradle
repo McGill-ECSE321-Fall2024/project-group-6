@@ -39,3 +39,21 @@ tasks.named('test') {
 tasks.named('jacocoTestCoverageVerification') {
 	dependsOn test // tests are required to run before checking code coverage.
 }
+
+jacocoTestReport {
+	reports{
+		xml.required = true
+		html.required = true
+	}
+}
+
+tasks.named('jacocoTestCoverageVerification') {
+	violationRules {
+		rule {
+			limit {
+				minimum = 0.25
+			}
+		}
+	}
+	dependsOn test // tests are required to run before checking code coverage.
+}
