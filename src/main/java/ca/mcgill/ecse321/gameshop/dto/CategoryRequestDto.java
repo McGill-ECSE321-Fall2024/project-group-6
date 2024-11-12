@@ -1,10 +1,8 @@
 package ca.mcgill.ecse321.gameshop.dto;
 
-import jakarta.validation.constraints.NotBlank;
-
 public class CategoryRequestDto {
-    @NotBlank(message = "Category name is required.")
-    private String name;
+
+    public String name;
 
 
     public CategoryRequestDto() {}
@@ -14,7 +12,7 @@ public class CategoryRequestDto {
     }
 
     public String getCategoryName(){
-        return name;
+        return this.name;
     }
 
     public void setName(String newName){

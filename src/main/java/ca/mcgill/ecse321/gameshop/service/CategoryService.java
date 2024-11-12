@@ -24,6 +24,7 @@ public class CategoryService {
             }
         }
         Category c = new Category(name);
+
        return repo.save(c);
     }
 
@@ -35,6 +36,7 @@ public class CategoryService {
 
     @Transactional
     public Category updateCategory(int cId, String name){
+        System.out.println("updated name:"+name);
         if(cId<0){throw new GameShopException(HttpStatus.NOT_FOUND, String.format("The Category ID "+ cId+"is not valid"));}
         else if (repo.findCategoryByCategoryId(cId)==null){throw new GameShopException(HttpStatus.NOT_FOUND, String.format("There is no Category with ID"+ cId+"."));}
         for (Category i : repo.findAll()){
@@ -42,6 +44,7 @@ public class CategoryService {
                 throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Category already exists."));
             }
         }
+
         Category toUpdate= repo.findCategoryByCategoryId(cId);
         toUpdate.setCategoryName(name);
         return repo.save(toUpdate);

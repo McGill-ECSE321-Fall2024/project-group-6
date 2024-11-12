@@ -20,10 +20,12 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 
 public class CategoryIntegrationTests {
+
     @Autowired
     private TestRestTemplate client;
     @Autowired
     private CategoryRepository repo;
+
 
     private static final String name = "Action";
     private int ID;
@@ -37,13 +39,14 @@ public class CategoryIntegrationTests {
     @Test
     @Order(1)
     public void testCreateValidCategory() {
+
         // Arrange
         CategoryRequestDto category = new CategoryRequestDto(name);
 
+
         // Act
         ResponseEntity<CategoryResponseDto> response = client.postForEntity("/categories", category, CategoryResponseDto.class);
-        System.out.println(response.getBody());
-        System.out.println(response.getBody().getName());
+
 
         // Assert
         assertNotNull(response);
@@ -58,8 +61,6 @@ public class CategoryIntegrationTests {
     public void testGetValidCategoryById() {
         // Arrange
         String url = String.format("/categories/%d", this.ID);
-
-        System.out.println(String.format("URL: %s", url));
 
         // Act
         ResponseEntity<CategoryResponseDto> response = client.getForEntity(url, CategoryResponseDto.class);
@@ -94,7 +95,7 @@ public class CategoryIntegrationTests {
         String url = String.format("/categories/%d", this.ID);
 
         // Act
-        client.put(url, updatedCategoryDto);
+        client.put(url, updatedCategoryDto.getCategoryName());
 
         // Fetch updated person
         ResponseEntity<CategoryResponseDto> response = client.getForEntity(url, CategoryResponseDto.class);

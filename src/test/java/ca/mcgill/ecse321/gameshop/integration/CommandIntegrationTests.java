@@ -64,7 +64,7 @@ public class CommandIntegrationTests {
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertTrue(response.getBody().getId() > 0, "The ID should be positive.");
-
+        this.ID=response.getBody().getId();
         assertEquals(tim, response.getBody().getCustomer());
         assertEquals(total, response.getBody().getTotal());
         assertEquals(today, response.getBody().getCommandDate());

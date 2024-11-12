@@ -12,22 +12,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/categories")
+//@RequestMapping("/categories")
 public class CategoryController {
     @Autowired
     private CategoryService categoryService;
 
     @PostMapping("/categories")
     public CategoryResponseDto createCategory(@RequestBody CategoryRequestDto c){
+
         Category createdCategory = categoryService.createCategory(c.getCategoryName());
+
         return new CategoryResponseDto(createdCategory);
     }
-    @PutMapping("categories/{ID}/{name}")
+    @PutMapping("/categories/{ID}/{name}")
     public CategoryResponseDto updateCategory(@PathVariable int ID, @PathVariable String name){
         return new CategoryResponseDto(categoryService.updateCategory(ID,name));
     }
 
-    @GetMapping("categories/{ID}")
+    @GetMapping("/categories/{ID}")
     public CategoryResponseDto findCategoryById(@PathVariable int ID){
         return new CategoryResponseDto(categoryService.findCategoryById(ID));
     }
