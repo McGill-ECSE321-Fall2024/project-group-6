@@ -3,6 +3,9 @@ package ca.mcgill.ecse321.gameshop.service;
 
 import ca.mcgill.ecse321.gameshop.exception.GameShopException;
 import ca.mcgill.ecse321.gameshop.model.Command;
+import ca.mcgill.ecse321.gameshop.model.Customer;
+import ca.mcgill.ecse321.gameshop.model.Game;
+import ca.mcgill.ecse321.gameshop.model.Person;
 import ca.mcgill.ecse321.gameshop.repository.CommandRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -15,6 +18,7 @@ import org.springframework.http.HttpStatus;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -32,24 +36,31 @@ public class CommandServiceTests {
     private float total =10;
     private int ID=3;
     private Date today= Date.valueOf(LocalDate.now());
+    private Game g1= new Game("R6", "Great game", 49, 6,"URL");
+    private Game g2= new Game("Minecraft", "Great game", 50, 6,"URL");
+
+    private List<Game> cart = new ArrayList<>(List.of(g1,g2));
+    private List<Game> wishlist = new ArrayList<>();
+
+    private Customer  customer = new Customer(new Person("maissa","maissa@gmail.com","password","438777906"),"4555 milton",wishlist,cart );
 
     @Test
     public void testCreateValidCommand(){
         when(repo.save(any(Command.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
 
-        Command createdCommand = service.createCommand(total);
+        Command createdCommand = service.createCommand(customer);
 
         assertNotNull(createdCommand);
-        assertEquals(total,createdCommand.getTotalPrice());
+        assertEquals(g1.getPrice()+g2.getPrice(),createdCommand.getTotalPrice());
         verify(repo,times(1)).save(createdCommand);
     }
 
     @Test
     public void testCreateInvalidCommand(){
-        GameShopException ex= assertThrows(GameShopException.class,()-> service.createCommand(-1));
+        GameShopException ex= assertThrows(GameShopException.class,()-> service.createCommand(null));
 
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
-        assertEquals("Command total must be larger than 0.0",ex.getMessage());
+        assertEquals("Command must belong to a customer.",ex.getMessage());
     }
 
     @Test

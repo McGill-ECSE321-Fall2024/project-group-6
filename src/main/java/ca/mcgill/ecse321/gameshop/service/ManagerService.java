@@ -1,23 +1,14 @@
 package ca.mcgill.ecse321.gameshop.service;
 
 
-
-import java.sql.Date;
-import java.time.LocalDate;
-
-import ca.mcgill.ecse321.gameshop.model.Category;
-import ca.mcgill.ecse321.gameshop.model.Employee;
-import ca.mcgill.ecse321.gameshop.model.Review;
-import ca.mcgill.ecse321.gameshop.model.Game;
+import ca.mcgill.ecse321.gameshop.model.*;
 import ca.mcgill.ecse321.gameshop.repository.CategoryRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import ca.mcgill.ecse321.gameshop.model.Person;
 import ca.mcgill.ecse321.gameshop.repository.EmployeeRepository;
 import ca.mcgill.ecse321.gameshop.repository.GameRepository;
 import ca.mcgill.ecse321.gameshop.repository.ReviewRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service
 public class ManagerService {
@@ -59,13 +50,15 @@ public class ManagerService {
     public void removeCategory(int id) {
         catrepo.deleteById(id);
     }
-
+/*
     @Transactional
     public Game addGame(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,boolean tobeAdded,Category... allCategories) {
         tobeAdded=true;
-        Game game= new Game(aName,aDescription,aPrice,aStockQuantity,aPhotoURL,tobeAdded,allCategories);
+        Game game= new Game(aName,aDescription,aPrice,aStockQuantity,aPhotoURL,allCategories);
         return gamerepo.save(game);
     }
+
+ */
     @Transactional
     public void removeGame(int id) {
         gamerepo.deleteById(id);

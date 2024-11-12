@@ -35,11 +35,22 @@ public class GameServiceTests {
     private String photo="image";
     private boolean tobeAdded=true;
     private Category categories=new Category("Action");
+    String newName ="Minecraft";
+    String newDescription="Good game";
+    float newPrice=30;
+    int newStock=6;
+    String newPhoto="new image";
+    boolean tobeRemoved =false;
+    boolean tobeAddedNew= false;
+    Category categoriesNew = new Category("Sports");
+    float promotion=20;
+    ArrayList<Category> categoryList = new ArrayList<>();
+
 
     @Test
     public void testAddGame(){
         when(repo.save(any(Game.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
-        Game createdGame = service.addGame(name,description,price,stock,photo,tobeAdded,categories);
+        Game createdGame = service.addGame(name,description,price,stock,photo,categories);
 
         assertNotNull(createdGame);
         assertEquals(name,createdGame.getName());
@@ -50,37 +61,57 @@ public class GameServiceTests {
         verify(repo,times(1)).save(createdGame);
 
     }
+    @Test
+    public void testAddGameByInvalidName(){
+        GameShopException ex = assertThrows(GameShopException.class, () -> service.addGame(null,description,price,stock,photo,categories));
+
+        assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
+        assertEquals("Name cannot be empty.", ex.getMessage());
+    }
+    @Test
+    public void testAddGameByInvalidDescription(){
+        GameShopException ex = assertThrows(GameShopException.class, () -> service.addGame(name,null,price,stock,photo,categories));
+
+        assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
+        assertEquals("Description cannot be empty.", ex.getMessage());
+    }
 
     @Test
-    public void testAddGameByEmployee(){
-        when(repo.save(any(Game.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
-        Game createdGame = service.addGameByEmployee(name,description,price,stock,photo,tobeAdded,categories);
+    public void testAddGameByInvalidPrice(){
+        GameShopException ex = assertThrows(GameShopException.class, () -> service.addGame(name,description,-1,stock,photo,categories));
 
-        assertNotNull(createdGame);
-        assertEquals(name,createdGame.getName());
-        assertEquals(description,createdGame.getDescription());
-        assertEquals(price,createdGame.getPrice());
-        assertEquals(stock,createdGame.getStockQuantity());
-        assertEquals(false,createdGame.getToBeAdded());
-        verify(repo,times(1)).save(createdGame);
+        assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
+        assertEquals("Price must be over 0.0.", ex.getMessage());
+    }
+
+    @Test
+    public void testAddGameByInvalidStock(){
+        GameShopException ex = assertThrows(GameShopException.class, () -> service.addGame(name,description,price,-1,photo,categories));
+
+        assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
+        assertEquals("Stock quantity must be over 0.0.", ex.getMessage());
+    }
+
+    @Test
+    public void testAddGameByInvalidPhoto(){
+        GameShopException ex = assertThrows(GameShopException.class, () -> service.addGame(name,description,price,stock,null,categories));
+
+        assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
+        assertEquals("Game must have a photo.", ex.getMessage());
+    }
+    @Test
+    public void testAddGameByInvalidCategory(){
+        GameShopException ex = assertThrows(GameShopException.class, () -> service.addGame(name,description,price,stock,photo,null));
+
+        assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
+        assertEquals("Game must have at least one category.", ex.getMessage());
     }
 
     @Test
     public void testUpdateValidGame(){
-        String newName ="Minecraft";
-        String newDescription="Good game";
-        float newPrice=30;
-        int newStock=6;
-        String newPhoto="new image";
-        boolean tobeRemoved =false;
-        boolean tobeAddedNew= false;
-        Category categoriesNew = new Category("Sports");
-        float promotion=20;
-        ArrayList<Category> categoryList = new ArrayList<>();
         categoryList.add(categoriesNew);
 
-
-        Game g = new Game(name,description,price,stock,photo,tobeAdded,categories);
+        Game g = new Game(name,description,price,stock,photo,categories);
         when(repo.findGameByGameId(ID)).thenReturn(g);
         when(repo.save(any(Game.class))).thenAnswer((InvocationOnMock iom)-> iom.getArgument(0));
         Game updatedGame = service.updateGame(ID,newName,newDescription,newPrice,newStock,newPhoto,tobeAddedNew, tobeRemoved, promotion, categoriesNew);
@@ -101,22 +132,69 @@ public class GameServiceTests {
 
     @Test
     public void testUpdateInvalidGame(){
-        String newName ="Minecraft";
-        String newDescription="Good game";
-        float newPrice=30;
-        int newStock=6;
-        String newPhoto="new image";
-        boolean tobeRemoved =false;
-        boolean tobeAddedNew= false;
-        Category categoriesNew = new Category("Action");
-        float promotion=20;
 
         when(repo.findGameByGameId(ID)).thenReturn(null);
         GameShopException ex = assertThrows(GameShopException.class, () -> service.updateGame(ID,newName,newDescription,newPrice,newStock,newPhoto,tobeAddedNew, tobeRemoved, promotion, categoriesNew));
 
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Game with ID " + ID + " does not exist.", ex.getMessage());
+    }
 
+    @Test
+    public void testUpdateGameByInvalidName(){
+        Game g = new Game(name,description,price,stock,photo,categories);
+        when(repo.findGameByGameId(ID)).thenReturn(g);
+        GameShopException ex = assertThrows(GameShopException.class, () -> service.updateGame(ID,null,newDescription,newPrice,newStock,newPhoto,tobeAddedNew, tobeRemoved, promotion, categoriesNew));
+
+        assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
+        assertEquals("Name cannot be empty.", ex.getMessage());
+    }
+    @Test
+    public void testUpdateGameByInvalidDescription(){
+        Game g = new Game(name,description,price,stock,photo,categories);
+        when(repo.findGameByGameId(ID)).thenReturn(g);
+        GameShopException ex = assertThrows(GameShopException.class, () -> service.updateGame(ID,newName,null,newPrice,newStock,newPhoto,tobeAddedNew, tobeRemoved, promotion, categoriesNew));
+
+        assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
+        assertEquals("Description cannot be empty.", ex.getMessage());
+    }
+
+    @Test
+    public void testUpdateGameByInvalidPrice(){
+        Game g = new Game(name,description,price,stock,photo,categories);
+        when(repo.findGameByGameId(ID)).thenReturn(g);
+        GameShopException ex = assertThrows(GameShopException.class, () -> service.updateGame(ID,newName,newDescription,-1,newStock,newPhoto,tobeAddedNew, tobeRemoved, promotion, categoriesNew));
+
+        assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
+        assertEquals("Price must be over 0.0.", ex.getMessage());
+    }
+
+    @Test
+    public void testUpdateGameByInvalidStock(){
+        Game g = new Game(name,description,price,stock,photo,categories);
+        when(repo.findGameByGameId(ID)).thenReturn(g);
+        GameShopException ex = assertThrows(GameShopException.class, () -> service.updateGame(ID,newName,newDescription,newPrice,0,newPhoto,tobeAddedNew, tobeRemoved, promotion, categoriesNew));
+
+        assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
+        assertEquals("Stock quantity must be over 0.0.", ex.getMessage());
+    }
+
+    @Test
+    public void testUpdateGameByInvalidPhoto(){
+        Game g = new Game(name,description,price,stock,photo,categories);
+        when(repo.findGameByGameId(ID)).thenReturn(g);
+        GameShopException ex = assertThrows(GameShopException.class, () -> service.updateGame(ID,newName,newDescription,newPrice,newStock,null,tobeAddedNew, tobeRemoved, promotion, categoriesNew));
+        assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
+        assertEquals("Game must have a photo.", ex.getMessage());
+    }
+    @Test
+    public void testUpdateGameByInvalidCategory(){
+        Game g = new Game(name,description,price,stock,photo,categories);
+        when(repo.findGameByGameId(ID)).thenReturn(g);
+        GameShopException ex = assertThrows(GameShopException.class, () -> service.updateGame(ID,newName,newDescription,newPrice,newStock,newPhoto,tobeAddedNew, tobeRemoved, promotion, null));
+
+        assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
+        assertEquals("Game must have at least one category.", ex.getMessage());
     }
 
     @Test
@@ -129,8 +207,8 @@ public class GameServiceTests {
         boolean tobeAddedNew= false;
         Category categoriesNew = new Category("Action");
 
-        Iterable<Game> games = List.of(new Game(name,description,price,stock,photo,tobeAdded,categories),
-                new Game(newName,newDescription,newPrice,newStock,newPhoto,tobeAddedNew,categoriesNew));
+        Iterable<Game> games = List.of(new Game(name,description,price,stock,photo,categories),
+                new Game(newName,newDescription,newPrice,newStock,newPhoto,categoriesNew));
         when(repo.findAll()).thenReturn(games);
 
         Iterable<Game> foundGames = service.getAllGames();
@@ -183,15 +261,41 @@ public class GameServiceTests {
     }
 
     @Test
+    public void testGetGamesByCategory(){
+        Game c=new Game(name,description,price,stock,photo,categories);
+
+        when(repo.findAll()).thenReturn(List.of(c,new Game(name,description,price,stock,photo,new Category("Sports"))));
+        List<Game> games = service.getGamesByCategory(categories);
+
+        List<Game> result = new ArrayList<>();
+        result.add(c);
+
+        assertNotNull(games);
+        assertEquals(result,games);
+    }
+
+    @Test
     public void testDeleteValidGame() {
-        //when(repo.findGameByGameId(ID)).thenReturn(new Game(name, description, price, stock, photo, tobeAdded, categories));
+        Game g=new Game(name, description, price, stock, photo, categories);
+        g.setToBeRemoved(true);
+        when(repo.findGameByGameId(ID)).thenReturn(g);
         service.deleteGame(ID);
         verify(repo, times(1)).deleteById(ID);
+    }
+    @Test
+    public void testDeleteNonApprovedGame() {
+        Game g=new Game(name, description, price, stock, photo, categories);
+        g.setToBeRemoved(false);
+        when(repo.findGameByGameId(ID)).thenReturn(g);
+        GameShopException ex = assertThrows(GameShopException.class, () -> service.deleteGame(ID));
+
+        assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
+        assertEquals("This game is not authorized to be deleted",ex.getMessage());
     }
 
     @Test
     public void testApprovalToAddValidGame(){
-        when(repo.findGameByGameId(ID)).thenReturn(new Game(name, description, price, stock, photo, tobeAdded, categories));
+        when(repo.findGameByGameId(ID)).thenReturn(new Game(name, description, price, stock, photo, categories));
         Boolean approved = service.approvalToAddGame(ID);
 
         assertEquals(tobeAdded,approved);
@@ -206,7 +310,7 @@ public class GameServiceTests {
     }
     @Test
     public void testApprovalToRemoveValidGame(){
-        when(repo.findGameByGameId(ID)).thenReturn(new Game(name, description, price, stock, photo, tobeAdded, categories));
+        when(repo.findGameByGameId(ID)).thenReturn(new Game(name, description, price, stock, photo, categories));
         Boolean approved = service.approvalToRemoveGame(ID);
 
         assertEquals(false,approved);

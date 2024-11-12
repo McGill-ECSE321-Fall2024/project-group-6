@@ -3,10 +3,13 @@
 
 
 package ca.mcgill.ecse321.gameshop.model;
-import java.util.*;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 
-import jakarta.persistence.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Defining the Person class
@@ -40,19 +43,15 @@ public class Person
   //------------------------
   // CONSTRUCTOR
   //------------------------
-public Person (){
+  public Person (){
 
-}
+  }
   public Person(String aUsername, String aEmail, String aPassword, String aPhone)
   {
     username = aUsername;
     password = aPassword;
     phone = aPhone;
-
-    if (!setEmail(aEmail))
-    {
-      throw new RuntimeException("Cannot create due to duplicate email. See https://manual.umple.org?RE003ViolationofUniqueness.html");
-    }
+    email = aEmail;
   }
 
   //------------------------

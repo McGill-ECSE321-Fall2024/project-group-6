@@ -44,7 +44,6 @@ public class Command
     {
         commandDate = aCommandDate;
         totalPrice = aTotalPrice;
-        //payments = new ArrayList<Payment>();
     }
     public Command( String aCommandDate, float aTotalPrice, Customer aCustomer)
     {
