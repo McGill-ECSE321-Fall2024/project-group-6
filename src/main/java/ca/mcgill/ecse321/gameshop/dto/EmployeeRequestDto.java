@@ -1,11 +1,10 @@
 package ca.mcgill.ecse321.gameshop.dto;
 
 
+import java.util.List;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import ca.mcgill.ecse321.gameshop.model.*;
-
-import java.util.List;
 
 public class EmployeeRequestDto {
 
@@ -24,6 +23,7 @@ public class EmployeeRequestDto {
     @SuppressWarnings("unused")
     private EmployeeRequestDto() {
     }
+    
     public EmployeeRequestDto(String username, String email, String phone, String password, List <String> tasks) {
         this.username=username;
         this.email=email;

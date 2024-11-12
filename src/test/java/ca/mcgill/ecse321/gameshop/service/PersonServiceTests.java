@@ -155,7 +155,7 @@ public class PersonServiceTests {
     public void testUpdatePersonByValidId() {
         // Arrange
         String updatedName = "UpdatedBob";
-        String updatedEmail = "updatedbob@mail.mcgill.ca";
+        String updatedEmail = "updated@mail.mcgill.ca";
         String updatedPassword = "newpassword123";
         String updatedPhone = "+1(514)7654321";
         

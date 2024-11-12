@@ -1,10 +1,8 @@
 package ca.mcgill.ecse321.gameshop.dto;
 
-
-import jakarta.validation.constraints.NotBlank;
-import ca.mcgill.ecse321.gameshop.model.*;
-
 import java.util.List;
+
+import ca.mcgill.ecse321.gameshop.model.Employee;
 
 public class EmployeeResponseDto {
 
@@ -28,30 +26,28 @@ public class EmployeeResponseDto {
 
     }
 
-
     /**
      * Getters
      * @return
      */
     public List <String> getAssignedTasks() {
-
         return assignedTasks;
     }
 
-        public String getUsername() {
-            return username;
-        }
+    public String getUsername() {
+        return username;
+    }
 
-        public String getEmail() {
-            return email;
-        }
+    public String getEmail() {
+        return email;
+    }
 
-        public String getPhone() {
-            return phone;
-        }
-        public int getEmployeeId() {
-            return employeeId;
-        }
+    public String getPhone() {
+        return phone;
+    }
+    public int getEmployeeId() {
+        return employeeId;
+    }
 
     /**
      * Setters
@@ -68,9 +64,8 @@ public class EmployeeResponseDto {
     public void setPhone(String phone) {
         this.phone = phone;
     }
+
     public void setTasks(List<String>tasks) {
-
-        this.assignedTasks=tasks;
+        this.assignedTasks = tasks;
     }
-    }
-
+}

@@ -8,7 +8,6 @@ public class RoleRequestDto {
 
     public RoleRequestDto(Person person) {
         this.person=person;
-
     }
 
     public Person getPerson() {

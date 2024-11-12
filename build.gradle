@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.3.4'
 	id 'io.spring.dependency-management' version '1.1.6'
+	id 'jacoco'
 }
 
 group = 'ca.mcgill.ecse321'
@@ -28,4 +29,13 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+	testLogging {
+		exceptionFormat "full"
+		events "passed", "failed"
+	}
+	finalizedBy jacocoTestReport
+}
+
+tasks.named('jacocoTestCoverageVerification') {
+	dependsOn test // tests are required to run before checking code coverage.
 }

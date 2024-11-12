@@ -3,6 +3,7 @@ package ca.mcgill.ecse321.gameshop.integration;
 import org.junit.jupiter.api.AfterAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import ca.mcgill.ecse321.gameshop.GameshopApplication;
+import ca.mcgill.ecse321.gameshop.dto.PersonListDto;
 import ca.mcgill.ecse321.gameshop.dto.PersonRequestDto;
 import ca.mcgill.ecse321.gameshop.dto.PersonResponseDto;
 import ca.mcgill.ecse321.gameshop.repository.PersonRepository;
@@ -62,9 +64,24 @@ public class PersonIntegrationTests {
         assertEquals(VALID_PHONE, response.getBody().getPhone());
     }
 
-    @SuppressWarnings("null")
     @Test
     @Order(2)
+    public void testGetAllPeople() {
+        // Arrange
+        // Act
+        ResponseEntity<PersonListDto> response = client.getForEntity("/person", PersonListDto.class);
+        PersonListDto people = response.getBody();
+
+        // Assert
+        assertNotNull(people);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(people.getPeople());
+        assertTrue(!people.getPeople().isEmpty(), "There should be at least 1 person returned.");
+    }
+
+    @SuppressWarnings("null")
+    @Test
+    @Order(3)
     public void testGetPersonByValidId() {
         // Arrange
         String url = String.format("/person/%d", this.id);
@@ -82,7 +99,7 @@ public class PersonIntegrationTests {
     }
 
     @Test
-    @Order(3)
+    @Order(4)
     public void testGetPersonByInvalidId() {
         // Arrange
         String url = String.format("/person/%d", -1);
@@ -97,7 +114,7 @@ public class PersonIntegrationTests {
 
     @SuppressWarnings("null")
     @Test
-    @Order(4)
+    @Order(5)
     public void testUpdatePersonByValidId() {
         // Arrange
         String updatedName = "UpdatedBob";
@@ -123,7 +140,7 @@ public class PersonIntegrationTests {
     }
 
     @Test
-    @Order(5)
+    @Order(6)
     public void testUpdatePersonByInvalidId() {
         // Arrange
         String updatedName = "UpdatedBob";
@@ -143,7 +160,7 @@ public class PersonIntegrationTests {
     }
 
     @Test
-    @Order(6)
+    @Order(7)
     public void testDeletePersonByValidId() {
         // Arrange
         String url = String.format("/person/%d", this.id);
@@ -161,7 +178,7 @@ public class PersonIntegrationTests {
     }
 
     @Test
-    @Order(7)
+    @Order(8)
     public void testDeletePersonByInvalidId() {
         // Arrange
         String url = String.format("/person/%d", -1);
@@ -172,5 +189,25 @@ public class PersonIntegrationTests {
         // Assert
         assertNotNull(response);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @SuppressWarnings("null")
+    @Test
+    @Order(9)
+    public void testCreateInvalidPerson() {
+        // Arrange
+        String invalidName = "Pierre";
+        String invalidEmail = "Pierre@gmail.com";
+        String invalidPassword = ""; // Invalid password
+        String invalidPhone = "123";
+    
+        PersonRequestDto invalidPersonDto = new PersonRequestDto(invalidName, invalidEmail, invalidPassword, invalidPhone);
+    
+        // Act
+        ResponseEntity<String> response = client.postForEntity("/person", invalidPersonDto, String.class);
+    
+        // Assert
+        assertNotNull(response);
+        assertEquals(HttpStatus.LENGTH_REQUIRED, response.getStatusCode());
     }
 }
