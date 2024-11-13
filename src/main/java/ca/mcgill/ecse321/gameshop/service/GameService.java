@@ -42,7 +42,7 @@ public class GameService {
             throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Game must have a photo."));
         }
         
-        else if (allCategories == null || allCategories.size() == 0) {
+        else if (allCategories == null || allCategories.isEmpty()) {
             throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Game must have at least one category."));
         }
 

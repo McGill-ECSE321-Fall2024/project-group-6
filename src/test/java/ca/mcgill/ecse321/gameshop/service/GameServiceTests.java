@@ -1,26 +1,30 @@
 package ca.mcgill.ecse321.gameshop.service;
 
 
-import ca.mcgill.ecse321.gameshop.exception.GameShopException;
-import ca.mcgill.ecse321.gameshop.model.Category;
-import ca.mcgill.ecse321.gameshop.model.Game;
-import ca.mcgill.ecse321.gameshop.repository.GameRepository;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
+import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import ca.mcgill.ecse321.gameshop.exception.GameShopException;
+import ca.mcgill.ecse321.gameshop.model.Category;
+import ca.mcgill.ecse321.gameshop.model.Game;
+import ca.mcgill.ecse321.gameshop.repository.GameRepository;
 
 @SpringBootTest
 @MockitoSettings(strictness = Strictness.STRICT_STUBS)
@@ -120,7 +124,8 @@ public class GameServiceTests {
 
     @Test
     public void testUpdateValidGame(){
-        categoryList.add(categoriesNew);
+        Category newOne = new Category("Sports");
+        categoryList.add(newOne);
 
         Game g = new Game(name,description,price,stock,photo,categories);
         when(repo.findGameByGameId(ID)).thenReturn(g);
@@ -267,7 +272,7 @@ public class GameServiceTests {
     public void testGetGamesByCategory(){
         Game c=new Game(name,description,price,stock,photo,categories);
 
-        when(repo.findAll()).thenReturn(List.of(c,new Game(name,description,price,stock,photo,new Category("Sports"))));
+        when(repo.findAll()).thenReturn(List.of(c,new Game(name,description,price,stock,photo,categories)));
         List<Game> games = service.getGamesByCategory(categories.get(1));
 
         List<Game> result = new ArrayList<>();

@@ -30,7 +30,7 @@ public class GameRequestDto {
     private GameRequestDto() {
     }
 
-    public GameRequestDto(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,  boolean aToBeAdded, boolean aToBeRemoved, float aPromotion,Category... allCategories) {
+    public GameRequestDto(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,  boolean aToBeAdded, boolean aToBeRemoved, float aPromotion, List<Category> allCategories) {
         this.description = aDescription;
         this.name = aName;
         this.photoURL = aPhotoURL;
@@ -39,64 +39,7 @@ public class GameRequestDto {
         this.toBeAdded = aToBeAdded;
         this.toBeRemoved = aToBeRemoved;
         this.stockQuantity =aStockQuantity;
-        this.categories= List.of(allCategories);
-    }
-
-    public boolean setName(String aName) {
-        boolean wasSet = false;
-        name = aName;
-        wasSet = true;
-        return wasSet;
-    }
-
-    public boolean setDescription(String aDescription) {
-        boolean wasSet = false;
-        description = aDescription;
-        wasSet = true;
-        return wasSet;
-    }
-
-    public boolean setPrice(float aPrice) {
-        boolean wasSet = false;
-        price = aPrice;
-        wasSet = true;
-        return wasSet;
-    }
-
-    public boolean setStockQuantity(int aStockQuantity) {
-        boolean wasSet = false;
-        stockQuantity = aStockQuantity;
-        wasSet = true;
-        return wasSet;
-    }
-
-    public boolean setPhotoURL(String aPhotoURL) {
-        boolean wasSet = false;
-        photoURL = aPhotoURL;
-        wasSet = true;
-        return wasSet;
-    }
-
-
-    public boolean setToBeAdded(boolean aToBeAdded) {
-        boolean wasSet = false;
-        toBeAdded = aToBeAdded;
-        wasSet = true;
-        return wasSet;
-    }
-
-    public boolean setToBeRemoved(boolean aToBeRemoved) {
-        boolean wasSet = false;
-        toBeRemoved = aToBeRemoved;
-        wasSet = true;
-        return wasSet;
-    }
-
-    public boolean setPromotion(float aPromotion) {
-        boolean wasSet = false;
-        promotion = aPromotion;
-        wasSet = true;
-        return wasSet;
+        this.categories= allCategories;
     }
 
     public String getName() {
@@ -124,7 +67,6 @@ public class GameRequestDto {
         return photoURL;
     }
 
-
     public boolean getToBeAdded() {
 
         return toBeAdded;
@@ -139,6 +81,7 @@ public class GameRequestDto {
 
         return promotion;
     }
+    
     public List<Category> getCategories()
     {
         List<Category> newCategories = Collections.unmodifiableList(categories);

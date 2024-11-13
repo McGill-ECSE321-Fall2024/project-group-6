@@ -26,7 +26,7 @@ public class GameController {
     private GameService gameService;
 
     @PostMapping("/games")
-    public GameResponseDto createGame(@RequestBody GameResponseDto g) {
+    public GameResponseDto createGame(@RequestBody GameRequestDto g) {
         Game game = gameService.addGame(g.getName(), g.getDescription(), g.getPrice(), g.getStockQuantity(), g.getPhotoURL(), g.getCategories());
         return new GameResponseDto(game);
     }

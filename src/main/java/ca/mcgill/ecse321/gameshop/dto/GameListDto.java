@@ -17,8 +17,4 @@ public class GameListDto {
     public List<GameResponseDto> getGames() {
         return games;
     }
-
-    public void setGames(List<GameResponseDto> games) {
-        this.games = games;
-    }
 }

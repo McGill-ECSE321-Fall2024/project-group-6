@@ -13,11 +13,9 @@ public class GameResponseDto {
     private String description;
     private float price;
     private int stockQuantity;
-
     private String photoURL;
     private int gameId;
     private boolean toBeAdded;
-
     private boolean toBeRemoved;
     private float promotion;
 
@@ -38,14 +36,7 @@ public class GameResponseDto {
         this.toBeAdded = game.getToBeAdded();
         this.toBeRemoved = game.getToBeRemoved();
         this.stockQuantity = game.getStockQuantity();
-        this.categories=game.getCategories();
-
-        // Initialize categories list if it's null
-        if (game.getCategories() == null) {
-            this.categories = Collections.emptyList(); // Use an empty list if null
-        } else {
-            this.categories = game.getCategories();
-        }
+        this.categories = game.getCategories() != null ? game.getCategories() : Collections.emptyList();
     }
 
     public String getName() {
@@ -83,7 +74,8 @@ public class GameResponseDto {
     public float getPromotion() {
         return promotion;
     }
+
     public List<Category> getCategories() {
-        return Collections.unmodifiableList(categories != null ? categories : Collections.emptyList());
+        return Collections.unmodifiableList(categories);
     }
 }

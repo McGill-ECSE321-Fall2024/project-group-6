@@ -45,7 +45,7 @@ public class Game
   private Employee creator;
   @ManyToMany
   private List<Guest> guests;
-  @ManyToMany
+  @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
   private List<Category> categories;
 
   //------------------------

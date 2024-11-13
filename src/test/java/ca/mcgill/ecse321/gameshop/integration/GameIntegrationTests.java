@@ -1,5 +1,9 @@
 package ca.mcgill.ecse321.gameshop.integration;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.junit.jupiter.api.AfterAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -43,11 +47,11 @@ public class GameIntegrationTests {
     private static final boolean TO_BE_ADDED = false;
     private static final boolean TO_BE_REMOVED = false;
     private static final float VALID_PROMOTION = 30;
-    private static final Category[] CATEGORIES = {
-        new Category("Action"),
-        new Category("Adventure"),
-        new Category("Puzzle")
-    };
+    private static final List<Category> CATEGORIES = new ArrayList<>(Arrays.asList(
+    new Category("Action"),
+    new Category("Adventure"),
+    new Category("Puzzle")
+    ));
     private int id;
 
     @AfterAll
@@ -135,12 +139,10 @@ public class GameIntegrationTests {
     boolean beAdded = false;
     boolean beRemoved = false;
     float updatedPromotion = 40;
-    Category[] updatedCategories = {
-        new Category("Action"),
-        new Category("Adventure"),
-        new Category("Puzzle"),
-        new Category("Crime")
-    };
+    List<Category> updatedCategories = new ArrayList<>(Arrays.asList(
+        new Category("Crime"),
+        new Category("Sports")
+        ));
 
         GameRequestDto updatedGameDto = new GameRequestDto(updatedName, updatedDescription, updatedPrice, updatedQuantity, updatedPhoto, beAdded, beRemoved, updatedPromotion, updatedCategories);
         String url = String.format("/games/%d", this.id);
@@ -171,12 +173,10 @@ public class GameIntegrationTests {
         boolean beAdded = false;
         boolean beRemoved = false;
         float updatedPromotion = 40;
-        Category[] updatedCategories = {
-            new Category("Action"),
-            new Category("Adventure"),
-            new Category("Puzzle"),
-            new Category("Crime")
-        };
+        List<Category> updatedCategories = new ArrayList<>(Arrays.asList(
+            new Category("Test"),
+            new Category("Dart")
+            ));
 
         String url = String.format("/games/%d", -1);
         GameRequestDto updatedGameDto = new GameRequestDto(updatedName, updatedDescription, updatedPrice, updatedQuantity, updatedPhoto, beAdded, beRemoved, updatedPromotion, updatedCategories);
@@ -233,12 +233,10 @@ public class GameIntegrationTests {
         boolean beAdded = false;
         boolean beRemoved = false;
         float updatedPromotion = 40;
-        Category[] updatedCategories = {
-            new Category("Action"),
-            new Category("Adventure"),
-            new Category("Puzzle"),
-            new Category("Crime")
-        };
+        List<Category> updatedCategories = new ArrayList<>(Arrays.asList(
+            new Category("Hunting"),
+            new Category("Fake")
+            ));
 
         GameRequestDto invalidGameDto = new GameRequestDto(updatedName, updatedDescription, updatedPrice, updatedQuantity, updatedPhoto, beAdded, beRemoved, updatedPromotion, updatedCategories);
     
