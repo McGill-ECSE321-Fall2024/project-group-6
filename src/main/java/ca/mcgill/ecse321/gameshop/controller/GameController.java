@@ -15,55 +15,60 @@ public class GameController {
     @Autowired
     private GameService gameService;
 
-    @PostMapping("/games")
-    public GameResponseDTO createGameByManager(@RequestBody GameResponseDTO g){
-        Game game = gameService.addGame(g.getName(),g.getDescription(),g.getPrice(),g.getStockQuantity(),g.getPhotoURL(),g.getToBeAdded(), (Category) g.getCategories());
-        return  new GameResponseDTO(game);
-    }
-    @PostMapping("/employees/games")
-    public GameResponseDTO createGameByEmployee(@RequestBody GameResponseDTO g){
 
-        Game game = gameService.addGameByEmployee(g.getName(), g.getDescription(), g.getPrice(), g.getStockQuantity(), g.getPhotoURL(), g.getToBeAdded(), (Category) g.getCategories());
-        return new GameResponseDTO(game);
+    @PostMapping("/game")
+    public GameResponseDto createGameByManager(@RequestBody GameResponseDto g){
+        Game game = gameService.addGame(g.getName(), g.getDescription(), g.getPrice(), g.getStockQuantity(), g.getPhotoURL(), g.getToBeAdded(), g.getToBeRemoved(), g.getPromotion(), (Category) g.getCategories());
+        return  new GameResponseDto(game);
+    }
+
+
+    @PostMapping("/employees/game")
+    public GameResponseDto createGameByEmployee(@RequestBody GameResponseDto g){
+
+        Game game = gameService.addGame(g.getName(), g.getDescription(), g.getPrice(), g.getStockQuantity(), g.getPhotoURL(), g.getToBeAdded(), g.getToBeRemoved(), g.getPromotion(), (Category) g.getCategories());
+        return new GameResponseDto(game);
 
     }
 
 
     @GetMapping("/games/{id}")
-    public GameResponseDTO findGameById(@PathVariable int id){
-        return new GameResponseDTO(gameService.getGame(id));
+    public GameResponseDto findGameById(@PathVariable int id){
+        return new GameResponseDto(gameService.getGame(id));
     }
     @GetMapping("/games")
-    public  GamesResponseDTO findAllGames(){
-        List<GameResponseDTO> games = new ArrayList<>();
+    public  GameListDto findAllGames(){
+        List<GameResponseDto> games = new ArrayList<>();
         for (Game g: gameService.getAllGames()) {
-            games.add(new GameResponseDTO(g));
+            games.add(new GameResponseDto(g));
         }
-        return new GamesResponseDTO(games);
+        return new GameListDto(games);
     }
     @GetMapping("/games/{name}")
-    public GameResponseDTO findGameByName(@PathVariable String name){
-        return new GameResponseDTO(gameService.getGameByName(name));
+    public GameResponseDto findGameByName(@PathVariable String name){
+        return new GameResponseDto(gameService.getGameByName(name));
     }
     @GetMapping("/games/{category}")
-    public GamesResponseDTO findGamesByCategory(@PathVariable String category){
-        List<GameResponseDTO> games = new ArrayList<>();
+    public GameListDto findGamesByCategory(@PathVariable Category category){
+        List<GameResponseDto> games = new ArrayList<>();
         List<Game>gamesCopy= gameService.getGamesByCategory(category);
         for (Game g: gamesCopy) {
-            games.add(new GameResponseDTO(g));
+            games.add(new GameResponseDto(g));
         }
-        return new GamesResponseDTO(games);
+        return new GameListDto(games);
     }
 
     @PutMapping("/games/{id}")
-    public GameResponseDTO updateEmployee(@PathVariable int id, @RequestBody GameRequestDTO game) {
+    public GameResponseDto updateGame(@PathVariable int id, @RequestBody GameRequestDto game) {
         Game g = gameService.updateGame(id,game.getName(),game.getDescription(),game.getPrice(),game.getStockQuantity(),game.getPhotoURL(),game.getToBeAdded(),game.getToBeRemoved(),game.getPromotion(),(Category) game.getCategories());
 
-        return new GameResponseDTO(g);
+        return new GameResponseDto(g);
     }
 
     @DeleteMapping("/games/{id}")
     public void deleteGame(@PathVariable int id){
         gameService.deleteGame(id);
     }
+
+
 }
