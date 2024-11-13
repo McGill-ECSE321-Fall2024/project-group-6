@@ -72,8 +72,9 @@ Table 2 : Roles of each team member Deliverable 2: <br/>
 |             | Recording the meeting minutes                        | 1                 |
 |             | Unit tests for Employee and Customer                 | 3                 |
 |             |                                                      |                   |
-| Maissa      | RESTful API methods for Command and Category         |                   |
-|             | Unit tests for Command, Category and Game            |                   |
+| Maissa      | RESTful API methods for Command, Category and Game   |  3                |
+|             | Unit tests for Command, Category and Game            | 6                 |
+|             |Integration tests for  Command, Category and Game     |  10               |
 |             |                                                      |                   |
 |             |                                                      |                   |
 | Joseph      | RESTful API methods for Manager, Role, and Employee  |        4           |
