@@ -30,10 +30,11 @@ import ca.mcgill.ecse321.gameshop.dto.PaymentResponseDto;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(Lifecycle.PER_CLASS)
-
 public class PaymentIntegrationTests {
+
     @Autowired
     private TestRestTemplate client;
+
     @Autowired
     private PaymentRepository repo;
 
@@ -49,6 +50,13 @@ public class PaymentIntegrationTests {
     private static final String INVALID_CVC = "12345";
     private int validId;
 
+    /**
+     * Tests creating a valid payment.
+     *
+     * @author Annabelle Huynh-Rondeau
+     * @return void
+     * @throws AssertionError if the response is invalid.
+     */
     @Test
     @Order(1)
     public void testCreateValidPayment() {
@@ -68,6 +76,13 @@ public class PaymentIntegrationTests {
         assertTrue(createdPayment.getPaymentId() > 0, "Response should have a positive ID.");
     }
 
+    /**
+     * Tests retrieving a payment by valid ID.
+     *
+     * @author Annabelle Huynh-Rondeau
+     * @return void
+     * @throws AssertionError if the response is invalid.
+     */
     @SuppressWarnings("null")
     @Test
     @Order(2)
@@ -85,6 +100,13 @@ public class PaymentIntegrationTests {
         assertEquals(VALID_BILLING_ADDRESS, response.getBody().getBillingAddress());
     }
 
+    /**
+     * Tests retrieving a payment by invalid ID.
+     *
+     * @author Annabelle Huynh-Rondeau
+     * @return void
+     * @throws AssertionError if the response is invalid.
+     */
     @Test
     @Order(3)
     public void testGetPaymentByInvalidId() {
@@ -99,6 +121,13 @@ public class PaymentIntegrationTests {
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
+    /**
+     * Tests updating a payment with a valid ID.
+     *
+     * @author Annabelle Huynh-Rondeau
+     * @return void
+     * @throws AssertionError if the response is invalid.
+     */
     @SuppressWarnings("null")
     @Test
     @Order(4)
@@ -116,7 +145,7 @@ public class PaymentIntegrationTests {
         // Act
         client.put(url, updatedPaymentDto);
 
-        // Fetch updated person
+        // Fetch updated payment
         ResponseEntity<PaymentResponseDto> response = client.getForEntity(url, PaymentResponseDto.class);
 
         // Assert
@@ -125,6 +154,13 @@ public class PaymentIntegrationTests {
         assertEquals(updatedBillingAddress, response.getBody().getBillingAddress());
     }
 
+    /**
+     * Tests updating a payment with an invalid ID.
+     *
+     * @author Annabelle Huynh-Rondeau
+     * @return void
+     * @throws AssertionError if the response is invalid.
+     */
     @Test
     @Order(5)
     public void testUpdatePaymentByInvalidId() {
@@ -145,6 +181,13 @@ public class PaymentIntegrationTests {
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
+    /**
+     * Tests deleting a payment by valid ID.
+     *
+     * @author Annabelle Huynh-Rondeau
+     * @return void
+     * @throws AssertionError if the response is invalid.
+     */
     @Test
     @Order(6)
     public void testDeletePaymentByValidId() {
@@ -158,11 +201,18 @@ public class PaymentIntegrationTests {
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
-        // Verify that the person was actually deleted by trying to fetch it again
-        ResponseEntity<PaymentResponseDto> deletedPerson = client.getForEntity(url, PaymentResponseDto.class);
-        assertEquals(HttpStatus.NOT_FOUND, deletedPerson.getStatusCode());
+        // Verify that the payment was actually deleted by trying to fetch it again
+        ResponseEntity<PaymentResponseDto> deletedPayment = client.getForEntity(url, PaymentResponseDto.class);
+        assertEquals(HttpStatus.NOT_FOUND, deletedPayment.getStatusCode());
     }
 
+    /**
+     * Tests deleting a payment by invalid ID.
+     *
+     * @author Annabelle Huynh-Rondeau
+     * @return void
+     * @throws AssertionError if the response is invalid.
+     */
     @Test
     @Order(7)
     public void testDeletePaymentByInvalidId() {

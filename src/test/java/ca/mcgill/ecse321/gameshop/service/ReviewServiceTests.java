@@ -25,6 +25,10 @@ import java.util.List;
 import java.util.Arrays;
 import java.util.Optional;
 
+/**
+ * @author Annabelle Huynh-Rondeau
+ */
+
 @SpringBootTest
 public class ReviewServiceTests {
 

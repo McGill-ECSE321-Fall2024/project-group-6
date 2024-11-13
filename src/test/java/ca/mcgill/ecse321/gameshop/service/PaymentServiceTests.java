@@ -28,6 +28,9 @@ public class PaymentServiceTests {
     @InjectMocks
     private PaymentService service;
 
+    /**
+     * @author Annabelle Huynh-Rondeau
+     */
     @Test
     public void testCreateValidPayment() {
         // Arrange

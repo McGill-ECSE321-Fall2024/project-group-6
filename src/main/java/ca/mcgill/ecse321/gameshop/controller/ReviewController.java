@@ -25,7 +25,7 @@ public class ReviewController {
 
     /**
      * Create the new review
-     *
+     * @author Annabelle Huynh-Rondeau
      * @param review The review to create.
      * @return The new review.
      */
@@ -37,24 +37,22 @@ public class ReviewController {
 
     /**
      * Return all reviews.
-     *
+     * @author Annabelle Huynh-Rondeau
      * @return All the reviews.
      */
     @GetMapping("/review")
     public ReviewListDto getAllReviews() {
         List<ReviewResponseDto> reviews = new ArrayList<>();
-
         for (Review r : reviewService.getAllReviews()){
             reviews.add(new ReviewResponseDto(r));
         }
-
         return new ReviewListDto(reviews);
     }
 
 
     /**
      * Return the review with the given ID.
-     *
+     * @author Annabelle Huynh-Rondeau
      * @param id The primary key of the person to find.
      * @return The review with the given ID.
      */
@@ -66,7 +64,7 @@ public class ReviewController {
 
     /**
      * Update the review with the given ID.
-     *
+     * @author Annabelle Huynh-Rondeau
      * @param id the ID of the review
      * @return The updated review with the given ID.
      */
@@ -78,7 +76,7 @@ public class ReviewController {
 
     /**
      * Delete thew person with the given ID.
-     *
+     * @author Annabelle Huynh-Rondeau
      * @param id the id of the review to delete.
      * @return void.
      */

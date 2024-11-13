@@ -18,25 +18,35 @@ import java.time.format.DateTimeParseException;
 
 @Service
 public class PaymentService {
+
     // Inject PaymentRepository to handle database operations
     @Autowired
     private PaymentRepository paymentRepo;
 
-    // Create a new payment and save it in the repository
+    /**
+     * Creates a new payment and saves it in the repository.
+     *
+     * @author Annabelle Huynh-Rondeau
+     * @param aBillingAddress The billing address associated with the payment.
+     * @param aCreditCardNb The credit card number associated with the payment.
+     * @param aExpirationDate The expiration date of the credit card in MM/YY format.
+     * @param aCvc The CVC code of the credit card.
+     * @return The newly created Payment object.
+     */
     @Transactional
     public Payment createPayment(String aBillingAddress, long aCreditCardNb, String aExpirationDate, int aCvc) {
-        // check that billing address is valid
+        // Check that billing address is valid
         if (aBillingAddress == null || aBillingAddress.trim().isEmpty()) {
             throw new GameShopException(HttpStatus.BAD_REQUEST, "Billing address cannot be empty");
         }
 
-        // check that the credit card number has 16 digits
+        // Check that the credit card number has 16 digits
         String creditCardString = String.valueOf(aCreditCardNb);
         if (creditCardString.length() != 16) {
             throw new GameShopException(HttpStatus.BAD_REQUEST, "Credit card number must be 16 digits");
         }
 
-        // check the format of the expiration date (MM/YY )
+        // Check the format of the expiration date (MM/YY)
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/yy");
         try {
             LocalDate expiryDate = LocalDate.parse("01/" + aExpirationDate, DateTimeFormatter.ofPattern("dd/MM/yy"));
@@ -47,55 +57,78 @@ public class PaymentService {
             throw new GameShopException(HttpStatus.BAD_REQUEST, "Invalid expiration date format. Use MM/YY");
         }
 
-        // check if CVC is in the right format (3 digits)
+        // Check if CVC is in the right format (3 digits)
         String cvcString = String.valueOf(aCvc);
         if (cvcString.length() != 3) {
             throw new GameShopException(HttpStatus.BAD_REQUEST, "CVC must be 3 digits");
         }
 
-        //if all inputs are correct, create the new payment
+        // If all inputs are correct, create the new payment
         Payment p = new Payment(aBillingAddress, aCreditCardNb, aExpirationDate, aCvc);
         return paymentRepo.save(p);
     }
 
-    // Retrieve all payments from the repository
+    /**
+     * Retrieves all payments from the repository.
+     *
+     * @author Annabelle Huynh-Rondeau
+     * @return An iterable collection of all Payment objects.
+     */
     public Iterable<Payment> getAllPayments() {
         return paymentRepo.findAll();
     }
 
-    // Find a payment by its id
+    /**
+     * Finds a payment by its ID.
+     *
+     * @author Annabelle Huynh-Rondeau
+     * @param id The ID of the payment to retrieve.
+     * @return The Payment object corresponding to the given ID.
+     * @throws GameShopException If no payment with the given ID is found.
+     */
     public Payment getPaymentById(int id) {
         Payment p = paymentRepo.findPaymentByPaymentId(id);
 
         // Throw an exception if no payment is found
         if (p == null) {
-			throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Payment with ID " + id + " does not exist."));
+            throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Payment with ID " + id + " does not exist."));
         }
 
         return p;
     }
 
-    // Update an existing payment by ID
+    /**
+     * Updates an existing payment by its ID.
+     *
+     * @author Annabelle Huynh-Rondeau
+     * @param id The ID of the payment to update.
+     * @param aBillingAddress The updated billing address.
+     * @param aCreditCardNb The updated credit card number.
+     * @param aExpirationDate The updated expiration date (MM/YY format).
+     * @param aCvc The updated CVC code.
+     * @return The updated Payment object.
+     * @throws GameShopException If no payment with the given ID is found.
+     */
     @Transactional
     public Payment updatePayment(int id, String aBillingAddress, long aCreditCardNb, String aExpirationDate, int aCvc) {
         Payment p = paymentRepo.findPaymentByPaymentId(id);
 
         if (p == null) {
-			throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Payment with ID " + id + " does not exist."));
+            throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Payment with ID " + id + " does not exist."));
         }
 
-        // check that billing address is valid
+        // Check that billing address is valid
         if (aBillingAddress == null || aBillingAddress.trim().isEmpty()) {
             throw new GameShopException(HttpStatus.BAD_REQUEST, "Billing address cannot be empty");
         }
 
-        // check that the credit card number has 16 digits
+        // Check that the credit card number has 16 digits
         String creditCardString = String.valueOf(aCreditCardNb);
         if (creditCardString.length() != 16) {
             throw new GameShopException(HttpStatus.BAD_REQUEST, "Credit card number must be 16 digits");
         }
 
-        // check the format of the expiration date (MM/YY )
+        // Check the format of the expiration date (MM/YY)
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/yy");
         try {
             LocalDate expiryDate = LocalDate.parse("01/" + aExpirationDate, DateTimeFormatter.ofPattern("dd/MM/yy"));
@@ -106,29 +139,35 @@ public class PaymentService {
             throw new GameShopException(HttpStatus.BAD_REQUEST, "Invalid expiration date format. Use MM/YY");
         }
 
-        // check if CVC is in the right format (3 digits)
+        // Check if CVC is in the right format (3 digits)
         String cvcString = String.valueOf(aCvc);
         if (cvcString.length() != 3) {
             throw new GameShopException(HttpStatus.BAD_REQUEST, "CVC must be 3 digits");
         }
 
+        // Update the payment details
         p.setBillingAddress(aBillingAddress);
         p.setCreditCardNb(aCreditCardNb);
         p.setExpirationDate(aExpirationDate);
         p.setCvc(aCvc);
-        
+
         return paymentRepo.save(p);
     }
 
-    // Delete a person by their id
+    /**
+     * Deletes a payment by its ID.
+     *
+     * @author Annabelle Huynh-Rondeau
+     * @param id The ID of the payment to delete.
+     * @throws GameShopException If no payment with the given ID is found.
+     */
     public void deletePayment(int id) {
         Payment p = paymentRepo.findPaymentByPaymentId(id);
 
         if (p == null) {
-			throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Payment with ID " + id + " does not exist."));
+            throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Payment with ID " + id + " does not exist."));
         }
 
         paymentRepo.delete(p);
     }
-
 }

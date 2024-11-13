@@ -1,5 +1,9 @@
 package ca.mcgill.ecse321.gameshop.dto;
 
+/**
+ * @author Annabelle Huynh-Rondeau
+ */
+
 public class PaymentRequestDto {
     //Payment attributes
     private String billingAddress;
@@ -16,6 +20,8 @@ public class PaymentRequestDto {
         this.expirationDate = expirationDate;
         this.cvc = cvc;
     }
+
+    //GETTERS
 
     public String getBillingAddress() {
         return billingAddress;

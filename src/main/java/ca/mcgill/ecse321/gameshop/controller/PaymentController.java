@@ -26,7 +26,7 @@ public class PaymentController {
 
     /**
      * Return the new payment
-     *
+     * @author Annabelle Huynh-Rondeau
      * @param payment The payment object.
      * @return The new payment object.
      */
@@ -38,23 +38,21 @@ public class PaymentController {
 
     /**
      * Return all payments in the DB.
-     *
+     * @author Annabelle Huynh-Rondeau
      * @return Return all payments.
      */
     @GetMapping("/payment")
     public PaymentListDto getAllPayments() {
         List<PaymentResponseDto> payments = new ArrayList<>();
-
         for (Payment p: paymentService.getAllPayments()) {
             payments.add(new PaymentResponseDto(p));
         }
-
         return new PaymentListDto(payments);
     }
 
     /**
      * Return the payment with the given ID.
-     *
+     * @author Annabelle Huynh-Rondeau
      * @param id the ID of the review
      * @return the payment with the given ID.
      */
@@ -66,7 +64,7 @@ public class PaymentController {
 
     /**
      * Update the payment with the given ID.
-     *
+     * @author Annabelle Huynh-Rondeau
      * @param id the ID of the review
      * @return the updated payment with the given ID.
      */
@@ -78,7 +76,7 @@ public class PaymentController {
 
     /**
      * Delete the payment with the given id.
-     * 
+     * @author Annabelle Huynh-Rondeau
      *@param "/payment/{Id}" the id of the payment to delete.
      * @return The response DTO of the payment deletion.
      */

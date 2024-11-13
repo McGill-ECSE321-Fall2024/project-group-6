@@ -24,9 +24,6 @@ import ca.mcgill.ecse321.gameshop.repository.PaymentRepository;
 import ca.mcgill.ecse321.gameshop.dto.ReviewRequestDto;
 import ca.mcgill.ecse321.gameshop.dto.ReviewResponseDto;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(Lifecycle.PER_CLASS)
@@ -83,7 +80,6 @@ public class ReviewIntegrationTests {
         assertEquals(VALID_COMMENT, response.getBody().getComment());
         assertEquals(VALID_AMOUNT_OF_LIKES, response.getBody().getAmountOfLikes());
         assertEquals(VALID_REPLY, response.getBody().getReply());
-
     }
 
     @Test
