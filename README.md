@@ -82,8 +82,8 @@ Table 2 : Roles of each team member Deliverable 2: <br/>
 |             | Integration tests for  Manager, Employee, Customer, and Category                                                  |       15            |
 |             |                                                      |                   |
 |             |                                                      |                   |
-| Mario       | RESTful API methods for Person and Guest             |                   |
-|             | Unit tests for Person and Guest                      |                   |
-|             |                                                      |                   |
+| Mario       | RESTful API methods for Person, Command and Guest             |   2                |
+|             | Unit tests for Person and Guest                      |     2              |
+|             | Integration tests for Person, Guest, Command, and Game                                                     |        11           |
 |             |                                                      |                   |
 
