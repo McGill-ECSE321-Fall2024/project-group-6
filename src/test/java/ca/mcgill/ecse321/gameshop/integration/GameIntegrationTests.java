@@ -140,8 +140,8 @@ public class GameIntegrationTests {
         String photo_url = "subway_surfers2URL";
         List<Integer> categoryId = List.of(this.cat2ID);
         //Game updatedGame = new Game(name, description, price, stock_quantity, photo_url);
-        GameRequestDto updatedGameDto = new GameRequestDto(name, description, price, stock_quantity, photo_url, toBeAdded, toBeRemoved, VALID_PROMOTION, categoryId);
-        String url = String.format("/games/%d", this.validId);
+        GameRequestDto updatedGameDto = new GameRequestDto(name, description, price, stock_quantity, photo_url, toBeAdded, true, VALID_PROMOTION, categoryId);
+        String url = String.format("/games/id/%d", this.validId);
 
         // Act
         client.put(url, updatedGameDto);
@@ -166,7 +166,7 @@ public class GameIntegrationTests {
         String photo_url = "subway_surfers2URL";
         List<Integer> categoryId = List.of(this.cat1ID);
 
-        String url = String.format("/games/%d", -1);
+        String url = String.format("/games/id/%d", -1);
         GameRequestDto updatedGameDto = new GameRequestDto(name, description, price, stock_quantity, photo_url, toBeAdded, toBeRemoved, VALID_PROMOTION, categoryId);
 
         // Act
@@ -207,6 +207,7 @@ public class GameIntegrationTests {
         // Assert
         assertNotNull(response);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+
     }
 
 

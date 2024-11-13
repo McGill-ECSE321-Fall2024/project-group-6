@@ -16,42 +16,77 @@ import java.time.LocalDate;
 
 @Service
 public class CommandService {
+
     @Autowired
     private CommandRepository repo;
 
+    /**
+     * @author Maissa
+     * Creates a new command for a given customer, calculates the total price based on
+     * the prices and promotions of games in the customer's cart.
+     *
+     * @param customer
+     * @return Created command.
+     * @throws GameShopException
+     */
     @Transactional
     public Command createCommand(Customer customer) {
         if (customer == null) {
-            throw new GameShopException(HttpStatus.NOT_FOUND,String.format("Command must belong to a customer."));
+            throw new GameShopException(HttpStatus.NOT_FOUND, "Command must belong to a customer.");
         }
-        float total=0;
-        for(Game g : customer.getCart()){
-            total+=g.getPrice()*(1-g.getPromotion());
+        //Calculates total price of command
+        float total = 0;
+        for (Game g : customer.getCart()) {
+            total += g.getPrice() * (1 - g.getPromotion());
         }
-        Date today= Date.valueOf(LocalDate.now());
-        Command c = new Command(today.toString(),total,customer);
+
+        Date today = Date.valueOf(LocalDate.now());
+        Command c = new Command(today.toString(), total, customer);
         return repo.save(c);
     }
 
+    /**
+     * @author Maissa
+     * Finds a command by its ID.
+     *
+     * @param cId
+     * @return Command with cId.
+     * @throws GameShopException
+     */
     public Command findCommandById(int cId) {
-        if(cId<0){throw new GameShopException(HttpStatus.NOT_FOUND, String.format("The Command ID "+ cId+"is not valid"));}
-        else if (repo.findCommandByCommandId(cId) == null) {
-            throw new GameShopException(HttpStatus.NOT_FOUND, String.format("There is no Command with ID " + cId + "."));
+        if (cId < 0) {
+            throw new GameShopException(HttpStatus.NOT_FOUND, "The Command ID " + cId + " is not valid.");
+        } else if (repo.findCommandByCommandId(cId) == null) {
+            throw new GameShopException(HttpStatus.NOT_FOUND, "There is no Command with ID " + cId + ".");
         }
-
 
         return repo.findCommandByCommandId(cId);
     }
 
-    public void deleteCommand(int cId){
-        if(cId<0){throw new GameShopException(HttpStatus.NOT_FOUND, String.format("The Command ID "+ cId+"is not valid"));}
-        else if (repo.findCommandByCommandId(cId) == null) {
-            throw new GameShopException(HttpStatus.NOT_FOUND,String.format("There is no Command with ID " +cId+"."));
+    /**
+     * @author Maissa
+     * Deletes a command by its ID.
+     *
+     * @param cId
+     * @throws GameShopException
+     */
+    public void deleteCommand(int cId) {
+        if (cId < 0) {
+            throw new GameShopException(HttpStatus.NOT_FOUND, "The Command ID " + cId + " is not valid.");
+        } else if (repo.findCommandByCommandId(cId) == null) {
+            throw new GameShopException(HttpStatus.NOT_FOUND, "There is no Command with ID " + cId + ".");
         }
+
         repo.deleteById(cId);
     }
-    public Iterable<Command> getAllCommands(){
-       return repo.findAll();
-    }
 
+    /**
+     * @author Maissa
+     * Retrieves all commands stored in the repository.
+     *
+     * @return Commands.
+     */
+    public Iterable<Command> getAllCommands() {
+        return repo.findAll();
+    }
 }

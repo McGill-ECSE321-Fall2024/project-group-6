@@ -29,7 +29,10 @@ public class CategoryServiceTests {
     private CategoryService service;
     private String name = "Action";
     private int ID =3;
-
+    /**
+     * @author Maissa
+     * Test for creating a valid category.
+     */
     @Test
     public void testCreateValidCategory(){
 
@@ -41,7 +44,10 @@ public class CategoryServiceTests {
         assertEquals(name,createdCategory.getCategoryName());
         verify(repo,times(1)).save(createdCategory);
     }
-
+    /**
+     * @author Maissa
+     * Test for handling the creation of a duplicate category.
+     */
     @Test
     public void testCreateDuplicateCategory(){
 
@@ -53,7 +59,10 @@ public class CategoryServiceTests {
         assertEquals(HttpStatus.FOUND,ex.getStatus());
         assertEquals("Category already exists.",ex.getMessage());
     }
-
+    /**
+     * @author Maissa
+     * Test for creating a invalid category.
+     */
     @Test
     public void testCreateInvalidCategory(){
         GameShopException ex = assertThrows(GameShopException.class, () -> service.createCategory(null));
@@ -62,7 +71,10 @@ public class CategoryServiceTests {
         assertEquals("Category name must not be empty.", ex.getMessage());
         verify(repo,never()).save(any(Category.class));
     }
-
+    /**
+     * @author Maissa
+     * Test for getting a valid category.
+     */
 
     @Test
     public void testGetCategoryByValidId(){
@@ -73,7 +85,10 @@ public class CategoryServiceTests {
         assertNotNull(foundCategory);
         assertEquals(name,foundCategory.getCategoryName());
     }
-
+    /**
+     * @author Maissa
+     * Test for getting an invalid category.
+     */
     @Test
     public void testGetCategoryByInvalidId(){
         GameShopException ex = assertThrows(GameShopException.class, () -> service.findCategoryById(-1));
@@ -81,7 +96,10 @@ public class CategoryServiceTests {
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("The Category ID "+ -1 +"is not valid", ex.getMessage());
     }
-
+    /**
+     * @author Maissa
+     * Test for getting a non existent category.
+     */
     @Test
     public void testGetCategoryByNonExistentId(){
         GameShopException ex = assertThrows(GameShopException.class, () -> service.findCategoryById(ID));
@@ -89,7 +107,10 @@ public class CategoryServiceTests {
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("There is no Category with ID "+ ID+".", ex.getMessage());
     }
-
+    /**
+     * @author Maissa
+     * Test for updating a valid category.
+     */
     @Test
     public void testUpdateValidCategory(){
         Category c= new Category(name);
@@ -101,7 +122,10 @@ public class CategoryServiceTests {
         assertEquals("Sports",updatedCategory.getCategoryName());
         verify(repo,times(1)).save(updatedCategory);
     }
-
+    /**
+     * @author Maissa
+     * Test for updating a non existent category.
+     */
     @Test
     public void testUpdateNonExistentCategory(){
         when(repo.findCategoryByCategoryId(ID)).thenReturn(null);
@@ -110,6 +134,10 @@ public class CategoryServiceTests {
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("There is no Category with ID"+ ID+".", ex.getMessage());
     }
+    /**
+     * @author Maissa
+     * Test for updating a category to an already existing one.
+     */
 
     @Test
     public void testUpdateDuplicateCategory(){
@@ -124,7 +152,10 @@ public class CategoryServiceTests {
         assertEquals(HttpStatus.FOUND, ex.getStatus());
         assertEquals("Category already exists.", ex.getMessage());
     }
-
+    /**
+     * @author Maissa
+     * Test for deleting a valid category.
+     */
     @Test
     public void testDeleteValidCategory(){
         when(repo.findCategoryByCategoryId(ID)).thenReturn(new Category(name));
@@ -134,6 +165,10 @@ public class CategoryServiceTests {
         verify(repo, times(1)).deleteById(ID);
 
     }
+    /**
+     * @author Maissa
+     * Test for deleting an invalid category.
+     */
     @Test
     public void testDeleteInvalidCategory(){
         GameShopException ex = assertThrows(GameShopException.class, () -> service.deleteCategory(-1));
@@ -141,7 +176,10 @@ public class CategoryServiceTests {
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("The Category ID "+ -1 +"is not valid", ex.getMessage());
     }
-
+    /**
+     * @author Maissa
+     * Test for deleting a non-existent category.
+     */
     @Test
     public void testDeleteNonExistentCategory(){
         GameShopException ex = assertThrows(GameShopException.class, () -> service.deleteCategory(ID));
@@ -149,6 +187,10 @@ public class CategoryServiceTests {
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("There is no Category with ID "+ ID+".", ex.getMessage());
     }
+    /**
+     * @author Maissa
+     * Test for getting all categories.
+     */
 
     @Test
     public void testGetAllCategories(){

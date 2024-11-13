@@ -52,7 +52,7 @@ public class GameController {
         return new GameListDto(games);
     }
 
-    @PutMapping("/games/{id}")
+    @PutMapping("/games/id/{id}")
     public GameResponseDto updateGame(@PathVariable int id, @RequestBody GameRequestDto game) {
         Game g = gameService.updateGame(id,game.getName(),game.getDescription(),game.getPrice(),game.getStockQuantity(),game.getPhotoURL(),game.getToBeAdded(),game.getToBeRemoved(),game.getPromotion(), game.getCategories());
 

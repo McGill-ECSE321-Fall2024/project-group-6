@@ -30,14 +30,16 @@ public class CategoryIntegrationTests {
     private CategoryRepository repo;
 
 
-    private static String name = "Action";
+    private static String name = "Kids";
     private int ID;
-    String newName = "Sports";
+    String newName = "Farm";
 
     @AfterAll
     public void clearDatabase() {
         repo.deleteAll();
     }
+
+
 
     @Test
     @Order(1)

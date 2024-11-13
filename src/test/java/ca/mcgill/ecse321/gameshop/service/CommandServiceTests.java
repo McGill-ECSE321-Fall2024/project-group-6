@@ -44,6 +44,10 @@ public class CommandServiceTests {
 
     private Customer  customer = new Customer(new Person("maissa","maissa@gmail.com","password","438777906"),"4555 milton",wishlist,cart );
 
+    /**
+     * @author Maissa
+     * Test for creating a valid command.
+     */
     @Test
     public void testCreateValidCommand(){
         when(repo.save(any(Command.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
@@ -54,7 +58,10 @@ public class CommandServiceTests {
         assertEquals(g1.getPrice()+g2.getPrice(),createdCommand.getTotalPrice());
         verify(repo,times(1)).save(createdCommand);
     }
-
+    /**
+     * @author Maissa
+     * Test for creating an invalid command.
+     */
     @Test
     public void testCreateInvalidCommand(){
         GameShopException ex= assertThrows(GameShopException.class,()-> service.createCommand(null));
@@ -62,7 +69,10 @@ public class CommandServiceTests {
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Command must belong to a customer.",ex.getMessage());
     }
-
+    /**
+     * @author Maissa
+     * Test for getting a valid command.
+     */
     @Test
     public void testGetCommandByValidID() {
         when(repo.findCommandByCommandId(ID)).thenReturn(new Command(today.toString(),total));
@@ -72,7 +82,10 @@ public class CommandServiceTests {
         assertEquals(today.toString(),c.getCommandDate());
         assertEquals(total,c.getTotalPrice());
     }
-
+    /**
+     * @author Maissa
+     * Test for getting an invalid command.
+     */
     @Test
     public void testGetCommandByInvalidID(){
         GameShopException ex = assertThrows(GameShopException.class, () -> service.findCommandById(-1));
@@ -80,7 +93,10 @@ public class CommandServiceTests {
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("The Command ID "+ -1 +"is not valid", ex.getMessage());
     }
-
+    /**
+     * @author Maissa
+     * Test for getting an invalid command.
+     */
     @Test
     public void testGetCommandByNonExistentId(){
         when(repo.findCommandByCommandId(ID)).thenReturn(null);
@@ -89,7 +105,10 @@ public class CommandServiceTests {
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("There is no Command with ID "+ ID+".", ex.getMessage());
     }
-
+    /**
+     * @author Maissa
+     * Test for deleting a valid command.
+     */
     @Test
     public void testDeleteValidCommand(){
         when(repo.findCommandByCommandId(ID)).thenReturn(new Command(today.toString(),total));
@@ -99,7 +118,10 @@ public class CommandServiceTests {
         verify(repo, times(1)).deleteById(ID);
 
     }
-
+    /**
+     * @author Maissa
+     * Test for deleting an invalid command.
+     */
     @Test
     public void testDeleteInvalidCommand(){
         GameShopException ex = assertThrows(GameShopException.class, () -> service.deleteCommand(-1));
@@ -107,7 +129,10 @@ public class CommandServiceTests {
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("The Command ID "+ -1 +"is not valid", ex.getMessage());
     }
-
+    /**
+     * @author Maissa
+     * Test for deleting a non existent command.
+     */
     @Test
     public void testDeleteNonExistentCategory(){
         GameShopException ex = assertThrows(GameShopException.class, () -> service.deleteCommand(ID));
@@ -115,7 +140,10 @@ public class CommandServiceTests {
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("There is no Command with ID "+ ID+".", ex.getMessage());
     }
-
+    /**
+     * @author Maissa
+     * Test for getting all commands.
+     */
     @Test
     public void testGetAllCommands(){
         Iterable<Command> commands = List.of(new Command(today.toString(),total), new Command(today.toString(),20));

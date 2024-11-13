@@ -22,10 +22,22 @@ public class GameService {
     @Autowired
     private CategoryRepository categoryRepo;
 
-
+    /**
+     * @author Maissa
+     * Adds a new game to the repository with the specified attributes.
+     *
+     * @param aName
+     * @param aDescription
+     * @param aPrice
+     * @param aStockQuantity
+     * @param aPhotoURL
+     * @param allCategories
+     * @return Added game
+     * @throws GameShopException
+     */
 
     @Transactional
-    public Game addGame(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,List<Integer> allCategories) {
+    public Game addGame(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,List<Category> allCategories) {
 
         if(aName==null){
             throw new GameShopException(HttpStatus.NOT_FOUND,String.format("Name cannot be empty."));
@@ -40,19 +52,38 @@ public class GameService {
         }else if (allCategories==null){
             throw new GameShopException(HttpStatus.NOT_FOUND,String.format("Game must have at least one category."));
         }
+        /*
         List<Category> categories = new ArrayList<>();
         for(int i:allCategories){
             categories.add(categoryRepo.findCategoryByCategoryId(i));
         }
 
+         */
+
         System.out.println("Service");
-        System.out.println(categories);
+        System.out.println(allcategories);
         Game game= new Game(aName,aDescription,aPrice,aStockQuantity,aPhotoURL, categories);
 
         return gameRepository.save(game);
     }
 
-
+    /**
+     * @author Maissa
+     * Updates an existing game.
+     *
+     * @param id
+     * @param aName
+     * @param aDescription
+     * @param aPrice
+     * @param aStockQuantity
+     * @param aPhotoURL
+     * @param aToBeAdded
+     * @param tobeRemoved
+     * @param aPromotion
+     * @param allCategories
+     * @return The updated game.
+     * @throws GameShopException
+     */
     @Transactional
     public Game updateGame(int id,String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL, boolean aToBeAdded, boolean tobeRemoved, float aPromotion, List<Integer> allCategories){
         Game game = gameRepository.findGameByGameId(id);
@@ -90,7 +121,11 @@ public class GameService {
 
         return gameRepository.save(game);
     }
-
+    /**
+     * @author Maissa
+     * @param
+     * @return
+     */
     // Get all games
     @Transactional
     public List<Game> getAllGames() {
@@ -102,7 +137,11 @@ public class GameService {
         }
         return games;
     }
-
+    /**
+     * @author Maissa
+     * @param id
+     * @return
+     */
     // Find a game by ID
     @Transactional
     public Game getGame(int id) {
@@ -113,6 +152,11 @@ public class GameService {
         Game gameFromDb=gameRepository.findGameByGameId(id);
         return gameFromDb;
     }
+    /**
+     * @author Maissa
+     * @param name
+     * @return
+     */
     @Transactional
     public Game getGameByName(String name) {
         if(name==null){throw new GameShopException(HttpStatus.NOT_FOUND,String.format("Name cannot be empty."));}
@@ -126,7 +170,11 @@ public class GameService {
         }
         return null;
     }
-
+    /**
+     * @author Maissa
+     * @param category
+     * @return
+     */
     @Transactional
     public List<Game> getGamesByCategory(Category category) {
         List<Game> games = new ArrayList<>();
@@ -138,14 +186,20 @@ public class GameService {
         }
         return games;
     }
-
+    /**
+     * @author Maissa
+     * @param gameId
+     * @return
+     */
 
     // Delete a game by ID
     @Transactional
     public void deleteGame(int gameId) {
+
         if (!this.approvalToRemoveGame(gameId)) {
             throw new GameShopException(HttpStatus.NOT_FOUND, String.format("This game is not authorized to be deleted"));
-        } else {gameRepository.deleteById(gameId);}
+        } else {
+            gameRepository.deleteById(gameId);}
     }
 
 
