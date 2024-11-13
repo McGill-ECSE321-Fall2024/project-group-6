@@ -26,7 +26,7 @@ public class Category
   private int categoryId;
 
   //Category Associations
-  @ManyToMany(mappedBy = "categories", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})  // Add CascadeType.REMOVE
+@ManyToMany
   private List<Game> games;
 
   //------------------------

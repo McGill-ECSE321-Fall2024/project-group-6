@@ -19,17 +19,17 @@ public class EmployeeRequestDto {
     private String password;
 
     private List <String> assignedTasks;
-
+    private boolean activated;
     @SuppressWarnings("unused")
     private EmployeeRequestDto() {
     }
-    
-    public EmployeeRequestDto(String username, String email, String phone, String password, List <String> tasks) {
+    public EmployeeRequestDto(String username, String email, String phone, String password, List <String> tasks,boolean activated) {
         this.username=username;
         this.email=email;
         this.phone=phone;
         this.password=password;
         this.assignedTasks=tasks;
+        this.activated=activated;
 
     }
 
@@ -51,6 +51,9 @@ public class EmployeeRequestDto {
 
     public String getPassword() {
         return password;
+    }
+    public boolean getActivated() {
+        return activated;
     }
 
 

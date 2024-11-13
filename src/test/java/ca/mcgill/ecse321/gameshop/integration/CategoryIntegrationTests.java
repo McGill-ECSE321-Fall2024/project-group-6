@@ -1,15 +1,12 @@
 package ca.mcgill.ecse321.gameshop.integration;
 
-
-import org.junit.jupiter.api.AfterAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestMethodOrder;
+/**
+ * @author Joseph and Maissa
+ */
+import ca.mcgill.ecse321.gameshop.dto.CategoryRequestDto;
+import ca.mcgill.ecse321.gameshop.dto.CategoryResponseDto;
+import ca.mcgill.ecse321.gameshop.repository.CategoryRepository;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -18,9 +15,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import ca.mcgill.ecse321.gameshop.dto.CategoryRequestDto;
-import ca.mcgill.ecse321.gameshop.dto.CategoryResponseDto;
-import ca.mcgill.ecse321.gameshop.repository.CategoryRepository;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -43,7 +38,6 @@ public class CategoryIntegrationTests {
         repo.deleteAll();
     }
 
-    @SuppressWarnings("null")
     @Test
     @Order(1)
     public void testCreateValidCategory() {
@@ -64,7 +58,6 @@ public class CategoryIntegrationTests {
         assertEquals(name, response.getBody().getName());
     }
 
-    @SuppressWarnings("null")
     @Test
     @Order(2)
     public void testGetValidCategoryById() {

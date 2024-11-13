@@ -17,4 +17,8 @@ public class CategoryListDto {
     public List<CategoryResponseDto> getCategories(){
         return categories;
     }
+
+    public void setCategories(List<CategoryResponseDto> categories){
+        this.categories=categories;
+    }
 }

@@ -12,7 +12,7 @@ public class EmployeeResponseDto {
     private int employeeId;
 
     private List <String> assignedTasks;
-
+    private boolean activated;
     @SuppressWarnings("unused")
     private EmployeeResponseDto() {
     }
@@ -23,6 +23,7 @@ public class EmployeeResponseDto {
         this.email = employee.getPerson().getEmail();
         this.phone = employee.getPerson().getPhone();
         this.assignedTasks=employee.getAssignedTasks();
+        this.activated=employee.getActivated();
 
     }
 
@@ -48,6 +49,10 @@ public class EmployeeResponseDto {
     public int getEmployeeId() {
         return employeeId;
     }
+
+        public boolean getIsActivated(){
+        return activated;
+        }
 
     /**
      * Setters

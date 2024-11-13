@@ -24,6 +24,8 @@ import ca.mcgill.ecse321.gameshop.service.GameService;
 public class GameController {
     @Autowired
     private GameService gameService;
+    @Autowired
+    private CategoryRepository repo;
 
     @PostMapping("/games")
     public GameResponseDto createGame(@RequestBody GameRequestDto g) {

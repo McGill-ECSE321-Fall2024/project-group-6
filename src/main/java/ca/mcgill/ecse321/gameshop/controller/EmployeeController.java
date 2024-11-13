@@ -1,11 +1,12 @@
 package ca.mcgill.ecse321.gameshop.controller;
 
-
+/**
+ * @author Joseph
+ */
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,20 +29,20 @@ public class EmployeeController {
 
 
     /**
-     *
+     * Create an employee
      * @param employeeToCreate
      * @return
      */
     @PostMapping("/employees")
     public EmployeeResponseDto createEmployee(@RequestBody EmployeeRequestDto employeeToCreate) {
 
-        Employee employee = employeeService.addEmployee(employeeToCreate.getUsername(),employeeToCreate.getEmail(),employeeToCreate.getPassword(),employeeToCreate.getPhone());
+        Employee employee = employeeService.addEmployee(employeeToCreate.getUsername(),employeeToCreate.getEmail(),employeeToCreate.getPhone(),employeeToCreate.getPassword());
 
         return new EmployeeResponseDto(employee);
     }
 
     /**
-     *
+     * get employee
      * @param eid
      * @return
      */
@@ -52,6 +53,10 @@ public class EmployeeController {
         return new EmployeeResponseDto(employee);
     }
 
+    /**
+     * Get all employees
+     * @return
+     */
     @GetMapping("/employees")
     public EmployeeListDto getAllEmployees() {
         List<EmployeeResponseDto> employees = new ArrayList<>();
@@ -62,48 +67,37 @@ public class EmployeeController {
     }
 
     /**
-     *
+     * Deactivate employee
      * @param eid
      */
-    @DeleteMapping("/employees/{eid}")
-    public void deleteEmployee(@PathVariable int eid) {
-        employeeService.deactivateEmployee(eid);
-
+    @PutMapping("/employees/deactivate/{eid}")
+    public EmployeeResponseDto deactivateEmployee(@PathVariable int eid) {
+        Employee employee= employeeService.deactivateEmployee(eid);
+        return new EmployeeResponseDto(employee);
     }
 
     /**
-     *
+     * Update employee's information
      * @param eid
      * @param employee
      * @return
      */
     @PutMapping("/employees/{eid}")
     public EmployeeResponseDto updateEmployee(@PathVariable int eid, @RequestBody EmployeeRequestDto employee) {
-        Employee e = employeeService.updateEmployee(eid, employee.getUsername(),employee.getEmail(),employee.getPhone(),employee.getPassword());
+        Employee e = employeeService.updateEmployee(eid, employee.getUsername(),employee.getEmail(), employee.getPassword(), employee.getPhone());
 
         return new EmployeeResponseDto(e);
     }
 
     /**
-     *
+     * assign a task to an employee
      * @param eid
      * @param task
      * @return
      */
     @PutMapping("/employees/{eid}/tasks")
-    public EmployeeResponseDto assignTask(@PathVariable int eid, String task) {
+    public EmployeeResponseDto assignTask(@PathVariable int eid, @RequestBody String task) {
         Employee e = employeeService.assignTask(eid,task);
         return new EmployeeResponseDto(e);
-    }
-
-    /**
-     *
-     * @param eid
-     * @return
-     */
-    @GetMapping("/employees/{eid}/tasks")
-    public List <String> getAllTasks(@PathVariable int eid) {
-
-        return employeeService.getTasks(eid);
     }
 }

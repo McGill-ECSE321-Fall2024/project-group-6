@@ -138,6 +138,4 @@ public class CommandIntegrationTests {
         assertNotNull(response);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
-
-
 }

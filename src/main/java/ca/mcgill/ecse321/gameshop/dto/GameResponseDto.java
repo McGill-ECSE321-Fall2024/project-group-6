@@ -74,8 +74,8 @@ public class GameResponseDto {
     public float getPromotion() {
         return promotion;
     }
-
-    public List<Category> getCategories() {
-        return Collections.unmodifiableList(categories);
+    public List<Category> getCategories()
+    {
+        return categories;
     }
 }

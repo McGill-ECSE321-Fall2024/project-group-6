@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import ca.mcgill.ecse321.gameshop.exception.GameShopException;
 import ca.mcgill.ecse321.gameshop.model.Category;
 import ca.mcgill.ecse321.gameshop.model.Game;
+import ca.mcgill.ecse321.gameshop.repository.CategoryRepository;
 import ca.mcgill.ecse321.gameshop.repository.GameRepository;
 import jakarta.transaction.Transactional;
 
@@ -19,6 +20,8 @@ public class GameService {
 
     @Autowired
     private GameRepository gameRepository;
+    @Autowired
+    private CategoryRepository categoryRepo;
 
     @Transactional
     public Game addGame(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL, List<Category> allCategories) {
@@ -82,6 +85,7 @@ public class GameService {
         else if (allCategories == null){
             throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Game must have at least one category."));
         }
+
 
         game.setPrice(aPrice);
         game.setToBeRemoved(tobeRemoved);

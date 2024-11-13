@@ -1,6 +1,5 @@
 package ca.mcgill.ecse321.gameshop.dto;
 
-import java.util.Collections;
 import java.util.List;
 
 import ca.mcgill.ecse321.gameshop.model.Category;
@@ -9,17 +8,17 @@ import jakarta.validation.constraints.NotBlank;
 public class GameRequestDto {
 
     @NotBlank(message = "Name of the game can not be empty")
-    private String name;
+    public String name;
     @NotBlank(message = "Description of the game can not be empty")
-    private String description;
+    public String description;
     @NotBlank(message = "Price of the game can not be empty")
-    private float price;
+    public float price;
     @NotBlank(message = "Stock Quantity of the game can not be empty")
-    private int stockQuantity;
+    public int stockQuantity;
     @NotBlank(message = "PhotoUrl of the game can not be empty")
-    private String photoURL;
+    public String photoURL;
 
-    private boolean toBeAdded;
+    public boolean toBeAdded;
 
     private boolean toBeRemoved;
     private float promotion;
@@ -82,9 +81,7 @@ public class GameRequestDto {
         return promotion;
     }
     
-    public List<Category> getCategories()
-    {
-        List<Category> newCategories = Collections.unmodifiableList(categories);
-        return newCategories;
+    public List<Category> getCategories() {
+        return categories;
     }
 }

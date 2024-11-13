@@ -126,45 +126,11 @@ public class GameIntegrationTests {
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
-    @SuppressWarnings("null")
-    @Test
-    @Order(5)
-    public void testUpdateGameByValidId() {
-        // Arrange
-    String updatedName = "Fifa";
-    String updatedDescription = "Football game";
-    float updatedPrice = 30;
-    int updatedQuantity = 200;
-    String updatedPhoto = "football url";
-    boolean beAdded = false;
-    boolean beRemoved = false;
-    float updatedPromotion = 40;
-    List<Category> updatedCategories = new ArrayList<>(Arrays.asList(
-        new Category("Crime"),
-        new Category("Sports")
-        ));
-
-        GameRequestDto updatedGameDto = new GameRequestDto(updatedName, updatedDescription, updatedPrice, updatedQuantity, updatedPhoto, beAdded, beRemoved, updatedPromotion, updatedCategories);
-        String url = String.format("/games/%d", this.id);
-
-        // Act
-        client.put(url, updatedGameDto);
-    
-        // Fetch updated Game
-        ResponseEntity<GameResponseDto> response = client.getForEntity(url, GameResponseDto.class);
-
-        // Assert
-        assertNotNull(response);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(updatedName, response.getBody().getName());
-        assertEquals(updatedDescription, response.getBody().getDescription());
-        assertEquals(updatedPhoto, response.getBody().getPhotoURL());
-    }
-
-    @Test
-    @Order(6)
-    public void testUpdateGameByInvalidId() {
-        // Arrange
+        @SuppressWarnings("null")
+        @Test
+        @Order(5)
+        public void testUpdateGameByValidId() {
+                // Arrange
         String updatedName = "Fifa";
         String updatedDescription = "Football game";
         float updatedPrice = 30;
@@ -174,77 +140,111 @@ public class GameIntegrationTests {
         boolean beRemoved = false;
         float updatedPromotion = 40;
         List<Category> updatedCategories = new ArrayList<>(Arrays.asList(
-            new Category("Test"),
-            new Category("Dart")
-            ));
+                new Category("Crime"),
+                new Category("Sports")
+                ));
 
-        String url = String.format("/games/%d", -1);
-        GameRequestDto updatedGameDto = new GameRequestDto(updatedName, updatedDescription, updatedPrice, updatedQuantity, updatedPhoto, beAdded, beRemoved, updatedPromotion, updatedCategories);
+                GameRequestDto updatedGameDto = new GameRequestDto(updatedName, updatedDescription, updatedPrice, updatedQuantity, updatedPhoto, beAdded, beRemoved, updatedPromotion, updatedCategories);
+                String url = String.format("/games/%d", this.id);
 
-        // Act
-        ResponseEntity<GameResponseDto> response = client.exchange(url, HttpMethod.PUT, new HttpEntity<>(updatedGameDto), GameResponseDto.class);
+                // Act
+                client.put(url, updatedGameDto);
+        
+                // Fetch updated Game
+                ResponseEntity<GameResponseDto> response = client.getForEntity(url, GameResponseDto.class);
 
-        // Assert
-        assertNotNull(response);
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-    }
+                // Assert
+                assertNotNull(response);
+                assertEquals(HttpStatus.OK, response.getStatusCode());
+                assertEquals(updatedName, response.getBody().getName());
+                assertEquals(updatedDescription, response.getBody().getDescription());
+                assertEquals(updatedPhoto, response.getBody().getPhotoURL());
+        }
 
-    @Test
-    @Order(7)
-    public void testDeleteGameByValidId() {
+        @Test
+        @Order(6)
+        public void testUpdateGameByInvalidId() {
+                // Arrange
+                String updatedName = "Fifa";
+                String updatedDescription = "Football game";
+                float updatedPrice = 30;
+                int updatedQuantity = 200;
+                String updatedPhoto = "football url";
+                boolean beAdded = false;
+                boolean beRemoved = false;
+                float updatedPromotion = 40;
+                List<Category> updatedCategories = new ArrayList<>(Arrays.asList(
+                new Category("Test"),
+                new Category("Dart")
+                ));
+
+                String url = String.format("/games/%d", -1);
+                GameRequestDto updatedGameDto = new GameRequestDto(updatedName, updatedDescription, updatedPrice, updatedQuantity, updatedPhoto, beAdded, beRemoved, updatedPromotion, updatedCategories);
+
+                // Act
+                ResponseEntity<GameResponseDto> response = client.exchange(url, HttpMethod.PUT, new HttpEntity<>(updatedGameDto), GameResponseDto.class);
+
+                // Assert
+                assertNotNull(response);
+                assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        }
+
+        @Test
+        @Order(7)
+        public void testDeleteGameByValidId() {
+                // Arrange
+                String url = String.format("/games/%d", this.id);
+
+                // Act
+                ResponseEntity<Void> response = client.exchange(url, HttpMethod.DELETE, null, Void.class);
+
+                // Assert
+                assertNotNull(response);
+                assertEquals(HttpStatus.OK, response.getStatusCode());
+
+                // Verify that the Game was actually deleted by trying to fetch it again
+                ResponseEntity<GameResponseDto> deletedGame = client.getForEntity(url, GameResponseDto.class);
+                assertEquals(HttpStatus.NOT_FOUND, deletedGame.getStatusCode());
+        }
+
+        @Test
+        @Order(8)
+        public void testDeleteGameByInvalidId() {
         // Arrange
-        String url = String.format("/games/%d", this.id);
+        String url = String.format("/games/%d", -1);
 
         // Act
         ResponseEntity<Void> response = client.exchange(url, HttpMethod.DELETE, null, Void.class);
 
         // Assert
         assertNotNull(response);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-
-        // Verify that the Game was actually deleted by trying to fetch it again
-        ResponseEntity<GameResponseDto> deletedGame = client.getForEntity(url, GameResponseDto.class);
-        assertEquals(HttpStatus.NOT_FOUND, deletedGame.getStatusCode());
-    }
-
-    @Test
-    @Order(8)
-    public void testDeleteGameByInvalidId() {
-        // Arrange
-        String url = String.format("/games/%d", -1);
-
-        // Act
-        ResponseEntity<Void> response = client.exchange(url, HttpMethod.DELETE, null, Void.class);
-
-        // Assert
-        assertNotNull(response);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-    }
+        }
 
-    @Test
-    @Order(9)
-    public void testCreateInvalidGame() {
-        // Arrange
-        String updatedName = "Fifa";
-        String updatedDescription = "Football game";
-        float updatedPrice = 30;
-        int updatedQuantity = 200;
-        String updatedPhoto = "football url";
-        boolean beAdded = false;
-        boolean beRemoved = false;
-        float updatedPromotion = 40;
-        List<Category> updatedCategories = new ArrayList<>(Arrays.asList(
-            new Category("Hunting"),
-            new Category("Fake")
-            ));
+        @Test
+        @Order(9)
+        public void testCreateInvalidGame() {
+                // Arrange
+                String updatedName = "Fifa";
+                String updatedDescription = "Football game";
+                float updatedPrice = 30;
+                int updatedQuantity = 200;
+                String updatedPhoto = "football url";
+                boolean beAdded = false;
+                boolean beRemoved = false;
+                float updatedPromotion = 40;
+                List<Category> updatedCategories = new ArrayList<>(Arrays.asList(
+                        new Category("Hunting"),
+                        new Category("Fake")
+                ));
 
-        GameRequestDto invalidGameDto = new GameRequestDto(updatedName, updatedDescription, updatedPrice, updatedQuantity, updatedPhoto, beAdded, beRemoved, updatedPromotion, updatedCategories);
-    
-        // Act
-        ResponseEntity<String> response = client.postForEntity("/games", invalidGameDto, String.class);
-    
-        // Assert
-        assertNotNull(response);
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-    }
+                GameRequestDto invalidGameDto = new GameRequestDto(updatedName, updatedDescription, updatedPrice, updatedQuantity, updatedPhoto, beAdded, beRemoved, updatedPromotion, updatedCategories);
+        
+                // Act
+                ResponseEntity<String> response = client.postForEntity("/games", invalidGameDto, String.class);
+        
+                // Assert
+                assertNotNull(response);
+                assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        }
 }

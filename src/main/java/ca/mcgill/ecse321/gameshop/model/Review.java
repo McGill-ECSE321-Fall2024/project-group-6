@@ -55,15 +55,12 @@ public Review(){
     rating = aRating;
     comment = aComment;
     amountOfLikes = aAmountOfLikes;
-
-
   }
   public Review(StarRating aRating, String aComment, int aAmountOfLikes,  String aReply, Customer aCustomer, Manager aManager, Game aGame)
   {
     rating = aRating;
     comment = aComment;
     amountOfLikes = aAmountOfLikes;
-
     reply = aReply;
     boolean didAddCustomer = setCustomer(aCustomer);
     if (!didAddCustomer)
@@ -85,7 +82,6 @@ public Review(){
   //------------------------
   // INTERFACE
   //------------------------
-
   public boolean setRating(StarRating aRating)
   {
     boolean wasSet = false;
