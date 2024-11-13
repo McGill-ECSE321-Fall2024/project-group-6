@@ -68,9 +68,9 @@ Table 2 : Roles of each team member Deliverable 2: <br/>
 |             | Integration Tests for Payment and Review             | 1.5               |
 |             |                                                      |                   |
 | Marine      | RESTful API methods for Employee and Customer        | 3                 |
-|             | Software Quality Assurance Plan                      | 2.5               |
+|             | Software Quality Assurance Plan                      | 3.5               |
 |             | Recording the meeting minutes                        | 1                 |
-|             | Unit tests for Employee and Customer                 | 2                 |
+|             | Unit tests for Employee and Customer                 | 3                 |
 |             |                                                      |                   |
 | Maissa      | RESTful API methods for Command and Category         |                   |
 |             | Unit tests for Command, Category and Game            |                   |
