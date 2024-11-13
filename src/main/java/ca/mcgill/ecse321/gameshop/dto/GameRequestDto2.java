@@ -3,8 +3,9 @@ package ca.mcgill.ecse321.gameshop.dto;
 import ca.mcgill.ecse321.gameshop.model.*;
 import jakarta.validation.constraints.NotBlank;
 
-import java.util.Collections;
-import java.util.*;
+/**
+ * This method is here to help testing customer addition of a game.
+ */
 
 public class GameRequestDto2 {
 

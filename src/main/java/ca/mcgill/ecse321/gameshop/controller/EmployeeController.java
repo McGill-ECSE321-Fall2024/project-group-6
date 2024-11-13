@@ -3,14 +3,12 @@ package ca.mcgill.ecse321.gameshop.controller;
 
 import ca.mcgill.ecse321.gameshop.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.*;
-//import ca.mcgill.ecse321.eventregistration.dto.RegistrationResponseDto;
 import ca.mcgill.ecse321.gameshop.model.*;
 import java.util.*;
 import ca.mcgill.ecse321.gameshop.service.*;
@@ -24,7 +22,7 @@ public class EmployeeController {
 
 
     /**
-     *
+     * Create an employee
      * @param employeeToCreate
      * @return
      */
@@ -37,7 +35,7 @@ public class EmployeeController {
     }
 
     /**
-     *
+     * get employee
      * @param eid
      * @return
      */
@@ -47,6 +45,11 @@ public class EmployeeController {
 
         return new EmployeeResponseDto(employee);
     }
+
+    /**
+     * Get all employees
+     * @return
+     */
     @GetMapping("/employees")
     public EmployeeListDto getAllEmployees() {
         List<EmployeeResponseDto> employees = new ArrayList<>();
@@ -57,17 +60,17 @@ public class EmployeeController {
     }
 
     /**
-     *
+     * Deactivate employee
      * @param eid
      */
     @PutMapping("/employees/deactivate/{eid}")
-    public EmployeeResponseDto deleteEmployee(@PathVariable int eid) {
+    public EmployeeResponseDto deactivateEmployee(@PathVariable int eid) {
        Employee employee= employeeService.deactivateEmployee(eid);
         return new EmployeeResponseDto(employee);
     }
 
     /**
-     *
+     * Update employee's information
      * @param eid
      * @param employee
      * @return
@@ -80,7 +83,7 @@ public class EmployeeController {
     }
 
     /**
-     *
+     * assign a task to an employee
      * @param eid
      * @param task
      * @return
@@ -91,14 +94,6 @@ public class EmployeeController {
         return new EmployeeResponseDto(e);
     }
 
-   /*
-    @GetMapping("/employees/{eid}/tasks")
-    public List <String> getAllTasks(@PathVariable int eid) {
-
-        return employeeService.getTasks(eid);
-    }
-
-    */
 
 
 }

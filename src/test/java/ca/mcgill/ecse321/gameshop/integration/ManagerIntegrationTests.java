@@ -26,6 +26,7 @@ import ca.mcgill.ecse321.gameshop.dto.*;
 @TestMethodOrder(OrderAnnotation.class)
 @TestInstance(Lifecycle.PER_CLASS)
 public class ManagerIntegrationTests {
+    
     @Autowired
     private TestRestTemplate client;
     @Autowired
@@ -39,12 +40,18 @@ private PersonRepository personRepo;
     private static final String VALID_PHONE = "+1(514)1234567";
     private int id;
 
+    /**
+     * Clear all repositories after tests end
+     */
     @AfterAll
     public void clearDatabase() {
         repo.deleteAll();
         personRepo.deleteAll();
     }
 
+    /**
+     * Create a valid manager
+     */
     @SuppressWarnings("null")
     @Test
     @Order(1)
@@ -63,7 +70,9 @@ private PersonRepository personRepo;
         assertEquals(VALID_EMAIL, response.getBody().getEmail());
         assertEquals(VALID_PHONE, response.getBody().getPhone());
     }
-
+    /**
+     * get the created valid manager with a valid id
+     */
 
     @SuppressWarnings("null")
     @Test
@@ -83,7 +92,9 @@ private PersonRepository personRepo;
         assertEquals(VALID_EMAIL, response.getBody().getEmail());
         assertEquals(VALID_PHONE, response.getBody().getPhone());
     }
-
+    /**
+     * get the created valid manager with an invalid id
+     */
     @Test
     @Order(3)
     public void testGetManagerByInvalidId() {
@@ -97,7 +108,9 @@ private PersonRepository personRepo;
         assertNotNull(response);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
-
+    /**
+     * update the created valid manager with a valid id
+     */
     @SuppressWarnings("null")
     @Test
     @Order(4)
@@ -123,7 +136,9 @@ private PersonRepository personRepo;
         assertEquals(updatedName, response.getBody().getUsername());
         assertEquals(updatedPhone, response.getBody().getPhone());
     }
-
+    /**
+     * update the created valid manager with an invalid id
+     */
     @Test
     @Order(5)
     public void testUpdateManagerByInvalidId() {
@@ -143,7 +158,9 @@ private PersonRepository personRepo;
         assertNotNull(response);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
-
+    /**
+     * delete the created valid manager with a valid id
+     */
     @Test
     @Order(6)
     public void testDeleteManagerByValidId() {
@@ -161,7 +178,9 @@ private PersonRepository personRepo;
         ResponseEntity<ManagerResponseDto> deletedManager = client.getForEntity(url, ManagerResponseDto.class);
         assertEquals(HttpStatus.NOT_FOUND, deletedManager.getStatusCode());
     }
-
+    /**
+     * delete the created valid manager with an invalid id
+     */
     @Test
     @Order(7)
     public void testDeleteManagerByInvalidId() {
@@ -175,6 +194,9 @@ private PersonRepository personRepo;
         assertNotNull(response);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
+    /**
+     * invalid creation of a manager
+     */
     @Test
     @Order(8)
     public void testCreateManagerWithInvalidPassword() {
@@ -190,4 +212,6 @@ private PersonRepository personRepo;
         assertEquals(HttpStatus.LENGTH_REQUIRED, response.getStatusCode());
 
     }
+    
+     
 }

@@ -25,7 +25,11 @@ public class CustomerController {
     private GameService gameService;
 
 
-
+    /**
+     * Create a customer
+     * @param customerToCreate
+     * @return
+     */
     @PostMapping("/customers")
     public CustomerResponseDto createCustomer(@Valid @RequestBody CustomerRequestDto customerToCreate) {
     Person person= new Person(customerToCreate.getUsername(),customerToCreate.getEmail(),customerToCreate.getPassword(),customerToCreate.getPhone());
@@ -35,7 +39,7 @@ public class CustomerController {
     }
 
     /**
-     * Only for testing purposes
+     * Only for testing purposes, to add a game to a customers cart
      * @return
      */
     @PostMapping("/customers/test")
@@ -44,14 +48,23 @@ public class CustomerController {
         return new GameResponseDto(game);
     }
 
-
+    /**
+     * get Customer
+     * @param cid
+     * @return
+     */
 
     @GetMapping("/customers/{cid}")
-    public CustomerResponseDto findCustomerById(@PathVariable int cid) {
+    public CustomerResponseDto getCustomerById(@PathVariable int cid) {
         Customer customer=customerService.getCustomerByID(cid);
 
         return new CustomerResponseDto(customer);
     }
+
+    /**
+     * Get all customers
+     * @return
+     */
     @GetMapping("/customers")
     public CustomerListDto getAllCustomers() {
         List<CustomerResponseDto> customers = new ArrayList<>();
@@ -61,20 +74,35 @@ public class CustomerController {
         return new CustomerListDto(customers);
     }
 
-
+    /**
+     * Delete a customer
+     * @param cid
+     */
     @DeleteMapping("/customers/{cid}")
     public void deleteCustomer(@PathVariable int cid) {
         customerService.deleteCustomer(cid);
 
     }
 
-
+    /**
+     * update a customer's information
+     * @param cid
+     * @param customer
+     * @return
+     */
     @PutMapping("/customers/{cid}")
     public CustomerResponseDto updateCustomer(@PathVariable int cid, @RequestBody CustomerRequestDto customer) {
        Customer c = customerService.updateCustomer(cid, customer.getUsername(),customer.getEmail(),customer.getPassword(),customer.getPhone(),customer.getShippingAddress());
 
         return new CustomerResponseDto(c);
     }
+
+    /**
+     * Add a game to a customer's cart
+     * @param cid
+     * @param name
+     * @return
+     */
     @PutMapping("/customers/{cid}/cart")
     public CustomerResponseDto addGameToCart(@PathVariable int cid, @RequestBody String name) {
 
@@ -84,34 +112,38 @@ public class CustomerController {
         }
 
 
-/*
-    @GetMapping("/customers/{cid}/cart")
-    public List <Game> getAllGamesInCart(@PathVariable int cid) {
-
-        return customerService.getCustomerCart(cid);
-    }
-
- */
+    /**
+     * remove a game from customer's cart
+     * @param cid
+     * @param name
+     * @return
+     */
     @PutMapping("/customers/{cid}/cart/game")
-    public CustomerResponseDto DeleteGameFromCart(@PathVariable int cid, @RequestBody String name) {
+    public CustomerResponseDto removeGameFromCart(@PathVariable int cid, @RequestBody String name) {
         Game g = gameService.getGameByName(name);
         Customer c = customerService.deleteGameFromCustomerCart(cid, g);
         return new CustomerResponseDto(c);
     }
+
+    /**
+     * Add a game to a customer's wishlist
+     * @param cid
+     * @param name
+     * @return
+     */
     @PutMapping("/customers/{cid}/wishlist")
     public CustomerResponseDto addGameToWishlist(@PathVariable int cid, @RequestBody String name) {
         Game g = gameService.getGameByName(name);
         Customer c = customerService.addGameToCustomerWishList(cid, g);
         return new CustomerResponseDto(c);
     }
-/*
-    @GetMapping("/customers/{cid}/wishlist")
-    public List <Game> getAllGamesInWishlist(@PathVariable int cid) {
 
-        return customerService.getCustomerWishlist(cid);
-    }
-
- */
+    /**
+     * Remove a game from a customer wishlist
+     * @param cid
+     * @param name
+     * @return
+     */
     @PutMapping("/customers/{cid}/wishlist/game")
     public CustomerResponseDto DeleteGameFromWishlist(@PathVariable int cid, @RequestBody String name) {
         Game g = gameService.getGameByName(name);

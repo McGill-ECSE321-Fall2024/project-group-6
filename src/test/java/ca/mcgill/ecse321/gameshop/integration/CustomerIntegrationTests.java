@@ -1,9 +1,6 @@
 package ca.mcgill.ecse321.gameshop.integration;
 
-import ca.mcgill.ecse321.gameshop.model.Category;
-import ca.mcgill.ecse321.gameshop.model.Employee;
-import ca.mcgill.ecse321.gameshop.model.*;
-import ca.mcgill.ecse321.gameshop.model.Manager;
+
 import org.junit.jupiter.api.AfterAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -24,18 +21,16 @@ import org.springframework.http.ResponseEntity;
 import ca.mcgill.ecse321.gameshop.repository.*;
 import ca.mcgill.ecse321.gameshop.GameshopApplication;
 import ca.mcgill.ecse321.gameshop.dto.*;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+
 
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = GameshopApplication.class)
 @TestMethodOrder(OrderAnnotation.class)
 @TestInstance(Lifecycle.PER_CLASS)
 public class CustomerIntegrationTests {
+    
     @Autowired
     private TestRestTemplate client;
     @Autowired
@@ -54,21 +49,24 @@ public class CustomerIntegrationTests {
 
     private int id;
 
+    /**
+     * Clear all used repositories after end of tests
+     */
     @AfterAll
     public void clearDatabase() {
         repo.deleteAll();
         personRepo.deleteAll();
-        gameRepo.deleteAll();
+        gameRepo.deleteAll(); //to be used for game addition into cart
     }
 
+    /**
+     * Create a valid customer
+     */
     @SuppressWarnings("null")
     @Test
     @Order(1)
     public void testCreateValidCustomer() {
         // Arrange
-
-
-        //aCreator, Category... allCategories
 
         CustomerRequestDto request = new CustomerRequestDto(VALID_ADDRESS, VALID_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, null, null);
 
@@ -86,7 +84,9 @@ public class CustomerIntegrationTests {
         assertEquals(VALID_ADDRESS, response.getBody().getShippingAddress());
 
     }
-
+    /**
+     * Create a valid game to later add to the customer cart (part of the scenario)
+     */
     @Test
     @Order(2)
     public void testCreateValidGame() {
@@ -107,7 +107,9 @@ public class CustomerIntegrationTests {
 
     }
 
-
+    /**
+     * get the created customer by a valid id
+     */
     @SuppressWarnings("null")
     @Test
     @Order(3)
@@ -127,7 +129,9 @@ public class CustomerIntegrationTests {
         assertEquals(VALID_PHONE, response.getBody().getPhone());
     }
 
-
+    /**
+     * get the created customer by an invalid id
+     */
     @Test
     @Order(4)
     public void testGetCustomerByInvalidId() {
@@ -142,7 +146,9 @@ public class CustomerIntegrationTests {
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
-
+    /**
+     * update the created customer by a valid id
+     */
     @SuppressWarnings("null")
     @Test
     @Order(5)
@@ -174,7 +180,9 @@ public class CustomerIntegrationTests {
 
     }
 
-
+    /**
+     * update the created customer by an invalid id
+     */
     @Test
     @Order(6)
     public void testUpdateCustomerByInvalidId() {
@@ -195,7 +203,9 @@ public class CustomerIntegrationTests {
         assertNotNull(response);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
-
+    /**
+     * Create a new customer, then get all customers (2 in total)
+     */
     @Test
     @Order(7)
     public void testGetAllCustomers() {
@@ -228,12 +238,14 @@ public class CustomerIntegrationTests {
         assertEquals(email2, customers.get(1).getEmail());
 
     }
-
+    /**
+     * add game to the first customer's cart
+     */
     @Test
     @Order(8)
     public void testAddGameToCustomerCart() {
         // Arrange
-        // Arrange
+
         String url = String.format("/customers/%d/cart", this.id);
         String gameToAdd = "FC 24";
         HttpHeaders headers = new HttpHeaders();
@@ -243,12 +255,14 @@ public class CustomerIntegrationTests {
         // Act
         ResponseEntity<CustomerResponseDto> response = client.exchange(url, HttpMethod.PUT, entity, CustomerResponseDto.class);
 
-
+        //Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(gameToAdd, response.getBody().getCart().get(0).getName());
 
     }
-
+    /**
+     * add game to the first customer's cart with invalid id
+     */
     @Test
     @Order(9)
     public void testAddGameToCustomerCartWithInvalidId() {
@@ -267,7 +281,9 @@ public class CustomerIntegrationTests {
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
 
     }
-
+    /**
+     * add game to the first customer's wishlist with valid id
+     */
     @Test
     @Order(10)
     public void testAddGameToCustomerWishlist() {
@@ -286,7 +302,9 @@ public class CustomerIntegrationTests {
         assertEquals(gameToAdd, response.getBody().getWishlist().get(0).getName());
 
     }
-
+    /**
+     * add game to the first customer's wishlist with invalid id
+     */
     @Test
     @Order(11)
     public void testAddGameToCustomerWishlistWithInvalidId() {
@@ -305,7 +323,9 @@ public class CustomerIntegrationTests {
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
 
     }
-
+    /**
+     * remove game to the first customer's cart with valid id
+     */
     @Test
     @Order(12)
     public void testDeleteGameFromCustomerCart() {
@@ -325,6 +345,9 @@ public class CustomerIntegrationTests {
         assertEquals(0, response.getBody().getCart().size());
 
     }
+    /**
+     * remove game to the first customer's cart with invalid id
+     */
     @Test
     @Order(13)
     public void testDeleteGameFromCustomerCartWithInvalidId() {
@@ -343,7 +366,9 @@ public class CustomerIntegrationTests {
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
 
     }
-
+    /**
+     * remove game to the first customer's wishlist with valid id
+     */
     @Test
     @Order(14)
     public void testDeleteGameFromCustomerWishlist() {
@@ -363,6 +388,9 @@ public class CustomerIntegrationTests {
         assertEquals(0, response.getBody().getWishlist().size());
 
     }
+    /**
+     * remove game to the first customer's wishlist with invalid id
+     */
     @Test
     @Order(15)
     public void testDeleteGameTFromCustomerWishlistWithInvalidId() {
@@ -381,6 +409,9 @@ public class CustomerIntegrationTests {
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
 
     }
+    /**
+     * delete the first customer with valid a id
+     */
     @Test
     @Order(16)
     public void testDeleteCustomerByValidId() {
@@ -398,7 +429,9 @@ public class CustomerIntegrationTests {
         ResponseEntity<CustomerResponseDto> deletedCustomer = client.getForEntity(url, CustomerResponseDto.class);
         assertEquals(HttpStatus.NOT_FOUND, deletedCustomer.getStatusCode());
     }
-
+    /**
+     * delete the first customer with an invalid id
+     */
     @Test
     @Order(17)
     public void testDeleteCustomerByInvalidId() {
@@ -412,6 +445,9 @@ public class CustomerIntegrationTests {
         assertNotNull(response);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
+    /**
+     * Invalid creation of a customer
+     */
     @Test
     @Order(18)
     public void testCreateCustomerWithInvalidPassword() {
@@ -427,6 +463,8 @@ public class CustomerIntegrationTests {
         assertEquals(HttpStatus.LENGTH_REQUIRED, response.getStatusCode());
 
     }
+    
+     
 
 
 }

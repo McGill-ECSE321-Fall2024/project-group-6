@@ -6,8 +6,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.sql.Date;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -42,10 +40,13 @@ public class EmployeeServiceTests {
     private static final int ID= 10;
 
     //Person person= new Person(VALID_NAME, VALID_EMAIL,VALID_PASSWORD, VALID_PHONE);
+
+    /**
+     * Test valid creation of an employee
+     */
     @Test
     public void testCreateValidEmployee() {
         // Arrange
-        // Whenever mockRepo.save(p) is called, return p
         when(mockRepo.save(any(Employee.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
         when(repo.save(any(Person.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
 
@@ -59,6 +60,9 @@ public class EmployeeServiceTests {
         assertEquals(VALID_PHONE, createdEmployee.getPerson().getPhone());
         verify(mockRepo, times(1)).save(createdEmployee);
     }
+    /**
+     * Test creation of an employee with invalid phone
+     */
     @Test
     public void testCreateEmployeeWithInvalidPhone() {
         // Arrange
@@ -72,6 +76,9 @@ public class EmployeeServiceTests {
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Phone number can not be null", ex.getMessage());
     }
+    /**
+     * Test creation of an employee with invalid username
+     */
     @Test
     public void testCreateEmployeeWithInvalidUsername() {
 
@@ -84,23 +91,22 @@ public class EmployeeServiceTests {
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Username can not be null", ex.getMessage());
     }
-
+    /**
+     * Test creation of an employee with invalid email
+     */
     @Test
     public void testCreateEmployeeWithInvalidEmail() {
-        // Arrange
-        // Whenever mockRepo.save(p) is called, return p
-
-
 
         GameShopException ex = assertThrows(GameShopException.class,
                 () -> service.addEmployee(VALID_NAME, null,VALID_PHONE, VALID_PASSWORD));
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Email can not be null", ex.getMessage());
     }
+    /**
+     * Test creation of an employee with invalid password length
+     */
     @Test
     public void testCreateEmployeeWithInvalidPassword() {
-        // Arrange
-        // Whenever mockRepo.save(p) is called, return p
 
         String email="qrstuvwx@gmail.com";
 
@@ -111,8 +117,9 @@ public class EmployeeServiceTests {
         assertEquals("Password needs to be at least 10 characters long", ex.getMessage());
     }
 
-
-
+    /**
+     * Test get employee with valid id
+     */
     @Test
     public void testGetEmployeeByValidId() {
         // Arrange
@@ -132,18 +139,20 @@ public class EmployeeServiceTests {
         assertEquals(VALID_PHONE, employee.getPerson().getPhone());
         assertEquals(true, employee.getActivated());
     }
-
+    /**
+     * Test get employee with invalid id
+     */
     @Test
     public void testReadEmployeeByInvalidId() {
-        // Arrange
-        // Act
-        // Assert
+
         GameShopException ex = assertThrows(GameShopException.class,
                 () -> service.getEmployeeById(ID));
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Employee with ID " + ID + " does not exist.", ex.getMessage());
     }
-
+    /**
+     * Update employee with valid info and id
+     */
     @Test
     public void testUpdateEmployeeByValidId() {
         // Arrange
@@ -181,7 +190,9 @@ public class EmployeeServiceTests {
         verify(mockRepo, times(1)).save(updatedEmployee);
     }
 
-
+    /**
+     * Update employee with invalid password length
+     */
     @Test
     public void testUpdateEmployeeByInvalidPasswordLength() {
 
@@ -205,6 +216,9 @@ public class EmployeeServiceTests {
         assertEquals(HttpStatus.LENGTH_REQUIRED, ex.getStatus());
         assertEquals("Password needs to be at least 10 characters long", ex.getMessage());
     }
+    /**
+     * Update employee with invalid username
+     */
     @Test
     public void testUpdateEmployeeByNullUsername() {
         String updatedName = null;
@@ -227,6 +241,9 @@ public class EmployeeServiceTests {
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Username can not be null", ex.getMessage());
     }
+    /**
+     * Update employee with invalid phone number
+     */
     @Test
     public void testUpdateEmployeeByNullPhone() {
         // Arrange
@@ -250,6 +267,9 @@ public class EmployeeServiceTests {
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Phone number can not be null", ex.getMessage());
     }
+    /**
+     * Update employee with invalid email
+     */
     @Test
     public void testUpdateEmployeeByNullEmail() {
         // Arrange
@@ -273,6 +293,9 @@ public class EmployeeServiceTests {
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Email can not be null", ex.getMessage());
     }
+    /**
+     * Update employee with invalid id
+     */
     @Test
     public void testUpdateEmployeeByInvalidId() {
 
@@ -282,6 +305,9 @@ public class EmployeeServiceTests {
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Employee with ID " + ID + " does not exist.", ex.getMessage());
     }
+    /**
+     * test successfully get all employees
+     */
 
     @Test
     public void testGetAllEmployees() {
@@ -305,6 +331,9 @@ public class EmployeeServiceTests {
         assertEquals(VALID_NAME, listOfEmployees.get(0).getPerson().getUsername());
         assertEquals("Rodney", listOfEmployees.get(1).getPerson().getUsername());
     }
+    /**
+     * test successfully delete employee with valid id
+     */
 
     @Test
     public void testDeleteEmployeeByValidId() {
@@ -322,7 +351,9 @@ public class EmployeeServiceTests {
 
 
     }
-
+    /**
+     * test unsuccessfully delete employee with invalid id
+     */
     @Test
     public void testDeleteEmployeeByInvalidId() {
 
@@ -331,6 +362,9 @@ public class EmployeeServiceTests {
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Employee with ID " + ID + " does not exist.", ex.getMessage());
     }
+    /**
+     * test successfully assign a task to an employee
+     */
     @Test
     public void testAssignEmployeeWithValidIdAValidTask() {
         String updatedName = "UpdatedBob";
@@ -363,6 +397,9 @@ public class EmployeeServiceTests {
 
         verify(mockRepo, times(1)).save(updatedEmployeeList);
     }
+    /**
+     * test  assign a task to a non-existent employee (invalid id)
+     */
     @Test
     public void testAssignEmployeeWithInvalidIdATask() {
         GameShopException ex = assertThrows(GameShopException.class,
@@ -370,6 +407,9 @@ public class EmployeeServiceTests {
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Employee with ID " + ID + " does not exist.", ex.getMessage());
     }
+    /**
+     * test  assign invalid (null) task to employee
+     */
     @Test
     public void testAssignEmployeeWithInvalidTask() {
 
@@ -380,55 +420,13 @@ public class EmployeeServiceTests {
         Employee exstingEmployee=new Employee(aPerson,true);
 
         when(mockRepo.findEmployeeByRoleId(ID)).thenReturn(exstingEmployee);
-        // Mock the save method to return the updated person when save() is called
-        /*
-        when(mockRepo.save(any(Employee.class))).thenAnswer((InvocationOnMock iom) -> {
-            Employee updatedEmployee = iom.getArgument(0);
-            updatedEmployee.getPerson().setUsername(updatedName);
-            updatedEmployee.getPerson().setEmail(updatedEmail);
-            updatedEmployee.getPerson().setPassword(updatedPassword);
-            updatedEmployee.getPerson().setPhone(updatedPhone);
-            return updatedEmployee;
-        });
 
-         */
 
         GameShopException ex = assertThrows(GameShopException.class,
                 () -> service.assignTask(ID, null));
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Task can not be null", ex.getMessage());
     }
-    /*
-    @Test
-    public void testGetAllTasksOfEmployeeWithValidId() {
-
-        String email = "q@gmail.com";
-        Person aPerson = new Person(VALID_NAME, email, VALID_PASSWORD, VALID_PHONE);
-        List <String> tasks= new ArrayList<>();
-        tasks.add("Do XYZ");
-        tasks.add("Do ABC");
-        Employee exstingEmployee = new Employee(aPerson, tasks,true);
-
-        when(mockRepo.findEmployeeByRoleId(ID)).thenReturn(exstingEmployee);
-        // Mock the save method to return the updated person when save() is called
-
-        List<String> tasksFromDB= (List<String>) service.getTasks(ID);
-        // Assert
-        assertNotNull(tasksFromDB);
-        assertEquals(2, tasksFromDB.size());
-        assertEquals("Do XYZ",tasksFromDB.getFirst());
-        assertEquals("Do ABC", tasksFromDB.getLast());
-
-    }
-    @Test
-    public void testGetAllTasksOfEmployeeWithInvalidId() {
-        GameShopException ex = assertThrows(GameShopException.class,
-                () -> service.assignTask(ID,"Do XYZ"));
-        assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
-        assertEquals("Employee with ID " + ID + " does not exist.", ex.getMessage());
-    }
-
-     */
 
 
 }

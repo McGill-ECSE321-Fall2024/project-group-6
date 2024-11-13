@@ -16,7 +16,6 @@ import java.util.List;
 
 @Service
 public class CustomerService {
-    // Inject CustomerRepository to handle database operations
     @Autowired
     private CustomerRepository customerRepo;
     @Autowired
@@ -24,9 +23,13 @@ public class CustomerService {
     @Autowired
     private GameRepository gameRepo;
 
+    /**
+     * Service method to create a customer
+     * @param aPerson
+     * @param aShippingAddress
+     * @return
+     */
 
-
-    // Create new customer and save it in the repository
     @Transactional
     public Customer createCustomer(Person aPerson, String aShippingAddress) {
         Customer c = new Customer(aPerson, aShippingAddress);
@@ -51,12 +54,19 @@ public class CustomerService {
         return customerRepo.save(c);
     }
 
-    // Retrieve all customers from repository
+    /**
+     * Service method to get all customers
+     * @return
+     */
     public Iterable<Customer> getAllCustomers() {
         return customerRepo.findAll();
     }
 
-    // Find a customer by their ID
+    /**
+     * Service method to find customer by id
+     * @param id
+     * @return
+     */
     @Transactional
     public Customer getCustomerByID(int id) {
         Customer c = customerRepo.findCustomerByRoleId(id);
@@ -69,7 +79,16 @@ public class CustomerService {
         return c;
     }
 
-    // Update an existing customer by their ID
+    /**
+     * Service method to update customer.
+     * @param id
+     * @param aUsername
+     * @param aEmail
+     * @param aPassword
+     * @param aPhone
+     * @param aShippingAddress
+     * @return
+     */
     @Transactional
     public Customer updateCustomer(int id, String aUsername, String aEmail, String aPassword, String aPhone, String aShippingAddress) {
         Customer c = customerRepo.findCustomerByRoleId(id);
@@ -106,7 +125,10 @@ public class CustomerService {
         return customerRepo.save(c);
     }
 
-    // Delete a customer by their ID
+    /**
+     * Service method to delete customer
+     * @param id
+     */
     @Transactional
     public void deleteCustomer(int id) {
         Customer c = customerRepo.findCustomerByRoleId(id);
@@ -117,6 +139,13 @@ public class CustomerService {
 
         customerRepo.delete(c);
     }
+
+    /**
+     * Service method to add game to customer cart
+     * @param id
+     * @param game
+     * @return
+     */
     @Transactional
     public Customer addGameToCustomerCart(int id, Game game) {
         Customer customerFromDB= customerRepo.findCustomerByRoleId(id);
@@ -137,6 +166,13 @@ public class CustomerService {
         customerFromDB.setCart(gamesCart);
         return customerRepo.save(customerFromDB);
     }
+
+    /**
+     * Service method to remove game from customer cart
+     * @param id
+     * @param game
+     * @return
+     */
     @Transactional
     public Customer deleteGameFromCustomerCart(int id,Game game) {
         Customer customerFromDB= customerRepo.findCustomerByRoleId(id);
@@ -156,6 +192,13 @@ public class CustomerService {
 
         return customerRepo.save(customerFromDB);
     }
+
+    /**
+     * Service method to add game to customer wishlist
+     * @param id
+     * @param game
+     * @return
+     */
     @Transactional
     public Customer addGameToCustomerWishList(int id, Game game) {
         Customer customerFromDB= customerRepo.findCustomerByRoleId(id);
@@ -175,6 +218,13 @@ public class CustomerService {
 
         return customerRepo.save(customerFromDB);
     }
+
+    /**
+     * Service method to remove a game from a customer wishlist
+     * @param id
+     * @param game
+     * @return
+     */
     @Transactional
     public Customer deleteGameFromCustomerWishList(int id,Game game) {
         Customer customerFromDB= customerRepo.findCustomerByRoleId(id);
@@ -196,6 +246,9 @@ public class CustomerService {
 
         return customerRepo.save(customerFromDB);
     }
+/*
+
+
     @Transactional
     public List<Game> getCustomerCart(int id) {
         Customer customerFromDB= customerRepo.findCustomerByRoleId(id);
@@ -205,6 +258,8 @@ public class CustomerService {
 
         return customerFromDB.getCart();
     }
+
+
     @Transactional
     public List<Game> getCustomerWishlist(int id) {
         Customer customerFromDB= customerRepo.findCustomerByRoleId(id);
@@ -214,9 +269,10 @@ public class CustomerService {
 
         return customerFromDB.getWishlist();
     }
+    */
 
     /**
-     * This was added for integration testing purposes, nothing else
+     * This was added for integration testing purposes, to be able to add a game
      * @param aName
      * @param aDescription
      * @param aPrice

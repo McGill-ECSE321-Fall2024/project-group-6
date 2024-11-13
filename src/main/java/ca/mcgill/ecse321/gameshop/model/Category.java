@@ -5,6 +5,7 @@ package ca.mcgill.ecse321.gameshop.model;
 import java.util.*;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 /**
  * Category class
@@ -26,7 +27,7 @@ public class Category
   private int categoryId;
 
   //Category Associations
-  @ManyToMany
+@ManyToMany
   private List<Game> games;
 
   //------------------------

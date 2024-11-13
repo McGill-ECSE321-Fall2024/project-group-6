@@ -21,15 +21,16 @@ import ca.mcgill.ecse321.gameshop.repository.*;
 import ca.mcgill.ecse321.gameshop.GameshopApplication;
 import ca.mcgill.ecse321.gameshop.dto.*;
 
-import java.util.ArrayList;
+
 import java.util.List;
-import java.util.Objects;
+
 
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = GameshopApplication.class)
 @TestMethodOrder(OrderAnnotation.class)
 @TestInstance(Lifecycle.PER_CLASS)
 public class EmployeeIntegrationTests {
+    
     @Autowired
     private TestRestTemplate client;
     @Autowired
@@ -43,12 +44,18 @@ public class EmployeeIntegrationTests {
     private static final String VALID_PHONE = "+1(514)1234567";
     private int id;
 
+    /**
+     * clear all repositories after all tests
+     */
     @AfterAll
     public void clearDatabase() {
         repo.deleteAll();
         personRepo.deleteAll();
     }
 
+    /**
+     * Valid creation of an employee
+     */
     @SuppressWarnings("null")
     @Test
     @Order(1)
@@ -69,7 +76,9 @@ public class EmployeeIntegrationTests {
         assertEquals(VALID_PHONE, response.getBody().getPhone());
     }
 
-
+    /**
+     * Get the created employee with a valid id
+     */
     @SuppressWarnings("null")
     @Test
     @Order(2)
@@ -88,7 +97,9 @@ public class EmployeeIntegrationTests {
         assertEquals(VALID_EMAIL, response.getBody().getEmail());
         assertEquals(VALID_PHONE, response.getBody().getPhone());
     }
-
+    /**
+     * Get the created employee with an invalid id
+     */
     @Test
     @Order(3)
     public void testGetEmployeeByInvalidId() {
@@ -103,7 +114,9 @@ public class EmployeeIntegrationTests {
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
-
+    /**
+     * update the created employee with a valid id
+     */
     @Test
     @Order(4)
     public void testUpdateEmployeeByValidId() {
@@ -130,7 +143,9 @@ public class EmployeeIntegrationTests {
         assertEquals(updatedPhone, response.getBody().getPhone());
 
     }
-
+    /**
+     * update the created employee with an invalid id
+     */
     @Test
     @Order(5)
     public void testUpdateEmployeeByInvalidId() {
@@ -150,6 +165,9 @@ public class EmployeeIntegrationTests {
         assertNotNull(response);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
+    /**
+     * add a task to the created employee
+     */
     @Test
     @Order(6)
     public void testAddTaskToEmployee() {
@@ -167,6 +185,9 @@ public class EmployeeIntegrationTests {
         assertEquals(taskToAdd,response.getBody().getAssignedTasks().get(0));
 
     }
+    /**
+     * add a task to the created employee with an invalid id
+     */
     @Test
     @Order(7)
     public void testAddTaskToEmployeeWithInvalidId() {
@@ -179,10 +200,13 @@ public class EmployeeIntegrationTests {
 
         // Act
         ResponseEntity<EmployeeResponseDto> response = client.exchange(url, HttpMethod.PUT, entity, EmployeeResponseDto.class);
-
+        //Assert
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
+    /**
+     * Create another employee and get all employee (there are only 2 employees).
+     */
     @Test
     @Order(8)
     public void testGetAllEmployees() {
@@ -212,7 +236,9 @@ public class EmployeeIntegrationTests {
         assertEquals(email2, employees.get(1).getEmail());
 
     }
-
+    /**
+     * deactivate the created employee with a valid id
+     */
     @Test
     @Order(9)
     public void testDeactivateEmployeeByValidId() {
@@ -230,7 +256,9 @@ public class EmployeeIntegrationTests {
         ResponseEntity<EmployeeResponseDto> deactivatedEmployee = client.getForEntity(url2, EmployeeResponseDto.class);
         assertEquals(false, deactivatedEmployee.getBody().getIsActivated());
     }
-
+    /**
+     * deactivate the created employee with an invalid id
+     */
     @Test
     @Order(10)
     public void testDeactivateEmployeeByInvalidId() {
@@ -244,7 +272,9 @@ public class EmployeeIntegrationTests {
         assertNotNull(response);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
-
+    /**
+     * invalid creation of an employee
+     */
     @Test
     @Order(11)
     public void testCreateEmployeeWithInvalidPassword() {
@@ -260,4 +290,6 @@ public class EmployeeIntegrationTests {
         assertEquals(HttpStatus.LENGTH_REQUIRED, response.getStatusCode());
 
     }
+    
+     
 }

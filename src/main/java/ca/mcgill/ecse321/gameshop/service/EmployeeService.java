@@ -3,8 +3,6 @@ package ca.mcgill.ecse321.gameshop.service;
 import ca.mcgill.ecse321.gameshop.exception.GameShopException;
 import ca.mcgill.ecse321.gameshop.model.*;
 import ca.mcgill.ecse321.gameshop.model.Employee;
-import ca.mcgill.ecse321.gameshop.model.Game;
-import ca.mcgill.ecse321.gameshop.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -26,7 +24,11 @@ public class EmployeeService {
     private PersonRepository personrepo;
 
 
-    // Find employee by ID
+    /**
+     * Service method to get employee by id
+     * @param id
+     * @return
+     */
     @Transactional
     public Employee getEmployeeById(int id) {
 
@@ -37,7 +39,10 @@ public class EmployeeService {
         return employee;
     }
 
-    // Retrieve all employees from repository
+    /**
+     * Service method to get all employees
+     * @return
+     */
     @Transactional
     public Iterable<Employee> getAllEmployees() {
         return  repo.findAll();
@@ -81,6 +86,13 @@ public class EmployeeService {
         employeeFromDB.setActivated(false);
         return repo.save(employeeFromDB);
     }
+
+    /**
+     * Service method to assign a task to an employee
+     * @param id
+     * @param task
+     * @return
+     */
     @Transactional
     public Employee assignTask(int id,String task) {
         Employee employeeFromDB= repo.findEmployeeByRoleId(id);
@@ -99,6 +111,16 @@ public class EmployeeService {
 
         return repo.save(employeeFromDB);
     }
+
+    /**
+     * Service method to update an employee's information
+     * @param id
+     * @param aUsername
+     * @param aEmail
+     * @param aPassword
+     * @param aPhone
+     * @return
+     */
     @Transactional
     public Employee updateEmployee(int id, String aUsername, String aEmail, String aPassword, String aPhone) {
         Employee employee = repo.findEmployeeByRoleId(id);
@@ -128,18 +150,6 @@ public class EmployeeService {
 
         return repo.save(employee);
     }
-
-   /*
-    @Transactional
-    public List<String> getTasks(int id) {
-        Employee employeeFromDB= repo.findEmployeeByRoleId(id);
-        if (employeeFromDB== null) {
-            throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Employee with ID " + id + " does not exist."));
-        }
-        return employeeFromDB.getAssignedTasks();
-    }
-
-    */
 
 
 

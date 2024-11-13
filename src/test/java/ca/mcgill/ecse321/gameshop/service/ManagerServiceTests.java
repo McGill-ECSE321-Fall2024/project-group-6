@@ -6,8 +6,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.sql.Date;
-import java.time.LocalDate;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +39,9 @@ public class ManagerServiceTests {
     private static final String VALID_PHONE ="123456";
     private static final int ID= 10;
 
-    //Person person= new Person(VALID_NAME, VALID_EMAIL,VALID_PASSWORD, VALID_PHONE);
+    /**
+     * test valid creation of manager
+     */
     @Test
     public void testCreateValidManager() {
         // Arrange
@@ -60,6 +61,9 @@ public class ManagerServiceTests {
         assertEquals(VALID_PHONE, createdManager.getPerson().getPhone());
         verify(mockRepo, times(1)).save(createdManager);
     }
+    /**
+     * test invalid creation of more than one manager (only one manager can exist)
+     */
     @Test
     public void testCreateMoreThanOneManager() {
         // Arrange
@@ -89,6 +93,9 @@ public class ManagerServiceTests {
         assertEquals(HttpStatus.UNAUTHORIZED, ex.getStatus());
         assertEquals("Manager already exists", ex.getMessage());
     }
+    /**
+     * test creation of manager with invalid phone number
+     */
     @Test
     public void testCreateManagerWithInvalidPhone() {
         // Arrange
@@ -103,6 +110,9 @@ public class ManagerServiceTests {
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Phone number can not be null", ex.getMessage());
     }
+    /**
+     * test creation of manager with invalid username
+     */
     @Test
     public void testCreateManagerWithInvalidUsername() {
 
@@ -115,7 +125,9 @@ public class ManagerServiceTests {
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Username can not be null", ex.getMessage());
     }
-
+    /**
+     * test creation of manager with invalid email
+     */
     @Test
     public void testCreateManagerWithInvalidEmail() {
         // Arrange
@@ -128,6 +140,9 @@ public class ManagerServiceTests {
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Email can not be null", ex.getMessage());
     }
+    /**
+     * test creation of manager with invalid password length
+     */
     @Test
     public void testCreateManagerWithInvalidPassword() {
         // Arrange
@@ -143,7 +158,9 @@ public class ManagerServiceTests {
         assertEquals("Password needs to be at least 10 characters long", ex.getMessage());
     }
 
-
+    /**
+     * test get manager with valid id
+     */
 
     @Test
     public void testGetManagerByValidId() {
@@ -162,9 +179,11 @@ public class ManagerServiceTests {
         assertEquals(VALID_PASSWORD,manager.getPerson().getPassword());
         assertEquals(VALID_PHONE, manager.getPerson().getPhone());
     }
-
+    /**
+     * test get manager with invalid id
+     */
     @Test
-    public void testReadManagerByInvalidId() {
+    public void testGetManagerByInvalidId() {
         // Arrange
         // Act
         // Assert
@@ -173,7 +192,9 @@ public class ManagerServiceTests {
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Manager with ID " + ID + " does not exist.", ex.getMessage());
     }
-
+    /**
+     * test update manager with valid id and info
+     */
     @Test
     public void testUpdateManagerByValidId() {
         // Arrange
@@ -210,7 +231,9 @@ public class ManagerServiceTests {
 
         verify(mockRepo, times(1)).save(updatedManager);
     }
-
+    /**
+     * test update manager with invalid password length
+     */
 
     @Test
     public void testUpdateManagerByInvalidPasswordLength() {
@@ -225,18 +248,7 @@ public class ManagerServiceTests {
         Manager existingManager=new Manager(aPerson);
 
         when(mockRepo.findManagerByRoleId(ID)).thenReturn(existingManager);
-        // Mock the save method to return the updated person when save() is called
-        /*
-        when(mockRepo.save(any(Manager.class))).thenAnswer((InvocationOnMock iom) -> {
-            Manager updatedManager = iom.getArgument(0);
-            updatedManager.getPerson().setUsername(updatedName);
-            updatedManager.getPerson().setEmail(updatedEmail);
-            updatedManager.getPerson().setPassword(updatedPassword);
-            updatedManager.getPerson().setPhone(updatedPhone);
-            return updatedManager;
-        });
 
-         */
 
 
         // Assert
@@ -245,6 +257,9 @@ public class ManagerServiceTests {
         assertEquals(HttpStatus.LENGTH_REQUIRED, ex.getStatus());
         assertEquals("Password needs to be at least 10 characters long", ex.getMessage());
     }
+    /**
+     * test update manager with invalid username
+     */
     @Test
     public void testUpdateManagerByNullUsername() {
         // Arrange
@@ -258,18 +273,7 @@ public class ManagerServiceTests {
         Manager existingManager=new Manager(aPerson);
 
         when(mockRepo.findManagerByRoleId(ID)).thenReturn(existingManager);
-        // Mock the save method to return the updated person when save() is called
-        /*
-        when(mockRepo.save(any(Manager.class))).thenAnswer((InvocationOnMock iom) -> {
-            Manager updatedManager = iom.getArgument(0);
-            updatedManager.getPerson().setUsername(updatedName);
-            updatedManager.getPerson().setEmail(updatedEmail);
-            updatedManager.getPerson().setPassword(updatedPassword);
-            updatedManager.getPerson().setPhone(updatedPhone);
-            return updatedManager;
-        });
 
-         */
 
 
         // Assert
@@ -278,6 +282,9 @@ public class ManagerServiceTests {
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Username can not be null", ex.getMessage());
     }
+    /**
+     * test update manager with invalid phone number
+     */
     @Test
     public void testUpdateManagerByNullPhone() {
         // Arrange
@@ -290,18 +297,6 @@ public class ManagerServiceTests {
         Manager existingManager=new Manager(aPerson);
 
         when(mockRepo.findManagerByRoleId(ID)).thenReturn(existingManager);
-        // Mock the save method to return the updated person when save() is called
-        /*
-        when(mockRepo.save(any(Manager.class))).thenAnswer((InvocationOnMock iom) -> {
-            Manager updatedManager = iom.getArgument(0);
-            updatedManager.getPerson().setUsername(updatedName);
-            updatedManager.getPerson().setEmail(updatedEmail);
-            updatedManager.getPerson().setPassword(updatedPassword);
-            updatedManager.getPerson().setPhone(updatedPhone);
-            return updatedManager;
-        });
-
-         */
 
 
         // Assert
@@ -310,6 +305,9 @@ public class ManagerServiceTests {
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Phone number can not be null", ex.getMessage());
     }
+    /**
+     * test update manager with invalid email
+     */
     @Test
     public void testUpdateManagerByNullEmail() {
         // Arrange
@@ -322,19 +320,6 @@ public class ManagerServiceTests {
         Manager existingManager=new Manager(aPerson);
 
         when(mockRepo.findManagerByRoleId(ID)).thenReturn(existingManager);
-        // Mock the save method to return the updated person when save() is called
-        /*
-        when(mockRepo.save(any(Manager.class))).thenAnswer((InvocationOnMock iom) -> {
-            Manager updatedManager = iom.getArgument(0);
-            updatedManager.getPerson().setUsername(updatedName);
-            updatedManager.getPerson().setEmail(updatedEmail);
-            updatedManager.getPerson().setPassword(updatedPassword);
-            updatedManager.getPerson().setPhone(updatedPhone);
-            return updatedManager;
-        });
-
-         */
-
 
 
 
@@ -344,6 +329,9 @@ public class ManagerServiceTests {
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Email can not be null", ex.getMessage());
     }
+    /**
+     * test update manager with invalid id
+     */
     @Test
     public void testUpdateManagerByInvalidId() {
         // Arrange
@@ -355,7 +343,9 @@ public class ManagerServiceTests {
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Manager with ID " + ID + " does not exist.", ex.getMessage());
     }
-
+    /**
+     * test delete manager with valid id
+     */
     @Test
     public void testDeleteManagerByValidId() {
         // Arrange
@@ -369,15 +359,14 @@ public class ManagerServiceTests {
         service.deleteManager(ID);
 
         // Assert
-       // assertNull(mockRepo.findManagerByRoleId(ID));
         verify(mockRepo, times(1)).delete(existingManager);
     }
-
+    /**
+     * test delete manager with invalid id
+     */
     @Test
     public void testDeleteManagerByInvalidId() {
-        // Arrange
-        // Act
-        // Assert
+
         GameShopException ex = assertThrows(GameShopException.class,
                 () -> service.deleteManager(ID));
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());

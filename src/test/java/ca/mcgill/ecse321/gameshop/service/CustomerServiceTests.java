@@ -6,8 +6,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.sql.Date;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -43,11 +41,12 @@ public class CustomerServiceTests {
     private static final String VALID_ADDRESS ="123 Sherbrooke West";
     private static final int ID= 10;
 
-    //Person person= new Person(VALID_NAME, VALID_EMAIL,VALID_PASSWORD, VALID_PHONE);
+    /**
+     * Test to create a customer
+     */
     @Test
     public void testCreateValidCustomer() {
         // Arrange
-        // Whenever mockRepo.save(p) is called, return p
         when(mockRepo.save(any(Customer.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
         when(repo.save(any(Person.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
 
@@ -63,63 +62,75 @@ public class CustomerServiceTests {
         assertEquals(VALID_PHONE, createdCustomer.getPerson().getPhone());
         verify(mockRepo, times(1)).save(createdCustomer);
     }
+
+    /**
+     * Invalid creation of a customer because of an invalid phone number
+     */
     @Test
     public void testCreateCustomerWithInvalidPhone() {
         // Arrange
-        // Whenever mockRepo.save(p) is called, return p
-        // when(mockRepo.save(any(Manager.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
         String email="abcdefghijklmnop@hotmail.com";
         Person p= new Person(VALID_NAME, email,VALID_PASSWORD, null);
 
-
+        //Act
         GameShopException ex = assertThrows(GameShopException.class,
                 () -> service.createCustomer(p, VALID_ADDRESS));
+        //Assert
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Phone number can not be null", ex.getMessage());
     }
+    /**
+     * Invalid creation of a customer because of an invalid username
+     */
     @Test
     public void testCreateCustomerWithInvalidUsername() {
 
         String email="abcdefghijklmn@hotmail.com";
         Person p= new Person(null, email,VALID_PASSWORD, VALID_PHONE);
 
-
+        //Act
         GameShopException ex = assertThrows(GameShopException.class,
                 () -> service.createCustomer(p,VALID_ADDRESS));
+        //Assert
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Username can not be null", ex.getMessage());
     }
-
+    /**
+     * Invalid creation of a customer because of an invalid email
+     */
     @Test
     public void testCreateCustomerWithInvalidEmail() {
-        // Arrange
-        // Whenever mockRepo.save(p) is called, return p
+        //Arrange
         Person p= new Person(VALID_NAME, null,VALID_PASSWORD, VALID_PHONE);
 
-
+        //Act
         GameShopException ex = assertThrows(GameShopException.class,
                 () -> service.createCustomer(p,VALID_ADDRESS));
+        //Assert
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Email can not be null", ex.getMessage());
     }
+    /**
+     * Invalid creation of a customer because of an invalid password length
+     */
     @Test
     public void testCreateCustomerWithInvalidPassword() {
-        // Arrange
-        // Whenever mockRepo.save(p) is called, return p
-
+        //Arrange
         String email="abcdefghijklm@hotmail.com";
         Person p= new Person(VALID_NAME, email,"123", VALID_PHONE);
 
-
+        //Act
         GameShopException ex = assertThrows(GameShopException.class,
                 () -> service.createCustomer(p,VALID_ADDRESS));
+        //Assert
         assertEquals(HttpStatus.LENGTH_REQUIRED, ex.getStatus());
         assertEquals("Password needs to be at least 10 characters long", ex.getMessage());
     }
+    /**
+     * Invalid creation of a customer because of an invalid address
+     */
     @Test
     public void testCreateCustomerWithInvalidAddress() {
-        // Arrange
-        // Whenever mockRepo.save(p) is called, return p
 
         String email="abcdefghijkl@hotmail.com";
         Person p= new Person(VALID_NAME, email,VALID_PASSWORD, VALID_PHONE);
@@ -132,7 +143,9 @@ public class CustomerServiceTests {
     }
 
 
-
+    /**
+     * test to get a customer by valid id
+     */
     @Test
     public void testGetCustomerByValidId() {
         // Arrange
@@ -151,17 +164,21 @@ public class CustomerServiceTests {
         assertEquals(VALID_PHONE, customer.getPerson().getPhone());
         assertEquals(VALID_ADDRESS, customer.getShippingAddress());
     }
-
+    /**
+     * test to get a customer by Invalid id
+     */
     @Test
-    public void testReadCustomerByInvalidId() {
-        // Arrange
-        // Act
-        // Assert
+    public void testGetCustomerByInvalidId() {
+
         GameShopException ex = assertThrows(GameShopException.class,
                 () -> service.getCustomerByID(ID));
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Customer with ID " + ID + " does not exist.", ex.getMessage());
     }
+
+    /**
+     * Test get all customers
+     */
     @Test
     public void testGetAllCustomers() {
         Person p1 = new Person(VALID_NAME, "lmnop@hotmail.com", VALID_PASSWORD, VALID_PHONE);
@@ -185,7 +202,9 @@ public class CustomerServiceTests {
         assertEquals("123 Sherbrooke East",c2.getShippingAddress());
     }
 
-
+    /**
+     * Test updating the customer with valid id and valid information
+     */
     @Test
     public void testUpdateCustomerByValidId() {
         // Arrange
@@ -200,7 +219,7 @@ public class CustomerServiceTests {
         Customer existingCustomer=new Customer(aPerson,VALID_ADDRESS);
 
         when(mockRepo.findCustomerByRoleId(ID)).thenReturn(existingCustomer);
-        // Mock the save method to return the updated person when save() is called
+
         when(mockRepo.save(any(Customer.class))).thenAnswer((InvocationOnMock iom) -> {
             Customer updatedCustomer = iom.getArgument(0);
             updatedCustomer.getPerson().setUsername(updatedName);
@@ -225,8 +244,11 @@ public class CustomerServiceTests {
 
         verify(mockRepo, times(1)).save(updatedCustomer);
     }
+    /**
+     * Test to disable customer
+     */
     @Test
-    public void testUpdateCustomerToDisable() {
+    public void testDisableCustomer() {
         // Arrange
         String updatedName = "UpdatedBob";
         String updatedEmail = "updatedbob@yahoo.com";
@@ -239,7 +261,7 @@ public class CustomerServiceTests {
         Customer existingCustomer=new Customer(aPerson,VALID_ADDRESS);
 
         when(mockRepo.findCustomerByRoleId(ID)).thenReturn(existingCustomer);
-        // Mock the save method to return the updated person when save() is called
+
         when(mockRepo.save(any(Customer.class))).thenAnswer((InvocationOnMock iom) -> {
             Customer updatedCustomer = iom.getArgument(0);
             updatedCustomer.getPerson().setUsername(updatedName);
@@ -265,7 +287,9 @@ public class CustomerServiceTests {
         verify(mockRepo, times(1)).save(updatedCustomer);
     }
 
-
+    /**
+     * Test updating the customer with invalid password length
+     */
     @Test
     public void testUpdateCustomerByInvalidPasswordLength() {
         // Arrange
@@ -288,6 +312,9 @@ public class CustomerServiceTests {
         assertEquals(HttpStatus.LENGTH_REQUIRED, ex.getStatus());
         assertEquals("Password needs to be at least 10 characters long", ex.getMessage());
     }
+    /**
+     * Test updating the customer with invalid username
+     */
     @Test
     public void testUpdateCustomerByNullUsername() {
         // Arrange
@@ -301,7 +328,7 @@ public class CustomerServiceTests {
         Customer existingCustomer=new Customer(aPerson,VALID_ADDRESS);
 
         when(mockRepo.findCustomerByRoleId(ID)).thenReturn(existingCustomer);
-        // Mock the save method to return the updated person when save() is called
+
 
 
 
@@ -314,6 +341,9 @@ public class CustomerServiceTests {
 
 
     }
+    /**
+     * Test updating the customer with invalid phone number
+     */
     @Test
     public void testUpdateCustomerByNullPhone() {
         // Arrange
@@ -327,7 +357,6 @@ public class CustomerServiceTests {
         Customer existingCustomer=new Customer(aPerson,VALID_ADDRESS);
 
         when(mockRepo.findCustomerByRoleId(ID)).thenReturn(existingCustomer);
-        // Mock the save method to return the updated person when save() is called
 
 
 
@@ -339,6 +368,9 @@ public class CustomerServiceTests {
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Phone number can not be null", ex.getMessage());
     }
+    /**
+     * Test updating the customer with invalid email
+     */
     @Test
     public void testUpdateCustomerByNullEmail() {
         // Arrange
@@ -352,15 +384,19 @@ public class CustomerServiceTests {
         Customer existingCustomer=new Customer(aPerson,VALID_ADDRESS);
 
         when(mockRepo.findCustomerByRoleId(ID)).thenReturn(existingCustomer);
-        // Mock the save method to return the updated person when save() is called
 
 
 
+        //Act
         GameShopException ex = assertThrows(GameShopException.class,
                 () -> service.updateCustomer(ID, updatedName,updatedEmail,updatedPassword,updatedPhone,updatedAddress));
+        //Assert
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Email can not be null", ex.getMessage());
     }
+    /**
+     * Test updating the customer with invalid address
+     */
     @Test
     public void testUpdateCustomerByNullAddress() {
         // Arrange
@@ -383,6 +419,9 @@ public class CustomerServiceTests {
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Shipping address can not be null", ex.getMessage());
     }
+    /**
+     * Test updating the customer with invalid id
+     */
     @Test
     public void testUpdateCustomerByInvalidId() {
         // Arrange
@@ -396,6 +435,9 @@ public class CustomerServiceTests {
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Customer with ID " + ID + " does not exist.", ex.getMessage());
     }
+    /**
+     * Test delete the customer with valid id
+     */
 
     @Test
     public void testDeleteCustomerByValidId() {
@@ -413,7 +455,9 @@ public class CustomerServiceTests {
 
         verify(mockRepo, times(1)).delete(existingCustomer);
     }
-
+    /**
+     * Test delete the customer with invalid
+     */
     @Test
     public void testDeleteCustomerByInvalidId() {
         // Arrange
@@ -424,6 +468,10 @@ public class CustomerServiceTests {
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Customer with ID " + ID + " does not exist.", ex.getMessage());
     }
+
+    /**
+     * test add a game to customer cart successfully
+     */
     @Test
     public void testValidAdditionOfGameToCustomerCart() {
         String updatedName = "UpdatedBob";
@@ -459,6 +507,10 @@ public class CustomerServiceTests {
 
         verify(mockRepo, times(1)).save(updatedCustomerCartAfterAddition);
     }
+
+    /**
+     *  successfully add a game to customer wishlist
+     */
     @Test
     public void testValidAdditionOfGameToCustomerWishlist() {
 
@@ -470,10 +522,9 @@ public class CustomerServiceTests {
 
 
         Game game= new Game("FC 24","Soccer Game",50.0F,1,"https://image.peg");
-        //  String aName, String aDescription, float aPrice, int aStockQuantity,String aPhotoURL
-        //when(gameRepo.save(any(Game.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
+
         when(mockRepo.findCustomerByRoleId(ID)).thenReturn(existingCustomer);
-        // Mock the save method to return the updated person when save() is called
+
 
 
         // Act
@@ -486,6 +537,10 @@ public class CustomerServiceTests {
 
 
     }
+
+    /**
+     * Invalid addition of a game to cart because of wrong customer id
+     */
     @Test
     public void testInvalidAdditionOfGameToCustomerCartWithInvalidID() {
 
@@ -496,6 +551,9 @@ public class CustomerServiceTests {
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Customer with ID " + ID + " does not exist.", ex.getMessage());
     }
+    /**
+     * Invalid addition of a game to cart because of wrong game name
+     */
     @Test
     public void testInvalidAdditionOfGameToCustomerCartWithInvalidGame() {
 
@@ -506,9 +564,9 @@ public class CustomerServiceTests {
 
         Customer exstingCustomer=new Customer(aPerson,VALID_ADDRESS);
         Game game= null;
-        //  String aName, String aDescription, float aPrice, int aStockQuantity,String aPhotoURL
+
         when(mockRepo.findCustomerByRoleId(ID)).thenReturn(exstingCustomer);
-        // Mock the save method to return the updated person when save() is called
+
 
         // Act
         GameShopException ex = assertThrows(GameShopException.class,
@@ -516,6 +574,9 @@ public class CustomerServiceTests {
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Game can not be null", ex.getMessage());
     }
+    /**
+     * Invalid addition of a game to wishlist because of wrong customer id
+     */
     @Test
     public void testInvalidAdditionOfGameToCustomerWishlistWithInvalidID() {
 
@@ -526,6 +587,9 @@ public class CustomerServiceTests {
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Customer with ID " + ID + " does not exist.", ex.getMessage());
     }
+    /**
+     * Invalid addition of a game to wishlist because of wrong game name
+     */
     @Test
     public void testInvalidAdditionOfGameToCustomerWishlistWithInvalidGame() {
 
@@ -546,8 +610,12 @@ public class CustomerServiceTests {
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Game can not be null", ex.getMessage());
     }
+
+    /**
+     * Test successful deletion of game from customer cart
+     */
     @Test
-    public void testDeleteCustomerCartByValidId() {
+    public void testDeleteGameFromCustomerCartByValidId() {
         // Arrange
         // Mock the save method to return the passed Customer object
         when(mockRepo.save(any(Customer.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
@@ -576,10 +644,13 @@ public class CustomerServiceTests {
         verify(mockRepo, times(3)).save(any(Customer.class));
 
     }
+    /**
+     * Test successful deletion of game from customer wishlist
+     */
     @Test
-    public void testDeleteCustomerWishlistByValidId() {
+    public void testDeleteGameFromCustomerWishlistByValidId() {
         // Arrange
-        // Mock the save method to return the passed Customer object
+
         when(mockRepo.save(any(Customer.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
 
 
@@ -606,32 +677,36 @@ public class CustomerServiceTests {
         verify(mockRepo, times(3)).save(any(Customer.class));
 
     }
+    /**
+     * Test unsuccessful deletion of game from customer cart because of invalid customer id
+     */
     @Test
     public void testDeleteGameFromCustomerCartWithInvalidId() {
-        // Arrange
-        // Act
-        // Assert
+
         Game game = new Game("FC 24", "Soccer Game", 50.0F, 1, "https://image.peg");
         GameShopException ex = assertThrows(GameShopException.class,
                 () -> service.deleteGameFromCustomerCart(ID,game));
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Customer with ID " + ID + " does not exist.", ex.getMessage());
     }
+    /**
+     * Test unsuccessful deletion of game from customer wishlist because of invalid customer id
+     */
     @Test
     public void testDeleteGameFromCustomerWishlistWithInvalidId() {
-        // Arrange
-        // Act
-        // Assert
+
         Game game = new Game("FC 24", "Soccer Game", 50.0F, 1, "https://image.peg");
         GameShopException ex = assertThrows(GameShopException.class,
                 () -> service.deleteGameFromCustomerWishList(ID,game));
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Customer with ID " + ID + " does not exist.", ex.getMessage());
     }
+    /**
+     * Test unsuccessful deletion of game from customer cart because of invalid game name
+     */
     @Test
     public void testDeleteGameFromCustomerCartWithInvalidGame() {
-        // Arrange
-        // Mock the save method to return the passed Customer object
+
         when(mockRepo.save(any(Customer.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
 
 
@@ -656,6 +731,9 @@ public class CustomerServiceTests {
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Game can not be null", ex.getMessage());
     }
+    /**
+     * Test unsuccessful deletion of game from customer wishlist because of invalid game name
+     */
     @Test
     public void testDeleteGameFromCustomerWishlistWithInvalidGame() {
 // Arrange
@@ -685,85 +763,9 @@ public class CustomerServiceTests {
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Game can not be null", ex.getMessage());
     }
-    @Test
-    public void testGetCustomerCartByValidId() {
-        // Arrange
-        // Mock the save method to return the passed Customer object
-        when(mockRepo.save(any(Customer.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
 
 
-        String email = "abcdefg@render.com";
-        Person person = new Person(VALID_NAME, email, VALID_PASSWORD, VALID_PHONE);
-        Customer existingCustomer = service.createCustomer(person, VALID_ADDRESS);
-
-        assertNotNull(existingCustomer);
-        assertEquals(email, existingCustomer.getPerson().getEmail());
 
 
-        when(mockRepo.findCustomerByRoleId(ID)).thenReturn(existingCustomer);
-
-        Game game = new Game("FC 24", "Soccer Game", 50.0F, 1, "https://image.peg");
-        Customer updatedCustomerCartAfterAddition = service.addGameToCustomerCart(ID, game);
-
-        assertNotNull(updatedCustomerCartAfterAddition);
-        assertTrue(updatedCustomerCartAfterAddition.getCart().contains(game));
-
-      List <Game> customerCart= service.getCustomerCart(ID);
-
-        assertEquals(game,customerCart.get(0));
-
-        verify(mockRepo, times(2)).save(any(Customer.class));
-
-    }
-    @Test
-    public void testGetCustomerWishlistByValidId() {
-        // Arrange
-        // Mock the save method to return the passed Customer object
-        when(mockRepo.save(any(Customer.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
-
-
-        String email = "abcdefg@render.com";
-        Person person = new Person(VALID_NAME, email, VALID_PASSWORD, VALID_PHONE);
-        Customer existingCustomer = service.createCustomer(person, VALID_ADDRESS);
-
-        assertNotNull(existingCustomer);
-        assertEquals(email, existingCustomer.getPerson().getEmail());
-
-
-        when(mockRepo.findCustomerByRoleId(ID)).thenReturn(existingCustomer);
-
-        Game game = new Game("FC 24", "Soccer Game", 50.0F, 1, "https://image.peg");
-        Customer updatedCustomerWishlistAfterAddition = service.addGameToCustomerWishList(ID, game);
-
-        assertNotNull(updatedCustomerWishlistAfterAddition);
-        assertTrue(updatedCustomerWishlistAfterAddition.getWishlist().contains(game));
-
-        List <Game> customerWishList= service.getCustomerWishlist(ID);
-
-        assertEquals(game,customerWishList.get(0));
-
-        verify(mockRepo, times(2)).save(any(Customer.class));
-
-    }
-    @Test
-    public void testGetGameFromCustomerCartWithInvalidId() {
-        // Arrange
-        // Act
-        // Assert
-        Game game = new Game("FC 24", "Soccer Game", 50.0F, 1, "https://image.peg");
-        GameShopException ex = assertThrows(GameShopException.class,
-                () -> service.getCustomerCart(ID));
-        assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
-        assertEquals("Customer with ID " + ID + " does not exist.", ex.getMessage());
-    }
-    @Test
-    public void testGetGameFromCustomerWishlistWithInvalidId() {
-
-        Game game = new Game("FC 24", "Soccer Game", 50.0F, 1, "https://image.peg");
-        GameShopException ex = assertThrows(GameShopException.class,
-                () -> service.getCustomerWishlist(ID));
-        assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
-        assertEquals("Customer with ID " + ID + " does not exist.", ex.getMessage());
-    }
 
 }

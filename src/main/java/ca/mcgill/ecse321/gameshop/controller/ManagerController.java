@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.*;
-//import ca.mcgill.ecse321.eventregistration.dto.RegistrationResponseDto;
 import ca.mcgill.ecse321.gameshop.model.*;
 import ca.mcgill.ecse321.gameshop.repository.*;
 import ca.mcgill.ecse321.gameshop.service.*;
@@ -26,7 +25,7 @@ public class ManagerController {
 
 
     /**
-     *
+     * Create a manager
      * @param managerToCreate
      * @return
      */
@@ -40,7 +39,7 @@ public class ManagerController {
         }
 
     /**
-     *
+     * get a manager
      * @param mid
      * @return
      */
@@ -52,7 +51,7 @@ public class ManagerController {
         }
 
     /**
-     *
+     * Delete a manager
      * @param mid
      */
 
@@ -63,7 +62,7 @@ public class ManagerController {
     }
 
     /**
-     *
+     * Update manager's info
      * @param id
      * @param manager
      * @return

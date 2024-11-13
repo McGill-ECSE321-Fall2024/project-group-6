@@ -2,26 +2,17 @@ package ca.mcgill.ecse321.gameshop.service;
 
 
 
-import java.sql.Date;
-import java.time.LocalDate;
 import java.util.*;
 
 import ca.mcgill.ecse321.gameshop.model.*;
 import ca.mcgill.ecse321.gameshop.exception.*;
-import ca.mcgill.ecse321.gameshop.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.http.HttpStatus;
 import ca.mcgill.ecse321.gameshop.repository.*;
-import ca.mcgill.ecse321.gameshop.repository.GameRepository;
-import ca.mcgill.ecse321.gameshop.repository.ReviewRepository;
-import ca.mcgill.ecse321.gameshop.repository.CommandRepository;
-import ca.mcgill.ecse321.gameshop.repository.CustomerRepository;
 import jakarta.transaction.Transactional;
 
-/**
- * @author joseph
- */
+
 @Service
 public class ManagerService {
 
@@ -31,6 +22,11 @@ public class ManagerService {
     @Autowired
     private PersonRepository personRepo;
 
+    /**
+     * Service method to create a manager
+     * @param person
+     * @return
+     */
     @Transactional
     public Manager createManager(Person person) {
 
@@ -56,6 +52,11 @@ public class ManagerService {
         return repo.save(manager);
     }
 
+    /**
+     * Service method to get a manager by id
+     * @param id
+     * @return
+     */
     public Manager findManagerById(int id) {
         Manager manager = repo.findManagerByRoleId(id);
         if (manager == null) {
@@ -63,6 +64,16 @@ public class ManagerService {
         }
         return manager;
     }
+
+    /**
+     * Service method to update a manager's information
+     * @param id
+     * @param aUsername
+     * @param aEmail
+     * @param aPassword
+     * @param aPhone
+     * @return
+     */
     @Transactional
     public Manager updateManager(int id, String aUsername, String aEmail, String aPassword, String aPhone) {
        Manager manager = repo.findManagerByRoleId(id);
@@ -93,6 +104,11 @@ public class ManagerService {
 
         return repo.save(manager);
     }
+
+    /**
+     * Service method to delete a manager
+     * @param id
+     */
     @Transactional
     public void deleteManager(int id) {
         Manager manager = repo.findManagerByRoleId(id);

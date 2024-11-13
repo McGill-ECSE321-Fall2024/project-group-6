@@ -5,14 +5,13 @@ import ca.mcgill.ecse321.gameshop.exception.GameShopException;
 import ca.mcgill.ecse321.gameshop.model.Employee;
 import ca.mcgill.ecse321.gameshop.model.*;
 import ca.mcgill.ecse321.gameshop.model.Role;
-import ca.mcgill.ecse321.gameshop.repository.*;
 import ca.mcgill.ecse321.gameshop.repository.RoleRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class RoleService {
@@ -22,11 +21,13 @@ public class RoleService {
 
     /**
      *  No update method as it would never be used by Role class
+     *  Also, role will not have a controller. We only created a service class and tested it
+     *  to ensure a high % coverage.
      */
 
 
     /**
-     *
+     * Service method to create a Customer role
      * @param username
      * @param emailAddress
      * @param phone
@@ -34,6 +35,7 @@ public class RoleService {
      * @param address
      * @return
      */
+    @Transactional
     public Role createRoleCustomer(String username, String emailAddress, String phone, String password,String address) {
 
         Person person = new Person(username, emailAddress, password, phone);
@@ -58,6 +60,17 @@ public class RoleService {
             return roleRepository.save(c);
 
     }
+
+    /**
+     * Service method to create  an employee role
+     * @param username
+     * @param emailAddress
+     * @param phone
+     * @param password
+     * @return
+     */
+    @Transactional
+
     public Role createRoleEmployee(String username, String emailAddress, String phone, String password) {
 
         Person person = new Person(username, emailAddress, password, phone);
@@ -80,11 +93,19 @@ public class RoleService {
 
     }
 
+    /**
+     * Service method to get all role
+     * @return
+     */
+    @Transactional
     public List<Role> getAllRoles() {
        List<Role>roles= (List<Role>) roleRepository.findAll();
        return roles;
     }
-
+@Transactional
+/**
+ * Service method to get a specific role
+ */
     public Role getRoleById(int id) {
         Role roleFromDB = roleRepository.findRoleByRoleId(id);
         if (roleFromDB == null) {
@@ -95,6 +116,10 @@ public class RoleService {
         }
     }
 
+    /**
+     * Service method to delete a role
+     * @param id
+     */
     public void deleteRole(int id) {
         Role role = roleRepository.findRoleByRoleId(id);
         if (role == null) {

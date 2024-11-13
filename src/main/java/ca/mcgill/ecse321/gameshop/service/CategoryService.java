@@ -13,6 +13,11 @@ public class CategoryService {
     @Autowired
     private CategoryRepository repo;
 
+    /**
+     * Service method to create a category
+     * @param name
+     * @return
+     */
     @Transactional
     public Category createCategory(String name){
         if (name==null){
@@ -27,6 +32,12 @@ public class CategoryService {
         return repo.save(c);
     }
 
+    /**
+     * Service method to get category by id
+     * @param cId
+     * @return
+     */
+    @Transactional
     public Category findCategoryById(int cId){
         if(cId<0){
             throw new GameShopException(HttpStatus.NOT_FOUND, String.format("The Category ID "+ cId+"is not valid"));
@@ -37,6 +48,12 @@ public class CategoryService {
         return repo.findCategoryByCategoryId(cId);
     }
 
+    /**
+     * Service method to update category
+     * @param cId
+     * @param name
+     * @return
+     */
     @Transactional
     public Category updateCategory(int cId, String name){
         if(cId<0){
@@ -52,6 +69,11 @@ public class CategoryService {
         return repo.save(toUpdate);
     }
 
+    /**
+     * Service method to delete Category
+     * @param cId
+     */
+    @Transactional
     public void deleteCategory(int cId) {
         if (cId<0){throw new GameShopException(HttpStatus.NOT_FOUND, String.format("The Category ID "+ cId+"is not valid"));}
         else if(repo.findCategoryByCategoryId(cId) == null) {
@@ -59,6 +81,12 @@ public class CategoryService {
         }
         repo.deleteById(cId);
     }
+
+    /**
+     * Service method to getAll categories
+     * @return
+     */
+    @Transactional
     public Iterable<Category> getAllCategories(){
         return repo.findAll();
     }

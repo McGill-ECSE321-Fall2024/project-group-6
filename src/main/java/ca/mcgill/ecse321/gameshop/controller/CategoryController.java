@@ -12,11 +12,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-//@RequestMapping("/categories")
+
 public class CategoryController {
     @Autowired
     private CategoryService categoryService;
 
+    /**
+     * Create a category
+     * @param c
+     * @return
+     */
     @PostMapping("/categories")
     public CategoryResponseDto createCategory(@RequestBody CategoryRequestDto c){
 
@@ -24,16 +29,32 @@ public class CategoryController {
 
         return new CategoryResponseDto(createdCategory);
     }
+
+    /**
+     * Update a category
+     * @param ID
+     * @param name
+     * @return
+     */
     @PutMapping("/categories/{ID}")
     public CategoryResponseDto updateCategory(@PathVariable int ID, @RequestBody String name){
         return new CategoryResponseDto(categoryService.updateCategory(ID,name));
     }
 
+    /**
+     * Get a category
+     * @param ID
+     * @return
+     */
     @GetMapping("/categories/{ID}")
     public CategoryResponseDto findCategoryById(@PathVariable int ID){
         return new CategoryResponseDto(categoryService.findCategoryById(ID));
     }
 
+    /**
+     * Get all categories
+     * @return
+     */
     @GetMapping("/categories")
     public CategoryListDto getAllCategories(){
         List<CategoryResponseDto> categories = new ArrayList<>();
@@ -43,6 +64,10 @@ public class CategoryController {
         return new CategoryListDto(categories);
     }
 
+    /**
+     * Delete a category
+     * @param ID
+     */
     @DeleteMapping("/categories/{ID}")
     public void deleteCategory(@PathVariable int ID){
         categoryService.deleteCategory(ID);
