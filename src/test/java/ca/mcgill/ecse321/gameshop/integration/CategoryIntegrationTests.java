@@ -133,7 +133,7 @@ public class CategoryIntegrationTests {
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
-        // Verify that the person was actually deleted by trying to fetch it again
+        // Verify that the categoory was actually deleted by trying to fetch it again
         ResponseEntity<CategoryResponseDto> deletedCategory = client.getForEntity(url, CategoryResponseDto.class);
         assertEquals(HttpStatus.NOT_FOUND, deletedCategory.getStatusCode());
     }

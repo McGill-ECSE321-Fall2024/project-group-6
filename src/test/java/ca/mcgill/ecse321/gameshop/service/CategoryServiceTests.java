@@ -50,7 +50,7 @@ public class CategoryServiceTests {
 
         GameShopException ex = assertThrows(GameShopException.class,()-> service.createCategory(name));
 
-        assertEquals(HttpStatus.NOT_FOUND,ex.getStatus());
+        assertEquals(HttpStatus.FOUND,ex.getStatus());
         assertEquals("Category already exists.",ex.getMessage());
     }
 
@@ -121,7 +121,7 @@ public class CategoryServiceTests {
 
         GameShopException ex = assertThrows(GameShopException.class, () -> service.updateCategory(ID,"Sports"));
 
-        assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
+        assertEquals(HttpStatus.FOUND, ex.getStatus());
         assertEquals("Category already exists.", ex.getMessage());
     }
 

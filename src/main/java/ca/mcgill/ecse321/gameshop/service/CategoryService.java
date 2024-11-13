@@ -20,7 +20,7 @@ public class CategoryService {
         }
         for(Category i : repo.findAll()){
             if(i.getCategoryName().equals(name)){
-                throw new GameShopException(HttpStatus.NOT_FOUND,String.format("Category already exists."));
+                throw new GameShopException(HttpStatus.FOUND,String.format("Category already exists."));
             }
         }
         Category c = new Category(name);
@@ -41,7 +41,7 @@ public class CategoryService {
         else if (repo.findCategoryByCategoryId(cId)==null){throw new GameShopException(HttpStatus.NOT_FOUND, String.format("There is no Category with ID"+ cId+"."));}
         for (Category i : repo.findAll()){
             if (i.getCategoryName().equals(name)){
-                throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Category already exists."));
+                throw new GameShopException(HttpStatus.FOUND, String.format("Category already exists."));
             }
         }
 
