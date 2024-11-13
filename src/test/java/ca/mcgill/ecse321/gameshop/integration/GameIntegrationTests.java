@@ -34,97 +34,97 @@ import ca.mcgill.ecse321.gameshop.repository.GameRepository;
 @TestMethodOrder(OrderAnnotation.class)
 @TestInstance(Lifecycle.PER_CLASS)
 public class GameIntegrationTests {
-    @Autowired
-    private TestRestTemplate client;
-    @Autowired
-    private GameRepository repo;
+        @Autowired
+        private TestRestTemplate client;
+        @Autowired
+        private GameRepository repo;
 
-    private static final String VALID_NAME = "Minecraft";
-    private static final String VALID_DESCRIPTION = "Creative game";
-    private static final float VALID_PRICE = 20;
-    private static final int STOCK_QUANTITY = 100;
-    private static final String VALID_PHOTO = "image url";
-    private static final boolean TO_BE_ADDED = false;
-    private static final boolean TO_BE_REMOVED = false;
-    private static final float VALID_PROMOTION = 30;
-    private static final List<Category> CATEGORIES = new ArrayList<>(Arrays.asList(
-    new Category("Action"),
-    new Category("Adventure"),
-    new Category("Puzzle")
-    ));
-    private int id;
+        private static final String VALID_NAME = "Minecraft";
+        private static final String VALID_DESCRIPTION = "Creative game";
+        private static final float VALID_PRICE = 20;
+        private static final int STOCK_QUANTITY = 100;
+        private static final String VALID_PHOTO = "image url";
+        private static final boolean TO_BE_ADDED = false;
+        private static final boolean TO_BE_REMOVED = false;
+        private static final float VALID_PROMOTION = 30;
+        private static final List<Category> CATEGORIES = new ArrayList<>(Arrays.asList(
+        new Category("Action"),
+        new Category("Adventure"),
+        new Category("Puzzle")
+        ));
+        private int id;
 
-    @AfterAll
-    public void clearDatabase() {
-        repo.deleteAll();
-    }
+        @AfterAll
+        public void clearDatabase() {
+                repo.deleteAll();
+        }
 
-    @SuppressWarnings("null")
-    @Test
-    @Order(1)
-    public void testCreateValidGame() {
-        // Arrange
-        GameRequestDto request = new GameRequestDto(VALID_NAME, VALID_DESCRIPTION, VALID_PRICE, STOCK_QUANTITY, VALID_PHOTO, TO_BE_ADDED, TO_BE_REMOVED, VALID_PROMOTION, CATEGORIES);
+        @SuppressWarnings("null")
+        @Test
+        @Order(1)
+        public void testCreateValidGame() {
+                // Arrange
+                GameRequestDto request = new GameRequestDto(VALID_NAME, VALID_DESCRIPTION, VALID_PRICE, STOCK_QUANTITY, VALID_PHOTO, TO_BE_ADDED, TO_BE_REMOVED, VALID_PROMOTION, CATEGORIES);
 
-        // Act
-        ResponseEntity<GameResponseDto> response = client.postForEntity("/games", request, GameResponseDto.class);
+                // Act
+                ResponseEntity<GameResponseDto> response = client.postForEntity("/games", request, GameResponseDto.class);
 
-        // Assert
-        assertNotNull(response);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        this.id = response.getBody().getGameId();
-        assertEquals(VALID_NAME, response.getBody().getName());
-        assertEquals(VALID_DESCRIPTION, response.getBody().getDescription());
-        assertEquals(VALID_PHOTO, response.getBody().getPhotoURL());
-    }
+                // Assert
+                assertNotNull(response);
+                assertEquals(HttpStatus.OK, response.getStatusCode());
+                this.id = response.getBody().getGameId();
+                assertEquals(VALID_NAME, response.getBody().getName());
+                assertEquals(VALID_DESCRIPTION, response.getBody().getDescription());
+                assertEquals(VALID_PHOTO, response.getBody().getPhotoURL());
+        }
 
-    @Test
-    @Order(2)
-    public void testGetAllGames() {
-        // Arrange
-        // Act
-        ResponseEntity<GameListDto> response = client.getForEntity("/games", GameListDto.class);
-        GameListDto games = response.getBody();
+        @Test
+        @Order(2)
+        public void testGetAllGames() {
+                // Arrange
+                // Act
+                ResponseEntity<GameListDto> response = client.getForEntity("/games", GameListDto.class);
+                GameListDto games = response.getBody();
 
-        // Assert
-        assertNotNull(games);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(games.getGames());
-        assertTrue(!games.getGames().isEmpty(), "There should be at least 1 game returned.");
-    }
+                // Assert
+                assertNotNull(games);
+                assertEquals(HttpStatus.OK, response.getStatusCode());
+                assertNotNull(games.getGames());
+                assertTrue(!games.getGames().isEmpty(), "There should be at least 1 game returned.");
+        }
 
-    @SuppressWarnings("null")
-    @Test
-    @Order(3)
-    public void testGetGameByValidId() {
-        // Arrange
-        String url = String.format("/games/%d", this.id);
+        @SuppressWarnings("null")
+        @Test
+        @Order(3)
+        public void testGetGameByValidId() {
+                // Arrange
+                String url = String.format("/games/%d", this.id);
 
-        // Act
-        ResponseEntity<GameResponseDto> response = client.getForEntity(url, GameResponseDto.class);
+                // Act
+                ResponseEntity<GameResponseDto> response = client.getForEntity(url, GameResponseDto.class);
 
-        // Assert
-        assertNotNull(response);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(this.id, response.getBody().getGameId());
-        assertEquals(VALID_NAME, response.getBody().getName());
-        assertEquals(VALID_DESCRIPTION, response.getBody().getDescription());
-        assertEquals(VALID_PHOTO, response.getBody().getPhotoURL());
-    }
+                // Assert
+                assertNotNull(response);
+                assertEquals(HttpStatus.OK, response.getStatusCode());
+                assertEquals(this.id, response.getBody().getGameId());
+                assertEquals(VALID_NAME, response.getBody().getName());
+                assertEquals(VALID_DESCRIPTION, response.getBody().getDescription());
+                assertEquals(VALID_PHOTO, response.getBody().getPhotoURL());
+        }
 
-    @Test
-    @Order(4)
-    public void testGetGameByInvalidId() {
-        // Arrange
-        String url = String.format("/games/%d", -1);
+        @Test
+        @Order(4)
+        public void testGetGameByInvalidId() {
+                // Arrange
+                String url = String.format("/games/%d", -1);
 
-        // Act
-        ResponseEntity<GameResponseDto> response = client.getForEntity(url, GameResponseDto.class);
+                // Act
+                ResponseEntity<GameResponseDto> response = client.getForEntity(url, GameResponseDto.class);
 
-        // Assert
-        assertNotNull(response);
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-    }
+                // Assert
+                assertNotNull(response);
+                assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        }
 
         @SuppressWarnings("null")
         @Test

@@ -82,7 +82,7 @@ public class CategoryServiceTests {
         GameShopException ex = assertThrows(GameShopException.class, () -> service.findCategoryById(-1));
 
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
-        assertEquals("The Category With ID " + -1 + " is not valid.", ex.getMessage());
+        assertEquals("The Category with ID " + -1 + " is not valid.", ex.getMessage());
     }
 
     @Test
@@ -90,7 +90,7 @@ public class CategoryServiceTests {
         GameShopException ex = assertThrows(GameShopException.class, () -> service.findCategoryById(ID));
 
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
-        assertEquals("The Category With ID " + ID + " is not valid.", ex.getMessage());
+        assertEquals("The Category with ID " + ID + " is not valid.", ex.getMessage());
     }
 
     @Test
@@ -111,7 +111,7 @@ public class CategoryServiceTests {
         GameShopException ex = assertThrows(GameShopException.class, () -> service.updateCategory(ID,"Sports"));
 
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
-        assertEquals("The Category With ID " + ID + " is not valid.", ex.getMessage());
+        assertEquals("The Category with ID " + ID + " is not valid.", ex.getMessage());
     }
 
     @Test
@@ -142,7 +142,7 @@ public class CategoryServiceTests {
         GameShopException ex = assertThrows(GameShopException.class, () -> service.deleteCategory(-1));
 
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
-        assertEquals("The Category With ID " + -1 + " is not valid.", ex.getMessage());
+        assertEquals("The Category with ID " + -1 + " is not valid.", ex.getMessage());
     }
 
     @Test
@@ -150,7 +150,7 @@ public class CategoryServiceTests {
         GameShopException ex = assertThrows(GameShopException.class, () -> service.deleteCategory(ID));
 
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
-        assertEquals("The Category With ID " + ID + " is not valid.", ex.getMessage());
+        assertEquals("The Category with ID " + ID + " is not valid.", ex.getMessage());
     }
 
     @Test

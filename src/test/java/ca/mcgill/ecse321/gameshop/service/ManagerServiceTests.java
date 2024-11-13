@@ -2,28 +2,30 @@ package ca.mcgill.ecse321.gameshop.service;
 /**
  * @author Joseph
  */
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
+import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 
-import ca.mcgill.ecse321.gameshop.exception.*;
-import ca.mcgill.ecse321.gameshop.model.*;
-import ca.mcgill.ecse321.gameshop.repository.*;
+import ca.mcgill.ecse321.gameshop.exception.GameShopException;
+import ca.mcgill.ecse321.gameshop.model.Manager;
+import ca.mcgill.ecse321.gameshop.model.Person;
+import ca.mcgill.ecse321.gameshop.repository.ManagerRepository;
+import ca.mcgill.ecse321.gameshop.repository.PersonRepository;
 
 @SpringBootTest
 @MockitoSettings(strictness = Strictness.STRICT_STUBS)
@@ -63,6 +65,7 @@ public class ManagerServiceTests {
         assertEquals(VALID_PHONE, createdManager.getPerson().getPhone());
         verify(mockRepo, times(1)).save(createdManager);
     }
+    
     /**
      * test invalid creation of more than one manager (only one manager can exist)
      */
@@ -95,6 +98,7 @@ public class ManagerServiceTests {
         assertEquals(HttpStatus.UNAUTHORIZED, ex.getStatus());
         assertEquals("Manager already exists", ex.getMessage());
     }
+
     /**
      * test creation of manager with invalid phone number
      */

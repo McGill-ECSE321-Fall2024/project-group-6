@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -317,8 +319,6 @@ public class PersonServiceTests {
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Person with Email " + email2 + " does not exist.", ex.getMessage());
         verify(mockRepo, times(1)).save(any(Person.class));
-
-
 
         }
         @Test

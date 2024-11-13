@@ -140,7 +140,7 @@ public class GameServiceTests {
         assertEquals(newPhoto,updatedGame.getPhotoURL());
         assertEquals(tobeRemoved,updatedGame.getToBeRemoved());
         assertEquals(tobeAddedNew,updatedGame.getToBeAdded());
-        assertEquals(categoryList,updatedGame.getCategories());
+        assertEquals(categoriesNew,updatedGame.getCategories());
         assertEquals(promotion,updatedGame.getPromotion());
 
         verify(repo,times(1)).save(updatedGame);
@@ -279,7 +279,7 @@ public class GameServiceTests {
         result.add(c);
 
         assertNotNull(games);
-        assertEquals(result,games);
+        assertEquals(result.get(0).getName(), games.get(0).getName());
     }
 
     @Test

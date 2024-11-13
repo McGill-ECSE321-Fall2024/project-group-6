@@ -18,6 +18,7 @@ import ca.mcgill.ecse321.gameshop.dto.GameRequestDto;
 import ca.mcgill.ecse321.gameshop.dto.GameResponseDto;
 import ca.mcgill.ecse321.gameshop.model.Category;
 import ca.mcgill.ecse321.gameshop.model.Game;
+import ca.mcgill.ecse321.gameshop.repository.CategoryRepository;
 import ca.mcgill.ecse321.gameshop.service.GameService;
 
 @RestController

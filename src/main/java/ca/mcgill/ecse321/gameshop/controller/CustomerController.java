@@ -3,19 +3,28 @@ package ca.mcgill.ecse321.gameshop.controller;
  * @author Joseph and Marine
  */
 
-import ca.mcgill.ecse321.gameshop.dto.*;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.*;
-import jakarta.validation.*;
 
-import ca.mcgill.ecse321.gameshop.model.*;
-import java.util.*;
-import ca.mcgill.ecse321.gameshop.service.*;
+import ca.mcgill.ecse321.gameshop.dto.CustomerListDto;
+import ca.mcgill.ecse321.gameshop.dto.CustomerRequestDto;
+import ca.mcgill.ecse321.gameshop.dto.CustomerResponseDto;
+import ca.mcgill.ecse321.gameshop.dto.GameRequestDto2;
+import ca.mcgill.ecse321.gameshop.dto.GameResponseDto;
+import ca.mcgill.ecse321.gameshop.model.Customer;
+import ca.mcgill.ecse321.gameshop.model.Game;
+import ca.mcgill.ecse321.gameshop.model.Person;
+import ca.mcgill.ecse321.gameshop.service.CustomerService;
+import ca.mcgill.ecse321.gameshop.service.GameService;
 
 @RestController
 public class CustomerController {
@@ -33,7 +42,7 @@ public class CustomerController {
      * @return
      */
     @PostMapping("/customers")
-    public CustomerResponseDto createCustomer(@Valid @RequestBody CustomerRequestDto customerToCreate) {
+    public CustomerResponseDto createCustomer(@RequestBody CustomerRequestDto customerToCreate) {
     Person person= new Person(customerToCreate.getUsername(),customerToCreate.getEmail(),customerToCreate.getPassword(),customerToCreate.getPhone());
         Customer customer = customerService.createCustomer(person,customerToCreate.getShippingAddress());
 

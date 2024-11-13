@@ -100,4 +100,27 @@ public class PersonService {
         
         personRepo.delete(p);
     }
+
+    /**
+     * @author Joseph
+     * @param email
+     * @param password
+     * @return
+     */
+    @Transactional
+    public boolean login(String email, String password) {
+    Person p= personRepo.findPersonByEmail(email);
+
+    if(p==null){
+        throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Person with Email " + email + " does not exist."));
+    }
+
+    else if(p.getPassword()==password){
+        return true;
+    }
+
+    else {
+        throw new GameShopException(HttpStatus.UNAUTHORIZED, String.format("Wrong Password"));
+    }
+    }
 }

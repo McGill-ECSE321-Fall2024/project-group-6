@@ -1,17 +1,20 @@
 package ca.mcgill.ecse321.gameshop.service;
 
+
 /**
  * @author Joseph
  */
-import java.util.*;
+import java.util.List;
 
-import ca.mcgill.ecse321.gameshop.model.*;
-import ca.mcgill.ecse321.gameshop.exception.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.http.HttpStatus;
-import ca.mcgill.ecse321.gameshop.repository.*;
+
+import ca.mcgill.ecse321.gameshop.exception.GameShopException;
+import ca.mcgill.ecse321.gameshop.model.Manager;
+import ca.mcgill.ecse321.gameshop.model.Person;
+import ca.mcgill.ecse321.gameshop.repository.ManagerRepository;
+import ca.mcgill.ecse321.gameshop.repository.PersonRepository;
 import jakarta.transaction.Transactional;
 
 
@@ -33,9 +36,10 @@ public class ManagerService {
     public Manager createManager(Person person) {
 
         Manager manager = new Manager(person);
-
-        if (manager.getPerson().getPassword().length() < 10) {
-            throw new GameShopException(HttpStatus.LENGTH_REQUIRED, String.format("Password needs to be at least 10 characters long"));
+        List<Manager> managers= (List<Manager>) repo.findAll();
+        if(managers.size()==1){
+            throw new GameShopException(HttpStatus.UNAUTHORIZED, String.format("Manager already exists"));
+        }
         if(manager.getPerson().getPassword().length()<10){
             throw new GameShopException(HttpStatus.LENGTH_REQUIRED, String.format("Password needs to be at least 10 characters long"));
         }
@@ -50,21 +54,19 @@ public class ManagerService {
             throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Username can not be null"));
         }
         personRepo.save(person);
-
         return repo.save(manager);
     }
 
+    /**
      * Service method to get a manager by id
      * @param id
      * @return
      */
     public Manager findManagerById(int id) {
         Manager manager = repo.findManagerByRoleId(id);
-
         if (manager == null) {
             throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Manager with ID " + id + " does not exist."));
         }
-
         return manager;
     }
 
@@ -79,8 +81,9 @@ public class ManagerService {
      */
     @Transactional
     public Manager updateManager(int id, String aUsername, String aEmail, String aPassword, String aPhone) {
-        Manager manager = repo.findManagerByRoleId(id);
+       Manager manager = repo.findManagerByRoleId(id);
 
+        if (manager== null) {
             throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Manager with ID " + id + " does not exist."));
 
         }
@@ -114,11 +117,9 @@ public class ManagerService {
     @Transactional
     public void deleteManager(int id) {
         Manager manager = repo.findManagerByRoleId(id);
-
         if (manager == null) {
             throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Manager with ID " + id + " does not exist."));
         }
-
         repo.delete(manager);
     }
 }

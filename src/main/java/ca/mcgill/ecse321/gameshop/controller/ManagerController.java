@@ -3,7 +3,6 @@ package ca.mcgill.ecse321.gameshop.controller;
 /**
  * @author Joseph
  */
-import ca.mcgill.ecse321.gameshop.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ca.mcgill.ecse321.gameshop.dto.ManagerRequestDto;
 import ca.mcgill.ecse321.gameshop.dto.ManagerResponseDto;
-import ca.mcgill.ecse321.gameshop.service.*;
+import ca.mcgill.ecse321.gameshop.model.Manager;
+import ca.mcgill.ecse321.gameshop.model.Person;
+import ca.mcgill.ecse321.gameshop.repository.PersonRepository;
+import ca.mcgill.ecse321.gameshop.service.ManagerService;
 
 @RestController
 public class ManagerController {

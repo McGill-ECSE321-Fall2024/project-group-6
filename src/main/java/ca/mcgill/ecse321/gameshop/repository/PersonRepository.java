@@ -9,7 +9,3 @@ public interface PersonRepository extends CrudRepository<Person, Integer> {
     public Person findPersonByUserId(int userId);
     public Person findPersonByEmail(String email);
 }
-
-
-
-
