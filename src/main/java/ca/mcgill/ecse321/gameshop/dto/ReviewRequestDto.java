@@ -1,25 +1,23 @@
 package ca.mcgill.ecse321.gameshop.dto;
 
 import ca.mcgill.ecse321.gameshop.model.Review;
-import jakarta.validation.constraints.NotBlank;
 
 public class ReviewRequestDto {
     // Review attributes
-    @NotBlank(message="Rating is required.")
     private Review.StarRating rating;
-    @NotBlank(message="Comment is required.")
     private String comment;
-    @NotBlank(message="Likes are required.")
     private int amountOfLikes;
+    private String reply;
 
     @SuppressWarnings("unused")
-    public ReviewRequestDto() {
+    private ReviewRequestDto() {
     }
 
-    public ReviewRequestDto(Review.StarRating aRating, String aComment, int aAmountOfLikes) {
+    public ReviewRequestDto(Review.StarRating aRating, String aComment, int aAmountOfLikes, String aReply) {
         this.rating = aRating;
         this.comment = aComment;
         this.amountOfLikes = aAmountOfLikes;
+        this.reply = aReply;
     }
 
     public Review.StarRating getRating() {
@@ -33,4 +31,6 @@ public class ReviewRequestDto {
     public int getAmountOfLikes() {
         return amountOfLikes;
     }
+
+    public String getReply() { return reply; }
 }

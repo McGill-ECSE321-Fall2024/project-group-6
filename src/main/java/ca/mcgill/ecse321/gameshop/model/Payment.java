@@ -3,12 +3,10 @@
 
 
 package ca.mcgill.ecse321.gameshop.model;
+import java.util.*;
+
 
 import jakarta.persistence.*;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 /**
  * Payment class
  */
@@ -54,7 +52,7 @@ public class Payment
     commands = new ArrayList<Command>();
 
   }
-  public Payment(String aBillingAddress, int aCreditCardNb, String aExpirationDate, int aCvc,  Customer aCustomer)
+  public Payment(String aBillingAddress, long aCreditCardNb, String aExpirationDate, int aCvc,  Customer aCustomer)
   {
     billingAddress = aBillingAddress;
     creditCardNb = aCreditCardNb;

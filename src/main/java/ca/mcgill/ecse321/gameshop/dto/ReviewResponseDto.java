@@ -8,6 +8,7 @@ public class ReviewResponseDto {
     private String comment;
     private int amountOfLikes;
     private int reviewId;
+    private String reply;
 
     public ReviewResponseDto() {
     }
@@ -17,6 +18,7 @@ public class ReviewResponseDto {
         this.comment = review.getComment();
         this.amountOfLikes = review.getAmountOfLikes();
         this.reviewId = review.getReviewId();
+        this.reply = review.getReply();
     }
 
     public Review.StarRating getRating() {
@@ -33,6 +35,10 @@ public class ReviewResponseDto {
 
     public int getReviewId() {
         return reviewId;
+    }
+
+    public String getReply() {
+        return reply;
     }
 }
 

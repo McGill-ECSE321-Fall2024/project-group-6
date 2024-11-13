@@ -25,7 +25,7 @@ public class PaymentController {
 
     /**
      * Return the new payment
-     *
+     * @author Annabelle Huynh-Rondeau
      * @param payment The payment object.
      * @return The new payment object.
      */
@@ -37,7 +37,7 @@ public class PaymentController {
 
     /**
      * Return all payments in the DB.
-     *
+     * @author Annabelle Huynh-Rondeau
      * @return Return all payments.
      */
     @GetMapping("/payment")
@@ -77,8 +77,8 @@ public class PaymentController {
 
     /**
      * Delete the payment with the given id.
-     * 
-     *@param paymentId the id of the payment to delete.
+     * @author Annabelle Huynh-Rondeau
+     *@param "/payment/{Id}" the id of the payment to delete.
      * @return The response DTO of the payment deletion.
      */
     @DeleteMapping("/payment/{id}")

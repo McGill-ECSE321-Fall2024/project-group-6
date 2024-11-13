@@ -1,14 +1,13 @@
 package ca.mcgill.ecse321.gameshop.dto;
 
-import jakarta.validation.constraints.NotBlank;
+/**
+ * @author Annabelle Huynh-Rondeau
+ */
 
 public class PaymentRequestDto {
     //Payment attributes
-    @NotBlank(message="Billing Address is required.")
     private String billingAddress;
-    @NotBlank(message="Credit card number is required.")
     private long creditCardNumber;
-    @NotBlank(message="Expiration date is required.")
     private String expirationDate;
     @NotBlank(message="CVC is required.")
     private int cvc;
@@ -22,6 +21,8 @@ public class PaymentRequestDto {
         this.expirationDate = expirationDate;
         this.cvc = cvc;
     }
+
+    //GETTERS
 
     public String getBillingAddress() {
         return billingAddress;

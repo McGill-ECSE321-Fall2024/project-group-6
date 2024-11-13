@@ -47,7 +47,6 @@ public class Game
   private List<Guest> guests;
   @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
   private List<Category> categories;
-
   //------------------------
   // CONSTRUCTOR
   //------------------------
@@ -120,6 +119,15 @@ public class Game
       throw new RuntimeException("Unable to create Game, must have at least 1 categories. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
     }
   }
+//(aName,aDescription,aPrice,aStockQuantity,aPhotoURL,tobeAdded,allCategories)
+public Game(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,  boolean aToBeAdded, Category... allCategories)
+{
+  name = aName;
+  description = aDescription;
+  price = aPrice;
+  stockQuantity = aStockQuantity;
+  photoURL = aPhotoURL;
+  toBeAdded = aToBeAdded;
 
   //(aName,aDescription,aPrice,aStockQuantity,aPhotoURL,tobeAdded,allCategories)
   public Game(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL, List<Category> allCategories)
@@ -414,7 +422,7 @@ public class Game
   }
   /* Code from template association_AddIndexControlFunctions */
   public boolean addReviewAt(Review aReview, int index)
-  {
+  {  
     boolean wasAdded = false;
     if(addReview(aReview))
     {
@@ -437,8 +445,8 @@ public class Game
       reviews.remove(aReview);
       reviews.add(index, aReview);
       wasAdded = true;
-    }
-    else
+    } 
+    else 
     {
       wasAdded = addReviewAt(aReview, index);
     }
@@ -691,8 +699,8 @@ public class Game
       categories.remove(aCategory);
       categories.add(index, aCategory);
       wasAdded = true;
-    }
-    else
+    } 
+    else 
     {
       wasAdded = addCategoryAt(aCategory, index);
     }
