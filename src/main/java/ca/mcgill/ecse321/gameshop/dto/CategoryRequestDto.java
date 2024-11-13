@@ -1,19 +1,20 @@
 package ca.mcgill.ecse321.gameshop.dto;
 
-import ca.mcgill.ecse321.gameshop.model.Game;
-
-import java.util.List;
-
 public class CategoryRequestDto {
-    private String name;
-    private List<Game> games;
+
+    public String name;
+
+
+    public CategoryRequestDto() {}
+
+    public CategoryRequestDto(String title){
+        this.name=title;
+    }
 
     public String getCategoryName(){
-        return name;
+        return this.name;
     }
-    public List<Game> getCategoryGames(){
-        return games;
-    }
+
     public void setName(String newName){
         this.name=newName;
     }

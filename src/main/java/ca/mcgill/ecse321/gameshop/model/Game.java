@@ -65,7 +65,7 @@ public Game(){
     categories = new ArrayList<Category>();
 
   }
-  public Game(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,  boolean aToBeAdded, boolean aToBeRemoved, float aPromotion, Category... allCategories)
+  public Game(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,  boolean aToBeAdded, boolean aToBeRemoved, float aPromotion, List<Category> categories)
   {
     //aName, aDescription, aPrice, aStockQuantity, aPhotoURL,  aToBeAdded, aToBeRemoved, aManager, this, allCategories
     name = aName;
@@ -78,17 +78,13 @@ public Game(){
     promotion=aPromotion;
     reviews = new ArrayList<Review>();
 
-    boolean didAddCategories = setCategories(allCategories);
-    if (!didAddCategories)
-    {
-      throw new RuntimeException("Unable to create Game, must have at least 1 categories. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
-    }
+
     guests = new ArrayList<Guest>();
     categories = new ArrayList<Category>();
 
   }
 
-  public Game(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,  boolean aToBeAdded, boolean aToBeRemoved, float aPromotion, Manager aManager, Employee aCreator, Category... allCategories)
+  public Game(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,  boolean aToBeAdded, boolean aToBeRemoved, float aPromotion, Manager aManager, Employee aCreator, List <Category> categories)
   {
     //aName, aDescription, aPrice, aStockQuantity, aPhotoURL,  aToBeAdded, aToBeRemoved, aManager, this, allCategories
     name = aName;
@@ -100,40 +96,35 @@ public Game(){
     toBeRemoved = aToBeRemoved;
     promotion=aPromotion;
     reviews = new ArrayList<Review>();
-    boolean didAddManager = setManager(aManager);
-    if (!didAddManager)
-    {
-      throw new RuntimeException("Unable to create game due to manager. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
-    }
+
     boolean didAddCreator = setCreator(aCreator);
-    if (!didAddCreator)
-    {
-      throw new RuntimeException("Unable to create created due to creator. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
-    }
-    guests = new ArrayList<Guest>();
-    categories = new ArrayList<Category>();
-    boolean didAddCategories = setCategories(allCategories);
+    boolean didAddCategories = setCategories(categories);
     if (!didAddCategories)
     {
       throw new RuntimeException("Unable to create Game, must have at least 1 categories. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
     }
+    guests = new ArrayList<Guest>();
+    categories = new ArrayList<Category>();
+
   }
+
+
 //(aName,aDescription,aPrice,aStockQuantity,aPhotoURL,tobeAdded,allCategories)
-public Game(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,  boolean aToBeAdded, Category... allCategories)
+public Game(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL, List<Category> aCategories)
 {
   name = aName;
   description = aDescription;
   price = aPrice;
   stockQuantity = aStockQuantity;
   photoURL = aPhotoURL;
-  toBeAdded = aToBeAdded;
+
 
   reviews = new ArrayList<Review>();
 
 
   guests = new ArrayList<Guest>();
   categories = new ArrayList<Category>();
-  boolean didAddCategories = setCategories(allCategories);
+  boolean didAddCategories = setCategories(aCategories);
   if (!didAddCategories)
   {
     throw new RuntimeException("Unable to create Game, must have at least 1 categories. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
@@ -624,7 +615,7 @@ public Game(String aName, String aDescription, float aPrice, int aStockQuantity,
     return wasRemoved;
   }
   /* Code from template association_SetMStarToMany */
-  public boolean setCategories(Category... newCategories)
+  public boolean setCategories(List<Category>newCategories)
   {
     boolean wasSet = false;
     ArrayList<Category> verifiedCategories = new ArrayList<Category>();
@@ -637,7 +628,7 @@ public Game(String aName, String aDescription, float aPrice, int aStockQuantity,
       verifiedCategories.add(aCategory);
     }
 
-    if (verifiedCategories.size() != newCategories.length || verifiedCategories.size() < minimumNumberOfCategories())
+    if (verifiedCategories.size() != newCategories.size() || verifiedCategories.size() < minimumNumberOfCategories())
     {
       return wasSet;
     }

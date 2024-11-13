@@ -30,6 +30,8 @@ import ca.mcgill.ecse321.gameshop.repository.*;
 public class EmployeeServiceTests {
     @Mock
     private EmployeeRepository mockRepo;
+    @Mock
+    private PersonRepository repo;
     @InjectMocks
     private EmployeeService service;
 
@@ -45,7 +47,7 @@ public class EmployeeServiceTests {
         // Arrange
         // Whenever mockRepo.save(p) is called, return p
         when(mockRepo.save(any(Employee.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
-
+        when(repo.save(any(Person.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
 
         Employee createdEmployee = service.addEmployee(VALID_NAME, VALID_EMAIL,VALID_PHONE, VALID_PASSWORD);
 
@@ -396,6 +398,7 @@ public class EmployeeServiceTests {
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Task can not be null", ex.getMessage());
     }
+    /*
     @Test
     public void testGetAllTasksOfEmployeeWithValidId() {
 
@@ -424,6 +427,8 @@ public class EmployeeServiceTests {
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Employee with ID " + ID + " does not exist.", ex.getMessage());
     }
+
+     */
 
 
 }

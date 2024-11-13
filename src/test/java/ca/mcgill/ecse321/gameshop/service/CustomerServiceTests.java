@@ -30,6 +30,9 @@ import ca.mcgill.ecse321.gameshop.repository.*;
 public class CustomerServiceTests {
     @Mock
     private CustomerRepository mockRepo;
+    @Mock
+    private PersonRepository repo;
+
     @InjectMocks
     private CustomerService service;
 
@@ -46,6 +49,7 @@ public class CustomerServiceTests {
         // Arrange
         // Whenever mockRepo.save(p) is called, return p
         when(mockRepo.save(any(Customer.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
+        when(repo.save(any(Person.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
 
         // Act
         Person person= new Person(VALID_NAME, VALID_EMAIL,VALID_PASSWORD, VALID_PHONE);
@@ -435,6 +439,7 @@ public class CustomerServiceTests {
       //  String aName, String aDescription, float aPrice, int aStockQuantity,String aPhotoURL
         when(mockRepo.findCustomerByRoleId(ID)).thenReturn(exstingCustomer);
         // Mock the save method to return the updated person when save() is called
+
         when(mockRepo.save(any(Customer.class))).thenAnswer((InvocationOnMock iom) -> {
             Customer updatedCustomer = iom.getArgument(0);
             updatedCustomer.getPerson().setUsername(updatedName);
@@ -443,6 +448,7 @@ public class CustomerServiceTests {
             updatedCustomer.getPerson().setPhone(updatedPhone);
             return updatedCustomer;
         });
+        //when(gameRepo.save(any(Game.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
 
         // Act
         Customer updatedCustomerCartAfterAddition = service.addGameToCustomerCart(ID,game);
@@ -465,6 +471,7 @@ public class CustomerServiceTests {
 
         Game game= new Game("FC 24","Soccer Game",50.0F,1,"https://image.peg");
         //  String aName, String aDescription, float aPrice, int aStockQuantity,String aPhotoURL
+        //when(gameRepo.save(any(Game.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
         when(mockRepo.findCustomerByRoleId(ID)).thenReturn(existingCustomer);
         // Mock the save method to return the updated person when save() is called
 

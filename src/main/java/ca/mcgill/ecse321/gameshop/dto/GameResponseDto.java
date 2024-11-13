@@ -22,6 +22,9 @@ public class GameResponseDto {
 
     private List<Category> categories;
 
+    public GameResponseDto() {
+
+    }
 
     public GameResponseDto(Game game) {
         this.gameId=game.getGameId();

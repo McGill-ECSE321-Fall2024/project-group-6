@@ -61,6 +61,7 @@ public class EmployeeService {
         if(username==null){
             throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Username can not be null"));
         }
+        personrepo.save(person);
         return repo.save(employee);
     }
 
@@ -127,6 +128,8 @@ public class EmployeeService {
 
         return repo.save(employee);
     }
+
+   /*
     @Transactional
     public List<String> getTasks(int id) {
         Employee employeeFromDB= repo.findEmployeeByRoleId(id);
@@ -135,23 +138,11 @@ public class EmployeeService {
         }
         return employeeFromDB.getAssignedTasks();
     }
-/*
-    @Transactional
-    public void deleteTask(int id,String task) {
-        Employee employeeFromDB= repo.findEmployeeByRoleId(id);
-        List<String> assignedTasks=  employeeFromDB.getAssignedTasks();
-        for(int i=0;i<assignedTasks.size();i++){
-            if(assignedTasks.get(i).equals(task)){
-                assignedTasks.remove(i);
-                break;
-            }
-        }
-        employeeFromDB.setAssignedTasks(assignedTasks);
-        repo.save(employeeFromDB);
 
-    }
+    */
 
- */
+
+
 
 
 }

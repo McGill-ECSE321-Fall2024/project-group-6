@@ -4,7 +4,7 @@ import ca.mcgill.ecse321.gameshop.model.*;
 import jakarta.validation.constraints.NotBlank;
 
 import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class GameRequestDto {
 
@@ -25,7 +25,7 @@ public class GameRequestDto {
     private float promotion;
     private List<Category> categories;
 
-    public GameRequestDto(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,  boolean aToBeAdded, boolean aToBeRemoved, float aPromotion,Category... allCategories) {
+    public GameRequestDto(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,  boolean aToBeAdded, boolean aToBeRemoved, float aPromotion,List<Category> categories) {
         this.description = aDescription;
         this.name = aName;
         this.photoURL = aPhotoURL;
@@ -34,8 +34,10 @@ public class GameRequestDto {
         this.toBeAdded = aToBeAdded;
         this.toBeRemoved = aToBeRemoved;
         this.stockQuantity =aStockQuantity;
-        this.categories= List.of(allCategories);
+        this.categories=categories;
     }
+
+
 
     public boolean setName(String aName) {
         boolean wasSet = false;

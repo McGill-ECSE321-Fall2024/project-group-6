@@ -33,8 +33,12 @@ public class ManagerService {
 
     @Transactional
     public Manager createManager(Person person) {
-        Manager manager = new Manager(person);
 
+        Manager manager = new Manager(person);
+        List<Manager> managers= (List<Manager>) repo.findAll();
+        if(managers.size()==1){
+            throw new GameShopException(HttpStatus.UNAUTHORIZED, String.format("Manager already exists"));
+        }
         if(manager.getPerson().getPassword().length()<10){
             throw new GameShopException(HttpStatus.LENGTH_REQUIRED, String.format("Password needs to be at least 10 characters long"));
         }
@@ -48,6 +52,7 @@ public class ManagerService {
         if(manager.getPerson().getUsername()==null){
             throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Username can not be null"));
         }
+        personRepo.save(person);
         return repo.save(manager);
     }
 

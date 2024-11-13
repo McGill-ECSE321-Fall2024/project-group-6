@@ -30,6 +30,8 @@ public class ManagerIntegrationTests {
     private TestRestTemplate client;
     @Autowired
     private ManagerRepository repo;
+@Autowired
+private PersonRepository personRepo;
 
     private static final String VALID_NAME = "Bob";
     private static final String VALID_EMAIL = "jordan@mail.mcgill.ca";
@@ -40,6 +42,7 @@ public class ManagerIntegrationTests {
     @AfterAll
     public void clearDatabase() {
         repo.deleteAll();
+        personRepo.deleteAll();
     }
 
     @SuppressWarnings("null")
@@ -60,6 +63,7 @@ public class ManagerIntegrationTests {
         assertEquals(VALID_EMAIL, response.getBody().getEmail());
         assertEquals(VALID_PHONE, response.getBody().getPhone());
     }
+
 
     @SuppressWarnings("null")
     @Test
@@ -170,5 +174,20 @@ public class ManagerIntegrationTests {
         // Assert
         assertNotNull(response);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+    @Test
+    @Order(8)
+    public void testCreateManagerWithInvalidPassword() {
+        // Arrange
+        String email="z@mcgill.ca";
+        ManagerRequestDto request = new ManagerRequestDto(VALID_NAME, email,  VALID_PHONE, "123");
+
+        // Act
+        ResponseEntity<ManagerResponseDto> response = client.postForEntity("/manager", request, ManagerResponseDto.class);
+
+        // Assert
+        assertNotNull(response);
+        assertEquals(HttpStatus.LENGTH_REQUIRED, response.getStatusCode());
+
     }
 }

@@ -8,6 +8,8 @@ import static org.mockito.Mockito.when;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -27,6 +29,8 @@ import ca.mcgill.ecse321.gameshop.repository.*;
 public class ManagerServiceTests {
     @Mock
     private ManagerRepository mockRepo;
+    @Mock
+    private PersonRepository repo;
     @InjectMocks
     private ManagerService service;
 
@@ -42,6 +46,7 @@ public class ManagerServiceTests {
         // Arrange
         // Whenever mockRepo.save(p) is called, return p
         when(mockRepo.save(any(Manager.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
+        when(repo.save(any(Person.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
 
         // Act
         Person person= new Person(VALID_NAME, VALID_EMAIL,VALID_PASSWORD, VALID_PHONE);
@@ -54,6 +59,35 @@ public class ManagerServiceTests {
         assertEquals(VALID_PASSWORD, createdManager.getPerson().getPassword());
         assertEquals(VALID_PHONE, createdManager.getPerson().getPhone());
         verify(mockRepo, times(1)).save(createdManager);
+    }
+    @Test
+    public void testCreateMoreThanOneManager() {
+        // Arrange
+        // Whenever mockRepo.save(p) is called, return p
+        when(mockRepo.save(any(Manager.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
+        when(repo.save(any(Person.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
+        // Act
+        String email = "joker@aol.com";
+        Person person= new Person(VALID_NAME, email,VALID_PASSWORD, VALID_PHONE);
+        Manager createdManager = service.createManager(person);
+        String email2 = "joke@aol.com";
+        Person person2= new Person(VALID_NAME, email2,VALID_PASSWORD, VALID_PHONE);
+        // Assert
+        List<Manager> managers= new ArrayList<>();
+        managers.add(createdManager);
+
+        assertNotNull(createdManager);
+        assertEquals(VALID_NAME, createdManager.getPerson().getUsername());
+        assertEquals(email, createdManager.getPerson().getEmail());
+        assertEquals(VALID_PASSWORD, createdManager.getPerson().getPassword());
+        assertEquals(VALID_PHONE, createdManager.getPerson().getPhone());
+
+        when(mockRepo.findAll()).thenReturn(managers);
+
+        GameShopException ex = assertThrows(GameShopException.class,
+                () -> service.createManager(person2));
+        assertEquals(HttpStatus.UNAUTHORIZED, ex.getStatus());
+        assertEquals("Manager already exists", ex.getMessage());
     }
     @Test
     public void testCreateManagerWithInvalidPhone() {

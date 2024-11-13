@@ -21,16 +21,29 @@ public class CustomerController {
 
     @Autowired
     private CustomerService customerService;
+    @Autowired
+    private GameService gameService;
 
 
 
     @PostMapping("/customers")
-    public CustomerResponseDto createEmployee(@Valid @RequestBody CustomerRequestDto customerToCreate) {
+    public CustomerResponseDto createCustomer(@Valid @RequestBody CustomerRequestDto customerToCreate) {
     Person person= new Person(customerToCreate.getUsername(),customerToCreate.getEmail(),customerToCreate.getPassword(),customerToCreate.getPhone());
         Customer customer = customerService.createCustomer(person,customerToCreate.getShippingAddress());
 
         return new CustomerResponseDto(customer);
     }
+
+    /**
+     * Only for testing purposes
+     * @return
+     */
+    @PostMapping("/customers/test")
+    public GameResponseDto createGameForCustomerTesting(@RequestBody GameRequestDto2 g){
+        Game game = customerService.addGame(g.getName(), g.getDescription(), g.getPrice(), g.getStockQuantity(), g.getPhotoURL());
+        return new GameResponseDto(game);
+    }
+
 
 
     @GetMapping("/customers/{cid}")
@@ -58,40 +71,51 @@ public class CustomerController {
 
     @PutMapping("/customers/{cid}")
     public CustomerResponseDto updateCustomer(@PathVariable int cid, @RequestBody CustomerRequestDto customer) {
-       Customer c = customerService.updateCustomer(cid, customer.getUsername(),customer.getEmail(),customer.getPhone(),customer.getPassword(),customer.getShippingAddress());
+       Customer c = customerService.updateCustomer(cid, customer.getUsername(),customer.getEmail(),customer.getPassword(),customer.getPhone(),customer.getShippingAddress());
 
         return new CustomerResponseDto(c);
     }
     @PutMapping("/customers/{cid}/cart")
-    public CustomerResponseDto addGameToCart(@PathVariable int cid, Game game) {
-        Customer c = customerService.addGameToCustomerCart(cid,game);
-        return new CustomerResponseDto(c);
-    }
+    public CustomerResponseDto addGameToCart(@PathVariable int cid, @RequestBody String name) {
 
+            Game g = gameService.getGameByName(name);
+            Customer c = customerService.addGameToCustomerCart(cid, g);
+            return new CustomerResponseDto(c);
+        }
+
+
+/*
     @GetMapping("/customers/{cid}/cart")
     public List <Game> getAllGamesInCart(@PathVariable int cid) {
 
         return customerService.getCustomerCart(cid);
     }
+
+ */
     @PutMapping("/customers/{cid}/cart/game")
-    public CustomerResponseDto DeleteGameFromCart(@PathVariable int cid, Game game) {
-        Customer c = customerService.deleteGameFromCustomerCart(cid,game);
+    public CustomerResponseDto DeleteGameFromCart(@PathVariable int cid, @RequestBody String name) {
+        Game g = gameService.getGameByName(name);
+        Customer c = customerService.deleteGameFromCustomerCart(cid, g);
         return new CustomerResponseDto(c);
     }
     @PutMapping("/customers/{cid}/wishlist")
-    public CustomerResponseDto addGameToWishlist(@PathVariable int cid, Game game) {
-        Customer c = customerService.addGameToCustomerWishList(cid,game);
+    public CustomerResponseDto addGameToWishlist(@PathVariable int cid, @RequestBody String name) {
+        Game g = gameService.getGameByName(name);
+        Customer c = customerService.addGameToCustomerWishList(cid, g);
         return new CustomerResponseDto(c);
     }
-
+/*
     @GetMapping("/customers/{cid}/wishlist")
     public List <Game> getAllGamesInWishlist(@PathVariable int cid) {
 
         return customerService.getCustomerWishlist(cid);
     }
+
+ */
     @PutMapping("/customers/{cid}/wishlist/game")
-    public CustomerResponseDto DeleteGameFromWishlist(@PathVariable int cid, Game game) {
-        Customer c = customerService.deleteGameFromCustomerWishList(cid,game);
+    public CustomerResponseDto DeleteGameFromWishlist(@PathVariable int cid, @RequestBody String name) {
+        Game g = gameService.getGameByName(name);
+        Customer c = customerService.deleteGameFromCustomerWishList(cid, g);
         return new CustomerResponseDto(c);
     }
 

@@ -31,7 +31,7 @@ public class EmployeeController {
     @PostMapping("/employees")
     public EmployeeResponseDto createEmployee(@Valid @RequestBody EmployeeRequestDto employeeToCreate) {
 
-        Employee employee = employeeService.addEmployee(employeeToCreate.getUsername(),employeeToCreate.getEmail(),employeeToCreate.getPassword(),employeeToCreate.getPhone());
+        Employee employee = employeeService.addEmployee(employeeToCreate.getUsername(),employeeToCreate.getEmail(),employeeToCreate.getPhone(),employeeToCreate.getPassword());
 
         return new EmployeeResponseDto(employee);
     }
@@ -60,10 +60,10 @@ public class EmployeeController {
      *
      * @param eid
      */
-    @DeleteMapping("/employees/{eid}")
-    public void deleteEmployee(@PathVariable int eid) {
-        employeeService.deactivateEmployee(eid);
-
+    @PutMapping("/employees/deactivate/{eid}")
+    public EmployeeResponseDto deleteEmployee(@PathVariable int eid) {
+       Employee employee= employeeService.deactivateEmployee(eid);
+        return new EmployeeResponseDto(employee);
     }
 
     /**
@@ -74,7 +74,7 @@ public class EmployeeController {
      */
     @PutMapping("/employees/{eid}")
     public EmployeeResponseDto updateEmployee(@PathVariable int eid, @RequestBody EmployeeRequestDto employee) {
-        Employee e = employeeService.updateEmployee(eid, employee.getUsername(),employee.getEmail(),employee.getPhone(),employee.getPassword());
+        Employee e = employeeService.updateEmployee(eid, employee.getUsername(),employee.getEmail(), employee.getPassword(), employee.getPhone());
 
         return new EmployeeResponseDto(e);
     }
@@ -86,33 +86,19 @@ public class EmployeeController {
      * @return
      */
     @PutMapping("/employees/{eid}/tasks")
-    public EmployeeResponseDto assignTask(@PathVariable int eid, String task) {
+    public EmployeeResponseDto assignTask(@PathVariable int eid, @RequestBody String task) {
         Employee e = employeeService.assignTask(eid,task);
         return new EmployeeResponseDto(e);
     }
 
-    /**
-     *
-     * @param eid
-     * @return
-     */
+   /*
     @GetMapping("/employees/{eid}/tasks")
     public List <String> getAllTasks(@PathVariable int eid) {
 
         return employeeService.getTasks(eid);
     }
 
-    /**
-     *
-     * @param eid
-     * @param taskToDelete
-     */
-/*
-    @DeleteMapping("/employees/{eid}/tasks")
-    public void deleteTask(@PathVariable int eid,String taskToDelete) {
+    */
 
-        employeeService.deleteTask(eid,taskToDelete);
-    }
 
- */
 }

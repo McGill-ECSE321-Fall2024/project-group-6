@@ -12,49 +12,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
+//@RequestMapping("/categories")
 public class CategoryController {
     @Autowired
     private CategoryService categoryService;
 
-    /**
-     *
-     * @param c
-     * @return
-     */
     @PostMapping("/categories")
     public CategoryResponseDto createCategory(@RequestBody CategoryRequestDto c){
+
         Category createdCategory = categoryService.createCategory(c.getCategoryName());
-        return  new CategoryResponseDto(createdCategory);
+
+        return new CategoryResponseDto(createdCategory);
+    }
+    @PutMapping("/categories/{ID}")
+    public CategoryResponseDto updateCategory(@PathVariable int ID, @RequestBody String name){
+        return new CategoryResponseDto(categoryService.updateCategory(ID,name));
     }
 
-    /**
-     *
-     * @param cId
-     * @param name
-     * @return
-     */
-    @PutMapping("/categories/{cId}/{name}")
-    public CategoryResponseDto updateCategory(@PathVariable int cId, @PathVariable String name){
-        return new CategoryResponseDto(categoryService.updateCategory(cId,name));
+    @GetMapping("/categories/{ID}")
+    public CategoryResponseDto findCategoryById(@PathVariable int ID){
+        return new CategoryResponseDto(categoryService.findCategoryById(ID));
     }
 
-    /**
-     *
-     * @param cId
-     * @return
-     */
-    @GetMapping("/categories/{cId}")
-    public CategoryResponseDto findCategoryById(@PathVariable int cId){
-        return new CategoryResponseDto(categoryService.findCategoryById(cId));
-    }
-
-    /**
-     *
-     * @param cId
-     * @return
-     */
     @GetMapping("/categories")
-    public CategoryListDto getAllCategories(@PathVariable int cId){
+    public CategoryListDto getAllCategories(){
         List<CategoryResponseDto> categories = new ArrayList<>();
         for (Category c: categoryService.getAllCategories()){
             categories.add(new CategoryResponseDto(c));
@@ -62,13 +43,9 @@ public class CategoryController {
         return new CategoryListDto(categories);
     }
 
-    /**
-     *
-     * @param cId
-     */
-    @DeleteMapping("/categories")
-    public void deleteCategory(@PathVariable int cId){
-        categoryService.deleteCategory(cId);
+    @DeleteMapping("/categories/{ID}")
+    public void deleteCategory(@PathVariable int ID){
+        categoryService.deleteCategory(ID);
     }
 
 

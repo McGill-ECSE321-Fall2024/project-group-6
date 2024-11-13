@@ -5,6 +5,10 @@ import java.util.List;
 public class EmployeeListDto {
     private List<EmployeeResponseDto> employees;
 
+    // Default constructor
+    public EmployeeListDto() {
+
+    }
     public EmployeeListDto(List<EmployeeResponseDto> employees) {
         this.employees = employees;
     }

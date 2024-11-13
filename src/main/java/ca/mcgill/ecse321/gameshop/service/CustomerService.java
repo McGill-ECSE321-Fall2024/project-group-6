@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import ca.mcgill.ecse321.gameshop.exception.GameShopException;
 import ca.mcgill.ecse321.gameshop.model.Customer;
 import ca.mcgill.ecse321.gameshop.model.Person;
-import ca.mcgill.ecse321.gameshop.repository.CustomerRepository;
+import ca.mcgill.ecse321.gameshop.repository.*;
 import jakarta.transaction.Transactional;
 
 import java.util.ArrayList;
@@ -19,6 +19,12 @@ public class CustomerService {
     // Inject CustomerRepository to handle database operations
     @Autowired
     private CustomerRepository customerRepo;
+    @Autowired
+    private PersonRepository personRepo;
+    @Autowired
+    private GameRepository gameRepo;
+
+
 
     // Create new customer and save it in the repository
     @Transactional
@@ -41,6 +47,7 @@ public class CustomerService {
         if(c.getShippingAddress()==null){
             throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Shipping address can not be null"));
         }
+        personRepo.save(aPerson);
         return customerRepo.save(c);
     }
 
@@ -120,12 +127,14 @@ public class CustomerService {
             throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Game can not be null"));
         }
         List<Game> gamesCart= customerFromDB.getCart();
+
         if(customerFromDB.getCart()==null){
             gamesCart=  new ArrayList<>();
+
         }
+
         gamesCart.add(game);
         customerFromDB.setCart(gamesCart);
-
         return customerRepo.save(customerFromDB);
     }
     @Transactional
@@ -161,6 +170,7 @@ public class CustomerService {
             gamesWishlist=  new ArrayList<>();
         }
         gamesWishlist.add(game);
+        //gameRepo.save(game);
         customerFromDB.setWishlist(gamesWishlist);
 
         return customerRepo.save(customerFromDB);
@@ -174,17 +184,14 @@ public class CustomerService {
         if(game==null){
             throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Game can not be null"));
         }
-        List<Game> gamesWishlist = customerFromDB.getCart();
+        List<Game> gamesWishlist = customerFromDB.getWishlist();
         if (gamesWishlist == null) {
             gamesWishlist = new ArrayList<>();
         }
 
-        for(int i=0; i<gamesWishlist.size();i++){
-            if(gamesWishlist.get(i).equals(game)){
-                gamesWishlist.remove(game);
-                break;
-            }
-        }
+        gamesWishlist.remove(game);
+
+
         customerFromDB.setWishlist(gamesWishlist);
 
         return customerRepo.save(customerFromDB);
@@ -206,5 +213,21 @@ public class CustomerService {
         }
 
         return customerFromDB.getWishlist();
+    }
+
+    /**
+     * This was added for integration testing purposes, nothing else
+     * @param aName
+     * @param aDescription
+     * @param aPrice
+     * @param aStockQuantity
+     * @param aPhotoURL
+     * @return
+     */
+    @Transactional
+    public Game addGame(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL) {
+
+        Game game= new Game(aName,aDescription,aPrice,aStockQuantity,aPhotoURL);
+        return gameRepo.save(game);
     }
 }

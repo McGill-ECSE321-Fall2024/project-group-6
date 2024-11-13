@@ -33,7 +33,7 @@ public class ManagerController {
         @PostMapping("/manager")
         public ManagerResponseDto createManager(@Valid @RequestBody ManagerRequestDto managerToCreate) {
             Person person= new Person(managerToCreate.getUsername(),managerToCreate.getEmail(),managerToCreate.getPassword(),managerToCreate.getPhone());
-            person=personRepo.save(person);
+
             Manager manager = managerService.createManager(person);
 
             return new ManagerResponseDto(manager);
