@@ -45,7 +45,7 @@ public class PersonController {
     public PersonListDto getAllPeople() {
         List<PersonResponseDto> people = new ArrayList<>();
 
-        for (Person p: personService.getAllPeople()) {
+        for (Person p : personService.getAllPeople()) {
             people.add(new PersonResponseDto(p));
         }
         

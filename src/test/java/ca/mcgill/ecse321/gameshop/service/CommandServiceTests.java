@@ -1,29 +1,28 @@
 package ca.mcgill.ecse321.gameshop.service;
 
 
-import ca.mcgill.ecse321.gameshop.exception.GameShopException;
-import ca.mcgill.ecse321.gameshop.model.Command;
-import ca.mcgill.ecse321.gameshop.model.Customer;
-import ca.mcgill.ecse321.gameshop.model.Game;
-import ca.mcgill.ecse321.gameshop.model.Person;
-import ca.mcgill.ecse321.gameshop.repository.CommandRepository;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
+import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 
-import java.sql.Date;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import ca.mcgill.ecse321.gameshop.exception.GameShopException;
+import ca.mcgill.ecse321.gameshop.model.Command;
+import ca.mcgill.ecse321.gameshop.model.Game;
+import ca.mcgill.ecse321.gameshop.repository.CommandRepository;
 
 
 @SpringBootTest
@@ -33,22 +32,17 @@ public class CommandServiceTests {
     private CommandRepository repo;
     @InjectMocks
     private CommandService service;
-    private float total =10;
+    private float total =99;
     private int ID=3;
-    private Date today= Date.valueOf(LocalDate.now());
+    private String today = "2024-01-02";
     private Game g1= new Game("R6", "Great game", 49, 6,"URL");
     private Game g2= new Game("Minecraft", "Great game", 50, 6,"URL");
-
-    private List<Game> cart = new ArrayList<>(List.of(g1,g2));
-    private List<Game> wishlist = new ArrayList<>();
-
-    private Customer  customer = new Customer(new Person("maissa","maissa@gmail.com","password","438777906"),"4555 milton",wishlist,cart );
 
     @Test
     public void testCreateValidCommand(){
         when(repo.save(any(Command.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
 
-        Command createdCommand = service.createCommand(customer);
+        Command createdCommand = service.createCommand(today, total);
 
         assertNotNull(createdCommand);
         assertEquals(g1.getPrice()+g2.getPrice(),createdCommand.getTotalPrice());
@@ -57,10 +51,10 @@ public class CommandServiceTests {
 
     @Test
     public void testCreateInvalidCommand(){
-        GameShopException ex= assertThrows(GameShopException.class,()-> service.createCommand(null));
+        GameShopException ex= assertThrows(GameShopException.class,()-> service.createCommand(null, -1));
 
-        assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
-        assertEquals("Command must belong to a customer.",ex.getMessage());
+        assertEquals(HttpStatus.BAD_REQUEST, ex.getStatus());
+        assertEquals("Phone number can not be null",ex.getMessage());
     }
 
     @Test

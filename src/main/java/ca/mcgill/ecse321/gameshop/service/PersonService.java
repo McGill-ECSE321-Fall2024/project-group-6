@@ -20,18 +20,20 @@ public class PersonService {
     public Person createPerson(String aUsername, String aEmail, String aPassword, String aPhone) {
         Person p = new Person(aUsername, aEmail, aPassword, aPhone);
 
-        if(aPassword.length() < 10){
-            throw new GameShopException(HttpStatus.LENGTH_REQUIRED, String.format("Password needs to be at least 10 characters long"));
-        }
-        if(aEmail == null){
-            throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Email can not be null"));
+        if (aPassword.length() < 10) {
+            throw new GameShopException(HttpStatus.BAD_REQUEST, String.format("Password needs to be at least 10 characters long"));
         }
 
-        if(aPhone == null){
-            throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Phone number can not be null"));
+        if (aEmail == null) {
+            throw new GameShopException(HttpStatus.BAD_REQUEST, String.format("Email can not be null"));
         }
-        if(aUsername == null){
-            throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Username can not be null"));
+
+        if (aPhone == null) {
+            throw new GameShopException(HttpStatus.BAD_REQUEST, String.format("Phone number can not be null"));
+        }
+        
+        if (aUsername == null) {
+            throw new GameShopException(HttpStatus.BAD_REQUEST, String.format("Username can not be null"));
         }
 
         return personRepo.save(p);

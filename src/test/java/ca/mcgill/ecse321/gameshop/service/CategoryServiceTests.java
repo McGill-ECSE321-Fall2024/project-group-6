@@ -1,24 +1,27 @@
 package ca.mcgill.ecse321.gameshop.service;
 
-import ca.mcgill.ecse321.gameshop.exception.GameShopException;
-import ca.mcgill.ecse321.gameshop.model.Category;
-import ca.mcgill.ecse321.gameshop.repository.CategoryRepository;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
+import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
-
-
+import ca.mcgill.ecse321.gameshop.exception.GameShopException;
+import ca.mcgill.ecse321.gameshop.model.Category;
+import ca.mcgill.ecse321.gameshop.repository.CategoryRepository;
 
 @SpringBootTest
 @MockitoSettings(strictness = Strictness.STRICT_STUBS)
@@ -48,17 +51,17 @@ public class CategoryServiceTests {
         Iterable<Category> categories = List.of(new Category(name));
         when(repo.findAll()).thenReturn(categories);
 
-        GameShopException ex = assertThrows(GameShopException.class,()-> service.createCategory(name));
+        GameShopException ex = assertThrows(GameShopException.class, ()-> service.createCategory(name));
 
-        assertEquals(HttpStatus.NOT_FOUND,ex.getStatus());
-        assertEquals("Category already exists.",ex.getMessage());
+        assertEquals(HttpStatus.BAD_REQUEST, ex.getStatus());
+        assertEquals("Category already exists.", ex.getMessage());
     }
 
     @Test
     public void testCreateInvalidCategory(){
         GameShopException ex = assertThrows(GameShopException.class, () -> service.createCategory(null));
 
-        assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
+        assertEquals(HttpStatus.BAD_REQUEST, ex.getStatus());
         assertEquals("Category name must not be empty.", ex.getMessage());
         verify(repo,never()).save(any(Category.class));
     }
@@ -79,7 +82,7 @@ public class CategoryServiceTests {
         GameShopException ex = assertThrows(GameShopException.class, () -> service.findCategoryById(-1));
 
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
-        assertEquals("The Category ID "+ -1 +"is not valid", ex.getMessage());
+        assertEquals("The Category With ID " + -1 + " is not valid.", ex.getMessage());
     }
 
     @Test
@@ -87,7 +90,7 @@ public class CategoryServiceTests {
         GameShopException ex = assertThrows(GameShopException.class, () -> service.findCategoryById(ID));
 
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
-        assertEquals("There is no Category with ID "+ ID+".", ex.getMessage());
+        assertEquals("The Category With ID " + ID + " is not valid.", ex.getMessage());
     }
 
     @Test
@@ -108,7 +111,7 @@ public class CategoryServiceTests {
         GameShopException ex = assertThrows(GameShopException.class, () -> service.updateCategory(ID,"Sports"));
 
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
-        assertEquals("There is no Category with ID"+ ID+".", ex.getMessage());
+        assertEquals("The Category With ID " + ID + " is not valid.", ex.getMessage());
     }
 
     @Test
@@ -121,7 +124,7 @@ public class CategoryServiceTests {
 
         GameShopException ex = assertThrows(GameShopException.class, () -> service.updateCategory(ID,"Sports"));
 
-        assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
+        assertEquals(HttpStatus.BAD_REQUEST, ex.getStatus());
         assertEquals("Category already exists.", ex.getMessage());
     }
 
@@ -139,7 +142,7 @@ public class CategoryServiceTests {
         GameShopException ex = assertThrows(GameShopException.class, () -> service.deleteCategory(-1));
 
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
-        assertEquals("The Category ID "+ -1 +"is not valid", ex.getMessage());
+        assertEquals("The Category With ID " + -1 + " is not valid.", ex.getMessage());
     }
 
     @Test
@@ -147,7 +150,7 @@ public class CategoryServiceTests {
         GameShopException ex = assertThrows(GameShopException.class, () -> service.deleteCategory(ID));
 
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
-        assertEquals("There is no Category with ID "+ ID+".", ex.getMessage());
+        assertEquals("The Category With ID " + ID + " is not valid.", ex.getMessage());
     }
 
     @Test

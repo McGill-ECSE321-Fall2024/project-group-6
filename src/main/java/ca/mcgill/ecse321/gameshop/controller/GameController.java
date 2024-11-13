@@ -25,9 +25,9 @@ public class GameController {
     @Autowired
     private GameService gameService;
 
-    @PostMapping("/employees/games")
-    public GameResponseDto createGameByEmployee(@RequestBody GameResponseDto g) {
-        Game game = gameService.addGame(g.getName(), g.getDescription(), g.getPrice(), g.getStockQuantity(), g.getPhotoURL(), (Category) g.getCategories());
+    @PostMapping("/games")
+    public GameResponseDto createGame(@RequestBody GameResponseDto g) {
+        Game game = gameService.addGame(g.getName(), g.getDescription(), g.getPrice(), g.getStockQuantity(), g.getPhotoURL(), g.getCategories());
         return new GameResponseDto(game);
     }
 
@@ -64,7 +64,7 @@ public class GameController {
 
     @PutMapping("/games/{id}")
     public GameResponseDto updateGame(@PathVariable int id, @RequestBody GameRequestDto game) {
-        Game g = gameService.updateGame(id, game.getName(), game.getDescription(), game.getPrice(), game.getStockQuantity(), game.getPhotoURL(), game.getToBeAdded(), game.getToBeRemoved(), game.getPromotion(), (Category) game.getCategories());
+        Game g = gameService.updateGame(id, game.getName(), game.getDescription(), game.getPrice(), game.getStockQuantity(), game.getPhotoURL(), game.getToBeAdded(), game.getToBeRemoved(), game.getPromotion(), game.getCategories());
         return new GameResponseDto(g);
     }
 

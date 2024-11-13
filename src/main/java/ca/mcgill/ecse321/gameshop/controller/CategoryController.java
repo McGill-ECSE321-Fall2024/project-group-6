@@ -19,48 +19,28 @@ import ca.mcgill.ecse321.gameshop.model.Category;
 import ca.mcgill.ecse321.gameshop.service.CategoryService;
 
 @RestController
-@RequestMapping("/categories")
+//@RequestMapping("/categories")
 public class CategoryController {
     @Autowired
     private CategoryService categoryService;
 
-    /**
-     *
-     * @param c
-     * @return
-     */
     @PostMapping("/categories")
     public CategoryResponseDto createCategory(@RequestBody CategoryRequestDto c){
+
         Category createdCategory = categoryService.createCategory(c.getCategoryName());
+
         return new CategoryResponseDto(createdCategory);
     }
-
-    /**
-     *
-     * @param cId
-     * @param name
-     * @return
-     */
-    @PutMapping("/categories/{cId}/{name}")
-    public CategoryResponseDto updateCategory(@PathVariable int cId, @PathVariable String name){
-        return new CategoryResponseDto(categoryService.updateCategory(cId,name));
+    @PutMapping("/categories/{ID}")
+    public CategoryResponseDto updateCategory(@PathVariable int ID, @RequestBody String name){
+        return new CategoryResponseDto(categoryService.updateCategory(ID,name));
     }
 
-    /**
-     *
-     * @param cId
-     * @return
-     */
-    @GetMapping("/categories/{cId}")
-    public CategoryResponseDto findCategoryById(@PathVariable int cId){
-        return new CategoryResponseDto(categoryService.findCategoryById(cId));
+    @GetMapping("/categories/{ID}")
+    public CategoryResponseDto findCategoryById(@PathVariable int ID){
+        return new CategoryResponseDto(categoryService.findCategoryById(ID));
     }
 
-    /**
-     *
-     * @param cId
-     * @return
-     */
     @GetMapping("/categories")
     public CategoryListDto getAllCategories(){
         List<CategoryResponseDto> categories = new ArrayList<>();
@@ -70,12 +50,10 @@ public class CategoryController {
         return new CategoryListDto(categories);
     }
 
-    /**
-     *
-     * @param cId
-     */
-    @DeleteMapping("/categories")
-    public void deleteCategory(@PathVariable int cId){
-        categoryService.deleteCategory(cId);
+    @DeleteMapping("/categories/{ID}")
+    public void deleteCategory(@PathVariable int ID){
+        categoryService.deleteCategory(ID);
     }
+
+
 }

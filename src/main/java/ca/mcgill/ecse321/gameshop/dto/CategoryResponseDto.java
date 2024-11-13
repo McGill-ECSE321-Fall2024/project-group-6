@@ -6,7 +6,8 @@ public class CategoryResponseDto {
     private int id;
     private String name;
 
-    public CategoryResponseDto() {
+    @SuppressWarnings("unused")
+    private CategoryResponseDto() {
     }
 
     public CategoryResponseDto(Category c){
@@ -20,11 +21,4 @@ public class CategoryResponseDto {
     public String getName(){
         return name;
     }
-
-
-    public void setName(String newName){
-        this.name=newName;
-    }
-
-
 }

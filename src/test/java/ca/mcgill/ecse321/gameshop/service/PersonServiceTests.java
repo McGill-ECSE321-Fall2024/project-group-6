@@ -67,7 +67,7 @@ public class PersonServiceTests {
 
         GameShopException ex = assertThrows(GameShopException.class,
                 () -> service.createPerson(VALID_NAME, email, VALID_PASSWORD, null));
-        assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
+        assertEquals(HttpStatus.BAD_REQUEST, ex.getStatus());
         assertEquals("Phone number can not be null", ex.getMessage());
     }
 
@@ -78,7 +78,7 @@ public class PersonServiceTests {
         GameShopException ex = assertThrows(GameShopException.class,
                 () -> service.createPerson(null, email, VALID_PASSWORD, VALID_PHONE));
 
-        assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
+        assertEquals(HttpStatus.BAD_REQUEST, ex.getStatus());
         assertEquals("Username can not be null", ex.getMessage());
     }
 
@@ -88,7 +88,7 @@ public class PersonServiceTests {
         // Whenever mockRepo.save(p) is called, return p
         GameShopException ex = assertThrows(GameShopException.class,
                 () -> service.createPerson(VALID_NAME, null, VALID_PASSWORD, VALID_PHONE));
-        assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
+        assertEquals(HttpStatus.BAD_REQUEST, ex.getStatus());
         assertEquals("Email can not be null", ex.getMessage());
     }
 
@@ -100,7 +100,7 @@ public class PersonServiceTests {
 
         GameShopException ex = assertThrows(GameShopException.class,
                 () -> service.createPerson(VALID_NAME, email, "123", VALID_PHONE));
-        assertEquals(HttpStatus.LENGTH_REQUIRED, ex.getStatus());
+        assertEquals(HttpStatus.BAD_REQUEST, ex.getStatus());
         assertEquals("Password needs to be at least 10 characters long", ex.getMessage());
     }
 

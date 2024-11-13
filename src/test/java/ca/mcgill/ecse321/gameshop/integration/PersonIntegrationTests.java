@@ -118,7 +118,7 @@ public class PersonIntegrationTests {
     public void testUpdatePersonByValidId() {
         // Arrange
         String updatedName = "UpdatedBob";
-        String updatedEmail = "updatedbob@mail.mcgill.ca";
+        String updatedEmail = "updated123@mail.mcgill.ca";
         String updatedPassword = "newpassword123";
         String updatedPhone = "+1(514)7654521";
 
@@ -135,7 +135,7 @@ public class PersonIntegrationTests {
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(updatedName, response.getBody().getUsername());
-        //assertEquals(updatedEmail, response.getBody().getEmail());
+        assertEquals(updatedEmail, response.getBody().getEmail());
         assertEquals(updatedPhone, response.getBody().getPhone());
     }
 
@@ -144,7 +144,7 @@ public class PersonIntegrationTests {
     public void testUpdatePersonByInvalidId() {
         // Arrange
         String updatedName = "UpdatedBob";
-        String updatedEmail = "updatedbob@mail.mcgill.ca";
+        String updatedEmail = "updatedbb@mail.mcgill.ca";
         String updatedPhone = "+1(514)7654521";
         String updatedPassword = "newpassword123";
 
@@ -191,7 +191,6 @@ public class PersonIntegrationTests {
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
-    @SuppressWarnings("null")
     @Test
     @Order(9)
     public void testCreateInvalidPerson() {
@@ -208,6 +207,6 @@ public class PersonIntegrationTests {
     
         // Assert
         assertNotNull(response);
-        assertEquals(HttpStatus.LENGTH_REQUIRED, response.getStatusCode());
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 }

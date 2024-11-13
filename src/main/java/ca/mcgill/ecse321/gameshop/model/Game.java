@@ -67,7 +67,7 @@ public Game(){
     categories = new ArrayList<Category>();
 
   }
-  public Game(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,  boolean aToBeAdded, boolean aToBeRemoved, float aPromotion, Category... allCategories)
+  public Game(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,  boolean aToBeAdded, boolean aToBeRemoved, float aPromotion, List<Category> allCategories)
   {
     //aName, aDescription, aPrice, aStockQuantity, aPhotoURL,  aToBeAdded, aToBeRemoved, aManager, this, allCategories
     name = aName;
@@ -90,7 +90,7 @@ public Game(){
 
   }
 
-  public Game(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,  boolean aToBeAdded, boolean aToBeRemoved, float aPromotion, Manager aManager, Employee aCreator, Category... allCategories)
+  public Game(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,  boolean aToBeAdded, boolean aToBeRemoved, float aPromotion, Manager aManager, Employee aCreator, List<Category> allCategories)
   {
     //aName, aDescription, aPrice, aStockQuantity, aPhotoURL,  aToBeAdded, aToBeRemoved, aManager, this, allCategories
     name = aName;
@@ -121,7 +121,7 @@ public Game(){
     }
   }
 //(aName,aDescription,aPrice,aStockQuantity,aPhotoURL,tobeAdded,allCategories)
-public Game(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL, Category... allCategories)
+public Game(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL, List<Category> allCategories)
 {
   name = aName;
   description = aDescription;
@@ -626,7 +626,7 @@ public Game(String aName, String aDescription, float aPrice, int aStockQuantity,
     return wasRemoved;
   }
   /* Code from template association_SetMStarToMany */
-  public boolean setCategories(Category... newCategories)
+  public boolean setCategories(List<Category> newCategories)
   {
     boolean wasSet = false;
     ArrayList<Category> verifiedCategories = new ArrayList<Category>();
@@ -639,7 +639,7 @@ public Game(String aName, String aDescription, float aPrice, int aStockQuantity,
       verifiedCategories.add(aCategory);
     }
 
-    if (verifiedCategories.size() != newCategories.length || verifiedCategories.size() < minimumNumberOfCategories())
+    if (verifiedCategories.size() != newCategories.size() || verifiedCategories.size() < minimumNumberOfCategories())
     {
       return wasSet;
     }
@@ -667,8 +667,7 @@ public Game(String aName, String aDescription, float aPrice, int aStockQuantity,
     return wasSet;
   }
   /* Code from template association_AddIndexControlFunctions */
-  public boolean addCategoryAt(Category aCategory, int index)
-  {  
+  public boolean addCategoryAt(Category aCategory, int index) {
     boolean wasAdded = false;
     if(addCategory(aCategory))
     {

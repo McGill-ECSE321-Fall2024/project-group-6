@@ -1,10 +1,15 @@
 package ca.mcgill.ecse321.gameshop.integration;
 
 
-import ca.mcgill.ecse321.gameshop.dto.CategoryRequestDto;
-import ca.mcgill.ecse321.gameshop.dto.CategoryResponseDto;
-import ca.mcgill.ecse321.gameshop.repository.CategoryRepository;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -13,37 +18,43 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import static org.junit.jupiter.api.Assertions.*;
+import ca.mcgill.ecse321.gameshop.dto.CategoryRequestDto;
+import ca.mcgill.ecse321.gameshop.dto.CategoryResponseDto;
+import ca.mcgill.ecse321.gameshop.repository.CategoryRepository;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 
 public class CategoryIntegrationTests {
+
     @Autowired
     private TestRestTemplate client;
     @Autowired
     private CategoryRepository repo;
 
+
     private static final String name = "Action";
     private int ID;
-    String newName = "Sports";
+
 
     @AfterAll
     public void clearDatabase() {
         repo.deleteAll();
     }
 
+    @SuppressWarnings("null")
     @Test
     @Order(1)
     public void testCreateValidCategory() {
+
         // Arrange
         CategoryRequestDto category = new CategoryRequestDto(name);
 
+
         // Act
         ResponseEntity<CategoryResponseDto> response = client.postForEntity("/categories", category, CategoryResponseDto.class);
-        System.out.println(response.getBody());
-        System.out.println(response.getBody().getName());
+
 
         // Assert
         assertNotNull(response);
@@ -53,13 +64,12 @@ public class CategoryIntegrationTests {
         assertEquals(name, response.getBody().getName());
     }
 
+    @SuppressWarnings("null")
     @Test
     @Order(2)
     public void testGetValidCategoryById() {
         // Arrange
         String url = String.format("/categories/%d", this.ID);
-
-        System.out.println(String.format("URL: %s", url));
 
         // Act
         ResponseEntity<CategoryResponseDto> response = client.getForEntity(url, CategoryResponseDto.class);
@@ -89,12 +99,12 @@ public class CategoryIntegrationTests {
     @Order(4)
     public void testUpdateCategoryByValidId() {
         // Arrange
-
-        CategoryRequestDto updatedCategoryDto = new CategoryRequestDto(newName);
+        String newName = "Sports";
+        //CategoryRequestDto updatedCategoryDto = new CategoryRequestDto(newName);
         String url = String.format("/categories/%d", this.ID);
 
         // Act
-        client.put(url, updatedCategoryDto);
+        client.put(url, newName);
 
         // Fetch updated person
         ResponseEntity<CategoryResponseDto> response = client.getForEntity(url, CategoryResponseDto.class);
@@ -108,6 +118,7 @@ public class CategoryIntegrationTests {
     @Order(5)
     public void testUpdateCategoryByInvalidId() {
         // Arrange
+        String newName = "Sports";
         String url = String.format("/categories/%d", -1);
         CategoryRequestDto updatedCategoryDto = new CategoryRequestDto(newName);
 
@@ -150,9 +161,4 @@ public class CategoryIntegrationTests {
         assertNotNull(response);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
-
-
-
-
-
 }

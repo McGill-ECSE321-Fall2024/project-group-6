@@ -1,12 +1,14 @@
 package ca.mcgill.ecse321.gameshop.integration;
 
-import ca.mcgill.ecse321.gameshop.dto.CommandRequestDto;
-import ca.mcgill.ecse321.gameshop.dto.CommandResponseDto;
-import ca.mcgill.ecse321.gameshop.model.Customer;
-import ca.mcgill.ecse321.gameshop.model.Game;
-import ca.mcgill.ecse321.gameshop.model.Person;
-import ca.mcgill.ecse321.gameshop.repository.CommandRepository;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -14,12 +16,10 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.sql.Date;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
+import ca.mcgill.ecse321.gameshop.dto.CommandListDto;
+import ca.mcgill.ecse321.gameshop.dto.CommandRequestDto;
+import ca.mcgill.ecse321.gameshop.dto.CommandResponseDto;
+import ca.mcgill.ecse321.gameshop.repository.CommandRepository;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -31,50 +31,54 @@ public class CommandIntegrationTests {
     private CommandRepository repo;
 
     private static int ID;
-    private static final Date today= Date.valueOf(LocalDate.now());;
-
-    private final Game g1= new Game("R6", "Great game", 49, 6,"URL");
-    private final Game g2= new Game("Minecraft", "Great game", 50, 6,"URL");
-    private static final float total = 49+50;
-    private final List<Game> cart = new ArrayList<>(List.of(g1,g2));
-    private static final List<Game> wishlist = new ArrayList<>();
-
-    private final Customer tim = new Customer(new Person("Tim","Tim@gmail.com","password","438777906"),"4555 milton",wishlist,cart );
-
-
+    private static final String date = "2004-01-02";
+    private static final float total = 0;
 
     @AfterAll
-   public void clearDatabase() {
+    public void clearDatabase() {
         repo.deleteAll();
     }
 
-
-@SuppressWarnings("null")
+    @SuppressWarnings("null")
     @Test
     @Order(1)
     public void testCreateValidCommand() {
-
         // Arrange
-        CommandRequestDto command = new CommandRequestDto(tim);
+        CommandRequestDto command = new CommandRequestDto(total, date);
 
         // Act
-        ResponseEntity<CommandResponseDto> response = order.postForEntity("/commands", command, CommandResponseDto.class);
+        ResponseEntity<CommandResponseDto> response = order.postForEntity("/command", command, CommandResponseDto.class);
 
         // Assert
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertTrue(response.getBody().getId() > 0, "The ID should be positive.");
-
-        assertEquals(tim, response.getBody().getCustomer());
+        assertTrue(response.getBody().getCommandId() > 0, "The ID should be positive.");
+        ID = response.getBody().getCommandId();
         assertEquals(total, response.getBody().getTotal());
-        assertEquals(today, response.getBody().getCommandDate());
+        assertEquals(date, response.getBody().getCommandDate());
     }
-    @SuppressWarnings("null")
+
     @Test
     @Order(2)
-    public void testGetValidCommandById() {
+    public void testGetAllPeople() {
         // Arrange
-        String url = String.format("/commands/%d", this.ID);
+        // Act
+        ResponseEntity<CommandListDto> response = order.getForEntity("/command", CommandListDto.class);
+        CommandListDto commands = response.getBody();
+
+        // Assert
+        assertNotNull(commands);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(commands.getCommands());
+        assertTrue(!commands.getCommands().isEmpty(), "There should be at least 1 command returned.");
+    }
+
+    @SuppressWarnings("null")
+    @Test
+    @Order(3)
+    public void testGetCommandById() {
+        // Arrange
+        String url = String.format("/command/%d", ID);
 
         System.out.println(String.format("URL: %s", url));
 
@@ -84,16 +88,16 @@ public class CommandIntegrationTests {
         // Assert
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(this.ID, response.getBody().getId());
-        assertEquals(tim, response.getBody().getCustomer());
+        assertEquals(this.ID, response.getBody().getCommandId());
         assertEquals(total, response.getBody().getTotal());
-        assertEquals(today, response.getBody().getCommandDate());
+        assertEquals(date, response.getBody().getCommandDate());
     }
+
     @Test
-    @Order(3)
+    @Order(4)
     public void testGetCommandByInvalidId() {
         // Arrange
-        String url = String.format("/commands/%d", -1);
+        String url = String.format("/command/%d", -1);
 
         // Act
         ResponseEntity<CommandResponseDto> response = order.getForEntity(url, CommandResponseDto.class);
@@ -104,10 +108,10 @@ public class CommandIntegrationTests {
     }
 
     @Test
-    @Order(6)
+    @Order(5)
     public void testDeleteCommandByValidId() {
         // Arrange
-        String url = String.format("/commands/%d", this.ID);
+        String url = String.format("/command/%d", ID);
 
         // Act
         ResponseEntity<Void> response = order.exchange(url, HttpMethod.DELETE, null, Void.class);
@@ -122,10 +126,10 @@ public class CommandIntegrationTests {
     }
 
     @Test
-    @Order(7)
+    @Order(6)
     public void testDeleteCategoryByInvalidId() {
         // Arrange
-        String url = String.format("/commands/%d", -1);
+        String url = String.format("/command/%d", -1);
 
         // Act
         ResponseEntity<Void> response = order.exchange(url, HttpMethod.DELETE, null, Void.class);

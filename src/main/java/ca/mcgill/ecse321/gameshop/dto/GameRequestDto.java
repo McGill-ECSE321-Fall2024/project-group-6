@@ -1,10 +1,10 @@
 package ca.mcgill.ecse321.gameshop.dto;
 
-import ca.mcgill.ecse321.gameshop.model.*;
-import jakarta.validation.constraints.NotBlank;
-
 import java.util.Collections;
 import java.util.List;
+
+import ca.mcgill.ecse321.gameshop.model.Category;
+import jakarta.validation.constraints.NotBlank;
 
 public class GameRequestDto {
 
@@ -24,6 +24,11 @@ public class GameRequestDto {
     private boolean toBeRemoved;
     private float promotion;
     private List<Category> categories;
+
+    // Jackson needs a default constructor, but it doesn't need to be public
+    @SuppressWarnings("unused")
+    private GameRequestDto() {
+    }
 
     public GameRequestDto(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,  boolean aToBeAdded, boolean aToBeRemoved, float aPromotion,Category... allCategories) {
         this.description = aDescription;

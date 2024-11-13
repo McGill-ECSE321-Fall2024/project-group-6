@@ -15,9 +15,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
@@ -34,7 +36,11 @@ public class GameServiceTests {
     private int stock=5;
     private String photo="image";
     private boolean tobeAdded=true;
-    private Category categories=new Category("Action");
+    private List<Category> categories = new ArrayList<>(Arrays.asList(
+        new Category("Action"),
+        new Category("Adventure"),
+        new Category("Puzzle")
+    ));
     String newName ="Minecraft";
     String newDescription="Good game";
     float newPrice=30;
@@ -42,7 +48,12 @@ public class GameServiceTests {
     String newPhoto="new image";
     boolean tobeRemoved =false;
     boolean tobeAddedNew= false;
-    Category categoriesNew = new Category("Sports");
+    List<Category> categoriesNew = new ArrayList<>(Arrays.asList(
+        new Category("Action"),
+        new Category("Adventure"),
+        new Category("Puzzle"),
+        new Category("Crime")
+    ));
     float promotion=20;
     ArrayList<Category> categoryList = new ArrayList<>();
 
@@ -199,14 +210,6 @@ public class GameServiceTests {
 
     @Test
     public void testGetAllGames(){
-        String newName ="Minecraft";
-        String newDescription="Good game";
-        float newPrice=30;
-        int newStock=6;
-        String newPhoto="new image";
-        boolean tobeAddedNew= false;
-        Category categoriesNew = new Category("Action");
-
         Iterable<Game> games = List.of(new Game(name,description,price,stock,photo,categories),
                 new Game(newName,newDescription,newPrice,newStock,newPhoto,categoriesNew));
         when(repo.findAll()).thenReturn(games);
@@ -236,7 +239,7 @@ public class GameServiceTests {
         GameShopException ex = assertThrows(GameShopException.class, () -> service.getGame(-1));
 
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
-        assertEquals("The Game ID "+ -1 +"is not valid", ex.getMessage());
+        assertEquals("The Game ID "+ -1 +"is not valid.", ex.getMessage());
     }
 
     @Test
@@ -265,7 +268,7 @@ public class GameServiceTests {
         Game c=new Game(name,description,price,stock,photo,categories);
 
         when(repo.findAll()).thenReturn(List.of(c,new Game(name,description,price,stock,photo,new Category("Sports"))));
-        List<Game> games = service.getGamesByCategory(categories);
+        List<Game> games = service.getGamesByCategory(categories.get(1));
 
         List<Game> result = new ArrayList<>();
         result.add(c);

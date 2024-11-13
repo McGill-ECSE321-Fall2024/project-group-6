@@ -21,8 +21,8 @@ public class GameService {
     private GameRepository gameRepository;
 
     @Transactional
-    public Game addGame(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,Category... allCategories) {
-        if(aName == null) {
+    public Game addGame(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL, List<Category> allCategories) {
+        if (aName == null) {
             throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Name cannot be empty."));
         }
         
@@ -42,7 +42,7 @@ public class GameService {
             throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Game must have a photo."));
         }
         
-        else if (allCategories == null) {
+        else if (allCategories == null || allCategories.size() == 0) {
             throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Game must have at least one category."));
         }
 
@@ -52,7 +52,7 @@ public class GameService {
     }
 
     @Transactional
-    public Game updateGame(int id, String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL, boolean aToBeAdded, boolean tobeRemoved, float aPromotion, Category... allCategories) {
+    public Game updateGame(int id, String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL, boolean aToBeAdded, boolean tobeRemoved, float aPromotion, List<Category> allCategories) {
         Game game = gameRepository.findGameByGameId(id);
 
         if (game == null) {

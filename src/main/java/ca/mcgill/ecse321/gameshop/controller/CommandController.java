@@ -30,7 +30,7 @@ public class CommandController {
      */
     @PostMapping("/command")
     public CommandResponseDto createCommand(@RequestBody CommandRequestDto command) {
-        Command c = commandService.createCommand(command.getTotal());
+        Command c = commandService.createCommand(command.getCommandDate(), command.getTotal());
         return new CommandResponseDto(c);
     }
 
@@ -58,7 +58,7 @@ public class CommandController {
      */
     @GetMapping("/command/{id}")
     public CommandResponseDto getCommandById(@PathVariable int id){
-        Command c = commandService.getCommandById(id);
+        Command c = commandService.findCommandById(id);
         return new CommandResponseDto(c);
     }
 
