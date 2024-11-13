@@ -20,14 +20,13 @@ public class GameController {
 
     @PostMapping("/employees/games")
     public GameResponseDto createGameByEmployee(@RequestBody GameRequestDto g){
-        System.out.println("Controller");
         Game game = gameService.addGame(g.getName(), g.getDescription(), g.getPrice(), g.getStockQuantity(), g.getPhotoURL(), g.getCategories());
         return new GameResponseDto(game);
 
     }
 
 
-    @GetMapping("/games/{id}")
+    @GetMapping("/games/id/{id}")
     public GameResponseDto findGameById(@PathVariable int id){
         return new GameResponseDto(gameService.getGame(id));
     }
@@ -39,11 +38,11 @@ public class GameController {
         }
         return new GameListDto(games);
     }
-    @GetMapping("/games/{name}")
+    @GetMapping("/games/name/{name}")
     public GameResponseDto findGameByName(@PathVariable String name){
         return new GameResponseDto(gameService.getGameByName(name));
     }
-    @GetMapping("/games/{category}")
+    @GetMapping("/games/category/{category}")
     public GameListDto findGamesByCategory(@PathVariable Category category){
         List<GameResponseDto> games = new ArrayList<>();
         List<Game>gamesCopy= gameService.getGamesByCategory(category);

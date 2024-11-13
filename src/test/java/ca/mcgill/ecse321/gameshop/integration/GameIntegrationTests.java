@@ -3,7 +3,6 @@ package ca.mcgill.ecse321.gameshop.integration;
 import ca.mcgill.ecse321.gameshop.dto.GameRequestDto;
 import ca.mcgill.ecse321.gameshop.dto.GameResponseDto;
 import ca.mcgill.ecse321.gameshop.model.Category;
-import ca.mcgill.ecse321.gameshop.model.Game;
 import ca.mcgill.ecse321.gameshop.repository.CategoryRepository;
 import ca.mcgill.ecse321.gameshop.repository.GameRepository;
 import org.junit.jupiter.api.*;
@@ -43,9 +42,6 @@ public class GameIntegrationTests {
     private static final boolean toBeAdded = true;
     private static final boolean toBeRemoved = false;
     private static final float VALID_PROMOTION = -5F;
-    private static final Category category1 = new Category("mobile");
-    private static final Category category2 = new Category("relaxing");
-    private static final List<Category> categories = List.of(category1, category2);
 
     private static final String INVALID_NAME = "";
     private static final String INVALID_DESCRIPTION = "";
@@ -56,13 +52,12 @@ public class GameIntegrationTests {
     private int cat1ID;
     private int cat2ID;
 
-
     @AfterAll
     public void clearDatabase() {
         repo.deleteAll();
         categoryRepo.deleteAll();
     }
-    @BeforeEach
+   @BeforeEach
     public void setup() {
         // This ensures categories are available for testing
         Category category1 = new Category();
@@ -95,6 +90,7 @@ public class GameIntegrationTests {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         this.validId = response.getBody().getGameId();
+        System.out.println(this.validId);
         GameResponseDto createdGame = response.getBody();
         assertEquals(VALID_NAME, createdGame.getName());
         assertTrue(createdGame.getGameId() > 0, "Response should have a positive ID.");
@@ -105,7 +101,7 @@ public class GameIntegrationTests {
     @Order(2)
     public void testGetGameByValidId() {
         // Arrange
-        String url = String.format("/games/%d", this.validId);
+        String url = String.format("/games/id/%d", this.validId);
 
         // Act
         ResponseEntity<GameResponseDto> response = client.getForEntity(url, GameResponseDto.class);
@@ -121,7 +117,7 @@ public class GameIntegrationTests {
     @Order(3)
     public void testGetGameByInvalidId() {
         // Arrange
-        String url = String.format("/games/%d", -1);
+        String url = String.format("/games/id/%d", -1);
 
         // Act
         ResponseEntity<GameResponseDto> response = client.getForEntity(url, GameResponseDto.class);
@@ -143,7 +139,7 @@ public class GameIntegrationTests {
         int stock_quantity = 70;
         String photo_url = "subway_surfers2URL";
         List<Integer> categoryId = List.of(this.cat2ID);
-        Game updatedGame = new Game(name, description, price, stock_quantity, photo_url);
+        //Game updatedGame = new Game(name, description, price, stock_quantity, photo_url);
         GameRequestDto updatedGameDto = new GameRequestDto(name, description, price, stock_quantity, photo_url, toBeAdded, toBeRemoved, VALID_PROMOTION, categoryId);
         String url = String.format("/games/%d", this.validId);
 

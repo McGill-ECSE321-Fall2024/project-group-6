@@ -30,7 +30,7 @@ public class CategoryIntegrationTests {
     private CategoryRepository repo;
 
 
-    private static final String name = "Action";
+    private static String name = "Action";
     private int ID;
     String newName = "Sports";
 
@@ -49,7 +49,6 @@ public class CategoryIntegrationTests {
 
         // Act
         ResponseEntity<CategoryResponseDto> response = client.postForEntity("/categories", category, CategoryResponseDto.class);
-
 
         // Assert
         assertNotNull(response);
