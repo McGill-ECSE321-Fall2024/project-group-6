@@ -1,5 +1,7 @@
 package ca.mcgill.ecse321.gameshop.dto;
 
+import jakarta.validation.constraints.NotBlank;
+
 /**
  * @author Annabelle Huynh-Rondeau
  */
