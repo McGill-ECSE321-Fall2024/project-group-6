@@ -1,6 +1,7 @@
 package ca.mcgill.ecse321.gameshop.integration;
 
 
+import ca.mcgill.ecse321.gameshop.dto.CategoryListDto;
 import ca.mcgill.ecse321.gameshop.dto.CategoryRequestDto;
 import ca.mcgill.ecse321.gameshop.dto.CategoryResponseDto;
 import ca.mcgill.ecse321.gameshop.repository.CategoryRepository;
@@ -12,6 +13,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -91,11 +94,12 @@ public class CategoryIntegrationTests {
     public void testUpdateCategoryByValidId() {
         // Arrange
 
-        CategoryRequestDto updatedCategoryDto = new CategoryRequestDto(newName);
+        //CategoryRequestDto updatedCategoryDto = new CategoryRequestDto(newName);
         String url = String.format("/categories/%d", this.ID);
 
+
         // Act
-        client.put(url, updatedCategoryDto.getCategoryName());
+        client.put(url, newName);
 
         // Fetch updated person
         ResponseEntity<CategoryResponseDto> response = client.getForEntity(url, CategoryResponseDto.class);
@@ -119,9 +123,27 @@ public class CategoryIntegrationTests {
         assertNotNull(response);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
-
     @Test
     @Order(6)
+    public void testGetAllCategories() {
+        // Arrange
+        CategoryRequestDto request = new CategoryRequestDto("RPG");
+
+        // Act
+        client.postForEntity("/categories", request, CategoryResponseDto.class);
+
+        ResponseEntity<CategoryListDto> response = client.getForEntity("/categories", CategoryListDto.class);
+
+        //Assert
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        List<CategoryResponseDto> categories = response.getBody().getCategories();
+        assertEquals(newName, categories.get(0).getName());
+        assertEquals("RPG", categories.get(1).getName());
+    }
+
+    @Test
+    @Order(7)
     public void testDeleteCategoryByValidId() {
         // Arrange
         String url = String.format("/categories/%d", this.ID);
@@ -139,7 +161,7 @@ public class CategoryIntegrationTests {
     }
 
     @Test
-    @Order(7)
+    @Order(8)
     public void testDeleteCategoryByInvalidId() {
         // Arrange
         String url = String.format("/categories/%d", -1);
@@ -151,9 +173,5 @@ public class CategoryIntegrationTests {
         assertNotNull(response);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
-
-
-
-
 
 }

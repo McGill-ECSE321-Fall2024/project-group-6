@@ -22,9 +22,9 @@ public class CommandController {
         return new CommandResponseDto(createdCommand);
     }
 
-    @GetMapping("/commands/{cId}")
-    public CommandResponseDto findCommandById(@PathVariable int cId){
-        return new CommandResponseDto(commandService.findCommandById(cId));
+    @GetMapping("/commands/{ID}")
+    public CommandResponseDto findCommandById(@PathVariable int ID){
+        return new CommandResponseDto(commandService.findCommandById(ID));
     }
 
     @GetMapping("/commands")
@@ -36,8 +36,8 @@ public class CommandController {
         return new CommandListDto(commands);
     }
 
-    @DeleteMapping("/commands/{cId}")
-    public void deleteCommand(int cId){
-        commandService.deleteCommand(cId);
+    @DeleteMapping("/commands/{ID}")
+    public void deleteCommand(int ID){
+        commandService.deleteCommand(ID);
     }
 }

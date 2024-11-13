@@ -24,8 +24,8 @@ public class CategoryController {
 
         return new CategoryResponseDto(createdCategory);
     }
-    @PutMapping("/categories/{ID}/{name}")
-    public CategoryResponseDto updateCategory(@PathVariable int ID, @PathVariable String name){
+    @PutMapping("/categories/{ID}")
+    public CategoryResponseDto updateCategory(@PathVariable int ID, @RequestBody String name){
         return new CategoryResponseDto(categoryService.updateCategory(ID,name));
     }
 

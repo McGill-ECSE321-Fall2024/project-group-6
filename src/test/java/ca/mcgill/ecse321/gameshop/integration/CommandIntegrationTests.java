@@ -2,6 +2,7 @@ package ca.mcgill.ecse321.gameshop.integration;
 
 import ca.mcgill.ecse321.gameshop.dto.CommandRequestDto;
 import ca.mcgill.ecse321.gameshop.dto.CommandResponseDto;
+import ca.mcgill.ecse321.gameshop.dto.CustomerResponseDto;
 import ca.mcgill.ecse321.gameshop.model.Customer;
 import ca.mcgill.ecse321.gameshop.model.Game;
 import ca.mcgill.ecse321.gameshop.model.Person;
@@ -53,8 +54,10 @@ public class CommandIntegrationTests {
     @Test
     @Order(1)
     public void testCreateValidCommand() {
+    //CustomerRequestDto tim = new CustomerRequestDto( "4555 milton","Tim","tim@gmail.com","4386778965","12345678",wishlist,cart);
+        ResponseEntity<CustomerResponseDto> customerResponse = order.postForEntity("/customers", tim, CustomerResponseDto.class);
 
-        // Arrange
+    // Arrange
         CommandRequestDto command = new CommandRequestDto(tim);
 
         // Act

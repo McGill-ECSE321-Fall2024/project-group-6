@@ -5,7 +5,7 @@ import ca.mcgill.ecse321.gameshop.model.Payment;
 
 public class CommandRequestDto {
 
-    public float total;
+    private float total;
     private Payment payment;
     public Customer customer;
 

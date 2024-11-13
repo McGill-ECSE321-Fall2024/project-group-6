@@ -4,8 +4,9 @@ import java.util.List;
 
 public class CategoryListDto {
     private List<CategoryResponseDto> categories;
-
+    public CategoryListDto(){};
     public CategoryListDto(List<CategoryResponseDto> categories){
+
         this.categories=categories;
     }
 
