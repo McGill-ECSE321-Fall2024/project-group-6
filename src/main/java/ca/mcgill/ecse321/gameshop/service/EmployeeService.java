@@ -1,5 +1,7 @@
 package ca.mcgill.ecse321.gameshop.service;
-
+/**
+ * @author Joseph
+ */
 import ca.mcgill.ecse321.gameshop.exception.GameShopException;
 import ca.mcgill.ecse321.gameshop.model.*;
 import ca.mcgill.ecse321.gameshop.model.Employee;

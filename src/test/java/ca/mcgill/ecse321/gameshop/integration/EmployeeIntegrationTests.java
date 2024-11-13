@@ -1,5 +1,7 @@
 package ca.mcgill.ecse321.gameshop.integration;
-
+/**
+ * @author Joseph
+ */
 import org.junit.jupiter.api.AfterAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;

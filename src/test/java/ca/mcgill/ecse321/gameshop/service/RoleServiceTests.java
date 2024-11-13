@@ -1,4 +1,7 @@
 package ca.mcgill.ecse321.gameshop.service;
+/**
+ * @author Joseph
+ */
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -6,8 +9,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import java.util.*;
-import java.sql.Date;
-import java.time.LocalDate;
+
 
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -36,17 +38,17 @@ public class RoleServiceTests {
     private static final String VALID_PHONE ="123456";
     private static final int ID= 12;
 
-    //Person person= new Person(VALID_NAME, VALID_EMAIL,VALID_PASSWORD, VALID_PHONE);
+    /**
+     * Create a valid customer role with valid info
+     */
     @Test
     public void testCreateValidRoleCustomer() {
         // Arrange
-        // Whenever mockRepo.save(p) is called, return p
         when(mockRepo.save(any(Role.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
 
         // Act
 
         Role createdRole = service.createRoleCustomer(VALID_NAME, VALID_EMAIL,VALID_PHONE,VALID_PASSWORD, "123 Sherbrooke West");
-      //  String username, String emailAddress, String phone, String password,String address
         // Assert
         assertNotNull(createdRole);
         assertEquals(VALID_NAME, createdRole.getPerson().getUsername());
@@ -56,10 +58,13 @@ public class RoleServiceTests {
 
         verify(mockRepo, times(1)).save(createdRole);
     }
+    /**
+     * Create a valid employee role with valid info
+     */
     @Test
     public void testCreateValidRoleEmployee() {
         // Arrange
-        // Whenever mockRepo.save(p) is called, return p
+
         when(mockRepo.save(any(Role.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
 
         // Act
@@ -75,6 +80,9 @@ String email="abcdefghijklmno@gmail.com";
 
         verify(mockRepo, times(1)).save(createdRole);
     }
+    /**
+     * Create an invalid role with invalid phone
+     */
     @Test
     public void testCreateRoleWithInvalidPhone() {
 
@@ -86,6 +94,9 @@ String email="abcdefghijklmno@gmail.com";
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Phone number can not be null", ex.getMessage());
     }
+    /**
+     * Create an invalid role with invalid username
+     */
     @Test
     public void testCreateRoleWithInvalidUsername() {
 
@@ -97,7 +108,9 @@ String email="abcdefghijklmno@gmail.com";
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Username can not be null", ex.getMessage());
     }
-
+    /**
+     * Create an invalid role with invalid email
+     */
     @Test
     public void testCreateRoleWithInvalidEmail() {
 
@@ -106,6 +119,9 @@ String email="abcdefghijklmno@gmail.com";
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Email can not be null", ex.getMessage());
     }
+    /**
+     * Create an invalid role with invalid password
+     */
     @Test
     public void testCreateRoleWithInvalidPassword() {
         // Arrange
@@ -120,6 +136,9 @@ String email="abcdefghijklmno@gmail.com";
         assertEquals(HttpStatus.LENGTH_REQUIRED, ex.getStatus());
         assertEquals("Password needs to be at least 10 characters long", ex.getMessage());
     }
+    /**
+     * Create an invalid role with invalid shipping address
+     */
     @Test
     public void testCreateRoleWithInvalidShippingAddress() {
         // Arrange
@@ -133,7 +152,9 @@ String email="abcdefghijklmno@gmail.com";
         assertEquals("Shipping Address can not be null", ex.getMessage());
     }
 
-
+    /**
+     * Test get role with valid id
+     */
 
     @Test
     public void testGetRoleByValidId() {
@@ -153,6 +174,9 @@ String email="abcdefghijklmno@gmail.com";
         assertEquals(VALID_PHONE, role.getPerson().getPhone());
     }
 
+    /**
+     * Test get role with invalid id
+     */
     @Test
     public void testGetRoleByInvalidId() {
         // Arrange
@@ -163,6 +187,10 @@ String email="abcdefghijklmno@gmail.com";
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Role with ID " + ID + " does not exist.", ex.getMessage());
     }
+
+    /**
+     * Test get all roles
+     */
     @Test
     public void testGetAllRoles() {
 
@@ -186,7 +214,9 @@ String email="abcdefghijklmno@gmail.com";
         assertEquals("Alice", listOfRoles.get(1).getPerson().getUsername());
     }
 
-
+    /**
+     * Test the deletion of a role with valid id
+     */
     @Test
     public void testDeleteRoleByValidId() {
         // Arrange
@@ -200,10 +230,12 @@ String email="abcdefghijklmno@gmail.com";
         service.deleteRole(ID);
 
         // Assert
-       // assertNull(mockRepo.findRoleByRoleId(ID));
         verify(mockRepo, times(1)).delete(existingManagerRole);
     }
 
+    /**
+     * Test the deletion of a role with invalid id
+     */
     @Test
     public void testDeleteRoleByInvalidId() {
 

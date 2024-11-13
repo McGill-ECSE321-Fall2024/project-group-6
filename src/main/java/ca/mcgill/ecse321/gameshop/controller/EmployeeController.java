@@ -1,6 +1,8 @@
 package ca.mcgill.ecse321.gameshop.controller;
 
-
+/**
+ * @author Joseph
+ */
 import ca.mcgill.ecse321.gameshop.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

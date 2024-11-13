@@ -99,6 +99,13 @@ public class PersonService {
 
         personRepo.delete(p);
     }
+
+    /**
+     * @author Joseph
+     * @param email
+     * @param password
+     * @return
+     */
     @Transactional
     public boolean login(String email, String password) {
       Person p= personRepo.findPersonByEmail(email);

@@ -1,4 +1,7 @@
 package ca.mcgill.ecse321.gameshop.service;
+/**
+ * @author Joseph and Marine
+ */
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;

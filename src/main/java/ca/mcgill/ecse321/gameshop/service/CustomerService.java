@@ -1,4 +1,7 @@
 package ca.mcgill.ecse321.gameshop.service;
+/**
+ * @author Joseph and Marine
+ */
 
 import ca.mcgill.ecse321.gameshop.model.*;
 import org.springframework.beans.factory.annotation.Autowired;

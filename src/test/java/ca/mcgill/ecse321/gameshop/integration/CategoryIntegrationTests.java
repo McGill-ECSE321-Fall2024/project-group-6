@@ -1,6 +1,8 @@
 package ca.mcgill.ecse321.gameshop.integration;
 
-
+/**
+ * @author Joseph and Maissa
+ */
 import ca.mcgill.ecse321.gameshop.dto.CategoryRequestDto;
 import ca.mcgill.ecse321.gameshop.dto.CategoryResponseDto;
 import ca.mcgill.ecse321.gameshop.repository.CategoryRepository;

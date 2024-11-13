@@ -1,5 +1,7 @@
 package ca.mcgill.ecse321.gameshop.controller;
-
+/**
+ * @author Joseph and Maissa
+ */
 import ca.mcgill.ecse321.gameshop.dto.CategoryListDto;
 import ca.mcgill.ecse321.gameshop.dto.CategoryRequestDto;
 import ca.mcgill.ecse321.gameshop.dto.CategoryResponseDto;
