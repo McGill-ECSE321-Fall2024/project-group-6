@@ -1,31 +1,30 @@
 package ca.mcgill.ecse321.gameshop.dto;
 
-import ca.mcgill.ecse321.gameshop.model.*;
 import jakarta.validation.constraints.NotBlank;
 
-import java.util.Collections;
 import java.util.List;
 
 public class GameRequestDto {
 
     @NotBlank(message = "Name of the game can not be empty")
-    private String name;
+    public String name;
     @NotBlank(message = "Description of the game can not be empty")
-    private String description;
+    public String description;
     @NotBlank(message = "Price of the game can not be empty")
-    private float price;
+    public float price;
     @NotBlank(message = "Stock Quantity of the game can not be empty")
-    private int stockQuantity;
+    public int stockQuantity;
     @NotBlank(message = "PhotoUrl of the game can not be empty")
-    private String photoURL;
+    public String photoURL;
 
-    private boolean toBeAdded;
+    public boolean toBeAdded;
 
-    private boolean toBeRemoved;
-    private float promotion;
-    private List<Category> categories;
-
-    public GameRequestDto(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,  boolean aToBeAdded, boolean aToBeRemoved, float aPromotion,Category... allCategories) {
+    public boolean toBeRemoved;
+    public float promotion;
+    public List<Integer> categories;
+    public GameRequestDto(){};
+    public GameRequestDto(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,  boolean aToBeAdded, boolean aToBeRemoved, float aPromotion,List<Integer> allCategories) {
+        System.out.println("Request");
         this.description = aDescription;
         this.name = aName;
         this.photoURL = aPhotoURL;
@@ -34,7 +33,7 @@ public class GameRequestDto {
         this.toBeAdded = aToBeAdded;
         this.toBeRemoved = aToBeRemoved;
         this.stockQuantity =aStockQuantity;
-        this.categories= List.of(allCategories);
+        this.categories= allCategories;
     }
 
     public boolean setName(String aName) {
@@ -134,9 +133,7 @@ public class GameRequestDto {
 
         return promotion;
     }
-    public List<Category> getCategories()
-    {
-        List<Category> newCategories = Collections.unmodifiableList(categories);
-        return newCategories;
+    public List<Integer> getCategories() {
+        return categories;
     }
 }

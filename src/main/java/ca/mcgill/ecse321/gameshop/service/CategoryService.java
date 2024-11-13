@@ -24,6 +24,7 @@ public class CategoryService {
             }
         }
         Category c = new Category(name);
+        System.out.println("Category");
 
        return repo.save(c);
     }

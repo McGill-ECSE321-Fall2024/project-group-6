@@ -3,10 +3,13 @@
 
 
 package ca.mcgill.ecse321.gameshop.model;
-import java.util.*;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
 
-import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Manager class extending Role
@@ -182,7 +185,7 @@ public Manager(){
     return 0;
   }
   /* Code from template association_AddManyToOne */
-  public Game addGame(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL, int aGameId, boolean aToBeAdded, boolean aToBeRemoved, Employee aCreator, Category... allCategories)
+  public Game addGame(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL, int aGameId, boolean aToBeAdded, boolean aToBeRemoved, Employee aCreator, List<Category> allCategories)
   {
     return new Game(aName, aDescription, aPrice, aStockQuantity, aPhotoURL, aToBeAdded, aToBeRemoved, this, aCreator, allCategories);
   }

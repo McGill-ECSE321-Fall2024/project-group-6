@@ -3,6 +3,7 @@ package ca.mcgill.ecse321.gameshop.service;
 import ca.mcgill.ecse321.gameshop.exception.GameShopException;
 import ca.mcgill.ecse321.gameshop.model.Category;
 import ca.mcgill.ecse321.gameshop.model.Game;
+import ca.mcgill.ecse321.gameshop.repository.CategoryRepository;
 import ca.mcgill.ecse321.gameshop.repository.GameRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +19,14 @@ public class GameService {
 
     @Autowired
     private GameRepository gameRepository;
+    @Autowired
+    private CategoryRepository categoryRepo;
+
 
 
     @Transactional
-    public Game addGame(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,Category... allCategories) {
+    public Game addGame(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,List<Integer> allCategories) {
+
         if(aName==null){
             throw new GameShopException(HttpStatus.NOT_FOUND,String.format("Name cannot be empty."));
         }else if (aDescription==null){
@@ -35,14 +40,21 @@ public class GameService {
         }else if (allCategories==null){
             throw new GameShopException(HttpStatus.NOT_FOUND,String.format("Game must have at least one category."));
         }
+        List<Category> categories = new ArrayList<>();
+        for(int i:allCategories){
+            categories.add(categoryRepo.findCategoryByCategoryId(i));
+        }
 
-        Game game= new Game(aName,aDescription,aPrice,aStockQuantity,aPhotoURL,allCategories);
+        System.out.println("Service");
+        System.out.println(categories);
+        Game game= new Game(aName,aDescription,aPrice,aStockQuantity,aPhotoURL, categories);
+
         return gameRepository.save(game);
     }
 
 
     @Transactional
-    public Game updateGame(int id,String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL, boolean aToBeAdded, boolean tobeRemoved, float aPromotion, Category... allCategories){
+    public Game updateGame(int id,String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL, boolean aToBeAdded, boolean tobeRemoved, float aPromotion, List<Integer> allCategories){
         Game game = gameRepository.findGameByGameId(id);
 
         if (game== null) {
@@ -60,11 +72,16 @@ public class GameService {
         }else if (allCategories==null){
             throw new GameShopException(HttpStatus.NOT_FOUND,String.format("Game must have at least one category."));
         }
+        List<Category> categories = new ArrayList<>();
+        for(int i:allCategories){
+            categories.add( categoryRepo.findCategoryByCategoryId(i));
+        }
+
 
         game.setPrice(aPrice);
         game.setToBeRemoved(tobeRemoved);
         game.setPromotion(aPromotion);
-        game.setCategories(allCategories);
+        game.setCategories(categories);
         game.setName(aName);
         game.setDescription(aDescription);
         game.setStockQuantity(aStockQuantity);

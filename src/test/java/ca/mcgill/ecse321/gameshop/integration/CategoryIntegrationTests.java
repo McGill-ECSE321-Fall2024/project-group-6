@@ -56,6 +56,7 @@ public class CategoryIntegrationTests {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertTrue(response.getBody().getId() > 0, "The ID should be positive.");
         this.ID=response.getBody().getId();
+        System.out.println(this.ID);
         assertEquals(name, response.getBody().getName());
     }
 
