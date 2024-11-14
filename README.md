@@ -73,9 +73,9 @@ Table 2 : Roles of each team member Deliverable 2: <br/>
 | Maissa      | RESTful API methods for Command, Category and Game   |  3                |
 |             | Unit tests for Command, Category and Game            | 6                 |
 |             |Integration tests for  Command, Category and Game     |  10               |
-| Joseph      | RESTful API methods for Manager, Role, and Employee  |        4           |
-|             | Unit tests for Role, Manager, Employee, and Customer |       12            |
-|             | Integration tests for  Manager, Employee, Customer, and Category                                                  |       15            |
+| Joseph      | RESTful API methods for Manager, Role, and Employee  |        3           |
+|             | Unit tests for Role, Manager, Employee, and Customer |       8           |
+|             | Integration tests for  Manager, Employee, Customer, and Category                                                  |       10            |
 | Mario       | RESTful API methods for Person, Command and Guest             |   2                |
 |             | Unit tests for Person and Guest                      |     2              |
 |             | Integration tests for Person, Guest, Command, and Game                                                     |        11           |
