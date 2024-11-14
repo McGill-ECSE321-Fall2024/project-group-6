@@ -17,6 +17,7 @@ public class CommandController {
     private CommandService commandService;
 
     /**
+     * @author Maissa
      * Create a new command.
      *
      * @paramcommand The command to create.

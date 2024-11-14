@@ -8,7 +8,9 @@ import ca.mcgill.ecse321.gameshop.exception.GameShopException;
 import ca.mcgill.ecse321.gameshop.model.Command;
 import ca.mcgill.ecse321.gameshop.repository.CommandRepository;
 import jakarta.transaction.Transactional;
-
+/**
+ * @author Maissa
+ */
 @Service
 public class CommandService {
     @Autowired

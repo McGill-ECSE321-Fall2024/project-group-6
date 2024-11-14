@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * @author Laurence, Maissa, Joseph and Mario
+ */
 @RestController
 public class GameController {
     @Autowired

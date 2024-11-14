@@ -48,3 +48,12 @@ tasks.named('jacocoTestCoverageVerification') {
 	}
 	dependsOn test // tests are required to run before checking code coverage.
 }
+jacocoTestReport {
+	dependsOn test // Ensure test task runs before generating report
+
+	reports {
+		xml.required.set(true)  // XML report for CI tools like SonarQube
+		csv.required.set(false) // Disable CSV report if not needed
+		html.required.set(true) // Enable HTML report for easy local browsing
+	}
+}

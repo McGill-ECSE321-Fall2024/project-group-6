@@ -1,30 +1,28 @@
 package ca.mcgill.ecse321.gameshop.service;
 
 
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import ca.mcgill.ecse321.gameshop.exception.GameShopException;
+import ca.mcgill.ecse321.gameshop.model.Command;
+import ca.mcgill.ecse321.gameshop.model.Game;
+import ca.mcgill.ecse321.gameshop.repository.CommandRepository;
 import org.junit.jupiter.api.Test;
-import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 
-import ca.mcgill.ecse321.gameshop.exception.GameShopException;
-import ca.mcgill.ecse321.gameshop.model.Command;
-import ca.mcgill.ecse321.gameshop.model.Game;
-import ca.mcgill.ecse321.gameshop.repository.CommandRepository;
+import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
+/**
+ * @author Maissa
+ */
 @SpringBootTest
 @MockitoSettings(strictness = Strictness.STRICT_STUBS)
 public class CommandServiceTests {
