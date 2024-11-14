@@ -1,39 +1,29 @@
 package ca.mcgill.ecse321.gameshop.dto;
 
-import ca.mcgill.ecse321.gameshop.model.Customer;
-import ca.mcgill.ecse321.gameshop.model.Payment;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
 
 public class CommandRequestDto {
+    @Positive(message = "Total price must be greater than 0.")
+    private float totalPrice;
+    @NotBlank(message = "Command date must not be blank.")
+    private String commandDate;
 
-    private float total;
-    private Payment payment;
-    public Customer customer;
-
-    private CommandRequestDto(){}
-    public CommandRequestDto(Customer c){
-        this.customer=c;
-    }
-    public float getTotal(){
-        return total;
+    // Jackson needs a default constructor, but it doesn't need to be public
+    public CommandRequestDto() {
     }
 
-    public Payment getPayment(){
-        return payment;
-    }
-    public Customer getCustomer(){
-        return customer;
-    }
-    public void setCustomer(Customer c){
-        this.customer=c;
+    // Constructor
+    public CommandRequestDto(float totalPrice, String commandDate) {
+        this.totalPrice = totalPrice;
+        this.commandDate = commandDate;
     }
 
-    public void setPayment(Payment p){
-        this.payment=p;
+    public float getTotal() {
+        return totalPrice;
     }
 
-    public void setTotal(float t){
-        this.total=t;
+    public String getCommandDate() {
+        return commandDate;
     }
-
-
 }

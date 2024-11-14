@@ -11,61 +11,59 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
-
 @RestController
 public class CommandController {
-
     @Autowired
     private CommandService commandService;
 
     /**
-     * @author Maissa
-     * Creates a new command for a specific customer.
+     * Create a new command.
      *
-     * @param c
-     * @return A DTO response
+     * @paramcommand The command to create.
+     * @return The created command, including their ID.
      */
-    @PostMapping("/commands")
-    public CommandResponseDto createCommand(@RequestBody CommandRequestDto c) {
-        Command createdCommand = commandService.createCommand(c.getCustomer());
-        return new CommandResponseDto(createdCommand);
+    @PostMapping("/command")
+    public CommandResponseDto createCommand(@RequestBody CommandRequestDto command) {
+        Command c = commandService.createCommand(command.getCommandDate(), command.getTotal());
+        return new CommandResponseDto(c);
     }
 
     /**
-     * @author Maissa
-     * Retrieves a command by its ID.
+     * Return all commands.
      *
-     * @param ID
-     * @return A DTO response
+     * @return All the commands.
      */
-    @GetMapping("/commands/{ID}")
-    public CommandResponseDto findCommandById(@PathVariable int ID) {
-        return new CommandResponseDto(commandService.findCommandById(ID));
-    }
-
-    /**
-     * @author Maissa
-     * Retrieves all commands in the system.
-     *
-     * @return A DTO list of all commands.
-     */
-    @GetMapping("/commands")
-    public CommandListDto getAllCommands() {
+    @GetMapping("/command")
+    public CommandListDto getAllCommands(){
         List<CommandResponseDto> commands = new ArrayList<>();
-        for (Command c : commandService.getAllCommands()) {
+
+        for (Command c : commandService.getAllCommands()){
             commands.add(new CommandResponseDto(c));
         }
+
         return new CommandListDto(commands);
     }
 
     /**
-     * @author Maissa
-     * Deletes a command by its ID.
+     * Return the command with the given ID.
      *
-     * @param ID
+     * @param id The primary key of the command to find.
+     * @return The command with the given ID.
      */
-    @DeleteMapping("/commands/{ID}")
-    public void deleteCommand(@PathVariable int ID) {
-        commandService.deleteCommand(ID);
+    @GetMapping("/command/{id}")
+    public CommandResponseDto getCommandById(@PathVariable int id){
+        Command c = commandService.findCommandById(id);
+        return new CommandResponseDto(c);
+    }
+
+    /**
+     * Delete the command with the given ID.
+     *
+     * @param id The primary key of the command to find.
+     * @return void.
+     */
+    @DeleteMapping("/command/{id}")
+    public void deleteCommand(@PathVariable int id){
+        commandService.deleteCommand(id);
     }
 }

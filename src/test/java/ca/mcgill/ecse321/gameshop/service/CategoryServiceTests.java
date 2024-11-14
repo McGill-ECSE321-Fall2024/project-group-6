@@ -94,7 +94,7 @@ public class CategoryServiceTests {
         GameShopException ex = assertThrows(GameShopException.class, () -> service.findCategoryById(-1));
 
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
-        assertEquals("The Category ID "+ -1 +"is not valid", ex.getMessage());
+        assertEquals("The Category ID "+ -1 +" is not valid.", ex.getMessage());
     }
     /**
      * @author Maissa
@@ -132,7 +132,7 @@ public class CategoryServiceTests {
         GameShopException ex = assertThrows(GameShopException.class, () -> service.updateCategory(ID,"Sports"));
 
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
-        assertEquals("There is no Category with ID"+ ID+".", ex.getMessage());
+        assertEquals("There is no Category with ID "+ ID+".", ex.getMessage());
     }
     /**
      * @author Maissa
@@ -174,7 +174,7 @@ public class CategoryServiceTests {
         GameShopException ex = assertThrows(GameShopException.class, () -> service.deleteCategory(-1));
 
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
-        assertEquals("The Category ID "+ -1 +"is not valid", ex.getMessage());
+        assertEquals("The Category ID "+ -1 +" is not valid.", ex.getMessage());
     }
     /**
      * @author Maissa
