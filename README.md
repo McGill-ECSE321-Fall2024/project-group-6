@@ -57,33 +57,26 @@ Table 1 : Roles of each team member Deliverable 1: <br/>
 Table 2 : Roles of each team member Deliverable 2: <br/>
 | **Name**    | **Role**                                            | **Number of Hours** |
 |-------------|-----------------------------------------------------|---------------------|
-| Laurence    | RESTful API methods for Game and Role               |                    |
-|             | README file update                                  |                    |
-|             | Unit tests for Game and Role                        |                    |
-|             | Updating the key decisions                          |                    |
-|             |                                                     |                    |
+| Laurence    | RESTful API methods for Game and Role               | 5                  |
+|             | README file update                                  | 1                  |
+|             | Unit tests for Game and Role                        | 6                  |
+|             | Updating the key decisions                          | 1                  |
+|             | Integration Tests for Game                          | 6                   |
 | Annabelle   | Software Quality Assurance Plan                     |  1                 |
 |             | Unit tests for Payment and Review                    | 1.5               |
 |             | RESTful API methods for Payment and Review           | 2                 |
 |             | Integration Tests for Payment and Review             | 1.5               |
-|             |                                                      |                   |
 | Marine      | RESTful API methods for Employee and Customer        | 3                 |
 |             | Software Quality Assurance Plan                      | 3.5               |
 |             | Recording the meeting minutes                        | 1                 |
 |             | Unit tests for Employee and Customer                 | 3                 |
-|             |                                                      |                   |
 | Maissa      | RESTful API methods for Command, Category and Game   |  3                |
 |             | Unit tests for Command, Category and Game            | 6                 |
 |             |Integration tests for  Command, Category and Game     |  10               |
-|             |                                                      |                   |
-|             |                                                      |                   |
 | Joseph      | RESTful API methods for Manager, Role, and Employee  |        4           |
 |             | Unit tests for Role, Manager, Employee, and Customer |       12            |
 |             | Integration tests for  Manager, Employee, Customer, and Category                                                  |       15            |
-|             |                                                      |                   |
-|             |                                                      |                   |
 | Mario       | RESTful API methods for Person, Command and Guest             |   2                |
 |             | Unit tests for Person and Guest                      |     2              |
 |             | Integration tests for Person, Guest, Command, and Game                                                     |        11           |
-|             |                                                      |                   |
 
