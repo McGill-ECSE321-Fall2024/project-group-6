@@ -209,4 +209,38 @@ public class PersonIntegrationTests {
         assertNotNull(response);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
+
+    @Test
+    @Order(10)
+    public void testLoginValid() {
+        // Act
+        ResponseEntity<String> response = client.postForEntity("/person/login?email=" + VALID_EMAIL + "&password=" + VALID_PASSWORD, null, String.class);
+
+        // Assert
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("true", response.getBody());
+    }
+
+    @Test
+    @Order(11)
+    public void testLoginInvalidPassword() {
+        // Act
+        ResponseEntity<String> response = client.postForEntity("/person/login?email=" + VALID_EMAIL + "&password=wrongpassword", null, String.class);
+
+        // Assert
+        assertNotNull(response);
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+    }
+
+    @Test
+    @Order(12)
+    public void testLoginInvalidEmail() {
+        // Act
+        ResponseEntity<String> response = client.postForEntity("/person/login?email=invalid@mail.com&password=" + VALID_PASSWORD, null, String.class);
+
+        // Assert
+        assertNotNull(response);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
 }

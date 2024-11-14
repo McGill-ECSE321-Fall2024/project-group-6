@@ -7,7 +7,6 @@ import jakarta.validation.constraints.NotBlank;
  */
 
 public class GameRequestDto2 {
-
     @NotBlank(message = "Name of the game can not be empty")
     private String name;
     @NotBlank(message = "Description of the game can not be empty")
@@ -19,41 +18,31 @@ public class GameRequestDto2 {
     @NotBlank(message = "PhotoUrl of the game can not be empty")
     private String photoURL;
 
-
     public GameRequestDto2(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL) {
         this.description = aDescription;
         this.name = aName;
         this.photoURL = aPhotoURL;
         this.price = aPrice;
-        this.stockQuantity =aStockQuantity;
+        this.stockQuantity = aStockQuantity;
     }
 
-
-
     public String getName() {
-
         return name;
     }
 
     public String getDescription() {
-
         return description;
     }
 
     public float getPrice() {
-
         return price;
     }
 
     public int getStockQuantity() {
-
         return stockQuantity;
     }
 
     public String getPhotoURL() {
-
         return photoURL;
     }
-
-
 }

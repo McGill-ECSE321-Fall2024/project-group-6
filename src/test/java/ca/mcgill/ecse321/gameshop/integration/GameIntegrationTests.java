@@ -47,11 +47,11 @@ public class GameIntegrationTests {
         private static final boolean TO_BE_ADDED = false;
         private static final boolean TO_BE_REMOVED = false;
         private static final float VALID_PROMOTION = 30;
-        private static final List<Category> CATEGORIES = new ArrayList<>(Arrays.asList(
+        /*private static final List<Category> CATEGORIES = new ArrayList<>(Arrays.asList(
         new Category("Action"),
         new Category("Adventure"),
         new Category("Puzzle")
-        ));
+        ));*/
         private int id;
 
         @AfterAll
@@ -64,7 +64,7 @@ public class GameIntegrationTests {
         @Order(1)
         public void testCreateValidGame() {
                 // Arrange
-                GameRequestDto request = new GameRequestDto(VALID_NAME, VALID_DESCRIPTION, VALID_PRICE, STOCK_QUANTITY, VALID_PHOTO, TO_BE_ADDED, TO_BE_REMOVED, VALID_PROMOTION, CATEGORIES);
+                GameRequestDto request = new GameRequestDto(VALID_NAME, VALID_DESCRIPTION, VALID_PRICE, STOCK_QUANTITY, VALID_PHOTO, TO_BE_ADDED, TO_BE_REMOVED, VALID_PROMOTION);
 
                 // Act
                 ResponseEntity<GameResponseDto> response = client.postForEntity("/games", request, GameResponseDto.class);
@@ -98,7 +98,7 @@ public class GameIntegrationTests {
         @Order(3)
         public void testGetGameByValidId() {
                 // Arrange
-                String url = String.format("/games/%d", this.id);
+                String url = String.format("/games/id/%d", this.id);
 
                 // Act
                 ResponseEntity<GameResponseDto> response = client.getForEntity(url, GameResponseDto.class);
@@ -116,7 +116,7 @@ public class GameIntegrationTests {
         @Order(4)
         public void testGetGameByInvalidId() {
                 // Arrange
-                String url = String.format("/games/%d", -1);
+                String url = String.format("/games/id/%d", -1);
 
                 // Act
                 ResponseEntity<GameResponseDto> response = client.getForEntity(url, GameResponseDto.class);
@@ -144,7 +144,7 @@ public class GameIntegrationTests {
                 new Category("Sports")
                 ));
 
-                GameRequestDto updatedGameDto = new GameRequestDto(updatedName, updatedDescription, updatedPrice, updatedQuantity, updatedPhoto, beAdded, beRemoved, updatedPromotion, updatedCategories);
+                GameRequestDto updatedGameDto = new GameRequestDto(updatedName, updatedDescription, updatedPrice, updatedQuantity, updatedPhoto, beAdded, beRemoved, updatedPromotion);
                 String url = String.format("/games/%d", this.id);
 
                 // Act
@@ -179,7 +179,7 @@ public class GameIntegrationTests {
                 ));
 
                 String url = String.format("/games/%d", -1);
-                GameRequestDto updatedGameDto = new GameRequestDto(updatedName, updatedDescription, updatedPrice, updatedQuantity, updatedPhoto, beAdded, beRemoved, updatedPromotion, updatedCategories);
+                GameRequestDto updatedGameDto = new GameRequestDto(updatedName, updatedDescription, updatedPrice, updatedQuantity, updatedPhoto, beAdded, beRemoved, updatedPromotion);
 
                 // Act
                 ResponseEntity<GameResponseDto> response = client.exchange(url, HttpMethod.PUT, new HttpEntity<>(updatedGameDto), GameResponseDto.class);
@@ -227,8 +227,8 @@ public class GameIntegrationTests {
                 // Arrange
                 String updatedName = "Fifa";
                 String updatedDescription = "Football game";
-                float updatedPrice = 30;
-                int updatedQuantity = 200;
+                float updatedPrice = 0;
+                int updatedQuantity = 0;
                 String updatedPhoto = "football url";
                 boolean beAdded = false;
                 boolean beRemoved = false;
@@ -238,7 +238,7 @@ public class GameIntegrationTests {
                         new Category("Fake")
                 ));
 
-                GameRequestDto invalidGameDto = new GameRequestDto(updatedName, updatedDescription, updatedPrice, updatedQuantity, updatedPhoto, beAdded, beRemoved, updatedPromotion, updatedCategories);
+                GameRequestDto invalidGameDto = new GameRequestDto(updatedName, updatedDescription, updatedPrice, updatedQuantity, updatedPhoto, beAdded, beRemoved, updatedPromotion);
         
                 // Act
                 ResponseEntity<String> response = client.postForEntity("/games", invalidGameDto, String.class);

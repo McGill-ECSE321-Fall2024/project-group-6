@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import ca.mcgill.ecse321.gameshop.exception.GameShopException;
 import ca.mcgill.ecse321.gameshop.model.Category;
 import ca.mcgill.ecse321.gameshop.model.Game;
-import ca.mcgill.ecse321.gameshop.repository.CategoryRepository;
 import ca.mcgill.ecse321.gameshop.repository.GameRepository;
 import jakarta.transaction.Transactional;
 
@@ -20,42 +19,36 @@ public class GameService {
 
     @Autowired
     private GameRepository gameRepository;
-    @Autowired
-    private CategoryRepository categoryRepo;
 
     @Transactional
-    public Game addGame(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL, List<Category> allCategories) {
+    public Game addGame(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL) {
         if (aName == null) {
-            throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Name cannot be empty."));
+            throw new GameShopException(HttpStatus.BAD_REQUEST, String.format("Name cannot be empty."));
         }
         
         else if (aDescription == null){
-            throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Description cannot be empty."));
+            throw new GameShopException(HttpStatus.BAD_REQUEST, String.format("Description cannot be empty."));
         }
         
         else if (aPrice <= 0){
-            throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Price must be over 0.0."));
+            throw new GameShopException(HttpStatus.BAD_REQUEST, String.format("Price must be over 0.0."));
         }
         
         else if (aStockQuantity <= 0) {
-            throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Stock quantity must be over 0.0."));
+            throw new GameShopException(HttpStatus.BAD_REQUEST, String.format("Stock quantity must be over 0.0."));
         }
         
         else if (aPhotoURL == null) {
-            throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Game must have a photo."));
-        }
-        
-        else if (allCategories == null || allCategories.isEmpty()) {
-            throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Game must have at least one category."));
+            throw new GameShopException(HttpStatus.BAD_REQUEST, String.format("Game must have a photo."));
         }
 
-        Game game= new Game(aName, aDescription, aPrice, aStockQuantity, aPhotoURL, allCategories);
+        Game game= new Game(aName, aDescription, aPrice, aStockQuantity, aPhotoURL);
 
         return gameRepository.save(game);
     }
 
     @Transactional
-    public Game updateGame(int id, String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL, boolean aToBeAdded, boolean tobeRemoved, float aPromotion, List<Category> allCategories) {
+    public Game updateGame(int id, String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL, boolean aToBeAdded, boolean tobeRemoved, float aPromotion) {
         Game game = gameRepository.findGameByGameId(id);
 
         if (game == null) {
@@ -81,16 +74,10 @@ public class GameService {
         else if (aPhotoURL == null){
             throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Game must have a photo."));
         }
-        
-        else if (allCategories == null){
-            throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Game must have at least one category."));
-        }
-
 
         game.setPrice(aPrice);
         game.setToBeRemoved(tobeRemoved);
         game.setPromotion(aPromotion);
-        game.setCategories(allCategories);
         game.setName(aName);
         game.setDescription(aDescription);
         game.setStockQuantity(aStockQuantity);

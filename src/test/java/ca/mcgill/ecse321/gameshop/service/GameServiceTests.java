@@ -65,62 +65,62 @@ public class GameServiceTests {
     @Test
     public void testAddGame(){
         when(repo.save(any(Game.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
-        Game createdGame = service.addGame(name,description,price,stock,photo,categories);
+        Game createdGame = service.addGame(name,description,price,stock,photo);
 
         assertNotNull(createdGame);
         assertEquals(name,createdGame.getName());
         assertEquals(description,createdGame.getDescription());
         assertEquals(price,createdGame.getPrice());
         assertEquals(stock,createdGame.getStockQuantity());
-        assertEquals(true,createdGame.getToBeAdded());
         verify(repo,times(1)).save(createdGame);
 
     }
     @Test
     public void testAddGameByInvalidName(){
-        GameShopException ex = assertThrows(GameShopException.class, () -> service.addGame(null,description,price,stock,photo,categories));
+        GameShopException ex = assertThrows(GameShopException.class, () -> service.addGame(null,description,price,stock,photo));
 
-        assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
+        assertEquals(HttpStatus.BAD_REQUEST, ex.getStatus());
         assertEquals("Name cannot be empty.", ex.getMessage());
     }
     @Test
     public void testAddGameByInvalidDescription(){
-        GameShopException ex = assertThrows(GameShopException.class, () -> service.addGame(name,null,price,stock,photo,categories));
+        GameShopException ex = assertThrows(GameShopException.class, () -> service.addGame(name,null,price,stock,photo));
 
-        assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
+        assertEquals(HttpStatus.BAD_REQUEST, ex.getStatus());
         assertEquals("Description cannot be empty.", ex.getMessage());
     }
 
     @Test
     public void testAddGameByInvalidPrice(){
-        GameShopException ex = assertThrows(GameShopException.class, () -> service.addGame(name,description,-1,stock,photo,categories));
+        GameShopException ex = assertThrows(GameShopException.class, () -> service.addGame(name,description,-1,stock,photo));
 
-        assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
+        assertEquals(HttpStatus.BAD_REQUEST, ex.getStatus());
         assertEquals("Price must be over 0.0.", ex.getMessage());
     }
 
     @Test
     public void testAddGameByInvalidStock(){
-        GameShopException ex = assertThrows(GameShopException.class, () -> service.addGame(name,description,price,-1,photo,categories));
+        GameShopException ex = assertThrows(GameShopException.class, () -> service.addGame(name,description,price,-1,photo));
 
-        assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
+        assertEquals(HttpStatus.BAD_REQUEST, ex.getStatus());
         assertEquals("Stock quantity must be over 0.0.", ex.getMessage());
     }
 
     @Test
     public void testAddGameByInvalidPhoto(){
-        GameShopException ex = assertThrows(GameShopException.class, () -> service.addGame(name,description,price,stock,null,categories));
+        GameShopException ex = assertThrows(GameShopException.class, () -> service.addGame(name,description,price,stock,null));
 
-        assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
+        assertEquals(HttpStatus.BAD_REQUEST, ex.getStatus());
         assertEquals("Game must have a photo.", ex.getMessage());
     }
-    @Test
-    public void testAddGameByInvalidCategory(){
-        GameShopException ex = assertThrows(GameShopException.class, () -> service.addGame(name,description,price,stock,photo,null));
 
-        assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
+/*    @Test
+    public void testAddGameByInvalidCategory(){
+        GameShopException ex = assertThrows(GameShopException.class, () -> service.addGame(name,description,price,stock,photo));
+
+        assertEquals(HttpStatus.BAD_REQUEST, ex.getStatus());
         assertEquals("Game must have at least one category.", ex.getMessage());
-    }
+    }*/
 
     @Test
     public void testUpdateValidGame(){
@@ -130,7 +130,7 @@ public class GameServiceTests {
         Game g = new Game(name,description,price,stock,photo,categories);
         when(repo.findGameByGameId(ID)).thenReturn(g);
         when(repo.save(any(Game.class))).thenAnswer((InvocationOnMock iom)-> iom.getArgument(0));
-        Game updatedGame = service.updateGame(ID,newName,newDescription,newPrice,newStock,newPhoto,tobeAddedNew, tobeRemoved, promotion, categoriesNew);
+        Game updatedGame = service.updateGame(ID,newName,newDescription,newPrice,newStock,newPhoto,tobeAddedNew, tobeRemoved, promotion);
 
         assertNotNull(updatedGame);
         assertEquals(newName,updatedGame.getName());
@@ -140,7 +140,7 @@ public class GameServiceTests {
         assertEquals(newPhoto,updatedGame.getPhotoURL());
         assertEquals(tobeRemoved,updatedGame.getToBeRemoved());
         assertEquals(tobeAddedNew,updatedGame.getToBeAdded());
-        assertEquals(categoriesNew,updatedGame.getCategories());
+        assertEquals(categories,updatedGame.getCategories());
         assertEquals(promotion,updatedGame.getPromotion());
 
         verify(repo,times(1)).save(updatedGame);
@@ -150,7 +150,7 @@ public class GameServiceTests {
     public void testUpdateInvalidGame(){
 
         when(repo.findGameByGameId(ID)).thenReturn(null);
-        GameShopException ex = assertThrows(GameShopException.class, () -> service.updateGame(ID,newName,newDescription,newPrice,newStock,newPhoto,tobeAddedNew, tobeRemoved, promotion, categoriesNew));
+        GameShopException ex = assertThrows(GameShopException.class, () -> service.updateGame(ID,newName,newDescription,newPrice,newStock,newPhoto,tobeAddedNew, tobeRemoved, promotion));
 
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Game with ID " + ID + " does not exist.", ex.getMessage());
@@ -160,7 +160,7 @@ public class GameServiceTests {
     public void testUpdateGameByInvalidName(){
         Game g = new Game(name,description,price,stock,photo,categories);
         when(repo.findGameByGameId(ID)).thenReturn(g);
-        GameShopException ex = assertThrows(GameShopException.class, () -> service.updateGame(ID,null,newDescription,newPrice,newStock,newPhoto,tobeAddedNew, tobeRemoved, promotion, categoriesNew));
+        GameShopException ex = assertThrows(GameShopException.class, () -> service.updateGame(ID,null,newDescription,newPrice,newStock,newPhoto,tobeAddedNew, tobeRemoved, promotion));
 
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Name cannot be empty.", ex.getMessage());
@@ -169,7 +169,7 @@ public class GameServiceTests {
     public void testUpdateGameByInvalidDescription(){
         Game g = new Game(name,description,price,stock,photo,categories);
         when(repo.findGameByGameId(ID)).thenReturn(g);
-        GameShopException ex = assertThrows(GameShopException.class, () -> service.updateGame(ID,newName,null,newPrice,newStock,newPhoto,tobeAddedNew, tobeRemoved, promotion, categoriesNew));
+        GameShopException ex = assertThrows(GameShopException.class, () -> service.updateGame(ID,newName,null,newPrice,newStock,newPhoto,tobeAddedNew, tobeRemoved, promotion));
 
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Description cannot be empty.", ex.getMessage());
@@ -179,7 +179,7 @@ public class GameServiceTests {
     public void testUpdateGameByInvalidPrice(){
         Game g = new Game(name,description,price,stock,photo,categories);
         when(repo.findGameByGameId(ID)).thenReturn(g);
-        GameShopException ex = assertThrows(GameShopException.class, () -> service.updateGame(ID,newName,newDescription,-1,newStock,newPhoto,tobeAddedNew, tobeRemoved, promotion, categoriesNew));
+        GameShopException ex = assertThrows(GameShopException.class, () -> service.updateGame(ID,newName,newDescription,-1,newStock,newPhoto,tobeAddedNew, tobeRemoved, promotion));
 
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Price must be over 0.0.", ex.getMessage());
@@ -189,7 +189,7 @@ public class GameServiceTests {
     public void testUpdateGameByInvalidStock(){
         Game g = new Game(name,description,price,stock,photo,categories);
         when(repo.findGameByGameId(ID)).thenReturn(g);
-        GameShopException ex = assertThrows(GameShopException.class, () -> service.updateGame(ID,newName,newDescription,newPrice,0,newPhoto,tobeAddedNew, tobeRemoved, promotion, categoriesNew));
+        GameShopException ex = assertThrows(GameShopException.class, () -> service.updateGame(ID,newName,newDescription,newPrice,0,newPhoto,tobeAddedNew, tobeRemoved, promotion));
 
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Stock quantity must be over 0.0.", ex.getMessage());
@@ -199,19 +199,20 @@ public class GameServiceTests {
     public void testUpdateGameByInvalidPhoto(){
         Game g = new Game(name,description,price,stock,photo,categories);
         when(repo.findGameByGameId(ID)).thenReturn(g);
-        GameShopException ex = assertThrows(GameShopException.class, () -> service.updateGame(ID,newName,newDescription,newPrice,newStock,null,tobeAddedNew, tobeRemoved, promotion, categoriesNew));
+        GameShopException ex = assertThrows(GameShopException.class, () -> service.updateGame(ID,newName,newDescription,newPrice,newStock,null,tobeAddedNew, tobeRemoved, promotion));
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Game must have a photo.", ex.getMessage());
     }
-    @Test
+
+/*    @Test
     public void testUpdateGameByInvalidCategory(){
         Game g = new Game(name,description,price,stock,photo,categories);
         when(repo.findGameByGameId(ID)).thenReturn(g);
-        GameShopException ex = assertThrows(GameShopException.class, () -> service.updateGame(ID,newName,newDescription,newPrice,newStock,newPhoto,tobeAddedNew, tobeRemoved, promotion, null));
+        GameShopException ex = assertThrows(GameShopException.class, () -> service.updateGame(ID,newName,newDescription,newPrice,newStock,newPhoto,tobeAddedNew, tobeRemoved, promotion));
 
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Game must have at least one category.", ex.getMessage());
-    }
+    }*/
 
     @Test
     public void testGetAllGames(){

@@ -6,7 +6,6 @@ import ca.mcgill.ecse321.gameshop.model.Category;
 import jakarta.validation.constraints.NotBlank;
 
 public class GameRequestDto {
-
     @NotBlank(message = "Name of the game can not be empty")
     public String name;
     @NotBlank(message = "Description of the game can not be empty")
@@ -29,7 +28,7 @@ public class GameRequestDto {
     private GameRequestDto() {
     }
 
-    public GameRequestDto(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,  boolean aToBeAdded, boolean aToBeRemoved, float aPromotion, List<Category> allCategories) {
+    public GameRequestDto(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,  boolean aToBeAdded, boolean aToBeRemoved, float aPromotion) {
         this.description = aDescription;
         this.name = aName;
         this.photoURL = aPhotoURL;
@@ -38,50 +37,37 @@ public class GameRequestDto {
         this.toBeAdded = aToBeAdded;
         this.toBeRemoved = aToBeRemoved;
         this.stockQuantity =aStockQuantity;
-        this.categories= allCategories;
     }
 
     public String getName() {
-
         return name;
     }
 
     public String getDescription() {
-
         return description;
     }
 
     public float getPrice() {
-
         return price;
     }
 
     public int getStockQuantity() {
-
         return stockQuantity;
     }
 
     public String getPhotoURL() {
-
         return photoURL;
     }
 
     public boolean getToBeAdded() {
-
         return toBeAdded;
     }
 
     public boolean getToBeRemoved() {
-
         return toBeRemoved;
     }
 
     public float getPromotion() {
-
         return promotion;
-    }
-    
-    public List<Category> getCategories() {
-        return categories;
     }
 }

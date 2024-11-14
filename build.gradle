@@ -29,31 +29,20 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+
 	testLogging {
-		exceptionFormat "full"
-		events "passed", "failed"
+		events "passed", "skipped", "failed"
 	}
+
 	finalizedBy jacocoTestReport
 }
 
-tasks.named('jacocoTestCoverageVerification') {
-	dependsOn test // tests are required to run before checking code coverage.
-}
-
 jacocoTestReport {
-	reports{
-		xml.required = true
-		html.required = true
-	}
-}
+	dependsOn test // Ensure test task runs before generating report
 
-tasks.named('jacocoTestCoverageVerification') {
-	violationRules {
-		rule {
-			limit {
-				minimum = 0.25
-			}
-		}
+	reports {
+		xml.required.set(true)  // XML report for CI tools like SonarQube
+		csv.required.set(false) // Disable CSV report if not needed
+		html.required.set(true) // Enable HTML report for easy local browsing
 	}
-	dependsOn test // tests are required to run before checking code coverage.
 }

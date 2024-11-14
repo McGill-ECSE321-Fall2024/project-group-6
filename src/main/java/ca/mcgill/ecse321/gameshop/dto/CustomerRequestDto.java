@@ -1,12 +1,11 @@
 package ca.mcgill.ecse321.gameshop.dto;
 
-import ca.mcgill.ecse321.gameshop.model.Game;
-import jakarta.persistence.ElementCollection;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import ca.mcgill.ecse321.gameshop.model.Game;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
 public class CustomerRequestDto {
     @NotBlank(message="Customer address is required.")
