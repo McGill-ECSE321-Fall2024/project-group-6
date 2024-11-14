@@ -2,10 +2,16 @@
 /*This code was generated using the UMPLE 1.35.0.7523.c616a4dce modeling language!*/
 
 package ca.mcgill.ecse321.gameshop.model;
-import java.util.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 
-import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 /**
  * Category class
  */
@@ -27,6 +33,7 @@ public class Category
 
   //Category Associations
   @ManyToMany
+  @JsonIgnore
   private List<Game> games;
 
   //------------------------

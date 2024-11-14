@@ -3,10 +3,12 @@
 
 
 package ca.mcgill.ecse321.gameshop.model;
-import java.util.*;
-
 
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Game class
@@ -45,16 +47,7 @@ public class Game
   private List<Guest> guests;
   @ManyToMany
   private List<Category> categories;
-  /*
-  @OneToMany
-  private List<Review> reviews;
-  @ManyToOne
-  private Manager manager;
-  @ManyToOne
-  private Employee creator;
-  @ManyToMany
-  private List<Category> categories;
-*/
+
   //------------------------
   // CONSTRUCTOR
   //------------------------
@@ -75,7 +68,7 @@ public Game(){
 
   }
 
-  public Game(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,  boolean aToBeAdded, boolean aToBeRemoved, Manager aManager, Employee aCreator, Category... allCategories)
+  public Game(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,  boolean aToBeAdded, boolean aToBeRemoved, Manager aManager, Employee aCreator, List<Category> allCategories)
   {
     name = aName;
     description = aDescription;
@@ -104,14 +97,14 @@ public Game(){
     }
   }
 //(aName,aDescription,aPrice,aStockQuantity,aPhotoURL,tobeAdded,allCategories)
-public Game(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,  boolean aToBeAdded, Category... allCategories)
+public Game(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL, List<Category> allCategories)
 {
   name = aName;
   description = aDescription;
   price = aPrice;
   stockQuantity = aStockQuantity;
   photoURL = aPhotoURL;
-  toBeAdded = aToBeAdded;
+  toBeAdded = true;
 
   reviews = new ArrayList<Review>();
 
@@ -333,8 +326,8 @@ public Game(String aName, String aDescription, float aPrice, int aStockQuantity,
 
   public List<Category> getCategories()
   {
-    List<Category> newCategories = Collections.unmodifiableList(categories);
-    return newCategories;
+    //List<Category> newCategories = Collections.unmodifiableList(categories);
+    return this.categories;
   }
 
   public int numberOfCategories()
@@ -608,8 +601,9 @@ public Game(String aName, String aDescription, float aPrice, int aStockQuantity,
     return wasRemoved;
   }
   /* Code from template association_SetMStarToMany */
-  public boolean setCategories(Category... newCategories)
+  public boolean setCategories(List<Category> newCategories)
   {
+
     boolean wasSet = false;
     ArrayList<Category> verifiedCategories = new ArrayList<Category>();
     for (Category aCategory : newCategories)
@@ -621,7 +615,7 @@ public Game(String aName, String aDescription, float aPrice, int aStockQuantity,
       verifiedCategories.add(aCategory);
     }
 
-    if (verifiedCategories.size() != newCategories.length || verifiedCategories.size() < minimumNumberOfCategories())
+    if (verifiedCategories.size() != newCategories.size() || verifiedCategories.size() < minimumNumberOfCategories())
     {
       return wasSet;
     }
