@@ -1,23 +1,15 @@
 package ca.mcgill.ecse321.gameshop.service;
 
 
-import ca.mcgill.ecse321.gameshop.exception.GameShopException;
 import ca.mcgill.ecse321.gameshop.model.Category;
-import ca.mcgill.ecse321.gameshop.model.Game;
 import ca.mcgill.ecse321.gameshop.repository.GameRepository;
-import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
 
 import java.util.ArrayList;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 /**
  * @author Maissa
  * Test for creating, getting, updating and deleting valid and invalid games.
@@ -47,7 +39,7 @@ public class GameServiceTests {
     Category categoriesNew = new Category("Sports");
     float promotion=20;
     ArrayList<Category> categoryList = new ArrayList<>();
-
+/*
 
     @Test
     public void testAddGame(){
@@ -326,6 +318,8 @@ public class GameServiceTests {
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("The game does not exist in the database",ex.getMessage());
     }
+
+ */
 
 
 

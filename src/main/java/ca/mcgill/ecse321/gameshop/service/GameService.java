@@ -37,7 +37,7 @@ public class GameService {
      */
 
     @Transactional
-    public Game addGame(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,List<Category> allCategories) {
+    public Game addGame(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,List<Integer> allCategories) {
 
         if(aName==null){
             throw new GameShopException(HttpStatus.NOT_FOUND,String.format("Name cannot be empty."));
@@ -52,16 +52,16 @@ public class GameService {
         }else if (allCategories==null){
             throw new GameShopException(HttpStatus.NOT_FOUND,String.format("Game must have at least one category."));
         }
-        /*
+
         List<Category> categories = new ArrayList<>();
         for(int i:allCategories){
             categories.add(categoryRepo.findCategoryByCategoryId(i));
         }
 
-         */
+
 
         System.out.println("Service");
-        System.out.println(allcategories);
+        System.out.println(categories);
         Game game= new Game(aName,aDescription,aPrice,aStockQuantity,aPhotoURL, categories);
 
         return gameRepository.save(game);
@@ -195,11 +195,13 @@ public class GameService {
     // Delete a game by ID
     @Transactional
     public void deleteGame(int gameId) {
-
+        Game game = gameRepository.findGameByGameId(gameId);
         if (!this.approvalToRemoveGame(gameId)) {
             throw new GameShopException(HttpStatus.NOT_FOUND, String.format("This game is not authorized to be deleted"));
         } else {
-            gameRepository.deleteById(gameId);}
+            gameRepository.deleteById(gameId);
+            game.delete();
+        }
     }
 
 
