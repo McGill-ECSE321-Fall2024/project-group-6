@@ -193,8 +193,8 @@ public class GameIntegrationTests {
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
         // Verify that the person was actually deleted by trying to fetch it again
-        ResponseEntity<GameResponseDto> deletedPerson = client.getForEntity(url, GameResponseDto.class);
-        //assertEquals(HttpStatus.NOT_FOUND, deletedPerson.getStatusCode());
+        ResponseEntity<GameResponseDto> deletedPerson = client.getForEntity(String.format("/games/id/%d", this.validId), GameResponseDto.class);
+        assertEquals(HttpStatus.NOT_FOUND, deletedPerson.getStatusCode());
     }
 
     @Test
