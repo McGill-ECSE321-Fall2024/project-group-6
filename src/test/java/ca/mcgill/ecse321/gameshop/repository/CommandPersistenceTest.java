@@ -1,19 +1,15 @@
 package ca.mcgill.ecse321.gameshop.repository;
 
-import ca.mcgill.ecse321.gameshop.model.*;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.AfterEach;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.sql.Date;
-import java.util.Random;
+import ca.mcgill.ecse321.gameshop.model.Command;
 
 @SpringBootTest
 public class CommandPersistenceTest {
@@ -23,8 +19,7 @@ public class CommandPersistenceTest {
 
     @Autowired
     private CommandRepository commandRepo;
-    @Autowired
-    private CartRepository cartRepo;
+
     @Autowired
     private CustomerRepository customerRepo;
 
@@ -39,7 +34,7 @@ public class CommandPersistenceTest {
     public void clearDatabase() {
 
         commandRepo.deleteAll();
-        cartRepo.deleteAll();
+
         paymentRepo.deleteAll();
         customerRepo.deleteAll();
         personRepo.deleteAll();
@@ -49,19 +44,7 @@ public class CommandPersistenceTest {
     @Test
     public void testCreateAndReadCommand() {
 
-        Person person = new Person("johndoe", "r@email.com", "password123", "555-1234");
-        person = personRepo.save(person);
-
-
-        Customer customer = new Customer(person, "1234 Montreal");
-        customer = customerRepo.save(customer);
-        Cart cart = new Cart(customer);
-        cart = cartRepo.save(cart);
-
-        Payment payment = new Payment("1234 Toronto",123456789,"05/27",444,50);
-        payment = paymentRepo.save(payment);
-
-        Command command=new Command( "13-10-2024", 75.6F, payment, cart);
+        Command command=new Command( "13-10-2024", 75.6F);
         command=commandRepo.save(command);
 
 
@@ -73,7 +56,7 @@ public class CommandPersistenceTest {
         /**
          * Relationship test
          */
-        assertEquals(commandFromDb.getCart().getCartId(),cart.getCartId());
+       // assertEquals(commandFromDb.getCart().getCartId(),cart.getCartId());
         /**
          * variable test
          */

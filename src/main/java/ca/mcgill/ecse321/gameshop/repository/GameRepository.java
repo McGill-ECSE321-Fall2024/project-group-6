@@ -7,5 +7,8 @@ import ca.mcgill.ecse321.gameshop.model.Game;
 
 public interface GameRepository extends CrudRepository<Game, Integer> {
     public Game findGameByGameId(int gameId);
+    public Game findGameByName(String name);
+
 }
+
 
