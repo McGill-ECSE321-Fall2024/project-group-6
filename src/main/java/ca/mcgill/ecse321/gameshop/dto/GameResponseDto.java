@@ -12,9 +12,11 @@ public class GameResponseDto {
     private String description;
     private float price;
     private int stockQuantity;
+
     private String photoURL;
     private int gameId;
     private boolean toBeAdded;
+
     private boolean toBeRemoved;
     private float promotion;
 

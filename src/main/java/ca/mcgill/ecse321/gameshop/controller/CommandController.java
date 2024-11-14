@@ -72,15 +72,4 @@ public class CommandController {
     public void deleteCommand(@PathVariable int id){
         commandService.deleteCommand(id);
     }
-
-    /**
-     * Delete the command with the given ID.
-     *
-     * @param id The primary key of the command to find.
-     * @return void.
-     */
-    @DeleteMapping("/command/{id}")
-    public void deleteCommand(@PathVariable int id){
-        commandService.deleteCommand(id);
-    }
 }

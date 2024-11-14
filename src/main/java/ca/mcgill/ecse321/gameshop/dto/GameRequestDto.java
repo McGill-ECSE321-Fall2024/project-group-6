@@ -5,6 +5,7 @@ import java.util.List;
 import jakarta.validation.constraints.NotBlank;
 
 public class GameRequestDto {
+
     @NotBlank(message = "Name of the game can not be empty")
     public String name;
     @NotBlank(message = "Description of the game can not be empty")
@@ -93,34 +94,43 @@ public class GameRequestDto {
     }
 
     public String getName() {
+
         return name;
     }
 
     public String getDescription() {
+
         return description;
     }
 
     public float getPrice() {
+
         return price;
     }
 
     public int getStockQuantity() {
+
         return stockQuantity;
     }
 
     public String getPhotoURL() {
+
         return photoURL;
     }
 
+
     public boolean getToBeAdded() {
+
         return toBeAdded;
     }
 
     public boolean getToBeRemoved() {
+
         return toBeRemoved;
     }
 
     public float getPromotion() {
+
         return promotion;
     }
     public List<Integer> getCategories() {
