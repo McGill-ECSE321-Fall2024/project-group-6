@@ -58,10 +58,6 @@ public class GameService {
             categories.add(categoryRepo.findCategoryByCategoryId(i));
         }
 
-
-
-        System.out.println("Service");
-        System.out.println(categories);
         Game game= new Game(aName,aDescription,aPrice,aStockQuantity,aPhotoURL, categories);
 
         return gameRepository.save(game);

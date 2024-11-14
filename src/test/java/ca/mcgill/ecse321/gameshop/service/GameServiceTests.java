@@ -4,6 +4,7 @@ package ca.mcgill.ecse321.gameshop.service;
 import ca.mcgill.ecse321.gameshop.exception.GameShopException;
 import ca.mcgill.ecse321.gameshop.model.Category;
 import ca.mcgill.ecse321.gameshop.model.Game;
+import ca.mcgill.ecse321.gameshop.repository.CategoryRepository;
 import ca.mcgill.ecse321.gameshop.repository.GameRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -29,6 +30,8 @@ import static org.mockito.Mockito.*;
 public class GameServiceTests {
     @Mock
     private GameRepository repo;
+    @Mock
+    private CategoryRepository catRepo;
     @InjectMocks
     private GameService service;
 
@@ -39,7 +42,7 @@ public class GameServiceTests {
     private int stock=5;
     private String photo="image";
     private boolean tobeAdded=true;
-    private Category category1=new Category("Action");
+    private Category category1 = new Category("Action");
 
     String newName ="Minecraft";
     String newDescription="Good game";
@@ -48,16 +51,18 @@ public class GameServiceTests {
     String newPhoto="new image";
     boolean tobeRemoved =false;
     boolean tobeAddedNew= false;
-    Category category2 = new Category("Sports");
     float promotion=20;
-    List<Category> categories=List.of(category1,category2);
-    List<Integer> categoryIDs= List.of(category1.getCategoryId(), category2.getCategoryId());;
+
+    List<Category> categories=List.of(category1);
+    List<Integer> categoryIDs= List.of(category1.getCategoryId());;
 
 
     @Test
-    public void testAddGame(){
 
+    public void testAddGame(){
         when(repo.save(any(Game.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
+
+        when(catRepo.findCategoryByCategoryId(category1.getCategoryId())).thenReturn(category1);
         Game createdGame = service.addGame(name,description,price,stock,photo,categoryIDs);
 
         assertNotNull(createdGame);
@@ -87,6 +92,7 @@ public class GameServiceTests {
 
     @Test
     public void testAddGameByInvalidPrice(){
+
         GameShopException ex = assertThrows(GameShopException.class, () -> service.addGame(name,description,-1,stock,photo,categoryIDs));
 
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
@@ -95,6 +101,7 @@ public class GameServiceTests {
 
     @Test
     public void testAddGameByInvalidStock(){
+
         GameShopException ex = assertThrows(GameShopException.class, () -> service.addGame(name,description,price,-1,photo,categoryIDs));
 
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
@@ -118,17 +125,14 @@ public class GameServiceTests {
 
     @Test
     public void testUpdateValidGame(){
-        Category c= new Category("Farming");
-        List<Category> newCategories= categories;
-        newCategories.add(c);
-        List<Integer> newCategoryIDs= categoryIDs;
-        newCategoryIDs.add(c.getCategoryId());
+
+        when(catRepo.findCategoryByCategoryId(category1.getCategoryId())).thenReturn(category1);
 
         Game g = new Game(name,description,price,stock,photo,categories);
 
         when(repo.findGameByGameId(ID)).thenReturn(g);
         when(repo.save(any(Game.class))).thenAnswer((InvocationOnMock iom)-> iom.getArgument(0));
-        Game updatedGame = service.updateGame(ID,newName,newDescription,newPrice,newStock,newPhoto,tobeAddedNew, tobeRemoved, promotion, newCategoryIDs);
+        Game updatedGame = service.updateGame(ID,newName,newDescription,newPrice,newStock,newPhoto,tobeAddedNew, tobeRemoved, promotion, categoryIDs);
 
         assertNotNull(updatedGame);
         assertEquals(newName,updatedGame.getName());
@@ -138,7 +142,7 @@ public class GameServiceTests {
         assertEquals(newPhoto,updatedGame.getPhotoURL());
         assertEquals(tobeRemoved,updatedGame.getToBeRemoved());
         assertEquals(tobeAddedNew,updatedGame.getToBeAdded());
-        assertEquals(newCategories,updatedGame.getCategories());
+        assertEquals(categories,updatedGame.getCategories());
         assertEquals(promotion,updatedGame.getPromotion());
 
         verify(repo,times(1)).save(updatedGame);
@@ -278,7 +282,8 @@ public class GameServiceTests {
     public void testGetGamesByCategory(){
         Game c=new Game(name,description,price,stock,photo,categories);
 
-        when(repo.findAll()).thenReturn(List.of(c,new Game(name,description,price,stock,photo,categories)));
+        when(repo.findAll()).thenReturn(List.of(c));
+
         List<Game> games = service.getGamesByCategory(category1);
 
         List<Game> result = new ArrayList<>();
