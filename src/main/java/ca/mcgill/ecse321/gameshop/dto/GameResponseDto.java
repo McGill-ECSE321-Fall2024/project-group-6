@@ -20,11 +20,7 @@ public class GameResponseDto {
 
     private List<Category> categories;
 
-    // Jackson needs a default constructor, but it doesn't need to be public
-    @SuppressWarnings("unused")
-    private GameResponseDto() {
-    }
-
+    public GameResponseDto(){};
     public GameResponseDto(Game game) {
         this.gameId=game.getGameId();
         this.description = game.getDescription();
@@ -35,6 +31,72 @@ public class GameResponseDto {
         this.toBeAdded = game.getToBeAdded();
         this.toBeRemoved = game.getToBeRemoved();
         this.stockQuantity = game.getStockQuantity();
+        this.categories=game.getCategories();
+        System.out.println("Response");
+    }
+
+    public boolean setName(String aName) {
+        boolean wasSet = false;
+        name = aName;
+        wasSet = true;
+        return wasSet;
+    }
+
+
+    public boolean setDescription(String aDescription) {
+        boolean wasSet = false;
+        description = aDescription;
+        wasSet = true;
+        return wasSet;
+    }
+
+    public boolean setPrice(float aPrice) {
+        boolean wasSet = false;
+        price = aPrice;
+        wasSet = true;
+        return wasSet;
+    }
+
+    public boolean setStockQuantity(int aStockQuantity) {
+        boolean wasSet = false;
+        stockQuantity = aStockQuantity;
+        wasSet = true;
+        return wasSet;
+    }
+
+    public boolean setPhotoURL(String aPhotoURL) {
+        boolean wasSet = false;
+        photoURL = aPhotoURL;
+        wasSet = true;
+        return wasSet;
+    }
+
+    public boolean setGameId(int aGameId) {
+        boolean wasSet = false;
+        gameId = aGameId;
+        wasSet = true;
+        return wasSet;
+    }
+
+    public boolean setToBeAdded(boolean aToBeAdded) {
+        boolean wasSet = false;
+        toBeAdded = aToBeAdded;
+        wasSet = true;
+        return wasSet;
+    }
+
+    public boolean setToBeRemoved(boolean aToBeRemoved) {
+        boolean wasSet = false;
+        toBeRemoved = aToBeRemoved;
+        wasSet = true;
+        return wasSet;
+    }
+
+    public boolean setPromotion(float aPromotion) {
+        boolean wasSet = false;
+        promotion = aPromotion;
+        wasSet = true;
+        return wasSet;
     }
 
     public String getName() {
@@ -71,5 +133,9 @@ public class GameResponseDto {
 
     public float getPromotion() {
         return promotion;
+    }
+    public List<Category> getCategories()
+    {
+        return categories;
     }
 }

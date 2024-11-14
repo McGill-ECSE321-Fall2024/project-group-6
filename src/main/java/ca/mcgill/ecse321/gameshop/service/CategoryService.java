@@ -9,8 +9,10 @@ import ca.mcgill.ecse321.gameshop.model.Category;
 import ca.mcgill.ecse321.gameshop.repository.CategoryRepository;
 import jakarta.transaction.Transactional;
 
+
 @Service
 public class CategoryService {
+
     @Autowired
     private CategoryRepository repo;
 
@@ -29,6 +31,7 @@ public class CategoryService {
                 throw new GameShopException(HttpStatus.BAD_REQUEST, String.format("Category already exists."));
             }
         }
+
         Category c = new Category(name);
         return repo.save(c);
     }
@@ -65,7 +68,8 @@ public class CategoryService {
                 throw new GameShopException(HttpStatus.BAD_REQUEST, String.format("Category already exists."));
             }
         }
-        Category toUpdate= repo.findCategoryByCategoryId(cId);
+
+        Category toUpdate = repo.findCategoryByCategoryId(cId);
         toUpdate.setCategoryName(name);
         return repo.save(toUpdate);
     }
@@ -80,6 +84,7 @@ public class CategoryService {
         else if(repo.findCategoryByCategoryId(cId) == null) {
             throw new GameShopException(HttpStatus.NOT_FOUND, String.format("The Category with ID " + cId + " is not valid."));
         }
+
         repo.deleteById(cId);
     }
 

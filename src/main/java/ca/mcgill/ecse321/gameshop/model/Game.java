@@ -45,14 +45,15 @@ public class Game
   private Employee creator;
   @ManyToMany
   private List<Guest> guests;
-  @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
+  @ManyToMany
   private List<Category> categories;
+
   //------------------------
   // CONSTRUCTOR
   //------------------------
-  public Game(){
+public Game(){
 
-  }
+}
   public Game(String aName, String aDescription, float aPrice, int aStockQuantity,String aPhotoURL)
   {
     name = aName;
@@ -66,8 +67,8 @@ public class Game
     categories = new ArrayList<Category>();
 
   }
-  
-  public Game(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,  boolean aToBeAdded, boolean aToBeRemoved, float aPromotion, List<Category> allCategories)
+
+  public Game(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,  boolean aToBeAdded, boolean aToBeRemoved, Manager aManager, Employee aCreator, List<Category> allCategories)
   {
     name = aName;
     description = aDescription;
@@ -76,30 +77,6 @@ public class Game
     photoURL = aPhotoURL;
     toBeAdded = aToBeAdded;
     toBeRemoved = aToBeRemoved;
-    promotion=aPromotion;
-    reviews = new ArrayList<Review>();
-
-    boolean didAddCategories = setCategories(allCategories);
-    if (!didAddCategories)
-    {
-      throw new RuntimeException("Unable to create Game, must have at least 1 categories. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
-    }
-    guests = new ArrayList<Guest>();
-    categories = new ArrayList<Category>();
-
-  }
-
-  public Game(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,  boolean aToBeAdded, boolean aToBeRemoved, float aPromotion, Manager aManager, Employee aCreator, List<Category> allCategories)
-  {
-    //aName, aDescription, aPrice, aStockQuantity, aPhotoURL,  aToBeAdded, aToBeRemoved, aManager, this, allCategories
-    name = aName;
-    description = aDescription;
-    price = aPrice;
-    stockQuantity = aStockQuantity;
-    photoURL = aPhotoURL;
-    toBeAdded = aToBeAdded;
-    toBeRemoved = aToBeRemoved;
-    promotion=aPromotion;
     reviews = new ArrayList<Review>();
     boolean didAddManager = setManager(aManager);
     if (!didAddManager)
@@ -120,37 +97,26 @@ public class Game
     }
   }
 //(aName,aDescription,aPrice,aStockQuantity,aPhotoURL,tobeAdded,allCategories)
-public Game(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,  boolean aToBeAdded, List<Category> allCategories)
+public Game(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL, List<Category> allCategories)
 {
   name = aName;
   description = aDescription;
   price = aPrice;
   stockQuantity = aStockQuantity;
   photoURL = aPhotoURL;
-  toBeAdded = aToBeAdded;
-}
+  toBeAdded = true;
 
-  //(aName,aDescription,aPrice,aStockQuantity,aPhotoURL,tobeAdded,allCategories)
-  public Game(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL, List<Category> allCategories)
+  reviews = new ArrayList<Review>();
+
+
+  guests = new ArrayList<Guest>();
+  categories = new ArrayList<Category>();
+  boolean didAddCategories = setCategories(allCategories);
+  if (!didAddCategories)
   {
-    name = aName;
-    description = aDescription;
-    price = aPrice;
-    stockQuantity = aStockQuantity;
-    photoURL = aPhotoURL;
-    toBeAdded = true;
-
-    reviews = new ArrayList<Review>();
-
-
-    guests = new ArrayList<Guest>();
-    categories = new ArrayList<Category>();
-    boolean didAddCategories = setCategories(allCategories);
-    if (!didAddCategories)
-    {
-      throw new RuntimeException("Unable to create Game, must have at least 1 categories. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
-    }
+    throw new RuntimeException("Unable to create Game, must have at least 1 categories. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
   }
+}
   //------------------------
   // INTERFACE
   //------------------------
@@ -543,7 +509,7 @@ public Game(String aName, String aDescription, float aPrice, int aStockQuantity,
   }
   /* Code from template association_AddIndexControlFunctions */
   public boolean addGuestAt(Guest aGuest, int index)
-  {
+  {  
     boolean wasAdded = false;
     if(addGuest(aGuest))
     {
@@ -566,8 +532,8 @@ public Game(String aName, String aDescription, float aPrice, int aStockQuantity,
       guests.remove(aGuest);
       guests.add(index, aGuest);
       wasAdded = true;
-    }
-    else
+    } 
+    else 
     {
       wasAdded = addGuestAt(aGuest, index);
     }
@@ -677,7 +643,8 @@ public Game(String aName, String aDescription, float aPrice, int aStockQuantity,
     return wasSet;
   }
   /* Code from template association_AddIndexControlFunctions */
-  public boolean addCategoryAt(Category aCategory, int index) {
+  public boolean addCategoryAt(Category aCategory, int index)
+  {  
     boolean wasAdded = false;
     if(addCategory(aCategory))
     {

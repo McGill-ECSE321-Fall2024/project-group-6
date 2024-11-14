@@ -2,7 +2,6 @@ package ca.mcgill.ecse321.gameshop.dto;
 
 import java.util.List;
 
-import ca.mcgill.ecse321.gameshop.model.Category;
 import jakarta.validation.constraints.NotBlank;
 
 public class GameRequestDto {
@@ -19,16 +18,12 @@ public class GameRequestDto {
 
     public boolean toBeAdded;
 
-    private boolean toBeRemoved;
-    private float promotion;
-    private List<Category> categories;
-
-    // Jackson needs a default constructor, but it doesn't need to be public
-    @SuppressWarnings("unused")
-    private GameRequestDto() {
-    }
-
-    public GameRequestDto(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,  boolean aToBeAdded, boolean aToBeRemoved, float aPromotion) {
+    public boolean toBeRemoved;
+    public float promotion;
+    public List<Integer> categories;
+    public GameRequestDto(){};
+    public GameRequestDto(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,  boolean aToBeAdded, boolean aToBeRemoved, float aPromotion,List<Integer> allCategories) {
+        System.out.println("Request");
         this.description = aDescription;
         this.name = aName;
         this.photoURL = aPhotoURL;
@@ -37,6 +32,64 @@ public class GameRequestDto {
         this.toBeAdded = aToBeAdded;
         this.toBeRemoved = aToBeRemoved;
         this.stockQuantity =aStockQuantity;
+        this.categories= allCategories;
+    }
+
+    public boolean setName(String aName) {
+        boolean wasSet = false;
+        name = aName;
+        wasSet = true;
+        return wasSet;
+    }
+
+    public boolean setDescription(String aDescription) {
+        boolean wasSet = false;
+        description = aDescription;
+        wasSet = true;
+        return wasSet;
+    }
+
+    public boolean setPrice(float aPrice) {
+        boolean wasSet = false;
+        price = aPrice;
+        wasSet = true;
+        return wasSet;
+    }
+
+    public boolean setStockQuantity(int aStockQuantity) {
+        boolean wasSet = false;
+        stockQuantity = aStockQuantity;
+        wasSet = true;
+        return wasSet;
+    }
+
+    public boolean setPhotoURL(String aPhotoURL) {
+        boolean wasSet = false;
+        photoURL = aPhotoURL;
+        wasSet = true;
+        return wasSet;
+    }
+
+
+    public boolean setToBeAdded(boolean aToBeAdded) {
+        boolean wasSet = false;
+        toBeAdded = aToBeAdded;
+        wasSet = true;
+        return wasSet;
+    }
+
+    public boolean setToBeRemoved(boolean aToBeRemoved) {
+        boolean wasSet = false;
+        toBeRemoved = aToBeRemoved;
+        wasSet = true;
+        return wasSet;
+    }
+
+    public boolean setPromotion(float aPromotion) {
+        boolean wasSet = false;
+        promotion = aPromotion;
+        wasSet = true;
+        return wasSet;
     }
 
     public String getName() {
@@ -69,5 +122,8 @@ public class GameRequestDto {
 
     public float getPromotion() {
         return promotion;
+    }
+    public List<Integer> getCategories() {
+        return categories;
     }
 }

@@ -3,10 +3,13 @@
 
 
 package ca.mcgill.ecse321.gameshop.model;
-import java.util.*;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
 
-import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Manager class extending Role

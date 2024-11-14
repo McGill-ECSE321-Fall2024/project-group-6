@@ -57,12 +57,12 @@ public class CategoryIntegrationTests {
         // Act
         ResponseEntity<CategoryResponseDto> response = client.postForEntity("/categories", category, CategoryResponseDto.class);
 
-
         // Assert
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertTrue(response.getBody().getId() > 0, "The ID should be positive.");
         this.ID=response.getBody().getId();
+        System.out.println(this.ID);
         assertEquals(name, response.getBody().getName());
     }
 
@@ -106,6 +106,7 @@ public class CategoryIntegrationTests {
         //CategoryRequestDto updatedCategoryDto = new CategoryRequestDto(newName);
         String url = String.format("/categories/%d", this.ID);
 
+
         // Act
         client.put(url, newName);
 
@@ -132,9 +133,27 @@ public class CategoryIntegrationTests {
         assertNotNull(response);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
-
     @Test
     @Order(6)
+    public void testGetAllCategories() {
+        // Arrange
+        CategoryRequestDto request = new CategoryRequestDto("RPG");
+
+        // Act
+        client.postForEntity("/categories", request, CategoryResponseDto.class);
+
+        ResponseEntity<CategoryListDto> response = client.getForEntity("/categories", CategoryListDto.class);
+
+        //Assert
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        List<CategoryResponseDto> categories = response.getBody().getCategories();
+        assertEquals(newName, categories.get(0).getName());
+        assertEquals("RPG", categories.get(1).getName());
+    }
+
+    @Test
+    @Order(7)
     public void testDeleteCategoryByValidId() {
         // Arrange
         String url = String.format("/categories/%d", this.ID);
@@ -146,13 +165,13 @@ public class CategoryIntegrationTests {
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
-        // Verify that the person was actually deleted by trying to fetch it again
+        // Verify that the categoory was actually deleted by trying to fetch it again
         ResponseEntity<CategoryResponseDto> deletedCategory = client.getForEntity(url, CategoryResponseDto.class);
         assertEquals(HttpStatus.NOT_FOUND, deletedCategory.getStatusCode());
     }
 
     @Test
-    @Order(7)
+    @Order(8)
     public void testDeleteCategoryByInvalidId() {
         // Arrange
         String url = String.format("/categories/%d", -1);

@@ -1,3 +1,4 @@
+
 package ca.mcgill.ecse321.gameshop.integration;
 
 import org.junit.jupiter.api.AfterAll;
@@ -20,14 +21,10 @@ import ca.mcgill.ecse321.gameshop.dto.CommandListDto;
 import ca.mcgill.ecse321.gameshop.dto.CommandRequestDto;
 import ca.mcgill.ecse321.gameshop.dto.CommandResponseDto;
 import ca.mcgill.ecse321.gameshop.repository.CommandRepository;
-
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class CommandIntegrationTests {
-    @Autowired
-    private TestRestTemplate order;
-    @Autowired
     private CommandRepository repo;
 
     private static int ID;

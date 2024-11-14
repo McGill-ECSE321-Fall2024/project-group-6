@@ -19,6 +19,7 @@ import ca.mcgill.ecse321.gameshop.service.CategoryService;
 
 @RestController
 public class CategoryController {
+
     @Autowired
     private CategoryService categoryService;
 
@@ -61,9 +62,9 @@ public class CategoryController {
      * @return
      */
     @GetMapping("/categories")
-    public CategoryListDto getAllCategories(){
+    public CategoryListDto getAllCategories() {
         List<CategoryResponseDto> categories = new ArrayList<>();
-        for (Category c: categoryService.getAllCategories()){
+        for (Category c : categoryService.getAllCategories()) {
             categories.add(new CategoryResponseDto(c));
         }
         return new CategoryListDto(categories);
@@ -74,7 +75,7 @@ public class CategoryController {
      * @param ID
      */
     @DeleteMapping("/categories/{ID}")
-    public void deleteCategory(@PathVariable int ID){
+    public void deleteCategory(@PathVariable int ID) {
         categoryService.deleteCategory(ID);
     }
 

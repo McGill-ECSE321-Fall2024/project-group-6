@@ -11,6 +11,7 @@ public class CategoryListDto {
     }
 
     public CategoryListDto(List<CategoryResponseDto> categories){
+
         this.categories=categories;
     }
 
