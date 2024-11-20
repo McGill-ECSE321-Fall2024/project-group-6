@@ -1,9 +1,9 @@
 package ca.mcgill.ecse321.gameshop.dto;
 
-import java.util.List;
-
 import ca.mcgill.ecse321.gameshop.model.Category;
 import ca.mcgill.ecse321.gameshop.model.Game;
+
+import java.util.List;
 
 
 public class GameResponseDto {

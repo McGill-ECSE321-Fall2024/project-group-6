@@ -4,8 +4,6 @@
 package ca.mcgill.ecse321.gameshop.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -34,7 +32,8 @@ public class Category
   private int categoryId;
 
   //Category Associations
-  @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
+  @ManyToMany
+  @JsonIgnore
   private List<Game> games;
 
   //------------------------

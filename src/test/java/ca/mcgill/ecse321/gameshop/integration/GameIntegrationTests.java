@@ -55,11 +55,6 @@ public class GameIntegrationTests {
     private static final boolean toBeRemoved = false;
     private static final float VALID_PROMOTION = -5F;
 
-    private static final String INVALID_NAME = "";
-    private static final String INVALID_DESCRIPTION = "";
-    private static final float INVALID_PRICE = -5.5F;
-    private static final int INVALID_STOCK_QUANTITY = -60;
-    private static final String INVALID_PHOTOURL = "";
     private int validId;
     private int cat1ID;
     private int cat2ID;
@@ -70,7 +65,7 @@ public class GameIntegrationTests {
         categoryRepo.deleteAll();
         repo.deleteAll();
     }
-   @BeforeAll
+    @BeforeAll
     public void setup() {
         // This ensures categories are available for testing
         Category category1 = new Category();
@@ -84,6 +79,7 @@ public class GameIntegrationTests {
         this.cat2ID=category2.getCategoryId();
     }
 
+    @SuppressWarnings("null")
     @Test
     @Order(1)
     public void testCreateValidGame() {
