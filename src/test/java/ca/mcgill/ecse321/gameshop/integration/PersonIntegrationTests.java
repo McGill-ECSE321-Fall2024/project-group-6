@@ -24,7 +24,9 @@ import ca.mcgill.ecse321.gameshop.dto.PersonListDto;
 import ca.mcgill.ecse321.gameshop.dto.PersonRequestDto;
 import ca.mcgill.ecse321.gameshop.dto.PersonResponseDto;
 import ca.mcgill.ecse321.gameshop.repository.PersonRepository;
-
+/**
+ * @author Mario
+ */
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = GameshopApplication.class)
 @TestMethodOrder(OrderAnnotation.class)
 @TestInstance(Lifecycle.PER_CLASS)
@@ -209,5 +211,4 @@ public class PersonIntegrationTests {
         assertNotNull(response);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
-
 }

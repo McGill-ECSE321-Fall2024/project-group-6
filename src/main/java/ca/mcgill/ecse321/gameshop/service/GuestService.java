@@ -8,7 +8,9 @@ import ca.mcgill.ecse321.gameshop.exception.GameShopException;
 import ca.mcgill.ecse321.gameshop.model.Guest;
 import ca.mcgill.ecse321.gameshop.repository.GuestRepository;
 import jakarta.transaction.Transactional;
-
+/**
+ * @author Mario
+ */
 @Service
 public class GuestService {
     // Inject GuestRepository dependency to interact with the database

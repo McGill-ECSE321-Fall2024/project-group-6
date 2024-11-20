@@ -33,6 +33,9 @@ import jakarta.transaction.Transactional;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(Lifecycle.PER_CLASS)
 
+/**
+ * @author Maissa
+ */
 public class GameIntegrationTests {
     @Autowired
     private TestRestTemplate client;

@@ -24,7 +24,9 @@ import org.springframework.http.HttpStatus;
 import ca.mcgill.ecse321.gameshop.exception.GameShopException;
 import ca.mcgill.ecse321.gameshop.model.Person;
 import ca.mcgill.ecse321.gameshop.repository.PersonRepository;
-
+/**
+ * @author Mario and Joseph
+ */
 @SpringBootTest
 @MockitoSettings(strictness = Strictness.STRICT_STUBS)
 public class PersonServiceTests {

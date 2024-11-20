@@ -2,6 +2,7 @@ package ca.mcgill.ecse321.gameshop.integration;
 /**
  * @author Joseph
  */
+
 import org.junit.jupiter.api.AfterAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -19,9 +20,12 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import ca.mcgill.ecse321.gameshop.repository.*;
+
 import ca.mcgill.ecse321.gameshop.GameshopApplication;
-import ca.mcgill.ecse321.gameshop.dto.*;
+import ca.mcgill.ecse321.gameshop.dto.ManagerRequestDto;
+import ca.mcgill.ecse321.gameshop.dto.ManagerResponseDto;
+import ca.mcgill.ecse321.gameshop.repository.ManagerRepository;
+import ca.mcgill.ecse321.gameshop.repository.PersonRepository;
 
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = GameshopApplication.class)

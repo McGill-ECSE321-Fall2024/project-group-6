@@ -3,9 +3,12 @@ package ca.mcgill.ecse321.gameshop.integration;
  * @author Joseph and Marine
  */
 
+import java.util.List;
+
 import org.junit.jupiter.api.AfterAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -16,15 +19,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import ca.mcgill.ecse321.gameshop.repository.*;
-import ca.mcgill.ecse321.gameshop.GameshopApplication;
-import ca.mcgill.ecse321.gameshop.dto.*;
 
-import java.util.List;
+import ca.mcgill.ecse321.gameshop.GameshopApplication;
+import ca.mcgill.ecse321.gameshop.dto.CustomerListDto;
+import ca.mcgill.ecse321.gameshop.dto.CustomerRequestDto;
+import ca.mcgill.ecse321.gameshop.dto.CustomerResponseDto;
+import ca.mcgill.ecse321.gameshop.dto.GameRequestDto;
+import ca.mcgill.ecse321.gameshop.dto.GameResponseDto;
+import ca.mcgill.ecse321.gameshop.model.Category;
+import ca.mcgill.ecse321.gameshop.repository.CategoryRepository;
+import ca.mcgill.ecse321.gameshop.repository.CustomerRepository;
+import ca.mcgill.ecse321.gameshop.repository.GameRepository;
+import ca.mcgill.ecse321.gameshop.repository.PersonRepository;
 
 
 
@@ -41,6 +53,8 @@ public class CustomerIntegrationTests {
     private PersonRepository personRepo;
     @Autowired
     private GameRepository gameRepo;
+    @Autowired
+    private CategoryRepository categoryRepo;
 
     private static final String VALID_NAME = "Bob";
     private static final String VALID_EMAIL = "jordanielson@mail.mcgill.ca";
@@ -50,6 +64,7 @@ public class CustomerIntegrationTests {
 
 
     private int id;
+    private int catID;
 
     /**
      * Clear all used repositories after end of tests
@@ -59,6 +74,16 @@ public class CustomerIntegrationTests {
         repo.deleteAll();
         personRepo.deleteAll();
         gameRepo.deleteAll(); //to be used for game addition into cart
+        categoryRepo.deleteAll();
+
+    }
+    @BeforeAll
+    public void setup() {
+        // This ensures categories are available for testing
+        Category category1 = new Category();
+        category1.setCategoryName("Action");
+        categoryRepo.save(category1);
+        this.catID=category1.getCategoryId();
     }
 
     /**
@@ -92,9 +117,10 @@ public class CustomerIntegrationTests {
     @Test
     @Order(2)
     public void testCreateValidGame() {
+        List<Integer> categoryId = List.of(this.catID);
 
 
-        GameRequestDto2 request = new GameRequestDto2("FC 24", "Soccer Game", 60.0F, 2, "https://nothing");
+        GameRequestDto request = new GameRequestDto("FC 24", "Soccer Game", 60.0F, 2, "https://nothing",true,false,-5F,categoryId);
 
         // Act
         ResponseEntity<GameResponseDto> response = client.postForEntity("/customers/test", request, GameResponseDto.class);

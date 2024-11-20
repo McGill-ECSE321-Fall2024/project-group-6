@@ -23,7 +23,9 @@ import org.springframework.http.ResponseEntity;
 import ca.mcgill.ecse321.gameshop.GameshopApplication;
 import ca.mcgill.ecse321.gameshop.dto.GuestResponseDto;
 import ca.mcgill.ecse321.gameshop.repository.GuestRepository;
-
+/**
+ * @author Mario
+ */
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = GameshopApplication.class)
 @TestMethodOrder(OrderAnnotation.class)
 @TestInstance(Lifecycle.PER_CLASS)

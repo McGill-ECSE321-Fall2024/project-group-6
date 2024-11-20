@@ -20,7 +20,9 @@ import ca.mcgill.ecse321.gameshop.model.Category;
 import ca.mcgill.ecse321.gameshop.model.Game;
 import ca.mcgill.ecse321.gameshop.repository.CategoryRepository;
 import ca.mcgill.ecse321.gameshop.service.GameService;
-
+/**
+ * @author Laurence, Maissa, Joseph and Mario
+ */
 @RestController
 public class GameController {
     @Autowired

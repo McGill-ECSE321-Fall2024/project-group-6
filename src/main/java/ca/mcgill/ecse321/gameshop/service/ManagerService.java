@@ -4,6 +4,7 @@ package ca.mcgill.ecse321.gameshop.service;
 /**
  * @author Joseph
  */
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,7 +82,7 @@ public class ManagerService {
      */
     @Transactional
     public Manager updateManager(int id, String aUsername, String aEmail, String aPassword, String aPhone) {
-       Manager manager = repo.findManagerByRoleId(id);
+        Manager manager = repo.findManagerByRoleId(id);
 
         if (manager== null) {
             throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Manager with ID " + id + " does not exist."));

@@ -23,7 +23,9 @@ import org.springframework.http.HttpStatus;
 import ca.mcgill.ecse321.gameshop.exception.GameShopException;
 import ca.mcgill.ecse321.gameshop.model.Guest;
 import ca.mcgill.ecse321.gameshop.repository.GuestRepository;
-
+/**
+ * @author Mario
+ */
 @SpringBootTest
 @MockitoSettings(strictness = Strictness.STRICT_STUBS)
 public class GuestServiceTests {

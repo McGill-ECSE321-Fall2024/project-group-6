@@ -21,6 +21,9 @@ import ca.mcgill.ecse321.gameshop.dto.CommandRequestDto;
 import ca.mcgill.ecse321.gameshop.dto.CommandResponseDto;
 import ca.mcgill.ecse321.gameshop.repository.CommandRepository;
 
+/**
+ * @author Mario and Maissa
+ */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)

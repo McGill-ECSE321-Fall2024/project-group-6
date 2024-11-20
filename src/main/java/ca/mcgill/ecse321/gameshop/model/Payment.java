@@ -58,7 +58,7 @@ public class Payment
     creditCardNb = aCreditCardNb;
     expirationDate = aExpirationDate;
     cvc = aCvc;
-   // paymentId = aPaymentId;
+    // paymentId = aPaymentId;
     boolean didAddCustomer = setCustomer(aCustomer);
     if (!didAddCustomer)
     {

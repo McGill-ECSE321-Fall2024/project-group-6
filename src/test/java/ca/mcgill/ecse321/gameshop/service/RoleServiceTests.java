@@ -3,26 +3,31 @@ package ca.mcgill.ecse321.gameshop.service;
  * @author Joseph
  */
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.Test;
 import static org.mockito.ArgumentMatchers.any;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import java.util.*;
-
-
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 
-import ca.mcgill.ecse321.gameshop.exception.*;
-import ca.mcgill.ecse321.gameshop.model.*;
-import ca.mcgill.ecse321.gameshop.repository.*;
+import ca.mcgill.ecse321.gameshop.exception.GameShopException;
+import ca.mcgill.ecse321.gameshop.model.Manager;
+import ca.mcgill.ecse321.gameshop.model.Person;
+import ca.mcgill.ecse321.gameshop.model.Role;
+import ca.mcgill.ecse321.gameshop.repository.RoleRepository;
 
 @SpringBootTest
 @MockitoSettings(strictness = Strictness.STRICT_STUBS)

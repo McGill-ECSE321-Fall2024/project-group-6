@@ -3,8 +3,6 @@ package ca.mcgill.ecse321.gameshop.integration;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import ca.mcgill.ecse321.gameshop.model.Review;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -20,10 +18,13 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import ca.mcgill.ecse321.gameshop.repository.PaymentRepository;
 import ca.mcgill.ecse321.gameshop.dto.ReviewRequestDto;
 import ca.mcgill.ecse321.gameshop.dto.ReviewResponseDto;
-
+import ca.mcgill.ecse321.gameshop.model.Review;
+import ca.mcgill.ecse321.gameshop.repository.PaymentRepository;
+/**
+ * @author Annabelle
+ */
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(Lifecycle.PER_CLASS)
@@ -37,9 +38,9 @@ public class ReviewIntegrationTests {
     private static final String VALID_COMMENT = "Amazing Game!";
     private static final int VALID_AMOUNT_OF_LIKES = 0;
     private static final String VALID_REPLY = "";
-    private static final Review.StarRating INVALID_RATING = null;
     private int validId;
 
+    @SuppressWarnings("null")
     @Test
     @Order(1)
     public void testCreateValidPayment() {

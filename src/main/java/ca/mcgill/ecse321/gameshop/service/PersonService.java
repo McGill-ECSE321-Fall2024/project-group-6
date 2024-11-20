@@ -8,7 +8,9 @@ import ca.mcgill.ecse321.gameshop.exception.GameShopException;
 import ca.mcgill.ecse321.gameshop.model.Person;
 import ca.mcgill.ecse321.gameshop.repository.PersonRepository;
 import jakarta.transaction.Transactional;
-
+/**
+ * @author Joseph and Mario
+ */
 @Service
 public class PersonService {
     // Inject PersonRepository to handle database operations

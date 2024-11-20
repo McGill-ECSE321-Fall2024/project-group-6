@@ -13,7 +13,9 @@ import ca.mcgill.ecse321.gameshop.model.Employee;
 import ca.mcgill.ecse321.gameshop.model.Person;
 import ca.mcgill.ecse321.gameshop.model.Role;
 import ca.mcgill.ecse321.gameshop.repository.RoleRepository;
-
+/**
+ * @author Joseph
+ */
 @Service
 public class RoleService {
 

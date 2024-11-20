@@ -54,7 +54,7 @@ public class CustomerController {
      * @return
      */
     @PostMapping("/customers/test")
-    public GameResponseDto createGameForCustomerTesting(@RequestBody GameRequestDto2 g){
+    public GameResponseDto createGameForCustomerTesting(@RequestBody GameRequestDto g){
         Game game = customerService.addGame(g.getName(), g.getDescription(), g.getPrice(), g.getStockQuantity(), g.getPhotoURL());
         return new GameResponseDto(game);
     }

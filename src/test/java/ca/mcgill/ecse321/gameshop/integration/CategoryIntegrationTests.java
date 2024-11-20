@@ -23,7 +23,9 @@ import org.springframework.http.ResponseEntity;
 import ca.mcgill.ecse321.gameshop.dto.CategoryRequestDto;
 import ca.mcgill.ecse321.gameshop.dto.CategoryResponseDto;
 import ca.mcgill.ecse321.gameshop.repository.CategoryRepository;
-
+/**
+ * @author Joseph and Maissa
+ */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -46,6 +48,7 @@ public class CategoryIntegrationTests {
         repo.deleteAll();
     }
 
+    @SuppressWarnings("null")
     @Test
     @Order(1)
     public void testCreateValidCategory() {
@@ -66,6 +69,7 @@ public class CategoryIntegrationTests {
         assertEquals(name, response.getBody().getName());
     }
 
+    @SuppressWarnings("null")
     @Test
     @Order(2)
     public void testGetValidCategoryById() {
