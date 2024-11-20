@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ca.mcgill.ecse321.gameshop.dto.CustomerListDto;
 import ca.mcgill.ecse321.gameshop.dto.CustomerRequestDto;
 import ca.mcgill.ecse321.gameshop.dto.CustomerResponseDto;
-import ca.mcgill.ecse321.gameshop.dto.GameRequestDto2;
+import ca.mcgill.ecse321.gameshop.dto.GameRequestDto;
 import ca.mcgill.ecse321.gameshop.dto.GameResponseDto;
 import ca.mcgill.ecse321.gameshop.model.Customer;
 import ca.mcgill.ecse321.gameshop.model.Game;
