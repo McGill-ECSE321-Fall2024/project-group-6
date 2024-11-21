@@ -1,10 +1,14 @@
 package ca.mcgill.ecse321.gameshop.model;/*PLEASE DO NOT EDIT THIS CODE*/
 /*This code was generated using the UMPLE 1.35.0.7523.c616a4dce modeling language!*/
 
-import java.util.*;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
 
-
-import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 
 /**
@@ -33,7 +37,8 @@ public class Customer extends Role
   @OneToMany
   private List<Payment> payments;
   @OneToMany
-  private List<Command> commands;
+  @JsonManagedReference
+  private List<Command> commands ;
   //------------------------
   // CONSTRUCTOR
   //------------------------
@@ -346,7 +351,9 @@ public Customer(){
   public boolean addCommand(Command aCommand)
   {
     boolean wasAdded = false;
-    if (commands.contains(aCommand)) { return false; }
+    if(commands==null){
+      commands=new ArrayList<>();
+    }else if(commands.contains(aCommand)) { return false; }
     Customer existingCustomer = aCommand.getCustomer();
     boolean isNewCustomer = existingCustomer != null && !this.equals(existingCustomer);
     if (isNewCustomer)

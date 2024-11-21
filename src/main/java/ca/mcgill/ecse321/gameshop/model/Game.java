@@ -603,7 +603,9 @@ public Game(String aName, String aDescription, float aPrice, int aStockQuantity,
   /* Code from template association_SetMStarToMany */
   public boolean setCategories(List<Category> newCategories)
   {
-
+    this.categories=newCategories;
+    return true;
+/*
     boolean wasSet = false;
     ArrayList<Category> verifiedCategories = new ArrayList<Category>();
     for (Category aCategory : newCategories)
@@ -641,6 +643,8 @@ public Game(String aName, String aDescription, float aPrice, int aStockQuantity,
     }
     wasSet = true;
     return wasSet;
+
+ */
   }
   /* Code from template association_AddIndexControlFunctions */
   public boolean addCategoryAt(Category aCategory, int index)
@@ -701,7 +705,7 @@ public Game(String aName, String aDescription, float aPrice, int aStockQuantity,
       aGuest.removeGame(this);
     }
     ArrayList<Category> copyOfCategories = new ArrayList<Category>(categories);
-    categories.clear();
+    categories= new ArrayList<>();
     for(Category aCategory : copyOfCategories)
     {
       aCategory.removeGame(this);

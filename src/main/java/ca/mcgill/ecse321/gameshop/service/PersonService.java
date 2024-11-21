@@ -99,7 +99,7 @@ public class PersonService {
         if (p == null) {
 			throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Person with ID " + id + " does not exist."));
         }
-        
+        p.delete();
         personRepo.delete(p);
     }
 

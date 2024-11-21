@@ -47,11 +47,6 @@ public class GameIntegrationTests {
     private static final boolean toBeRemoved = false;
     private static final float VALID_PROMOTION = -5F;
 
-    private static final String INVALID_NAME = "";
-    private static final String INVALID_DESCRIPTION = "";
-    private static final float INVALID_PRICE = -5.5F;
-    private static final int INVALID_STOCK_QUANTITY = -60;
-    private static final String INVALID_PHOTOURL = "";
     private int validId;
     private int cat1ID;
     private int cat2ID;
@@ -80,11 +75,7 @@ public class GameIntegrationTests {
     @Order(1)
     public void testCreateValidGame() {
         // Arrange
-        //CategoryRequestDto c1 = new CategoryRequestDto("Action");
-        //ResponseEntity<CategoryResponseDto> c= client.postForEntity("/categories", c1, CategoryResponseDto.class);
 
-       //List<Category> categoryId = List.of(categoryRepo.findCategoryByCategoryId(c.getBody().getId()));
-        //List<Integer> categoryId = List.of(c.getBody().getId());
         List<Integer> categoryId = List.of(this.cat1ID);
         GameRequestDto request = new GameRequestDto(VALID_NAME, VALID_DESCRIPTION, VALID_PRICE, VALID_STOCK_QUANTITY, VALID_PHOTOURL, toBeAdded, toBeRemoved, VALID_PROMOTION, categoryId);
         // Act
@@ -214,8 +205,6 @@ public class GameIntegrationTests {
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
 
     }
-
-
 
 
 }

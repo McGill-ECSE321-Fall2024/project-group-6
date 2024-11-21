@@ -25,8 +25,10 @@ public class CommandController {
      */
     @PostMapping("/command")
     public CommandResponseDto createCommand(@RequestBody CommandRequestDto command) {
-        Command c = commandService.createCommand(command.getCommandDate(), command.getTotal());
-        return new CommandResponseDto(c);
+        System.out.println("Controller ");
+        Command createdCommand = commandService.createCommand(command.getCustomerID());
+
+        return new CommandResponseDto(createdCommand);
     }
 
     /**
