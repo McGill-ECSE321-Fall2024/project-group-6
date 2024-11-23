@@ -117,6 +117,38 @@ public class PersonIntegrationTests {
     @SuppressWarnings("null")
     @Test
     @Order(5)
+    public void testLogin() {
+        // Arrange
+        PersonRequestDto request = new PersonRequestDto(VALID_NAME, VALID_EMAIL, VALID_PASSWORD, VALID_PHONE);
+        String url = String.format("/login", VALID_EMAIL);
+    
+        // Act
+        ResponseEntity<PersonResponseDto> response = client.postForEntity(url, request, PersonResponseDto.class);
+    
+        // Assert
+        assertNotNull(response.getBody());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(VALID_EMAIL, response.getBody().getEmail());
+    }
+    
+    @Test
+    @Order(6)
+    public void testInvalidLogin() {
+        // Arrange
+        String invalidEmail = "wrongemail@mail.com";
+        PersonRequestDto request = new PersonRequestDto(VALID_NAME, invalidEmail, VALID_PASSWORD, VALID_PHONE);
+    
+        // Act
+        ResponseEntity<PersonResponseDto> response = client.postForEntity("/login", request, PersonResponseDto.class);
+    
+        // Assert
+        assertNotNull(response);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @SuppressWarnings("null")
+    @Test
+    @Order(7)
     public void testUpdatePersonByValidId() {
         // Arrange
         String updatedName = "UpdatedBob";
@@ -142,7 +174,7 @@ public class PersonIntegrationTests {
     }
 
     @Test
-    @Order(6)
+    @Order(8)
     public void testUpdatePersonByInvalidId() {
         // Arrange
         String updatedName = "UpdatedBob";
@@ -162,7 +194,7 @@ public class PersonIntegrationTests {
     }
 
     @Test
-    @Order(7)
+    @Order(9)
     public void testDeletePersonByValidId() {
         // Arrange
         String url = String.format("/person/%d", this.id);
@@ -180,7 +212,7 @@ public class PersonIntegrationTests {
     }
 
     @Test
-    @Order(8)
+    @Order(10)
     public void testDeletePersonByInvalidId() {
         // Arrange
         String url = String.format("/person/%d", -1);
@@ -194,12 +226,12 @@ public class PersonIntegrationTests {
     }
 
     @Test
-    @Order(9)
+    @Order(11)
     public void testCreateInvalidPerson() {
         // Arrange
         String invalidName = "Pierre";
         String invalidEmail = "Pierre@gmail.com";
-        String invalidPassword = ""; // Invalid password
+        String invalidPassword = "";
         String invalidPhone = "123";
     
         PersonRequestDto invalidPersonDto = new PersonRequestDto(invalidName, invalidEmail, invalidPassword, invalidPhone);

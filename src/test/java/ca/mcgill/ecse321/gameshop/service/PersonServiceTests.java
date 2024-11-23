@@ -21,6 +21,7 @@ import org.mockito.quality.Strictness;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 
+import ca.mcgill.ecse321.gameshop.dto.PersonResponseDto;
 import ca.mcgill.ecse321.gameshop.exception.GameShopException;
 import ca.mcgill.ecse321.gameshop.model.Person;
 import ca.mcgill.ecse321.gameshop.repository.PersonRepository;
@@ -287,58 +288,43 @@ public class PersonServiceTests {
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Person with ID " + ID + " does not exist.", ex.getMessage());
         }
+
         @Test
         public void successfulLoginAttempt() {
-
                 when(mockRepo.save(any(Person.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
 
                 String email = "abcdefg@render.com";
                 Person existingPerson = service.createPerson(VALID_NAME, email, VALID_PASSWORD, VALID_PHONE);
 
-                assertEquals(email, existingPerson.getEmail());
                 when(mockRepo.findPersonByEmail(email)).thenReturn(existingPerson);
-                boolean check = service.login(email, VALID_PASSWORD);
-                assertTrue(check);
+                Person p = service.login(email, VALID_PASSWORD);
+                assertEquals(p.getUsername(), VALID_NAME);
                 verify(mockRepo, times(1)).save(any(Person.class));
         }
 
         @Test
-        public void failedLoginAttemptWithInvalidEmail() {
+        public void testLoginWithInvalidEmail() {
+                // Arrange
+                when(mockRepo.findPersonByEmail(VALID_EMAIL)).thenReturn(null);
 
-        when(mockRepo.save(any(Person.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
-
-        String email = "abcdefg@render.com";
-        String email2="WhoAreYou@mail.mcgill.ca";
-        Person existingPerson = service.createPerson(VALID_NAME, email, VALID_PASSWORD, VALID_PHONE);
-
-        assertEquals(email, existingPerson.getEmail());
-
-        when(mockRepo.findPersonByEmail(email2)).thenReturn(null);
-
-       // when(mockRepo.findPersonByEmail(email2)).thenReturn(null);
-        GameShopException ex = assertThrows(GameShopException.class,
-                () -> service.login(email2, VALID_PASSWORD));
-        assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
-        assertEquals("Person with Email " + email2 + " does not exist.", ex.getMessage());
-        verify(mockRepo, times(1)).save(any(Person.class));
-
-        }
-        @Test
-        public void failedLoginAttemptWithInvalidPassword() {
-                when(mockRepo.save(any(Person.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
-
-                String email = "abcdefg@render.com";
-                Person existingPerson = service.createPerson(VALID_NAME, email, VALID_PASSWORD, VALID_PHONE);
-
-                assertEquals(email, existingPerson.getEmail());
-
-                when(mockRepo.findPersonByEmail(email)).thenReturn(existingPerson);
-
-                // when(mockRepo.findPersonByEmail(email2)).thenReturn(null);
+                // Act and Assert
                 GameShopException ex = assertThrows(GameShopException.class,
-                        () -> service.login(email, "1234567880"));
-                assertEquals(HttpStatus.UNAUTHORIZED, ex.getStatus());
-                assertEquals("Wrong Password", ex.getMessage());
-                verify(mockRepo, times(1)).save(any(Person.class));
+                () -> service.login(VALID_EMAIL, VALID_PASSWORD));
+                assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
+                assertEquals("Person with email does not exist.", ex.getMessage());
+        }
+
+        @Test
+        public void testLoginWithInvalidPassword() {
+                // Arrange
+                when(mockRepo.findPersonByEmail(VALID_EMAIL)).thenReturn(new Person(VALID_NAME, VALID_EMAIL, VALID_PASSWORD, VALID_PHONE));
+
+                // Act and Assert
+                GameShopException ex = assertThrows(GameShopException.class, () -> {
+                service.login(VALID_EMAIL, "wrongPassword");
+                });
+
+                assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
+                assertEquals("Invalid credentials", ex.getMessage());
         }
 }

@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ca.mcgill.ecse321.gameshop.dto.PersonListDto;
 import ca.mcgill.ecse321.gameshop.dto.PersonRequestDto;
 import ca.mcgill.ecse321.gameshop.dto.PersonResponseDto;
 import ca.mcgill.ecse321.gameshop.model.Person;
+import ca.mcgill.ecse321.gameshop.repository.PersonRepository;
 import ca.mcgill.ecse321.gameshop.service.PersonService;
 
 
@@ -24,6 +24,8 @@ import ca.mcgill.ecse321.gameshop.service.PersonService;
 public class PersonController {
     @Autowired
     private PersonService personService;
+    @Autowired
+    private PersonRepository personRepo;
 
     /**
      * Create a new person.
@@ -95,7 +97,8 @@ public class PersonController {
      * @param password the person's password
     */
     @PostMapping("/login")
-    public boolean login(@RequestParam String email, @RequestParam String password) {
-        return personService.login(email, password);
+    public PersonResponseDto login(@RequestBody PersonRequestDto person) {
+        Person p = personService.login(person.getEmail(), person.getPassword());
+        return new PersonResponseDto(p);
     }
 }

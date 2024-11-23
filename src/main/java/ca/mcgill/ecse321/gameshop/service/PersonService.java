@@ -8,6 +8,7 @@ import ca.mcgill.ecse321.gameshop.exception.GameShopException;
 import ca.mcgill.ecse321.gameshop.model.Person;
 import ca.mcgill.ecse321.gameshop.repository.PersonRepository;
 import jakarta.transaction.Transactional;
+
 /**
  * @author Joseph and Mario
  */
@@ -104,25 +105,22 @@ public class PersonService {
     }
 
     /**
-     * @author Joseph
+     * @author Mario
      * @param email
      * @param password
      * @return
      */
-    @Transactional
-    public boolean login(String email, String password) {
-    Person p= personRepo.findPersonByEmail(email);
+    public Person login(String email, String password) {
+        Person p = personRepo.findPersonByEmail(email);
 
-    if(p==null){
-        throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Person with Email " + email + " does not exist."));
-    }
+        if (p == null) {
+            throw new GameShopException(HttpStatus.NOT_FOUND, "Person with email does not exist.");
+        }
 
-    else if(p.getPassword()==password){
-        return true;
-    }
+        if (!p.getPassword().equals(password)) {
+            throw new GameShopException(HttpStatus.NOT_FOUND, "Invalid credentials");
+        }
 
-    else {
-        throw new GameShopException(HttpStatus.UNAUTHORIZED, String.format("Wrong Password"));
-    }
+        return p;
     }
 }
