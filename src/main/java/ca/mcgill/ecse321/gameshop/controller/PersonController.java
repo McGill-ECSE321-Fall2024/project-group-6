@@ -16,7 +16,6 @@ import ca.mcgill.ecse321.gameshop.dto.PersonListDto;
 import ca.mcgill.ecse321.gameshop.dto.PersonRequestDto;
 import ca.mcgill.ecse321.gameshop.dto.PersonResponseDto;
 import ca.mcgill.ecse321.gameshop.model.Person;
-import ca.mcgill.ecse321.gameshop.repository.PersonRepository;
 import ca.mcgill.ecse321.gameshop.service.PersonService;
 
 
@@ -24,8 +23,6 @@ import ca.mcgill.ecse321.gameshop.service.PersonService;
 public class PersonController {
     @Autowired
     private PersonService personService;
-    @Autowired
-    private PersonRepository personRepo;
 
     /**
      * Create a new person.

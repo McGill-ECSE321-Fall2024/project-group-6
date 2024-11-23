@@ -120,10 +120,9 @@ public class PersonIntegrationTests {
     public void testLogin() {
         // Arrange
         PersonRequestDto request = new PersonRequestDto(VALID_NAME, VALID_EMAIL, VALID_PASSWORD, VALID_PHONE);
-        String url = String.format("/login", VALID_EMAIL);
     
         // Act
-        ResponseEntity<PersonResponseDto> response = client.postForEntity(url, request, PersonResponseDto.class);
+        ResponseEntity<PersonResponseDto> response = client.postForEntity("/login", request, PersonResponseDto.class);
     
         // Assert
         assertNotNull(response.getBody());

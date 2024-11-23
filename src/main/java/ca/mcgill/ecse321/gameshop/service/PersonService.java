@@ -110,6 +110,7 @@ public class PersonService {
      * @param password
      * @return
      */
+    @Transactional
     public Person login(String email, String password) {
         Person p = personRepo.findPersonByEmail(email);
 
