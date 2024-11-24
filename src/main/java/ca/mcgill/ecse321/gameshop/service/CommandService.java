@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 /**
  * @author Maissa
@@ -33,9 +34,12 @@ public class CommandService {
         Customer customer =customerRepo.findCustomerByRoleId(customerID);
         for(Game g : customer.getCart()){
             total+=g.getPrice()*(1-g.getPromotion());
+            g.setStockQuantity(g.getStockQuantity()-1);
         }
         Date today= Date.valueOf(LocalDate.now());
         Command c = new Command(today.toString(),total,customer);
+        customer.setCart(new ArrayList<>());
+
 
         return repo.save(c);
     }

@@ -1,0 +1,142 @@
+*{
+    margin :0;
+    padding:0;
+    text-decoration: none;
+    list-style: none;
+
+}
+
+.navbar{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    height: 80px;
+    background: #1033a4;
+}
+.navbar h2{
+    color: #ffffff;
+    font-size: 25px;
+    font-weight: 500;
+    padding: 20px 20px;
+}
+.navmenu{
+    height: 50px;
+    line-height: 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.search-box .search{
+    justify-content: center;
+    align-items: center;
+    padding: 8px 8px;
+    border-radius: 50px;
+    font-size: 16px;
+}
+
+.navmenu .search-box i{
+    color: #ffffff;
+    position: relative;
+    right: 40px;
+    top: 2px;
+    background-color:#1140d9;
+    padding: 8px;
+    border-radius: 50px;
+}
+header img{
+   margin-top: 15px;
+   margin-right: 10px;
+    align-items: center;
+    width: 40px;
+}
+.navmenu .iconCart{
+    position: relative;
+    z-index: 1;
+}
+
+header{
+    background: #e7f0f3ac;
+    width: 100%;
+    height: 100vh;
+}
+.main-header{
+    width: 90%;
+    margin: auto;
+    height: 40px;
+    display: flex;
+     margin-bottom: 15px;
+}
+.main-header h5{
+   font-size: 20px;
+   font-weight: 550px;
+   margin-top: 10px;
+   margin-bottom: 15px;
+}
+.main-header h2{
+   font-size: 38px;
+   width: 500px;
+   margin-top: 10px;
+   margin-bottom: 15px;
+}
+.main-header p{
+    margin-bottom: 60px;
+}
+.main-header .btn{
+    background: #88b9df;
+    border: 1px solid #88b9df;
+    font-size: 15px;
+    color: #ffffff;
+    font-weight: 400;
+    padding: 4px 20px;
+    border-radius: 50px;
+}
+.main-header .btn:hover{
+    color: #88b9df;
+    background: #ffffff;
+}
+
+
+th, td {
+  border: 1px ;
+  border-radius: 5px;
+  padding: 5px;
+}
+td {
+border: 2px;
+    border-radius: 5px;
+    background-color: #ffffff;
+    margin: 10px;
+}
+th {
+  background-color: #88b9df;
+}
+
+.wishlist{
+
+    justify-content: center;
+    margin-top: 150px;
+    margin-left: 100px;
+    margin-right: 100px;
+}
+
+
+html {
+	font-family:  "poppins";;
+}
+
+h2 {
+	padding-top: 0.5em;
+}
+
+.danger-btn {
+	color: red;
+	border: 1px solid red;
+}
+
+#create-btn {
+	color: green;
+	border: 1px solid green;
+}
