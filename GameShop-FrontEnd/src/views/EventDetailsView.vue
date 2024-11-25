@@ -1,3 +1,5 @@
+<!-- Author: Marine Dupuy -->
+
 <template>
 	<main>
 		<h1>{{ eventDetails ? eventDetails.name : "Event Not Found" }}</h1>

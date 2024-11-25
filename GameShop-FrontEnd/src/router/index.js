@@ -1,3 +1,5 @@
+// Authors: Joseph, Marine
+
 import { createRouter, createWebHistory } from 'vue-router'
 import EventDetailsView from '../views/EventDetailsView.vue'
 import EventsView from '../views/EventsView.vue'
