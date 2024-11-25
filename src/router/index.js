@@ -1,9 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import EventDetailsView from '../views/EventDetailsView.vue'
-import EventsView from '../views/EventsView.vue'
 import SignUp from '@/views/SignUp.vue'
 import SignIn from '@/views/SignIn.vue'
 import HomePageView from '@/views/HomePageView.vue'
+import ManagerMainPage from '@/views/ManagerMainPage.vue'
+import CustomerMainPage from '@/views/CustomerMainPage.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -13,17 +13,19 @@ const router = createRouter({
       name: 'events',
       component: SignUp
     },
+
     {
-      path: '/homepage',
+      path: '/Homepage',
       name: 'event-details',
       component: HomePageView
     },
-   
+
     {
       path: '/hello',
       name: 'home',
       component: SignIn,
     },
+
     {
       path: '/about',
       name: 'about',
@@ -31,6 +33,18 @@ const router = createRouter({
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/AboutView.vue'),
+    },
+    
+    {
+      path: '/Manager-Homepage',
+      name: 'manager-home-page',
+      component: ManagerMainPage,
+    },
+
+    {
+      path: '/Customer-Homepage',
+      name: 'customer-home-page',
+      component: CustomerMainPage,
     },
   ],
 })
