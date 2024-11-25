@@ -33,7 +33,7 @@
                                 <p><strong>Stock:</strong> {{ game.stockQuantity }} left</p>
                                 <div class="price">{{ game.price }}</div>
                             </div>
-                            <div class="returnPrice">{{ game.price }}</div>
+                            <div class="returnPrice">{{ game.price }}$</div>
                             <div class="buttons">
                                 <a href="" class="btn">-</a>
                             </div>
@@ -153,6 +153,7 @@ export default {
     padding: 0;
     text-decoration: none;
     list-style: none;
+    font-family: "poppins";
 }
 
 .navbar {
@@ -216,55 +217,14 @@ header img {
     display: inline-block;
 }
 
-.main-header {
-    width: 90%;
-    margin: auto;
-    height: 40px;
-    display: flex;
-    padding-bottom: 30px;
-}
-
-.main-header .header{
-    margin-bottom: 30px;
-}
-.main-header h5 {
-    font-size: 20px;
-    font-weight: 550px;
-    margin-top: 10px;
-    margin-bottom: 15px;
-}
-
-.main-header h2 {
-    font-size: 38px;
-    width: 500px;
-    margin-top: 10px;
-    margin-bottom: 15px;
-}
-
-.main-header .a{
-    margin-bottom: 30px;
-}
-
-.main-header .btn {
-    background: #88b9df;
-    border: 1px solid #88b9df;
-    font-size: 15px;
-    color: #ffffff;
-    font-weight: 400;
-    padding: 4px 20px;
-    border-radius: 50px;
-}
-
-.main-header .btn:hover {
-    color: #88b9df;
-    background: #ffffff;
-}
 
 html {
     font-family: "poppins";
-    ;
 }
-
+.container {
+    background-color: #ffffff;
+    color: #000000;
+}
 h2 {
     padding-top: 0.5em;
 }
@@ -277,7 +237,7 @@ h2 {
 }
 
 .checkoutLayout .right {
-    background-color: #5358B3;
+    background-color: #3148de;
     border-radius: 20px;
     padding: 40px;
     color: #fff;
@@ -287,10 +247,12 @@ h2 {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 20px;
-    border-bottom: 1px solid #7a7fe2;
+    border-bottom: 1px solid #3e78ff;
     padding-bottom: 20px;
 }
-
+.checkoutLayout h1{
+    font-weight: bold;
+}
 .checkoutLayout .form h1,
 .checkoutLayout .form .group:nth-child(-n+4) {
     grid-column-start: 1;
@@ -305,7 +267,7 @@ h2 {
     border-radius: 20px;
     margin-top: 10px;
     border: none;
-    background-color: #6a6fc9;
+    background-color: #3e78ff;
     color: #fff;
 }
 

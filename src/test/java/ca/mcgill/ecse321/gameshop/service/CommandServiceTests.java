@@ -1,18 +1,29 @@
 package ca.mcgill.ecse321.gameshop.service;
 
 
+import ca.mcgill.ecse321.gameshop.exception.GameShopException;
+import ca.mcgill.ecse321.gameshop.model.Command;
 import ca.mcgill.ecse321.gameshop.model.Customer;
 import ca.mcgill.ecse321.gameshop.model.Game;
 import ca.mcgill.ecse321.gameshop.model.Person;
 import ca.mcgill.ecse321.gameshop.repository.CommandRepository;
+import ca.mcgill.ecse321.gameshop.repository.CustomerRepository;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Maissa
@@ -22,6 +33,8 @@ import java.util.List;
 public class CommandServiceTests {
     @Mock
     private CommandRepository repo;
+    @Mock
+    private CustomerRepository customerRepo;
     @InjectMocks
     private CommandService service;
     private float total =99;
@@ -32,12 +45,12 @@ public class CommandServiceTests {
     private final List<Game> cart = new ArrayList<>(List.of(g1,g2));
     private static final List<Game> wishlist = new ArrayList<>();
     private final Customer tim = new Customer(new Person("Tim","Tim@gmail.com","password","438777906"),"4555 milton",wishlist,cart );
-/*
+    private final int timID=2;
     @Test
     public void testCreateValidCommand(){
         when(repo.save(any(Command.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
-
-        Command createdCommand = service.createCommand(tim);
+        when(customerRepo.findCustomerByRoleId(timID)).thenReturn(tim);
+        Command createdCommand = service.createCommand(timID);
 
         assertNotNull(createdCommand);
         assertEquals(g1.getPrice()+g2.getPrice(),createdCommand.getTotalPrice());
@@ -46,7 +59,7 @@ public class CommandServiceTests {
 
     @Test
     public void testCreateInvalidCommand(){
-        GameShopException ex= assertThrows(GameShopException.class,()-> service.createCommand(null));
+        GameShopException ex= assertThrows(GameShopException.class,()-> service.createCommand(-1));
 
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Command must belong to a customer.",ex.getMessage());    }
@@ -116,7 +129,7 @@ public class CommandServiceTests {
         verify(repo, times(1)).findAll();
     }
 
- */
+
 
 
 }

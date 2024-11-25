@@ -39,12 +39,11 @@
                                     <div class="name">{{ game.name }}</div>
                                     <p><strong>Description:</strong> {{ game.description }}</p>
                                     <p><strong>Stock:</strong> {{ game.stockQuantity }} left</p>
-                                    <div class="price">{{ game.price }}</div>
                                 </div>
-                                <div class="returnPrice">{{ game.price }}</div>
+                                <div class="returnPrice">{{ game.price }}$</div>
                                 <div class="buttons">
-                                    <a href="" class="btn">Add to cart</a>
-                                    <a href="" class="btn">Remove</a>
+                                    <button @click="addToCart(game)" class="btn">Add to cart</button>
+                                    <button @click="removeFromWishlist(game)" class="btn">Remove</button>
                                 </div>
                             </div>
                         </div>
@@ -67,7 +66,7 @@ export default {
                 {
                     id: 1,
                     name: 'Cyberpunk 2077',
-                    imageUrl: 'https://example.com/images/cyberpunk2077.jpg',
+                    imageUrl: "Cyberpunk_2077.jpg",
                     price: 59.99,
                     description: 'An open-world, action-adventure story set in Night City.',
                     stockQuantity: 20
@@ -88,7 +87,8 @@ export default {
                     description: 'An epic tale of life in America’s unforgiving heartland.',
                     stockQuantity: 10
                 }
-            ]
+            ],
+            cart:[]
         };
     },
     methods: {
@@ -100,7 +100,16 @@ export default {
                 console.error('Error fetching games:', error);
             }
         },
+    addToCart(game) {
+      this.cart.push(game);
+      this.wishlist = this.wishlist.filter(item => item.id !== game.id);
+      console.log(`Added to cart: ${game.name}`);
+    },
+    removeFromWishlist(game) {
+      this.wishlist = this.wishlist.filter(item => item.id !== game.id);
+      console.log(`Removed from wishlist: ${game.name}`);
     }
+  }
 }
 </script>
 
@@ -110,7 +119,9 @@ export default {
     padding: 0;
     text-decoration: none;
     list-style: none;
+    font-family: "poppins";
 }
+
 
 .navbar {
     display: flex;
@@ -182,6 +193,7 @@ header img {
 }
 
 .main-header .header{
+    margin-left: 30px;
     margin-bottom: 30px;
 }
 .main-header h5 {
@@ -192,6 +204,7 @@ header img {
 }
 
 .main-header h2 {
+    font-weight: bold;
     font-size: 38px;
     width: 500px;
     margin-top: 10px;
@@ -216,82 +229,24 @@ header img {
     color: #88b9df;
     background: #ffffff;
 }
+
+
 .wishlist .container{
    padding: 150px;
-
+   align-items: center;
+   
 }
 .wishlist, .main-header {
+    background-color: #ffffff;
+    color: #000000;
     margin: 0;
     padding: 0;
 }
 
 html {
     font-family: "poppins";
-    ;
 }
 
-.checkoutLayout {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 50px;
-    padding: 20px;
-}
-
-.checkoutLayout .right {
-    background-color: #5358B3;
-    border-radius: 20px;
-    padding: 40px;
-    color: #fff;
-}
-
-.checkoutLayout .right .form {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-    border-bottom: 1px solid #7a7fe2;
-    padding-bottom: 20px;
-}
-
-.checkoutLayout .form h1,
-.checkoutLayout .form .group:nth-child(-n+3) {
-    grid-column-start: 1;
-    grid-column-end: 3;
-}
-
-.checkoutLayout .form input,
-.checkoutLayout .form select {
-    width: 100%;
-    padding: 10px 20px;
-    box-sizing: border-box;
-    border-radius: 20px;
-    margin-top: 10px;
-    border: none;
-    background-color: #6a6fc9;
-    color: #fff;
-}
-
-.checkoutLayout .right .return .row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 10px;
-}
-
-.checkoutLayout .right .return .row div:nth-child(2) {
-    font-weight: bold;
-    font-size: x-large;
-}
-
-.buttonCheckout {
-    width: 100%;
-    height: 40px;
-    border: none;
-    border-radius: 20px;
-    background-color: #49D8B9;
-    margin-top: 20px;
-    font-weight: bold;
-    color: #fff;
-}
 
 .returnCart h1 {
     border-top: 1px solid #eee;
@@ -304,7 +259,7 @@ html {
 
 .wishlist .returnCart .list .item {
     display: grid;
-    grid-template-columns: 90px 400px 80px 150px;
+    grid-template-columns: 90px 400px 100px 150px;
     align-items: center;
     gap: 20px;
     margin-top: 20px;
@@ -314,22 +269,29 @@ html {
     border-radius: 20px;
 }
 
-.returnCart .list .item .buttons a {
-    padding: 0 6px;
-    width: 100%;
-    height: 40px;
-    border: none;
-    border-radius: 20px;
-    background-color: red;
-    margin-top: 20px;
-    font-weight: bold;
+.wishlist .returnCart .list .item .btn {
+    width: 80%;
+    margin-bottom: 5px;
+    display: flex;
+    flex-direction: column; 
+    gap: 10px; 
+    align-items: center;
+    background: #88b9df;
+    border: 1px solid #88b9df;
+    font-size: 15px;
     color: #ffffff;
-
+    font-weight: 400;
+    border-radius: 50px;
+    padding: 4px 2px;
+}
+.wishlist .returnCart .list .item .btn:hover {
+    color: #88b9df;
+    background: #ffffff;
 }
 
-.returnCart .list .item {
+.wishlist .returnCart .list .item {
     display: grid;
-    grid-template-columns: 80px 1fr 70px 30px;
+    grid-template-columns: 80px 400px 70px 120px;
     align-items: center;
     gap: 20px;
     margin-bottom: 30px;
@@ -338,8 +300,8 @@ html {
     border-radius: 20px;
 }
 
-.returnCart .list .item .name,
-.returnCart .list .item .returnPrice {
+.wishlist .returnCart .list .item .name,
+.wishlist .returnCart .list .item .returnPrice {
     font-size: large;
     font-weight: bold;
 
