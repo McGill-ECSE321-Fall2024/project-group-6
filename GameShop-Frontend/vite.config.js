@@ -16,6 +16,6 @@ export default defineConfig({
     },
   },
   server: {
-      port: 8087
-    }
+    port: 8087
+  }
 })
