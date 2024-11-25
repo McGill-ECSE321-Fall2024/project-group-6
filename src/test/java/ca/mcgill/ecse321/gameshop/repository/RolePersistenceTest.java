@@ -1,18 +1,16 @@
 package ca.mcgill.ecse321.gameshop.repository;
 
-import ca.mcgill.ecse321.gameshop.model.*;
-
+import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.Random;
+import ca.mcgill.ecse321.gameshop.model.Customer;
+import ca.mcgill.ecse321.gameshop.model.Person;
+import ca.mcgill.ecse321.gameshop.model.Role;
 
 @SpringBootTest
 public class RolePersistenceTest {
@@ -40,8 +38,6 @@ public class RolePersistenceTest {
 
 
         Person person = new Person("johndoe", "john@hotmail.com", "password123", "555-1234");
-        person = personRepo.save(person);
-
 
         Customer customer = new Customer( person, "1234 Montreal");
 

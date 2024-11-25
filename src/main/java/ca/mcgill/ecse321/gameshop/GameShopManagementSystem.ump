@@ -1,6 +1,5 @@
 namespace ca.mcgill.ecse321.gameshop.model;
 
-// Defining the Person class
 class Person {
   username;
   unique email;
@@ -20,17 +19,19 @@ class Person {
 class Customer {
   isA Role;
   shippingAddress;
-  1 <@>- 1 Cart cart;
-  1 <@>- 1 Wishlist wishlist;
+  List<Game>  wishlist;
   1 -- * Review;
   1 -- * Payment;
+  * -- * Game gameCart;
 }
 
 // Employee class extending Role
 class Employee {
   isA Role;
-  assignedTasks;
-  1 creator -- * Game created;
+  lazy List <String> assignedTasks;
+
+Boolean activated;
+1 creator -- * Game created;
 }
 
 // Manager class extending Role
@@ -44,13 +45,14 @@ class Command {
   int commandId;
   String commandDate;
   float totalPrice;
-  1 -- 1 Payment;
+  * -- 0..1 Payment;
+  * -- 1 Customer;
 }
 
 // Guest class
 class Guest {
   int guestId;
-  1 <@>- 1 Cart guestCart;
+  * --* Game games;
 }
 
 // Game class
@@ -61,9 +63,12 @@ class Game {
   int stockQuantity;
   photoURL;
   int gameId;
-  1 -- * Review;
+  Boolean toBeAdded;
+Boolean toBeRemoved;
+lazy float promotion;
+1 -- * Review;
   * -- 1 Manager;
-  * -- * Wishlist;
+ 
 }
 
 // Category class
@@ -73,25 +78,14 @@ class Category {
   int categoryId;
 }
 
-// Wishlist class
-class Wishlist {
-  int wishlistId;
-}
-
 // Review class
 class Review {
   enum StarRating {oneStar, twoStar, threeStar, fourStar, fiveStar}
   StarRating rating;
-  comment;
+  String comment;
   int amountOfLikes;
   int reviewId;
-}
-
-// Cart class
-class Cart {
-  int cartId;
-  * -- * Game;
-  1 -- * Command;
+  reply;
 }
 
 // Payment class
@@ -100,6 +94,5 @@ class Payment {
   int creditCardNb;
    expirationDate;
   int cvc;
-  int total;
   int paymentId;
 }

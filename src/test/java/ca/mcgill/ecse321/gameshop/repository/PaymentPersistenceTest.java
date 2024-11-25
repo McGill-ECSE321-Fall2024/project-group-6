@@ -1,19 +1,14 @@
 package ca.mcgill.ecse321.gameshop.repository;
 
-import ca.mcgill.ecse321.gameshop.model.*;
-
+import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.sql.Date;
-import java.util.Random;
+import ca.mcgill.ecse321.gameshop.model.Payment;
 
 @SpringBootTest
 public class PaymentPersistenceTest {
@@ -38,7 +33,8 @@ public class PaymentPersistenceTest {
     public void testCreateAndReadPayment() {
 
 
-        Payment payment = new Payment("1234 Montreal",123456789,"05/27",444,50);
+        Payment payment = new Payment("1234 Montreal",1234567891234567L,"05/27",444);
+       // String aBillingAddress, long aCreditCardNb, String aExpirationDate, int aCvc)
         payment = paymentRepo.save(payment);
         Payment paymentFromDB = paymentRepo.findPaymentByPaymentId(payment.getPaymentId());
         assertNotNull(paymentFromDB);

@@ -1,9 +1,11 @@
 package ca.mcgill.ecse321.gameshop.integration;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+/**
+ * @author Joseph and Marine
+ */
 
 import org.junit.jupiter.api.AfterAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -14,67 +16,108 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
+import org.springframework.http.*;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-
-import ca.mcgill.ecse321.gameshop.GameshopApplication;
 import ca.mcgill.ecse321.gameshop.repository.*;
+import ca.mcgill.ecse321.gameshop.GameshopApplication;
 import ca.mcgill.ecse321.gameshop.dto.*;
+
+import java.util.List;
+
+
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = GameshopApplication.class)
 @TestMethodOrder(OrderAnnotation.class)
 @TestInstance(Lifecycle.PER_CLASS)
 public class CustomerIntegrationTests {
-
+    
     @Autowired
     private TestRestTemplate client;
     @Autowired
-    private CustomerRepository customerRepo;
+    private CustomerRepository repo;
+    @Autowired
+    private PersonRepository personRepo;
+    @Autowired
+    private GameRepository gameRepo;
 
-    private int customerId;
-    private static final String VALID_NAME = "Jane";
-    private static final String VALID_EMAIL = "jane@mail.mcgill.ca";
+    private static final String VALID_NAME = "Bob";
+    private static final String VALID_EMAIL = "jordanielson@mail.mcgill.ca";
     private static final String VALID_PASSWORD = "12345678910";
-    private static final String VALID_PHONE = "6138548577";
-    private static final String VALID_SHIPPING_ADDRESS = "123 Sherbrooke Street";
+    private static final String VALID_PHONE = "+1(514)1234567";
+    private static final String VALID_ADDRESS = "123 Sherbrooke west";
 
-    private static final String NEW_NAME = "Jack";
-    private static final String NEW_EMAIL = "jack@mail.mcgill.ca";
-    private static final String NEW_PASSWORD = "825456bdja";
-    private static final String NEW_PHONE = "852741963";
-    private static final String NEW_SHIPPING_ADDRESS = "321 Sherbrooke Street";
 
+    private int id;
+
+    /**
+     * Clear all used repositories after end of tests
+     */
     @AfterAll
     public void clearDatabase() {
-        customerRepo.deleteAll();
+        repo.deleteAll();
+        personRepo.deleteAll();
+        gameRepo.deleteAll(); //to be used for game addition into cart
     }
 
+    /**
+     * Create a valid customer
+     */
     @SuppressWarnings("null")
     @Test
     @Order(1)
-    public void CreateValidCustomer() {
+    public void testCreateValidCustomer() {
         // Arrange
-        CustomerRequestDto request = new CustomerRequestDto(VALID_SHIPPING_ADDRESS, VALID_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD);
+
+        CustomerRequestDto request = new CustomerRequestDto(VALID_ADDRESS, VALID_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, null, null);
 
         // Act
-        ResponseEntity<CustomerResponseDto> response = client.postForEntity("/customer", request, CustomerResponseDto.class);
+        ResponseEntity<CustomerResponseDto> response = client.postForEntity("/customers", request, CustomerResponseDto.class);
 
         // Assert
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        this.customerId = response.getBody().getCustomerId();
-    }
+        this.id = response.getBody().getCustomerId();
 
-    @SuppressWarnings("null")
+        assertEquals(VALID_NAME, response.getBody().getUsername());
+        assertEquals(VALID_EMAIL, response.getBody().getEmail());
+        assertEquals(VALID_PHONE, response.getBody().getPhone());
+        assertEquals(VALID_ADDRESS, response.getBody().getShippingAddress());
+
+    }
+    /**
+     * Create a valid game to later add to the customer cart (part of the scenario)
+     */
     @Test
     @Order(2)
+    public void testCreateValidGame() {
+
+
+        GameRequestDto2 request = new GameRequestDto2("FC 24", "Soccer Game", 60.0F, 2, "https://nothing");
+
+        // Act
+        ResponseEntity<GameResponseDto> response = client.postForEntity("/customers/test", request, GameResponseDto.class);
+
+        // Assert
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        //this.id = response.getBody().getCustomerId();
+
+        assertEquals("FC 24", response.getBody().getName());
+
+
+    }
+
+    /**
+     * get the created customer by a valid id
+     */
+    @SuppressWarnings("null")
+    @Test
+    @Order(3)
     public void testGetCustomerByValidId() {
         // Arrange
-        String url = String.format("/customer/%d", this.customerId);
+        String url = String.format("/customers/%d", this.id);
 
         // Act
         ResponseEntity<CustomerResponseDto> response = client.getForEntity(url, CustomerResponseDto.class);
@@ -82,15 +125,20 @@ public class CustomerIntegrationTests {
         // Assert
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(this.customerId, response.getBody().getCustomerId());
+        assertEquals(this.id, response.getBody().getCustomerId());
+        assertEquals(VALID_NAME, response.getBody().getUsername());
+        assertEquals(VALID_EMAIL, response.getBody().getEmail());
+        assertEquals(VALID_PHONE, response.getBody().getPhone());
     }
 
-    @SuppressWarnings("null")
+    /**
+     * get the created customer by an invalid id
+     */
     @Test
-    @Order(3)
+    @Order(4)
     public void testGetCustomerByInvalidId() {
         // Arrange
-        String url = String.format("/customer/%d", -1);
+        String url = String.format("/customers/%d", -1);
 
         // Act
         ResponseEntity<CustomerResponseDto> response = client.getForEntity(url, CustomerResponseDto.class);
@@ -100,34 +148,277 @@ public class CustomerIntegrationTests {
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
+    /**
+     * update the created customer by a valid id
+     */
     @SuppressWarnings("null")
     @Test
-    @Order(4)
-    public void testUpdateCustomer() {
+    @Order(5)
+    public void testUpdateCustomerByValidId() {
         // Arrange
-        String url = String.format("/customer/%d", this.customerId);
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
+        String updatedName = "UpdatedBab";
+        String updatedEmail = "updatedjordanielson1@mail.mcgill.ca";
+        String updatedPassword = "newpassword123";
+        String updatedPhone = "+1(514)7654521";
+        String updatedAddress = "123 Sherbrooke East";
 
-        // Set up the updated details
-        CustomerRequestDto updatedDetails = new CustomerRequestDto(NEW_SHIPPING_ADDRESS, NEW_NAME, NEW_EMAIL, NEW_PHONE, NEW_PASSWORD);
-        HttpEntity<CustomerRequestDto> entity = new HttpEntity<>(updatedDetails, headers);
+
+        CustomerRequestDto updatedCustomerDto = new CustomerRequestDto(updatedAddress, updatedName, updatedEmail, updatedPhone, updatedPassword, null, null);
+        String url = String.format("/customers/%d", this.id);
+
+        // Act
+        client.put(url, updatedCustomerDto);
+
+
+        ResponseEntity<CustomerResponseDto> response = client.getForEntity(url, CustomerResponseDto.class);
+
+        // Assert
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(updatedName, response.getBody().getUsername());
+        assertEquals(updatedPhone, response.getBody().getPhone());
+        assertEquals(updatedEmail, response.getBody().getEmail());
+        assertEquals(updatedAddress, response.getBody().getShippingAddress());
+
+    }
+
+    /**
+     * update the created customer by an invalid id
+     */
+    @Test
+    @Order(6)
+    public void testUpdateCustomerByInvalidId() {
+        // Arrange
+        String updatedName = "UpdatedBob";
+        String updatedEmail = "updatedjordancing@mail.mcgill.ca";
+        String updatedPhone = "+1(514)7654521";
+        String updatedPassword = "newpassword123";
+        String updatedAddress = "123 Sherbrooke East";
+
+        String url = String.format("/customers/%d", -1);
+        CustomerRequestDto updatedCustomerDto = new CustomerRequestDto(updatedAddress, updatedName, updatedEmail, updatedPhone, updatedPassword, null, null);
+
+        // Act
+        ResponseEntity<CustomerResponseDto> response = client.exchange(url, HttpMethod.PUT, new HttpEntity<>(updatedCustomerDto), CustomerResponseDto.class);
+
+        // Assert
+        assertNotNull(response);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+    /**
+     * Create a new customer, then get all customers (2 in total)
+     */
+    @Test
+    @Order(7)
+    public void testGetAllCustomers() {
+        // Arrange
+        String email2 = VALID_EMAIL + "123";
+        CustomerRequestDto request = new CustomerRequestDto("124 Sherbrooke West", "Joe", email2, "514 555 7777", "0987654321", null, null);
+
+        // Act
+        ResponseEntity<CustomerResponseDto> response = client.postForEntity("/customers", request, CustomerResponseDto.class);
+
+
+        // Act2
+        ResponseEntity<CustomerListDto> response2 = client.getForEntity("/customers", CustomerListDto.class);
+
+        //Assert
+        assertNotNull(response2);
+        assertEquals(HttpStatus.OK, response2.getStatusCode());
+        List<CustomerResponseDto> customers = response2.getBody().getCustomers();
+
+        assertEquals("UpdatedBab", customers.get(0).getUsername());
+        assertEquals("Joe", customers.get(1).getUsername());
+
+        assertEquals("+1(514)7654521", customers.get(0).getPhone());
+        assertEquals("514 555 7777", customers.get(1).getPhone());
+
+        assertEquals("123 Sherbrooke East", customers.get(0).getShippingAddress());
+        assertEquals("124 Sherbrooke West", customers.get(1).getShippingAddress());
+
+        assertEquals("updatedjordanielson1@mail.mcgill.ca", customers.get(0).getEmail());
+        assertEquals(email2, customers.get(1).getEmail());
+
+    }
+    /**
+     * add game to the first customer's cart
+     */
+    @Test
+    @Order(8)
+    public void testAddGameToCustomerCart() {
+        // Arrange
+
+        String url = String.format("/customers/%d/cart", this.id);
+        String gameToAdd = "FC 24";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.TEXT_PLAIN);
+        HttpEntity<String> entity = new HttpEntity<>(gameToAdd, headers);
 
         // Act
         ResponseEntity<CustomerResponseDto> response = client.exchange(url, HttpMethod.PUT, entity, CustomerResponseDto.class);
 
-        // Assert
-        assertNotNull(response);
+        //Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(updatedDetails.getShippingAddress(), response.getBody().getShippingAddress());
-    }
+        assertEquals(gameToAdd, response.getBody().getCart().get(0).getName());
 
-    @SuppressWarnings("null")
+    }
+    /**
+     * add game to the first customer's cart with invalid id
+     */
     @Test
-    @Order(5)
+    @Order(9)
+    public void testAddGameToCustomerCartWithInvalidId() {
+        // Arrange
+        // Arrange
+        String url = String.format("/customers/%d/cart", -1);
+        String gameToAdd = "FC 24";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.TEXT_PLAIN);
+        HttpEntity<String> entity = new HttpEntity<>(gameToAdd, headers);
+
+        // Act
+        ResponseEntity<CustomerResponseDto> response = client.exchange(url, HttpMethod.PUT, entity, CustomerResponseDto.class);
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+
+    }
+    /**
+     * add game to the first customer's wishlist with valid id
+     */
+    @Test
+    @Order(10)
+    public void testAddGameToCustomerWishlist() {
+        // Arrange
+        String url = String.format("/customers/%d/wishlist", this.id);
+        String gameToAdd = "FC 24";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.TEXT_PLAIN);
+        HttpEntity<String> entity = new HttpEntity<>(gameToAdd, headers);
+
+        // Act
+        ResponseEntity<CustomerResponseDto> response = client.exchange(url, HttpMethod.PUT, entity, CustomerResponseDto.class);
+
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(gameToAdd, response.getBody().getWishlist().get(0).getName());
+
+    }
+    /**
+     * add game to the first customer's wishlist with invalid id
+     */
+    @Test
+    @Order(11)
+    public void testAddGameToCustomerWishlistWithInvalidId() {
+        // Arrange
+        // Arrange
+        String url = String.format("/customers/%d/wishlist", -1);
+        String gameToAdd = "FC 24";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.TEXT_PLAIN);
+        HttpEntity<String> entity = new HttpEntity<>(gameToAdd, headers);
+
+        // Act
+        ResponseEntity<CustomerResponseDto> response = client.exchange(url, HttpMethod.PUT, entity, CustomerResponseDto.class);
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+
+    }
+    /**
+     * remove game to the first customer's cart with valid id
+     */
+    @Test
+    @Order(12)
+    public void testDeleteGameFromCustomerCart() {
+        // Arrange
+        // Arrange
+        String url = String.format("/customers/%d/cart/game", this.id);
+        String gameToAdd = "FC 24";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.TEXT_PLAIN);
+        HttpEntity<String> entity = new HttpEntity<>(gameToAdd, headers);
+
+        // Act
+        ResponseEntity<CustomerResponseDto> response = client.exchange(url, HttpMethod.PUT, entity, CustomerResponseDto.class);
+
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(0, response.getBody().getCart().size());
+
+    }
+    /**
+     * remove game to the first customer's cart with invalid id
+     */
+    @Test
+    @Order(13)
+    public void testDeleteGameFromCustomerCartWithInvalidId() {
+        // Arrange
+        // Arrange
+        String url = String.format("/customers/%d/cart/game", -1);
+        String gameToAdd = "FC 24";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.TEXT_PLAIN);
+        HttpEntity<String> entity = new HttpEntity<>(gameToAdd, headers);
+
+        // Act
+        ResponseEntity<CustomerResponseDto> response = client.exchange(url, HttpMethod.PUT, entity, CustomerResponseDto.class);
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+
+    }
+    /**
+     * remove game to the first customer's wishlist with valid id
+     */
+    @Test
+    @Order(14)
+    public void testDeleteGameFromCustomerWishlist() {
+        // Arrange
+        // Arrange
+        String url = String.format("/customers/%d/wishlist/game", this.id);
+        String gameToAdd = "FC 24";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.TEXT_PLAIN);
+        HttpEntity<String> entity = new HttpEntity<>(gameToAdd, headers);
+
+        // Act
+        ResponseEntity<CustomerResponseDto> response = client.exchange(url, HttpMethod.PUT, entity, CustomerResponseDto.class);
+
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(0, response.getBody().getWishlist().size());
+
+    }
+    /**
+     * remove game to the first customer's wishlist with invalid id
+     */
+    @Test
+    @Order(15)
+    public void testDeleteGameTFromCustomerWishlistWithInvalidId() {
+        // Arrange
+        // Arrange
+        String url = String.format("/customers/%d/wishlist/game", -1);
+        String gameToAdd = "FC 24";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.TEXT_PLAIN);
+        HttpEntity<String> entity = new HttpEntity<>(gameToAdd, headers);
+
+        // Act
+        ResponseEntity<CustomerResponseDto> response = client.exchange(url, HttpMethod.PUT, entity, CustomerResponseDto.class);
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+
+    }
+    /**
+     * delete the first customer with valid a id
+     */
+    @Test
+    @Order(16)
     public void testDeleteCustomerByValidId() {
         // Arrange
-        String url = String.format("/customer/%d", this.customerId);
+        String url = String.format("/customers/%d", this.id);
 
         // Act
         ResponseEntity<Void> response = client.exchange(url, HttpMethod.DELETE, null, Void.class);
@@ -136,17 +427,18 @@ public class CustomerIntegrationTests {
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
-        // Verify the Customer was actually deleted by trying to fetch it again
+        // Verify that the manager was actually deleted by trying to fetch it again
         ResponseEntity<CustomerResponseDto> deletedCustomer = client.getForEntity(url, CustomerResponseDto.class);
         assertEquals(HttpStatus.NOT_FOUND, deletedCustomer.getStatusCode());
     }
-
-    @SuppressWarnings("null")
+    /**
+     * delete the first customer with an invalid id
+     */
     @Test
-    @Order(6)
+    @Order(17)
     public void testDeleteCustomerByInvalidId() {
         // Arrange
-        String url = String.format("/customer/%d", -1);
+        String url = String.format("/customers/%d", -1);
 
         // Act
         ResponseEntity<Void> response = client.exchange(url, HttpMethod.DELETE, null, Void.class);
@@ -155,5 +447,27 @@ public class CustomerIntegrationTests {
         assertNotNull(response);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
+    /**
+     * Invalid creation of a customer
+     */
+    @Test
+    @Order(18)
+    public void testCreateCustomerWithInvalidPassword() {
+        // Arrange
+        String email="zouzou@mcgill.ca";
+        CustomerRequestDto request = new CustomerRequestDto(VALID_ADDRESS,VALID_NAME, email,  VALID_PHONE, "123",null,null);
+
+        // Act
+        ResponseEntity<CustomerResponseDto> response = client.postForEntity("/customers", request, CustomerResponseDto.class);
+
+        // Assert
+        assertNotNull(response);
+        assertEquals(HttpStatus.LENGTH_REQUIRED, response.getStatusCode());
+
+    }
+    
+     
+
 
 }
+
