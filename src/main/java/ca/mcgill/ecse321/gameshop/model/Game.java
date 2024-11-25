@@ -120,15 +120,14 @@ public class Game
     }
   }
 //(aName,aDescription,aPrice,aStockQuantity,aPhotoURL,tobeAdded,allCategories)
-public Game(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,  boolean aToBeAdded, Category... allCategories)
-{
+public Game(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,  boolean aToBeAdded, Category... allCategories) {
   name = aName;
   description = aDescription;
   price = aPrice;
   stockQuantity = aStockQuantity;
   photoURL = aPhotoURL;
   toBeAdded = aToBeAdded;
-
+}
   //(aName,aDescription,aPrice,aStockQuantity,aPhotoURL,tobeAdded,allCategories)
   public Game(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL, List<Category> allCategories)
   {
