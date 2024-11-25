@@ -1,119 +1,118 @@
 <template>
-<body>
-<header>
-            <nav class="navbar">
-                <div class="logo">
-                    <h2>GameShop</h2>
-                </div>
-                <div class ="navmenu">
-                    <div class="search-box">
-                        <input type="search" class="search" placeholder="Search game...">
-                        <i class='bx bx-search'></i>
-                    </div>
-                    <div class="iconAccount">
-                        <img src="account.png">
-                    </div>
-                    <RouterLink to="/wishlist"><img src="White-Heart.png"></RouterLink>
-
-                    <RouterLink to="/cart"><img src="pngaaa.com-5034351.png"></RouterLink>
-                </div>
-            </nav>
-            <div class="main-header">
-                <div class="header">
-                    <h2>Your GameShop Wishlist</h2>
-                    <h5>Your favorite games all in one place! Grab them now before they're gone!</h5>
-                    <a href="" class="btn">Add wishlist to cart</a>
-                </div>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <h2>GameShop</h2>
             </div>
-            <section class="wishlist">
-                <div class="container">
-                    <div class="checkoutLayout">
-                        <div class="returnCart">
-                            <a href="/home">Keep shopping</a>
-                            <div class="list">
-                                <div v-for="game in wishlist" :key="game.id" class="game-card">
-                                <div class="item">
-                                        <img :src="game.imageUrl">
-                                    <div class="info">
-                                        <div class="name">{{ game.name }}</div>
-                                        <p><strong>Description:</strong> {{ game.description }}</p>
-                                        <p><strong>Stock:</strong> {{ game.stockQuantity }} left</p>
-                                        <div class="price">{{ game.price }}</div>
-                                    </div>
-                                    <div class="returnPrice">{{ game.price }}</div>
-                                    <div class="buttons">
-                                        <a href="" class="btn">Add to cart</a>
-                                        <a href="" class="btn">Remove</a>
-                                    </div>
+            <div class="navmenu">
+                <div class="search-box">
+                    <input type="search" class="search" placeholder="Search game...">
+                    <i class='bx bx-search'></i>
+                </div>
+                <div class="iconAccount">
+                    <img src="./account.png">
+                </div>
+                <RouterLink to="/wishlist"><img src="./White-Heart.png"></RouterLink>
+
+                <RouterLink to="/checkout"><img src="./pngaaa.com-5034351.png"></RouterLink>
+            </div>
+        </nav>
+    </header>
+    <div class="wishlist">
+        <div class="main-header">
+            <div class="header">
+                <h2>Your GameShop Wishlist</h2>
+                <h5>Your favorite games all in one place! Grab them now before they're gone!</h5>
+                <a href="" class="btn">Add wishlist to cart</a>
+            </div>
+        </div>
+        <div class="container">
+            <div class="checkoutLayout">
+                <div class="returnCart">
+                    <a href="/homepage">Keep shopping</a>
+                    <div class="list">
+                        <div v-for="game in wishlist" :key="game.id" class="game-card">
+                            <div class="item">
+                                <img :src="game.imageUrl">
+                                <div class="info">
+                                    <div class="name">{{ game.name }}</div>
+                                    <p><strong>Description:</strong> {{ game.description }}</p>
+                                    <p><strong>Stock:</strong> {{ game.stockQuantity }} left</p>
+                                    <div class="price">{{ game.price }}</div>
                                 </div>
+                                <div class="returnPrice">{{ game.price }}</div>
+                                <div class="buttons">
+                                    <a href="" class="btn">Add to cart</a>
+                                    <a href="" class="btn">Remove</a>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </section>
-        </header>
-</body>
+            </div>
+        </div>
+    </div>
+
 </template>
 
 <script>
 import axios from "axios";
 import { RouterLink } from 'vue-router';
 
-  export default {
+export default {
     data() {
-      return {
-        wishlist: [
-          {
-            id: 1,
-            name: 'Cyberpunk 2077',
-            imageUrl: 'https://example.com/images/cyberpunk2077.jpg',
-            price: 59.99,
-            description: 'An open-world, action-adventure story set in Night City.',
-            stockQuantity: 20
-          },
-          {
-            id: 2,
-            name: 'The Witcher 3: Wild Hunt',
-            imageUrl: 'https://example.com/images/witcher3.jpg',
-            price: 39.99,
-            description: 'A story-driven open world RPG set in a visually stunning fantasy universe.',
-            stockQuantity: 15
-          },
-          {
-            id: 3,
-            name: 'Red Dead Redemption 2',
-            imageUrl: 'https://example.com/images/reddead2.jpg',
-            price: 49.99,
-            description: 'An epic tale of life in America’s unforgiving heartland.',
-            stockQuantity: 10
-          }
-        ]
-      };
+        return {
+            wishlist: [
+                {
+                    id: 1,
+                    name: 'Cyberpunk 2077',
+                    imageUrl: 'https://example.com/images/cyberpunk2077.jpg',
+                    price: 59.99,
+                    description: 'An open-world, action-adventure story set in Night City.',
+                    stockQuantity: 20
+                },
+                {
+                    id: 2,
+                    name: 'The Witcher 3: Wild Hunt',
+                    imageUrl: 'https://example.com/images/witcher3.jpg',
+                    price: 39.99,
+                    description: 'A story-driven open world RPG set in a visually stunning fantasy universe.',
+                    stockQuantity: 15
+                },
+                {
+                    id: 3,
+                    name: 'Red Dead Redemption 2',
+                    imageUrl: 'https://example.com/images/reddead2.jpg',
+                    price: 49.99,
+                    description: 'An epic tale of life in America’s unforgiving heartland.',
+                    stockQuantity: 10
+                }
+            ]
+        };
     },
     methods: {
-      async fetchGames() {
-        try {
-          const response = await axios.get('http://localhost:8080/customers');
-          this.games = response.data;
-        } catch (error) {
-          console.error('Error fetching games:', error);
-        }
-      },
-  }
+        async fetchGames() {
+            try {
+                const response = await axios.get('http://localhost:8080/customers');
+                this.games = response.data;
+            } catch (error) {
+                console.error('Error fetching games:', error);
+            }
+        },
+    }
 }
 </script>
 
 <style>
-*{
-    margin :0;
-    padding:0;
+* {
+    margin: 0;
+    padding: 0;
     text-decoration: none;
     list-style: none;
-
 }
 
-.navbar{
+.navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -122,13 +121,15 @@ import { RouterLink } from 'vue-router';
     height: 80px;
     background: #1033a4;
 }
-.navbar h2{
+
+.navbar h2 {
     color: #ffffff;
     font-size: 25px;
     font-weight: 500;
     padding: 20px 20px;
 }
-.navmenu{
+
+.navmenu {
     height: 50px;
     line-height: 60px;
     display: flex;
@@ -136,32 +137,35 @@ import { RouterLink } from 'vue-router';
     align-items: center;
 }
 
-.search-box .search{
+.search-box .search {
     width: 500px;
     padding: 8px 8px;
     border-radius: 50px;
     font-size: 16px;
 }
-.search-box{
+
+.search-box {
     margin-right: 200px;
 }
 
-.navmenu .search-box i{
+.navmenu .search-box i {
     color: #ffffff;
     position: relative;
     right: 40px;
     top: 2px;
-    background-color:#1140d9;
+    background-color: #1140d9;
     padding: 8px;
     border-radius: 50px;
 }
-header img{
-   margin-top: 15px;
-   margin-right: 10px;
+
+header img {
+    margin-top: 15px;
+    margin-right: 10px;
     align-items: center;
     width: 40px;
 }
-.navmenu .iconcCart{
+
+.navmenu .iconcCart {
     align-items: center;
     position: relative;
     margin: 10px;
@@ -169,34 +173,36 @@ header img{
     display: inline-block;
 }
 
-header{
-    background: #e7f0f3ac;
-    width: 100%;
-    height: 100vh;
-}
-.main-header{
+.main-header {
     width: 90%;
     margin: auto;
     height: 40px;
     display: flex;
-     margin-bottom: 15px;
+    padding-bottom: 30px;
 }
-.main-header h5{
-   font-size: 20px;
-   font-weight: 550px;
-   margin-top: 10px;
-   margin-bottom: 15px;
+
+.main-header .header{
+    margin-bottom: 30px;
 }
-.main-header h2{
-   font-size: 38px;
-   width: 500px;
-   margin-top: 10px;
-   margin-bottom: 15px;
+.main-header h5 {
+    font-size: 20px;
+    font-weight: 550px;
+    margin-top: 10px;
+    margin-bottom: 15px;
 }
-.main-header p{
-    margin-bottom: 60px;
+
+.main-header h2 {
+    font-size: 38px;
+    width: 500px;
+    margin-top: 10px;
+    margin-bottom: 15px;
 }
-.main-header .btn{
+
+.main-header .a{
+    margin-bottom: 30px;
+}
+
+.main-header .btn {
     background: #88b9df;
     border: 1px solid #88b9df;
     font-size: 15px;
@@ -205,199 +211,78 @@ header{
     padding: 4px 20px;
     border-radius: 50px;
 }
-.main-header .btn:hover{
+
+.main-header .btn:hover {
     color: #88b9df;
     background: #ffffff;
 }
-
-
-.wishlist{
-
-    justify-content: center;
-    margin-top: 150px;
-    width: 80%;
-    margin-left: 200px;
+.wishlist .container{
+   padding: 150px;
 
 }
-
+.wishlist, .main-header {
+    margin: 0;
+    padding: 0;
+}
 
 html {
-	font-family:  "poppins";;
+    font-family: "poppins";
+    ;
 }
 
-h2 {
-	padding-top: 0.5em;
-}
-
-
-
-.listProduct{
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-}
-.listProduct .item img{
-    width: 100%;
-        height: 430px;
-    object-fit: cover;
-}
-.listProduct .item{
-    position: relative;
-}
-.listProduct .item h2{
-    font-weight: 700;
-    font-size: x-large;
-}
-.listProduct .item .price{
-    font-size: x-large;
-}
-
-.listProduct .item button{
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    background-color: #e6572c;
-    color: #fff;
-    width: 50%;
-    border: none;
-    padding: 20px 30px;
-    box-shadow: 0 10px 50px #000;
-    cursor: pointer;
-    transform: translateX(-50%) translateY(100px);
-    opacity: 0;
-}
-.listProduct .item:hover button{
-    transition:  0.5s;
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-}
-.cart{
-    color: #fff;
-    position: fixed;
-    width: 400px;
-    max-width: 80vw;
-    height: 100vh;
-    background-color: #0E0F11;
-    top: 0px;
-    right: -100%;
-    display: grid;
-    grid-template-rows: 50px 1fr 50px;
-    gap: 20px;
-    transition: right 1s;
-}
-
-.cart .buttons .checkout{
-    background-color: #E8BC0E;
-    color: #000;
-}
-.cart h2{
-    color: #E8BC0E;
-    padding: 20px;
-    height: 30px;
-    margin: 0;
-}
-
-.cart .listCart .item{
-    display: grid;
-    grid-template-columns: 50px 1fr 70px;
-    align-items: center;
-    gap: 20px;
-    margin-bottom: 20px;
-
-}
-.cart .listCart img{
-    width: 100%;
-    height: 70px;
-    object-fit: cover;
-    border-radius: 10px;
-}
-.cart .listCart .item .name{
-    font-weight: bold;
-}
-.cart .listCart .item .quantity{
-    display: flex;
-    justify-content: end;
-    align-items: center;
-}
-.cart .listCart .item .quantity span{
-    display: block;
-    width: 50px;
-    text-align: center;
-}
-
-.cart .listCart{
-    padding: 20px;
-    overflow: auto;
-}
-.cart .listCart::-webkit-scrollbar{
-    width: 0;
-}
-
-.cart .buttons{
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    text-align: center;
-}
-.cart .buttons div{
-    background-color: #000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-weight: bold;
-    cursor: pointer;
-}
-.cart .buttons a{
-    color: #fff;
-    text-decoration: none;
-}
-.checkoutLayout{
+.checkoutLayout {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 50px;
     padding: 20px;
 }
-.checkoutLayout .right{
+
+.checkoutLayout .right {
     background-color: #5358B3;
     border-radius: 20px;
     padding: 40px;
     color: #fff;
 }
-.checkoutLayout .right .form{
+
+.checkoutLayout .right .form {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 20px;
     border-bottom: 1px solid #7a7fe2;
     padding-bottom: 20px;
 }
+
 .checkoutLayout .form h1,
-.checkoutLayout .form .group:nth-child(-n+3){
+.checkoutLayout .form .group:nth-child(-n+3) {
     grid-column-start: 1;
     grid-column-end: 3;
 }
+
 .checkoutLayout .form input,
-.checkoutLayout .form select
-{
+.checkoutLayout .form select {
     width: 100%;
     padding: 10px 20px;
     box-sizing: border-box;
     border-radius: 20px;
     margin-top: 10px;
-    border:none;
+    border: none;
     background-color: #6a6fc9;
     color: #fff;
 }
-.checkoutLayout .right .return .row{
+
+.checkoutLayout .right .return .row {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-top: 10px;
 }
-.checkoutLayout .right .return .row div:nth-child(2){
+
+.checkoutLayout .right .return .row div:nth-child(2) {
     font-weight: bold;
     font-size: x-large;
 }
 
-.buttonCheckout{
+.buttonCheckout {
     width: 100%;
     height: 40px;
     border: none;
@@ -408,16 +293,18 @@ h2 {
     color: #fff;
 }
 
-.returnCart h1{
+.returnCart h1 {
     border-top: 1px solid #eee;
     padding: 20px 0;
 }
-.returnCart .list .item img{
+
+.returnCart .list .item img {
     height: 80px;
 }
-.wishlist .returnCart .list .item{
+
+.wishlist .returnCart .list .item {
     display: grid;
-    grid-template-columns: 90px 400px 150px 100px;
+    grid-template-columns: 90px 400px 80px 150px;
     align-items: center;
     gap: 20px;
     margin-top: 20px;
@@ -426,19 +313,21 @@ h2 {
     box-shadow: 0 10px 20px #5555;
     border-radius: 20px;
 }
-.returnCart .list .item .buttons a{
+
+.returnCart .list .item .buttons a {
     padding: 0 6px;
-     width: 100%;
-       height: 40px;
-        border: none;
-        border-radius: 20px;
-        background-color: red;
-        margin-top: 20px;
-        font-weight: bold;
-        color: #ffffff;
+    width: 100%;
+    height: 40px;
+    border: none;
+    border-radius: 20px;
+    background-color: red;
+    margin-top: 20px;
+    font-weight: bold;
+    color: #ffffff;
 
 }
-.returnCart .list .item{
+
+.returnCart .list .item {
     display: grid;
     grid-template-columns: 80px 1fr 70px 30px;
     align-items: center;
@@ -448,8 +337,9 @@ h2 {
     box-shadow: 0 10px 20px #5555;
     border-radius: 20px;
 }
+
 .returnCart .list .item .name,
-.returnCart .list .item .returnPrice{
+.returnCart .list .item .returnPrice {
     font-size: large;
     font-weight: bold;
 
