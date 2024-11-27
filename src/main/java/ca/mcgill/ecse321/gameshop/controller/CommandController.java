@@ -1,7 +1,6 @@
 package ca.mcgill.ecse321.gameshop.controller;
 
 import ca.mcgill.ecse321.gameshop.dto.CommandListDto;
-import ca.mcgill.ecse321.gameshop.dto.CommandRequestDto;
 import ca.mcgill.ecse321.gameshop.dto.CommandResponseDto;
 import ca.mcgill.ecse321.gameshop.model.Command;
 import ca.mcgill.ecse321.gameshop.service.CommandService;
@@ -23,10 +22,9 @@ public class CommandController {
      * @paramcommand The command to create.
      * @return The created command, including their ID.
      */
-    @PostMapping("/command")
-    public CommandResponseDto createCommand(@RequestBody CommandRequestDto command) {
-        System.out.println("Controller ");
-        Command createdCommand = commandService.createCommand(command.getCustomerID());
+    @PostMapping("/command/{cId}")
+    public CommandResponseDto createCommand(@PathVariable int cId) {
+        Command createdCommand = commandService.createCommand(cId);
 
         return new CommandResponseDto(createdCommand);
     }

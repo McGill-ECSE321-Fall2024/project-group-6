@@ -25,6 +25,9 @@
                 <a href="/homepage">Keep shopping</a>
                 <h1>List Product in Cart</h1>
                 <div class="list">
+                    <div v-if="showPopup" class="popup">
+                        {{ popupMessage }}
+                    </div>
                     <div v-for="game in cart" :key="game.id" class="game-card">
                         <div class="item">
                             <img :src="game.imageUrl">
@@ -35,13 +38,50 @@
                             </div>
                             <div class="returnPrice">{{ game.price }}$</div>
                             <div class="buttons">
-                                <a href="" class="btn">-</a>
+                                <a @click="removeFromCart(game)" class="btn">-</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="payement">
+                    <h1>Payement Method</h1>
+                    <div class="list">
+                        <div v-for="payement in payements" :key="payement.id" class="payement-card">
+                            <div class="item">
+                                <input type="radio" id="payment-{{ payement.id }}" name="payment" :value="payement.id"
+                                    v-model="selectedPayment" @click="handleClick(payement.id)" />
+
+                                <img src="https://pngimg.com/d/credit_card_PNG24.png">
+                                <div class="info">
+                                    <div class="name">{{ payement.name }}</div>
+                                    <div class="number">Credit Card ending in {{ payement.number }}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="add-payement">
+                            <h2 @click="isAddPaymentVisible = !isAddPaymentVisible" style="cursor: pointer;">
+                                <span v-if="isAddPaymentVisible">▲</span>
+                                <span v-else>▼</span>
+                                Add Payment
+                            </h2>
+                            <div class="form" v-show="isAddPaymentVisible">
+                                <div class="group">
+                                    <input type="text" name="number" id="number" placeholder="Enter Card">
+                                </div>
+
+                                <div class="group">
+                                    <input type="text" name="exp" id="exp" placeholder="MMYY">
+                                    <input type="text" name="cvv" id="cvv" placeholder="CVV">
+                                </div>
+                                <div class="group">
+                                    <input type="text" name="address" id="address" placeholder="Billing address">
+                                </div>
+                                <button @click=addPayement() class="savePayement">Save</button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
 
             <div class="right">
                 <h1>Checkout</h1>
@@ -53,17 +93,12 @@
                     </div>
 
                     <div class="group">
-                        <label for="phone">Card Number</label>
-                        <input type="text" name="phone" id="phone">
+                        <label for="phone">Phone number</label>
+                        <input type="text" name="number" id="number">
                     </div>
 
                     <div class="group">
-                        <label for="cvc">CVC</label>
-                        <input type="text" name="phone" id="phone">
-                    </div>
-
-                    <div class="group">
-                        <label for="address">Billing Address</label>
+                        <label for="address">Address</label>
                         <input type="text" name="address" id="address">
                     </div>
 
@@ -83,17 +118,18 @@
                         </select>
                     </div>
                 </div>
+
                 <div class="return">
                     <div class="row">
                         <div>Total Quantity</div>
-                        <div class="totalQuantity">70</div>
+                        <div class="totalQuantity">{{ totalQuantity }}</div>
                     </div>
                     <div class="row">
                         <div>Total Price</div>
-                        <div class="totalPrice">$900</div>
+                        <div class="totalPrice">{{ totalPrice }}</div>
                     </div>
                 </div>
-                <button class="buttonCheckout">CHECKOUT</button>
+                <button @click=checkout() class="buttonCheckout">CHECKOUT</button>
             </div>
         </div>
     </div>
@@ -110,29 +146,52 @@ export default {
                 {
                     id: 1,
                     name: 'Cyberpunk 2077',
-                    imageUrl: 'https://example.com/images/cyberpunk2077.jpg',
+                    imageUrl: "https://upload.wikimedia.org/wikipedia/en/9/9f/Cyberpunk_2077_box_art.jpg",
                     price: 59.99,
                     description: 'An open-world, action-adventure story set in Night City.',
                     stockQuantity: 20
                 },
                 {
                     id: 2,
-                    name: 'The Witcher 3: Wild Hunt',
-                    imageUrl: 'https://example.com/images/witcher3.jpg',
+                    name: 'Rainbow 6 Siege',
+                    imageUrl: 'https://upload.wikimedia.org/wikipedia/en/4/47/Tom_Clancy%27s_Rainbow_Six_Siege_cover_art.jpg',
                     price: 39.99,
-                    description: 'A story-driven open world RPG set in a visually stunning fantasy universe.',
+                    description: 'A tactical, team-based FPS where players engage in strategic battles with unique operators.',
                     stockQuantity: 15
                 },
                 {
                     id: 3,
                     name: 'Red Dead Redemption 2',
-                    imageUrl: 'https://example.com/images/reddead2.jpg',
+                    imageUrl: 'https://upload.wikimedia.org/wikipedia/en/4/44/Red_Dead_Redemption_II.jpg',
                     price: 49.99,
                     description: 'An epic tale of life in America’s unforgiving heartland.',
                     stockQuantity: 10
                 }
-            ]
+            ],
+            isAddPaymentVisible: false,
+            payements: [
+                {
+                    id: 1,
+                    name: "Maissa Mehdi",
+                    number: "••••7654",
+                    date: "08/25",
+                    address: "3454 Milton street",
+                    cvc: 343,
+
+                }
+            ],
+            selectedPayment: null,
+            showPopup: false,
+            popupMessage: "",
         };
+    },
+    computed: {
+        totalQuantity() {
+            return this.cart.length;
+        },
+        totalPrice() {
+            return this.cart.reduce((total, game) => total + game.price, 0);
+        }
     },
     methods: {
         async fetchGames() {
@@ -143,8 +202,28 @@ export default {
                 console.error('Error fetching games:', error);
             }
         },
+
+        handleClick(id) {
+            if (this.selectedPayment === id) {
+                this.selectedPayment = null;
+            } else {
+                this.selectedPayment = id;
+            }
+        },
+        removeFromCart(game) {
+            this.cart = this.cart.filter(item => item.id !== game.id);
+            this.popupMessage = `${game.name} was removed from the cart.`;
+            this.showPopup = true;
+
+            setTimeout(() => {
+                this.showPopup = false;
+            }, 3000);
+        },
+        checkout() {
+
+        }
     }
-}
+};
 </script>
 
 <style>
@@ -221,12 +300,28 @@ header img {
 html {
     font-family: "poppins";
 }
+
 .container {
     background-color: #ffffff;
     color: #000000;
 }
+
 h2 {
     padding-top: 0.5em;
+}
+
+.popup {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #eee;
+    color: #000000;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    font-weight: bold;
+    z-index: 0;
 }
 
 .checkoutLayout {
@@ -237,6 +332,7 @@ h2 {
 }
 
 .checkoutLayout .right {
+    margin-top: 80px;
     background-color: #3148de;
     border-radius: 20px;
     padding: 40px;
@@ -250,11 +346,13 @@ h2 {
     border-bottom: 1px solid #3e78ff;
     padding-bottom: 20px;
 }
-.checkoutLayout h1{
+
+.checkoutLayout h1 {
     font-weight: bold;
 }
+
 .checkoutLayout .form h1,
-.checkoutLayout .form .group:nth-child(-n+4) {
+.checkoutLayout .form .group:nth-child(-n+3) {
     grid-column-start: 1;
     grid-column-end: 3;
 }
@@ -289,13 +387,18 @@ h2 {
     border: none;
     border-radius: 20px;
     background-color: #49D8B9;
-    margin-top: 20px;
+    margin-top: 40px;
     font-weight: bold;
     color: #fff;
 }
 
 .returnCart h1 {
     border-top: 1px solid #eee;
+    padding: 20px 0;
+}
+
+.returnCart .list {
+    border-bottom: 2px solid #eee;
     padding: 20px 0;
 }
 
@@ -313,7 +416,6 @@ h2 {
     margin-top: 20px;
     font-weight: bold;
     color: #ffffff;
-
 }
 
 .returnCart .list .item {
@@ -321,7 +423,7 @@ h2 {
     grid-template-columns: 80px 1fr 70px 30px;
     align-items: center;
     gap: 20px;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     padding: 10px;
     box-shadow: 0 10px 20px #5555;
     border-radius: 20px;
@@ -332,5 +434,74 @@ h2 {
     font-size: large;
     font-weight: bold;
 
+}
+
+.payement .list .item {
+    display: grid;
+    grid-template-columns: 40px 1fr 300px;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 20px;
+    padding: 10px;
+    box-shadow: 0 10px 20px #5555;
+    border-radius: 20px;
+}
+
+.add-payement {
+    display: grid;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 20px;
+    padding: 10px;
+    box-shadow: 0 10px 20px #5555;
+    border-radius: 20px;
+}
+
+.add-payement .form {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+
+}
+
+.add-payement .form .group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    /* Two equal columns */
+    gap: 10px;
+
+}
+
+.add-payement .form .group:first-child {
+    grid-template-columns: 1fr;
+    /* Single column for Enter Card */
+}
+
+.add-payement .form input {
+    padding: 10px;
+    border: 1px solid #ddd;
+    color: #000000;
+    border-radius: 5px;
+    width: 100%;
+    box-sizing: border-box;
+    background-color: #eee;
+}
+
+.add-payement button {
+    padding: 10px;
+    background-color: #3148de;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    width: 100%;
+}
+
+.payement .list .item .name {
+    width: 100%;
+    font-size: large;
+    font-weight: bold;
 }
 </style>

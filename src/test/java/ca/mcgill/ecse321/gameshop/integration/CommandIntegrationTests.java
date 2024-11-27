@@ -2,7 +2,6 @@
 package ca.mcgill.ecse321.gameshop.integration;
 
 import ca.mcgill.ecse321.gameshop.dto.CommandListDto;
-import ca.mcgill.ecse321.gameshop.dto.CommandRequestDto;
 import ca.mcgill.ecse321.gameshop.dto.CommandResponseDto;
 import ca.mcgill.ecse321.gameshop.model.Category;
 import ca.mcgill.ecse321.gameshop.model.Customer;
@@ -59,8 +58,6 @@ public class CommandIntegrationTests {
 
     @AfterAll
     public void clearDatabase() {
-
-
         customerRepo.deleteAll();
         personRepo.deleteAll();
         gameRepo.deleteAll();
@@ -97,10 +94,10 @@ public class CommandIntegrationTests {
     public void testCreateValidCommand() {
         // Arrange
 
-        CommandRequestDto command = new CommandRequestDto(timID);
-
+        //CommandRequestDto command = new CommandRequestDto(timID);
+        String url = String.format("/command/%d", timID);
         // Act
-        ResponseEntity<CommandResponseDto> response = client.postForEntity("/command", command, CommandResponseDto.class);
+        ResponseEntity<CommandResponseDto> response = client.postForEntity(url,timID,CommandResponseDto.class);
         // Assert
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -131,8 +128,6 @@ public class CommandIntegrationTests {
     public void testGetCommandById() {
         // Arrange
         String url = String.format("/command/%d", ID);
-
-        System.out.println(String.format("URL: %s", url));
 
         // Act
         ResponseEntity<CommandResponseDto> response = client.getForEntity(url, CommandResponseDto.class);

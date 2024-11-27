@@ -24,12 +24,15 @@
             <div class="header">
                 <h2>Your GameShop Wishlist</h2>
                 <h5>Your favorite games all in one place! Grab them now before they're gone!</h5>
-                <a href="" class="btn">Add wishlist to cart</a>
+                <a @click="addWishlistToCart()" class="btn">Add wishlist to cart</a>
             </div>
         </div>
         <div class="container">
             <div class="checkoutLayout">
                 <div class="returnCart">
+                    <div v-if="showPopup" class="popup">
+                        {{ popupMessage }}
+                    </div>
                     <a href="/homepage">Keep shopping</a>
                     <div class="list">
                         <div v-for="game in wishlist" :key="game.id" class="game-card">
@@ -66,32 +69,35 @@ export default {
                 {
                     id: 1,
                     name: 'Cyberpunk 2077',
-                    imageUrl: "Cyberpunk_2077.jpg",
+                    imageUrl: "https://upload.wikimedia.org/wikipedia/en/9/9f/Cyberpunk_2077_box_art.jpg",
                     price: 59.99,
                     description: 'An open-world, action-adventure story set in Night City.',
                     stockQuantity: 20
                 },
                 {
                     id: 2,
-                    name: 'The Witcher 3: Wild Hunt',
-                    imageUrl: 'https://example.com/images/witcher3.jpg',
+                    name: 'Rainbow 6 Siege',
+                    imageUrl: 'https://upload.wikimedia.org/wikipedia/en/4/47/Tom_Clancy%27s_Rainbow_Six_Siege_cover_art.jpg',
                     price: 39.99,
-                    description: 'A story-driven open world RPG set in a visually stunning fantasy universe.',
+                    description: 'A tactical, team-based FPS where players engage in strategic battles with unique operators.',
                     stockQuantity: 15
                 },
                 {
                     id: 3,
                     name: 'Red Dead Redemption 2',
-                    imageUrl: 'https://example.com/images/reddead2.jpg',
+                    imageUrl: 'https://upload.wikimedia.org/wikipedia/en/4/44/Red_Dead_Redemption_II.jpg',
                     price: 49.99,
                     description: 'An epic tale of life in America’s unforgiving heartland.',
                     stockQuantity: 10
                 }
             ],
-            cart:[]
+            cart: [],
+            showPopup: false,
+            popupMessage: "",
         };
     },
     methods: {
+
         async fetchGames() {
             try {
                 const response = await axios.get('http://localhost:8080/customers');
@@ -100,16 +106,36 @@ export default {
                 console.error('Error fetching games:', error);
             }
         },
-    addToCart(game) {
-      this.cart.push(game);
-      this.wishlist = this.wishlist.filter(item => item.id !== game.id);
-      console.log(`Added to cart: ${game.name}`);
-    },
-    removeFromWishlist(game) {
-      this.wishlist = this.wishlist.filter(item => item.id !== game.id);
-      console.log(`Removed from wishlist: ${game.name}`);
+        addToCart(game) {
+            this.cart.push(game);
+            this.wishlist = this.wishlist.filter(item => item.id !== game.id);
+            this.popupMessage = `${game.name} was added to your cart.`;
+            this.showPopup = true;
+
+            setTimeout(() => {
+                this.showPopup = false;
+            }, 3000);
+        },
+        removeFromWishlist(game) {
+            this.wishlist = this.wishlist.filter(item => item.id !== game.id);
+            this.popupMessage = `${game.name} was removed from the wishlist.`;
+            this.showPopup = true;
+
+            setTimeout(() => {
+                this.showPopup = false;
+            }, 3000);
+        },
+        async addWishlistToCart() {
+            this.cart.push(this.wishlist);
+            this.wishlist = [];
+            this.popupMessage = `Wishlist was added to your cart.`;
+            this.showPopup = true;
+
+            setTimeout(() => {
+                this.showPopup = false;
+            }, 3000);
+        }
     }
-  }
 }
 </script>
 
@@ -192,10 +218,11 @@ header img {
     padding-bottom: 30px;
 }
 
-.main-header .header{
+.main-header .header {
     margin-left: 30px;
     margin-bottom: 30px;
 }
+
 .main-header h5 {
     font-size: 20px;
     font-weight: 550px;
@@ -211,7 +238,7 @@ header img {
     margin-bottom: 15px;
 }
 
-.main-header .a{
+.main-header .a {
     margin-bottom: 30px;
 }
 
@@ -231,12 +258,14 @@ header img {
 }
 
 
-.wishlist .container{
-   padding: 150px;
-   align-items: center;
-   
+.wishlist .container {
+    padding: 200px;
+    align-items: center;
+
 }
-.wishlist, .main-header {
+
+.wishlist,
+.main-header {
     background-color: #ffffff;
     color: #000000;
     margin: 0;
@@ -248,20 +277,21 @@ html {
 }
 
 
-.returnCart h1 {
+.wishlist .returnCart .list {
     border-top: 1px solid #eee;
     padding: 20px 0;
+    ;
 }
 
 .returnCart .list .item img {
-    height: 80px;
+    height: 100%;
 }
 
 .wishlist .returnCart .list .item {
     display: grid;
-    grid-template-columns: 90px 400px 100px 150px;
+    grid-template-columns: 150px 400px 100px 150px;
     align-items: center;
-    gap: 20px;
+    gap: 10px;
     margin-top: 20px;
     margin-bottom: 30px;
     padding: 10px 0;
@@ -273,8 +303,8 @@ html {
     width: 80%;
     margin-bottom: 5px;
     display: flex;
-    flex-direction: column; 
-    gap: 10px; 
+    flex-direction: column;
+    gap: 10px;
     align-items: center;
     background: #88b9df;
     border: 1px solid #88b9df;
@@ -284,6 +314,7 @@ html {
     border-radius: 50px;
     padding: 4px 2px;
 }
+
 .wishlist .returnCart .list .item .btn:hover {
     color: #88b9df;
     background: #ffffff;
