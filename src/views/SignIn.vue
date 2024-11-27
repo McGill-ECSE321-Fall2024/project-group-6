@@ -53,11 +53,11 @@ export default {
       }
 
       try {
-        const user = { email: this.email, password: this.password };
+        const user = { username:"123",email: this.email, password: this.password, phone:"123" };
         const response = await axiosClient.post(`/login`, user);
 
-        if (response.data === true) {
-        
+        if (response.data.email === this.email) {
+        /*
           if (this.userType === 'manager') {
             router.push({ name: 'manager-dashboard' });
           } else if (this.userType === 'employee') {
@@ -65,11 +65,14 @@ export default {
           } else if (this.userType === 'customer') {
             router.push({ name: 'customer-dashboard' });
           }
+            */
+           this.errorMessage="Successful login";
         } else {
           this.errorMessage = 'Invalid login credentials';
         }
       } catch (error) {
         this.errorMessage = 'Error logging in';
+        print(error);
       }
     },
     clearInputs() {

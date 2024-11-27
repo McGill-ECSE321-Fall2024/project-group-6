@@ -7,14 +7,15 @@
           <button @click="searchByName">Search</button>
         </div>
         <div class="auth-buttons">
-          <RouterLink to="/SignIn">Login</RouterLink>
-          <RouterLink to="/SignUp">Sign Up</RouterLink>
+          <RouterLink to="/hello">Login</RouterLink>
+          <RouterLink to="/">Sign Up</RouterLink>
         </div>
       </header>
       <div class="content">
         <aside class="categories">
           <select v-model="selectedCategory" @change="filterByCategory">
             <option value="" disabled>Select Category</option>
+            <option value="all">All games</option>
             <option v-for="category in categories" :key="category.id" :value="category.name">
               {{ category.name }}
             </option>
@@ -47,30 +48,6 @@
         selectedCategory: '',
         categories: [],
         games: [
-          {
-            id: 1,
-            name: 'Cyberpunk 2077',
-            imageUrl: 'https://example.com/images/cyberpunk2077.jpg',
-            price: 59.99,
-            description: 'An open-world, action-adventure story set in Night City.',
-            stockQuantity: 20
-          },
-          {
-            id: 2,
-            name: 'The Witcher 3: Wild Hunt',
-            imageUrl: 'https://example.com/images/witcher3.jpg',
-            price: 39.99,
-            description: 'A story-driven open world RPG set in a visually stunning fantasy universe.',
-            stockQuantity: 15
-          },
-          {
-            id: 3,
-            name: 'Red Dead Redemption 2',
-            imageUrl: 'https://example.com/images/reddead2.jpg',
-            price: 49.99,
-            description: 'An epic tale of life in America’s unforgiving heartland.',
-            stockQuantity: 10
-          }
         ]
       };
     },
@@ -78,7 +55,7 @@
       async fetchCategories() {
         try {
           const response = await axios.get('http://localhost:8080/categories');
-          this.categories = response.data;
+          this.categories = response.data["categories"];
         } catch (error) {
           console.error('Error fetching categories:', error);
         }
@@ -86,27 +63,36 @@
       async fetchGames() {
         try {
           const response = await axios.get('http://localhost:8080/games');
-          this.games = response.data;
+          this.games = response.data["games"];
         } catch (error) {
           console.error('Error fetching games:', error);
         }
       },
       async searchByName() {
+        
         try {
-          const response = await axios.get(`http://localhost:8080/games/search?name=${this.searchQuery}`);
-          this.games = response.data;
+          
+          const response = await axios.get(`http://localhost:8080/games/name/${this.searchQuery}`);
+          this.games = [response.data];
+          console.log(this.games);
+         // console.log(games.length);
         } catch (error) {
           console.error('Error searching for games:', error);
         }
       },
       async filterByCategory() {
-        try {
-          const response = await axios.get(`http://localhost:8080/games?category=${this.selectedCategory}`);
-          this.games = response.data;
-        } catch (error) {
-          console.error('Error filtering games by category:', error);
-        }
+    if (this.selectedCategory === 'all') {
+      await this.fetchGames(); //always use this, cest mieu
+    } else {
+      try {
+        const response = await axios.get(`http://localhost:8080/games/category/${this.selectedCategory}`);
+        this.games = response.data["games"];
+      } catch (error) {
+        console.error('Error filtering games by category:', error);
       }
+    }
+  }
+
     },
     async created() {
       await this.fetchCategories();
