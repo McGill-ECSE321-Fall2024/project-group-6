@@ -1,115 +1,105 @@
 <!-- Author: Marine Dupuy -->
  
 <template>
-  <div class="main-container">
-    <header class="header">
-      <div class="app-name">GameShop - Employee Dashboard</div>
-      <div class="nav-buttons">
-        <button @click="goToAccountPage" class="account-btn">Account</button>
-        <button @click="logout" class="logout-btn">Logout</button>
+  <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.4/css/boxicons.min.css"
+    rel="stylesheet"
+  />
+  <header>
+    <nav class="navbar">
+      <div class="logo">
+        <h2>GameShop</h2>
       </div>
-    </header>
-    <div class="content">
-      <aside class="categories">
-        <h3>Search Games</h3>
-        <div class="search-bar">
-          <input type="text" v-model="searchQuery" placeholder="Search for games by name" />
-          <button @click="searchByName">Search</button>
+      <div class="navmenu">
+        <div class="search-box">
+          <input type="search" class="search" placeholder="Search game..." />
+          <i class="bx bx-search"></i>
         </div>
-        <div class="category-filter">
-          <h4>Filter by Category</h4>
-          <select v-model="selectedCategory" @change="filterByCategory">
-            <option value="" disabled>Select Category</option>
-            <option v-for="category in categories" :key="category.id" :value="category.name">
-              {{ category.name }}
-            </option>
-          </select>
+        <RouterLink to="/account"><img src="./account.png"></RouterLink>
+      </div>
+    </nav>
+  </header>
+  <div class="container">
+    <!-- Game Catalog Section -->
+    <main class="catalog">
+      <h3>Game Inventory</h3>
+      <div v-if="games.length === 0">No games found</div>
+      <div
+        v-for="game in games"
+        :key="game.id"
+        class="game-card"
+        @click="viewGameDetails(game.id)"
+      >
+        <img :src="game.imageUrl" alt="Game Image" class="game-image" />
+        <div class="game-info">
+          <h3>{{ game.name }}</h3>
+          <p><strong>Price:</strong> ${{ game.price }}</p>
+          <p><strong>Stock:</strong> {{ game.stockQuantity }} left</p>
         </div>
-        <button @click="showAddGameModal = true" class="add-game-btn">Add New Game</button>
-      </aside>
-      <main class="catalog">
-        <h3>Game Inventory</h3>
-        <div v-if="games.length === 0">No games found</div>
-        <div
-          v-for="game in games"
-          :key="game.id"
-          class="game-card"
-          @click="viewGameDetails(game.id)"
-        >
-          <img :src="game.imageUrl" alt="Game Image" class="game-image" />
-          <div class="game-info">
-            <h3>{{ game.name }}</h3>
-            <p><strong>Price:</strong> ${{ game.price }}</p>
-            <p><strong>Stock:</strong> {{ game.stockQuantity }} left</p>
-          </div>
-        </div>
-      </main>
-      <aside class="tasks">
-        <h3>Your Tasks</h3>
-        <ul>
-          <li v-for="task in tasks" :key="task.id">
-            {{ task.description }} (Due: {{ task.dueDate }})
-          </li>
-        </ul>
-      </aside>
-    </div>
+      </div>
+    </main>
+
+    <!-- Tasks Section -->
+    <aside class="tasks-box">
+      <h3>Your Assigned Tasks</h3>
+      <ul v-if="tasks.length > 0">
+        <li v-for="task in tasks" :key="task.id">
+          <strong>{{ task.description }}</strong>
+          <p>Due: {{ task.dueDate }}</p>
+        </li>
+      </ul>
+      <p v-else>No tasks assigned</p>
+    </aside>
   </div>
 </template>
+Script
+Update your fetchTasks method to fetch tasks for the specific employeeID. Pass the employeeID dynamically.
 
+vue
+Copy code
 <script>
-import axios from 'axios';
+import axios from "axios";
 
 export default {
   data() {
     return {
-      searchQuery: '',
-      selectedCategory: '',
+      searchQuery: "",
+      selectedCategory: "",
       categories: [],
       games: [],
       tasks: [],
-      showAddGameModal: false,
-      newGame: {
-        name: '',
-        price: 0,
-        stockQuantity: 0,
-        description: '',
-        imageUrl: '',
-      },
+      employeeID: 1, // Example: Replace with the logged-in employee's ID.
     };
   },
   methods: {
     async fetchCategories() {
       try {
-        const response = await axios.get('http://localhost:8080/categories');
+        const response = await axios.get("http://localhost:8080/categories");
         this.categories = response.data;
       } catch (error) {
-        console.error('Error fetching categories:', error);
+        console.error("Error fetching categories:", error);
       }
     },
     async fetchGames() {
       try {
-        const response = await axios.get('http://localhost:8080/games');
+        const response = await axios.get("http://localhost:8080/games");
         this.games = response.data;
       } catch (error) {
-        console.error('Error fetching games:', error);
+        console.error("Error fetching games:", error);
       }
     },
     async fetchTasks() {
       try {
-        const response = await axios.get('http://localhost:8080/tasks/employee');
+        const response = await axios.get(
+          `http://localhost:8080/tasks/employee/${this.employeeID}`
+        );
         this.tasks = response.data;
       } catch (error) {
-        console.error('Error fetching tasks:', error);
+        console.error("Error fetching tasks:", error);
       }
     },
     viewGameDetails(gameId) {
-      this.$router.push({ name: 'game-details', params: { id: gameId } });
-    },
-    goToAccountPage() {
-      this.$router.push({ name: 'account' }); // Navigate to the account page
-    },
-    logout() {
-      this.$router.push('/signin');
+      this.$router.push({ name: "game-details", params: { id: gameId } });
     },
   },
   async created() {
@@ -120,68 +110,119 @@ export default {
 };
 </script>
 
-<style scoped>
-/* Header styles */
-.header {
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    text-decoration: none;
+    list-style: none;
+    font-family: "poppins";
+}
+
+/* Navbar Styles */
+.navbar {
+  display: flex;
+  right: 0px;
+  justify-content: space-between;
+  width: 100%;
+  height: 90px;
+  background: #1033a4;
+  padding: 0 40; /* Adds space on the sides */
+  align-items: center;
+}
+
+.navbar h2 {
+  color: #ffffff;
+  font-size: 25px;
+  font-weight: 500;
+  margin-left: 20px; /* Adjust spacing */
+  text-decoration: none; /* Prevent underline */
+}
+
+.navmenu {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #333;
-  padding: 1rem;
-  color: white;
 }
 
-.app-name {
-  font-size: 1.5rem;
+.navmenu img {
+    align-items: center;
+    position: relative;
+    margin: 10px;
+    display: inline-block;
+    height: 40px;
 }
 
-.nav-buttons {
+.search-box .search {
+  width: 600px;
+  padding: 10px;
+  border-radius: 50px;
+  font-size: 16px;
+}
+
+.search-box {
+  margin-left: 40px; /* Adjust position */
   display: flex;
-  gap: 1rem;
+  align-items: center; /* Center search box vertically */
 }
 
-.nav-buttons button {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 5px;
+.navmenu .search-box i {
+  color: #ffffff;
+  position: relative;
+  right: 40px;
+  background-color: #1140d9;
+  padding: 8px;
+  border-radius: 50px;
+}
+
+.iconAccount img {
+  width: 50px; /* Slightly larger icon */
+  margin-left: 20px;
   cursor: pointer;
 }
 
-.nav-buttons button:hover {
-  background-color: #0056b3;
-}
-
-.logout-btn {
-  background-color: #dc3545;
-}
-
-.logout-btn:hover {
-  background-color: #c82333;
-}
-
-/* Content styles */
-.content {
+.iconAccount {
   display: flex;
-  padding: 2rem;
+  align-items: right; /* Centers vertically */
 }
 
-.tasks {
+/* Tasks Section */
+.tasks-box {
   width: 300px;
-  margin-left: 2rem;
+  background: #ffffff;
+  border: 2px solid #1140d9;
+  border-radius: 8px;
+  padding: 20px;
+  margin-right: 50px;
 }
 
-.tasks ul {
-  list-style: none;
+.tasks-box h3 {
+  font-size: 20px;
+  margin-bottom: 10px;
+  color: #1140d9;
+}
+
+.tasks-box ul {
+  list-style-type: none;
   padding: 0;
+  color: #1140d9;
 }
 
-.tasks li {
-  margin-bottom: 1rem;
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  background-color: #f9f9f9;
+.tasks-box li {
+  margin-bottom: 15px;
+  color: #1140d9;
 }
+
+.tasks-box li p {
+  margin: 5px 0 0;
+  font-size: 14px;
+  color: #1140d9;
+}
+
+.container {
+  background-color: #ffff;
+  color: #000;
+  height:100%;
+}
+
 </style>
