@@ -34,6 +34,7 @@ public class CustomerController {
      * @param customerToCreate
      * @return
      */
+    @CrossOrigin(origins = "http://localhost:8087")
     @PostMapping("/customers")
     public CustomerResponseDto createCustomer(@RequestBody CustomerRequestDto customerToCreate) {
     Person person= new Person(customerToCreate.getUsername(),customerToCreate.getEmail(),customerToCreate.getPassword(),customerToCreate.getPhone());
@@ -46,6 +47,7 @@ public class CustomerController {
      * Only for testing purposes, to add a game to a customers cart
      * @return
      */
+    @CrossOrigin(origins = "http://localhost:8087")
     @PostMapping("/customers/test")
     public GameResponseDto createGameForCustomerTesting(@RequestBody GameRequestDto g){
         Game game = customerService.addGame(g.getName(), g.getDescription(), g.getPrice(), g.getStockQuantity(), g.getPhotoURL());
@@ -57,7 +59,7 @@ public class CustomerController {
      * @param cid
      * @return
      */
-
+    @CrossOrigin(origins = "http://localhost:8087")
     @GetMapping("/customers/{cid}")
     public CustomerResponseDto getCustomerById(@PathVariable int cid) {
         Customer customer=customerService.getCustomerByID(cid);
@@ -69,6 +71,7 @@ public class CustomerController {
      * Get all customers
      * @return
      */
+    @CrossOrigin(origins = "http://localhost:8087")
     @GetMapping("/customers")
     public CustomerListDto getAllCustomers() {
         List<CustomerResponseDto> customers = new ArrayList<>();
@@ -82,6 +85,7 @@ public class CustomerController {
      * Delete a customer
      * @param cid
      */
+    @CrossOrigin(origins = "http://localhost:8087")
     @DeleteMapping("/customers/{cid}")
     public void deleteCustomer(@PathVariable int cid) {
         List <Payment> paymentsToDelete= customerService.getCustomerPaymentMethods(cid);
@@ -98,6 +102,7 @@ public class CustomerController {
      * @param customer
      * @return
      */
+    @CrossOrigin(origins = "http://localhost:8087")
     @PutMapping("/customers/{cid}")
     public CustomerResponseDto updateCustomer(@PathVariable int cid, @RequestBody CustomerRequestDto customer) {
        Customer c = customerService.updateCustomer(cid, customer.getUsername(),customer.getEmail(),customer.getPassword(),customer.getPhone(),customer.getShippingAddress());
@@ -111,6 +116,7 @@ public class CustomerController {
      * @param name
      * @return
      */
+    @CrossOrigin(origins = "http://localhost:8087")
     @PutMapping("/customers/{cid}/cart")
     public CustomerResponseDto addGameToCart(@PathVariable int cid, @RequestBody String name) {
 
@@ -126,6 +132,7 @@ public class CustomerController {
      * @param name
      * @return
      */
+    @CrossOrigin(origins = "http://localhost:8087")
     @PutMapping("/customers/{cid}/cart/game")
     public CustomerResponseDto removeGameFromCart(@PathVariable int cid, @RequestBody String name) {
         Game g = gameService.getGameByName(name);
@@ -139,6 +146,7 @@ public class CustomerController {
      * @param name
      * @return
      */
+    @CrossOrigin(origins = "http://localhost:8087")
     @PutMapping("/customers/{cid}/wishlist")
     public CustomerResponseDto addGameToWishlist(@PathVariable int cid, @RequestBody String name) {
         Game g = gameService.getGameByName(name);
@@ -152,6 +160,7 @@ public class CustomerController {
      * @param name
      * @return
      */
+    @CrossOrigin(origins = "http://localhost:8087")
     @PutMapping("/customers/{cid}/wishlist/game")
     public CustomerResponseDto DeleteGameFromWishlist(@PathVariable int cid, @RequestBody String name) {
         Game g = gameService.getGameByName(name);
@@ -164,6 +173,7 @@ public class CustomerController {
      * @param cid
      * @return
      */
+    @CrossOrigin(origins = "http://localhost:8087")
     @GetMapping("/customers/{cid}/payments")
     public PaymentListDto getAllCustomerPaymentMethods(@PathVariable int cid) {
         List<PaymentResponseDto> payments = new ArrayList<>();

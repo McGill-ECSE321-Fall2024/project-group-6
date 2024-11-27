@@ -22,6 +22,7 @@ public class ReviewController {
      * @param review The review to create.
      * @return The new review.
      */
+    @CrossOrigin(origins = "http://localhost:8087")
     @PostMapping("/review")
     public ReviewResponseDto createReview(@RequestBody ReviewRequestDto review) {
         Review r = reviewService.createReview(review.getRating(), review.getComment());
@@ -33,6 +34,7 @@ public class ReviewController {
      * @author Annabelle Huynh-Rondeau
      * @return All the reviews.
      */
+    @CrossOrigin(origins = "http://localhost:8087")
     @GetMapping("/review")
     public ReviewListDto getAllReviews() {
         List<ReviewResponseDto> reviews = new ArrayList<>();
@@ -49,6 +51,7 @@ public class ReviewController {
      * @param id The primary key of the person to find.
      * @return The review with the given ID.
      */
+    @CrossOrigin(origins = "http://localhost:8087")
     @GetMapping("/review/{id}")
     public ReviewResponseDto getReviewById(@PathVariable int id) {
         Review r = reviewService.getReviewById(id);
@@ -61,6 +64,7 @@ public class ReviewController {
      * @param id the ID of the review
      * @return The updated review with the given ID.
      */
+    @CrossOrigin(origins = "http://localhost:8087")
     @PutMapping("/review/{id}")
     public ReviewResponseDto updateReview(@PathVariable int id, @RequestBody ReviewRequestDto review) {
         Review r = reviewService.updateReview(id, review.getRating(), review.getComment(), review.getReply());
@@ -73,6 +77,7 @@ public class ReviewController {
      * @param id the id of the review to delete.
      * @return void.
      */
+    @CrossOrigin(origins = "http://localhost:8087")
     @DeleteMapping("/review/{id}")
     public void deleteReview(@PathVariable int id) {
         reviewService.deleteReview(id);

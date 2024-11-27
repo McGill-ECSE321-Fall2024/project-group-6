@@ -41,7 +41,10 @@ public class CustomerService {
     @Transactional
     public Customer createCustomer(Person aPerson, String aShippingAddress) {
         Customer c = new Customer(aPerson, aShippingAddress);
-
+        Person customerPresenceCheck= personRepo.findPersonByEmail(aPerson.getEmail());
+        if(customerPresenceCheck!=null){
+            throw new GameShopException(HttpStatus.BAD_REQUEST, String.format("You already have an account, please sign in"));
+        }
         if(c.getPerson().getPassword().length()<10){
             throw new GameShopException(HttpStatus.LENGTH_REQUIRED, String.format("Password needs to be at least 10 characters long"));
         }

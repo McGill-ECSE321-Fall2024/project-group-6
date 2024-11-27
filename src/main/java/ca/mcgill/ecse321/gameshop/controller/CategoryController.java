@@ -24,6 +24,7 @@ public class CategoryController {
      * @param  c
      * @return DTO response
      */
+    @CrossOrigin(origins = "http://localhost:8087")
     @PostMapping("/categories")
     public CategoryResponseDto createCategory(@RequestBody CategoryRequestDto c) {
         Category createdCategory = categoryService.createCategory(c.getCategoryName());
@@ -38,6 +39,7 @@ public class CategoryController {
      * @param name
      * @return A DTO response containing the updated category's details.
      */
+    @CrossOrigin(origins = "http://localhost:8087")
     @PutMapping("/categories/{ID}")
     public CategoryResponseDto updateCategory(@PathVariable int ID, @RequestBody String name) {
         return new CategoryResponseDto(categoryService.updateCategory(ID, name));
@@ -50,6 +52,7 @@ public class CategoryController {
      * @param ID
      * @return A DTO response
      */
+    @CrossOrigin(origins = "http://localhost:8087")
     @GetMapping("/categories/{ID}")
     public CategoryResponseDto findCategoryById(@PathVariable int ID) {
         return new CategoryResponseDto(categoryService.findCategoryById(ID));
@@ -61,6 +64,7 @@ public class CategoryController {
      *
      * @return A DTO list of all categories.
      */
+    @CrossOrigin(origins = "http://localhost:8087")
     @GetMapping("/categories")
     public CategoryListDto getAllCategories() {
         List<CategoryResponseDto> categories = new ArrayList<>();
@@ -76,6 +80,7 @@ public class CategoryController {
      *
      * @param ID
      */
+    @CrossOrigin(origins = "http://localhost:8087")
     @DeleteMapping("/categories/{ID}")
     public void deleteCategory(@PathVariable int ID) {
         categoryService.deleteCategory(ID);

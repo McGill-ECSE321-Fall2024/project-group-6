@@ -4,13 +4,7 @@ package ca.mcgill.ecse321.gameshop.controller;
  * @author Joseph
  */
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import ca.mcgill.ecse321.gameshop.dto.ManagerRequestDto;
 import ca.mcgill.ecse321.gameshop.dto.ManagerResponseDto;
@@ -33,6 +27,7 @@ public class ManagerController {
      * @param managerToCreate
      * @return
      */
+    @CrossOrigin(origins = "http://localhost:8087")
         @PostMapping("/manager")
         public ManagerResponseDto createManager(@RequestBody ManagerRequestDto managerToCreate) {
             Person person= new Person(managerToCreate.getUsername(),managerToCreate.getEmail(),managerToCreate.getPassword(),managerToCreate.getPhone());
@@ -47,6 +42,7 @@ public class ManagerController {
      * @param mid
      * @return
      */
+    @CrossOrigin(origins = "http://localhost:8087")
         @GetMapping("/manager/{mid}")
         public ManagerResponseDto findManagerById(@PathVariable int mid) {
             Manager manager=managerService.findManagerById(mid);
@@ -58,7 +54,7 @@ public class ManagerController {
      * Delete a manager
      * @param mid
      */
-
+    @CrossOrigin(origins = "http://localhost:8087")
     @DeleteMapping("/manager/{mid}")
     public void deleteManager(@PathVariable int mid) {
         managerService.deleteManager(mid);
@@ -71,6 +67,7 @@ public class ManagerController {
      * @param manager
      * @return
      */
+    @CrossOrigin(origins = "http://localhost:8087")
     @PutMapping("/manager/{id}")
     public ManagerResponseDto updateManager(@PathVariable int id, @RequestBody ManagerRequestDto manager) {
 
