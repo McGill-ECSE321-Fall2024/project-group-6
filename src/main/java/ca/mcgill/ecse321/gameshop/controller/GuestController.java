@@ -4,12 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import ca.mcgill.ecse321.gameshop.dto.GuestListDto;
 import ca.mcgill.ecse321.gameshop.dto.GuestRequestDto;
@@ -23,18 +18,19 @@ public class GuestController {
     @Autowired
     private GuestService guestService;
 
+    @CrossOrigin(origins = "http://localhost:8087")
     @PostMapping("/guest")
     public GuestResponseDto createGuest(@RequestBody GuestRequestDto guestRequest) {
         Guest g = guestService.createGuest();
         return new GuestResponseDto(g);
     }
-
+    @CrossOrigin(origins = "http://localhost:8087")
     @GetMapping("/guest/{id}")
     public GuestResponseDto findGuestByID(@PathVariable int id) {
         Guest g = guestService.findGuestByID(id);
         return new GuestResponseDto(g);
     }
-    
+    @CrossOrigin(origins = "http://localhost:8087")
     @GetMapping("/guest")
     public GuestListDto getAllGuests() {
         List<GuestResponseDto> guests = new ArrayList<>();
@@ -45,7 +41,7 @@ public class GuestController {
         
         return new GuestListDto(guests);
     }
-
+    @CrossOrigin(origins = "http://localhost:8087")
     @DeleteMapping("/guest/{id}")
     public void deleteGuest(@PathVariable int id) {
         guestService.deleteGuest(id);

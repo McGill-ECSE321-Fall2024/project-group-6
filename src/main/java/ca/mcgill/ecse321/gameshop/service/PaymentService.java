@@ -1,8 +1,12 @@
 package ca.mcgill.ecse321.gameshop.service;
 
 import ca.mcgill.ecse321.gameshop.exception.GameShopException;
+import ca.mcgill.ecse321.gameshop.model.Customer;
 import ca.mcgill.ecse321.gameshop.model.Payment;
+import ca.mcgill.ecse321.gameshop.model.Person;
+import ca.mcgill.ecse321.gameshop.repository.CustomerRepository;
 import ca.mcgill.ecse321.gameshop.repository.PaymentRepository;
+import ca.mcgill.ecse321.gameshop.repository.PersonRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,18 +23,25 @@ public class PaymentService {
     @Autowired
     private PaymentRepository paymentRepo;
 
+    @Autowired
+    private CustomerRepository customerRepo;
+
+    @Autowired
+    private PersonRepository personRepo;
+
     /**
      * Creates a new payment and saves it in the repository.
      *
-     * @author Annabelle Huynh-Rondeau
+     * @author Annabelle Huynh-Rondeau and Joseph
      * @param aBillingAddress The billing address associated with the payment.
      * @param aCreditCardNb The credit card number associated with the payment.
      * @param aExpirationDate The expiration date of the credit card in MM/YY format.
      * @param aCvc The CVC code of the credit card.
      * @return The newly created Payment object.
+     *
      */
     @Transactional
-    public Payment createPayment(String aBillingAddress, long aCreditCardNb, String aExpirationDate, int aCvc) {
+    public Payment createPayment(String aBillingAddress, long aCreditCardNb, String aExpirationDate, int aCvc, Customer c) {
         // Check that billing address is valid
         if (aBillingAddress == null || aBillingAddress.trim().isEmpty()) {
             throw new GameShopException(HttpStatus.BAD_REQUEST, "Billing address cannot be empty");
@@ -58,9 +69,15 @@ public class PaymentService {
         if (cvcString.length() != 3) {
             throw new GameShopException(HttpStatus.BAD_REQUEST, "CVC must be 3 digits");
         }
-
+        if(c==null){
+            throw new GameShopException(HttpStatus.BAD_REQUEST, "Customer field is null");
+        }
+        Customer customerFromDb= customerRepo.findCustomerByRoleId(c.getRoleId());
+        if(customerFromDb==null){
+            throw new GameShopException(HttpStatus.NOT_FOUND, "Customer associated with this payment does not exist");
+        }
         // If all inputs are correct, create the new payment
-        Payment p = new Payment(aBillingAddress, aCreditCardNb, aExpirationDate, aCvc);
+        Payment p = new Payment(aBillingAddress, aCreditCardNb, aExpirationDate, aCvc, customerFromDb);
         return paymentRepo.save(p);
     }
 

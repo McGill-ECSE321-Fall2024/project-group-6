@@ -33,9 +33,14 @@ public class CustomerServiceTests {
     private CustomerRepository mockRepo;
     @Mock
     private PersonRepository repo;
+    @Mock
+    private PaymentRepository repoPayment;
 
     @InjectMocks
     private CustomerService service;
+
+    @InjectMocks
+    private PaymentService servicePayment;
 
     private static final String VALID_NAME = "Will";
     private static final String VALID_EMAIL = "william@hotmail.com";
@@ -766,8 +771,55 @@ public class CustomerServiceTests {
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Game can not be null", ex.getMessage());
     }
+    /**
+     * Test get all customer payment methods
+     */
+    @Test
+    public void testGetAllCustomerPaymentMethods() {
+        String billingAddress = "555 Sherbrooke West, Montreal";
+        long creditCardNb = 1111222233334444L;
+        String exp = "04/27";
+        int cvc = 345;
+
+        String billingAddress2 = "444 Sherbrooke West, Montreal";
 
 
+
+        //Arrange2
+        when(mockRepo.save(any(Customer.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
+
+        String email="qzyisky@render.com";
+        Person person= new Person(VALID_NAME, email,VALID_PASSWORD, VALID_PHONE);
+        Customer existingCustomer = service.createCustomer(person,VALID_ADDRESS);
+
+
+        when(repoPayment.save(any(Payment.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
+        when(mockRepo.findCustomerByRoleId(0)).thenReturn(existingCustomer);
+        // Act2
+        Payment createdPayment = servicePayment.createPayment(billingAddress, creditCardNb, exp, cvc, existingCustomer);
+        Payment createdPayment2=servicePayment.createPayment(billingAddress2, creditCardNb, exp, cvc, existingCustomer);
+
+        // Assert
+
+        assertEquals(billingAddress,createdPayment.getBillingAddress());
+        assertEquals(billingAddress2,createdPayment2.getBillingAddress());
+
+
+        //Arrange 3
+        when(mockRepo.findCustomerByRoleId(ID)).thenReturn(existingCustomer);
+        List<Payment> paymentList = Arrays.asList(createdPayment, createdPayment2);
+       when(repoPayment.findAll()).thenReturn(paymentList);
+
+
+        // Act3
+        List<Payment>paymentMethods = service.getCustomerPaymentMethods(ID);
+
+        // Assert3
+        assertNotNull(paymentMethods);
+        assertTrue(paymentMethods.contains(createdPayment));
+        assertTrue(paymentMethods.contains(createdPayment2));
+        verify(mockRepo, times(1)).save(any(Customer.class));
+    }
 
 
 

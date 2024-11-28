@@ -55,6 +55,11 @@ public class EmployeeService {
 
         Person person = new Person(username, emailAddress, password, phone);
         Employee employee = new Employee(person, true);
+        Person personCheckExistence= personrepo.findPersonByEmail(emailAddress);
+
+        if(personCheckExistence!=null){
+            throw new GameShopException(HttpStatus.BAD_REQUEST, String.format("This employee exists already"));
+        }
         if(password.length()<10){
             throw new GameShopException(HttpStatus.LENGTH_REQUIRED, String.format("Password needs to be at least 10 characters long"));
         }

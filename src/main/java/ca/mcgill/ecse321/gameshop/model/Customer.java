@@ -4,6 +4,8 @@ package ca.mcgill.ecse321.gameshop.model;/*PLEASE DO NOT EDIT THIS CODE*/
 import java.util.*;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 
@@ -29,16 +31,18 @@ public class Customer extends Role
 
   //Customer Associations
   @OneToMany
-  private List<Review> reviews;
-  @OneToMany
+  private List<Review> reviews = new ArrayList<>();
+  @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true)
+  @JsonIgnore
   private List<Payment> payments;
   @OneToMany
+  @JsonManagedReference
   private List<Command> commands;
   //------------------------
   // CONSTRUCTOR
   //------------------------
 public Customer(){
-
+  reviews = new ArrayList<Review>();
 }
   public Customer( Person aPerson, String aShippingAddress)
   {
@@ -346,7 +350,9 @@ public Customer(){
   public boolean addCommand(Command aCommand)
   {
     boolean wasAdded = false;
-    if (commands.contains(aCommand)) { return false; }
+    if(commands==null){
+      commands=new ArrayList<>();
+    }else if(commands.contains(aCommand)) { return false; }
     Customer existingCustomer = aCommand.getCustomer();
     boolean isNewCustomer = existingCustomer != null && !this.equals(existingCustomer);
     if (isNewCustomer)

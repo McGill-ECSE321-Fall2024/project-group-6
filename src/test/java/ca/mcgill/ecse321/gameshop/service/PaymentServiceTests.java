@@ -7,7 +7,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import ca.mcgill.ecse321.gameshop.exception.GameShopException;
+import ca.mcgill.ecse321.gameshop.model.Customer;
 import ca.mcgill.ecse321.gameshop.model.Payment;
+import ca.mcgill.ecse321.gameshop.repository.CustomerRepository;
 import ca.mcgill.ecse321.gameshop.repository.PaymentRepository;
 import ca.mcgill.ecse321.gameshop.dto.PaymentResponseDto;
 import ca.mcgill.ecse321.gameshop.dto.PaymentRequestDto;
@@ -24,12 +26,14 @@ import org.springframework.http.HttpStatus;
 public class PaymentServiceTests {
     @Mock
     private PaymentRepository repo;
+    @Mock
+    private CustomerRepository customerRepo;
 
     @InjectMocks
     private PaymentService service;
 
     /**
-     * @author Annabelle Huynh-Rondeau
+     * @author Annabelle Huynh-Rondeau and Joseph
      */
     @Test
     public void testCreateValidPayment() {
@@ -38,12 +42,16 @@ public class PaymentServiceTests {
         long creditCardNb = 1111222233334444L;
         String exp = "04/27";
         int cvc = 345;
+
+        Customer customer = new Customer();
+
         Payment payment = new Payment(billingAddress, creditCardNb, exp, cvc);
 
+        when(customerRepo.findCustomerByRoleId(customer.getRoleId())).thenReturn(customer);
         when(repo.save(any(Payment.class))).thenReturn(payment);
 
         // Act
-        Payment createdPayment = service.createPayment(billingAddress, creditCardNb, exp, cvc);
+        Payment createdPayment = service.createPayment(billingAddress, creditCardNb, exp, cvc, customer);
 
         // Assert
         assertNotNull(createdPayment);
@@ -52,6 +60,7 @@ public class PaymentServiceTests {
         assertEquals(exp, createdPayment.getExpirationDate());
         assertEquals(cvc, createdPayment.getCvc());
         verify(repo, times(1)).save(any(Payment.class));
+
     }
 
     @Test
@@ -61,10 +70,10 @@ public class PaymentServiceTests {
         long creditCardNb = 1111222233334444L;
         String exp = "04/27";
         int cvc = 345;
-
+        Customer customer = new Customer();
         // Act & Assert
         GameShopException exception = assertThrows(GameShopException.class, () -> {
-            service.createPayment(billingAddress, creditCardNb, exp, cvc);
+            service.createPayment(billingAddress, creditCardNb, exp, cvc,customer);
         });
         assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
         assertEquals("Billing address cannot be empty", exception.getMessage());
@@ -77,10 +86,10 @@ public class PaymentServiceTests {
         long creditCardNb = 12345L; // Invalid credit card number
         String exp = "04/27";
         int cvc = 345;
-
+        Customer customer = new Customer();
         // Act & Assert
         GameShopException exception = assertThrows(GameShopException.class, () -> {
-            service.createPayment(billingAddress, creditCardNb, exp, cvc);
+            service.createPayment(billingAddress, creditCardNb, exp, cvc,customer);
         });
         assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
         assertEquals("Credit card number must be 16 digits", exception.getMessage());
@@ -93,10 +102,10 @@ public class PaymentServiceTests {
         long creditCardNb = 1111222233334444L;
         String exp = "04/20"; // Invalid expiration date (in the past)
         int cvc = 345;
-
+        Customer customer = new Customer();
         // Act & Assert
         GameShopException exception = assertThrows(GameShopException.class, () -> {
-            service.createPayment(billingAddress, creditCardNb, exp, cvc);
+            service.createPayment(billingAddress, creditCardNb, exp, cvc,customer);
         });
         assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
         assertEquals("Expiration date must be in the future", exception.getMessage());
@@ -109,14 +118,49 @@ public class PaymentServiceTests {
         long creditCardNb = 1111222233334444L;
         String exp = "04/27";
         int cvc = 12; // Invalid CVC (only 2 digits)
-
+        Customer customer = new Customer();
         // Act & Assert
         GameShopException exception = assertThrows(GameShopException.class, () -> {
-            service.createPayment(billingAddress, creditCardNb, exp, cvc);
+            service.createPayment(billingAddress, creditCardNb, exp, cvc,customer);
         });
         assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
         assertEquals("CVC must be 3 digits", exception.getMessage());
     }
+
+    @Test
+    public void testCreatePaymentWithNotFoundCustomer() {
+        // Arrange
+        String billingAddress = "555 Sherbrooke West, Montreal";
+        long creditCardNb = 1111222233334444L;
+        String exp = "04/27";
+        int cvc = 121;
+        Customer customer = new Customer();
+
+        when(customerRepo.findCustomerByRoleId(0)).thenReturn(null);
+        // Act & Assert
+        GameShopException exception = assertThrows(GameShopException.class, () -> {
+            service.createPayment(billingAddress, creditCardNb, exp, cvc,customer);
+        });
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
+        assertEquals("Customer associated with this payment does not exist", exception.getMessage());
+    }
+
+    @Test
+    public void testCreatePaymentWithNullustomer() {
+        // Arrange
+        String billingAddress = "555 Sherbrooke West, Montreal";
+        long creditCardNb = 1111222233334444L;
+        String exp = "04/27";
+        int cvc = 121;
+
+        // Act & Assert
+        GameShopException exception = assertThrows(GameShopException.class, () -> {
+            service.createPayment(billingAddress, creditCardNb, exp, cvc,null);
+        });
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
+        assertEquals("Customer field is null", exception.getMessage());
+    }
+
 
     @Test
     public void testReadPaymentByValidId() {

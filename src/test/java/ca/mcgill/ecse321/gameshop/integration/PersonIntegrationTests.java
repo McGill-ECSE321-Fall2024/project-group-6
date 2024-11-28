@@ -1,13 +1,15 @@
 package ca.mcgill.ecse321.gameshop.integration;
 
-import ca.mcgill.ecse321.gameshop.GameshopApplication;
-import ca.mcgill.ecse321.gameshop.dto.PersonListDto;
-import ca.mcgill.ecse321.gameshop.dto.PersonRequestDto;
-import ca.mcgill.ecse321.gameshop.dto.PersonResponseDto;
-import ca.mcgill.ecse321.gameshop.repository.PersonRepository;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -17,7 +19,11 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import static org.junit.jupiter.api.Assertions.*;
+import ca.mcgill.ecse321.gameshop.GameshopApplication;
+import ca.mcgill.ecse321.gameshop.dto.PersonListDto;
+import ca.mcgill.ecse321.gameshop.dto.PersonRequestDto;
+import ca.mcgill.ecse321.gameshop.dto.PersonResponseDto;
+import ca.mcgill.ecse321.gameshop.repository.PersonRepository;
 /**
  * @author Mario
  */
@@ -111,6 +117,37 @@ public class PersonIntegrationTests {
     @SuppressWarnings("null")
     @Test
     @Order(5)
+    public void testLogin() {
+        // Arrange
+        PersonRequestDto request = new PersonRequestDto(VALID_NAME, VALID_EMAIL, VALID_PASSWORD, VALID_PHONE);
+
+        // Act
+        ResponseEntity<PersonResponseDto> response = client.postForEntity("/login", request, PersonResponseDto.class);
+
+        // Assert
+        assertNotNull(response.getBody());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(VALID_EMAIL, response.getBody().getEmail());
+    }
+
+    @Test
+    @Order(6)
+    public void testInvalidLogin() {
+        // Arrange
+        String invalidEmail = "wrongemail@mail.com";
+        PersonRequestDto request = new PersonRequestDto(VALID_NAME, invalidEmail, VALID_PASSWORD, VALID_PHONE);
+
+        // Act
+        ResponseEntity<PersonResponseDto> response = client.postForEntity("/login", request, PersonResponseDto.class);
+
+        // Assert
+        assertNotNull(response);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @SuppressWarnings("null")
+    @Test
+    @Order(7)
     public void testUpdatePersonByValidId() {
         // Arrange
         String updatedName = "UpdatedBob";
@@ -123,7 +160,7 @@ public class PersonIntegrationTests {
 
         // Act
         client.put(url, updatedPersonDto);
-    
+
         // Fetch updated person
         ResponseEntity<PersonResponseDto> response = client.getForEntity(url, PersonResponseDto.class);
 
@@ -136,7 +173,7 @@ public class PersonIntegrationTests {
     }
 
     @Test
-    @Order(6)
+    @Order(8)
     public void testUpdatePersonByInvalidId() {
         // Arrange
         String updatedName = "UpdatedBob";
@@ -156,7 +193,7 @@ public class PersonIntegrationTests {
     }
 
     @Test
-    @Order(7)
+    @Order(9)
     public void testDeletePersonByValidId() {
         // Arrange
         String url = String.format("/person/%d", this.id);
@@ -174,7 +211,7 @@ public class PersonIntegrationTests {
     }
 
     @Test
-    @Order(8)
+    @Order(10)
     public void testDeletePersonByInvalidId() {
         // Arrange
         String url = String.format("/person/%d", -1);
@@ -188,19 +225,19 @@ public class PersonIntegrationTests {
     }
 
     @Test
-    @Order(9)
+    @Order(11)
     public void testCreateInvalidPerson() {
         // Arrange
         String invalidName = "Pierre";
         String invalidEmail = "Pierre@gmail.com";
-        String invalidPassword = ""; // Invalid password
+        String invalidPassword = "";
         String invalidPhone = "123";
-    
+
         PersonRequestDto invalidPersonDto = new PersonRequestDto(invalidName, invalidEmail, invalidPassword, invalidPhone);
-    
+
         // Act
         ResponseEntity<String> response = client.postForEntity("/person", invalidPersonDto, String.class);
-    
+
         // Assert
         assertNotNull(response);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());

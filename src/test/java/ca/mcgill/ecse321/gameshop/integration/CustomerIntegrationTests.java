@@ -6,10 +6,9 @@ package ca.mcgill.ecse321.gameshop.integration;
 import ca.mcgill.ecse321.gameshop.GameshopApplication;
 import ca.mcgill.ecse321.gameshop.dto.*;
 import ca.mcgill.ecse321.gameshop.model.Category;
-import ca.mcgill.ecse321.gameshop.repository.CategoryRepository;
-import ca.mcgill.ecse321.gameshop.repository.CustomerRepository;
-import ca.mcgill.ecse321.gameshop.repository.GameRepository;
-import ca.mcgill.ecse321.gameshop.repository.PersonRepository;
+import ca.mcgill.ecse321.gameshop.model.Payment;
+import ca.mcgill.ecse321.gameshop.repository.*;
+import ca.mcgill.ecse321.gameshop.service.PaymentService;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
@@ -17,13 +16,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
+import static org.junit.jupiter.api.Assertions.*;
 
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = GameshopApplication.class)
@@ -41,22 +39,34 @@ public class CustomerIntegrationTests {
     private GameRepository gameRepo;
     @Autowired
     private CategoryRepository categoryRepo;
+    @Autowired
+    private  PaymentRepository paymentRepo;
+
 
     private static final String VALID_NAME = "Bob";
-    private static final String VALID_EMAIL = "jordanielson@mail.mcgill.ca";
+    private static final String VALID_EMAIL = "jordanielsonionio@mail.mcgill.ca";
     private static final String VALID_PASSWORD = "12345678910";
     private static final String VALID_PHONE = "+1(514)1234567";
-    private static final String VALID_ADDRESS = "123 Sherbrooke west";
-
-
+    private static final String VALID_ADDRESS = "678 Sherbrooke west";
+    private static final String VALID_BILLING_ADDRESS = "555 Sherbrooke West, Montreal";
+    private static final long VALID_CREDIT_CARD_NUMBER = 1234567812345678L;
+    private static final String VALID_EXPIRATION_DATE = "04/26";
+    private static final int VALID_CVC = 123;
+    private static final String VALID_BILLING_ADDRESS2 = "444 Sherbrooke West, Montreal";
+    private static final String VALID_BILLING_ADDRESS3 = "333 Sherbrooke West, Montreal";
     private int id;
+    private int id2;
     private int catID;
+    private int payment1Id;
+    private int payment2Id;
+    private int payment3Id;
 
     /**
      * Clear all used repositories after end of tests
      */
     @AfterAll
     public void clearDatabase() {
+        paymentRepo.deleteAll();
         repo.deleteAll();
         personRepo.deleteAll();
         gameRepo.deleteAll(); //to be used for game addition into cart
@@ -424,10 +434,106 @@ public class CustomerIntegrationTests {
 
     }
     /**
-     * delete the first customer with valid a id
+     * Tests creating a valid payment.
+     *
+     * @author Annabelle Huynh-Rondeau
+     * @return void
+     * @throws AssertionError if the response is invalid.
      */
     @Test
     @Order(16)
+    public void testCreateSecondValidCustomer() {
+        // Arrange
+
+        CustomerRequestDto request = new CustomerRequestDto(VALID_ADDRESS, VALID_NAME, "VALID_EMAIL2@gmail.com", VALID_PHONE, VALID_PASSWORD, null, null);
+
+        // Act
+        ResponseEntity<CustomerResponseDto> response = client.postForEntity("/customers", request, CustomerResponseDto.class);
+
+        // Assert
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        this.id2 = response.getBody().getCustomerId();
+
+        assertEquals(VALID_NAME, response.getBody().getUsername());
+        assertEquals("VALID_EMAIL2@gmail.com", response.getBody().getEmail());
+        assertEquals(VALID_PHONE, response.getBody().getPhone());
+        assertEquals(VALID_ADDRESS, response.getBody().getShippingAddress());
+    }
+
+
+    @Test
+    @Order(17)
+    public void testCreateValidPayments() {
+        // Arrange
+        String url1 = String.format("/payment/%d", this.id);
+        String url2 = String.format("/payment/%d", this.id2);
+
+
+        PaymentRequestDto request = new PaymentRequestDto(VALID_BILLING_ADDRESS, VALID_CREDIT_CARD_NUMBER, VALID_EXPIRATION_DATE, VALID_CVC);
+        PaymentRequestDto request2 = new PaymentRequestDto(VALID_BILLING_ADDRESS2, VALID_CREDIT_CARD_NUMBER, VALID_EXPIRATION_DATE, VALID_CVC);
+        PaymentRequestDto request3 = new PaymentRequestDto(VALID_BILLING_ADDRESS3, VALID_CREDIT_CARD_NUMBER, VALID_EXPIRATION_DATE, VALID_CVC);
+        // Act
+        ResponseEntity<PaymentResponseDto> response1 = client.postForEntity(url1, request, PaymentResponseDto.class);
+        ResponseEntity<PaymentResponseDto> response2 = client.postForEntity(url1, request2, PaymentResponseDto.class);
+        ResponseEntity<PaymentResponseDto> response3 = client.postForEntity(url2, request3, PaymentResponseDto.class);
+
+        // Assert
+        assertNotNull(response1);
+        assertEquals(HttpStatus.OK, response1.getStatusCode());
+        assertNotNull(response1.getBody());
+        this.payment1Id = response1.getBody().getPaymentId();
+        PaymentResponseDto createdPayment = response1.getBody();
+        assertEquals(VALID_BILLING_ADDRESS, createdPayment.getBillingAddress());
+        assertTrue(createdPayment.getPaymentId() > 0, "Response should have a positive ID.");
+
+        assertNotNull(response2);
+        assertEquals(HttpStatus.OK, response2.getStatusCode());
+        assertNotNull(response2.getBody());
+        this.payment2Id = response2.getBody().getPaymentId();
+        PaymentResponseDto createdPayment2 = response2.getBody();
+        assertEquals(VALID_BILLING_ADDRESS2, createdPayment2.getBillingAddress());
+
+        assertTrue(createdPayment2.getPaymentId() > 0, "Response should have a positive ID.");
+
+        assertNotNull(response3);
+        assertEquals(HttpStatus.OK, response3.getStatusCode());
+        assertNotNull(response3.getBody());
+        this.payment3Id = response3.getBody().getPaymentId();
+        PaymentResponseDto createdPayment3 = response3.getBody();
+        assertEquals(VALID_BILLING_ADDRESS3, createdPayment3.getBillingAddress());
+
+        assertTrue(createdPayment3.getPaymentId() > 0, "Response should have a positive ID.");
+    }
+
+
+
+    @Test
+    @Order(18)
+    public void testGetAllCustomerPaymentMethods() {
+        // Arrange
+        String url = String.format("/customers/%d/payments", this.id);
+
+        // Act
+        ResponseEntity<PaymentListDto> response = client.getForEntity(url, PaymentListDto.class);
+
+
+
+        // Assert
+        assertNotNull(response);
+        assertEquals(2,response.getBody().getPayments().size());
+        assertEquals(VALID_BILLING_ADDRESS,response.getBody().getPayments().get(0).getBillingAddress());
+        assertEquals(VALID_BILLING_ADDRESS2,response.getBody().getPayments().get(1).getBillingAddress());
+      //  paymentRepo.deleteAll();
+    }
+
+
+
+    /**
+     * delete the first customer with valid a id
+     */
+    @Test
+    @Order(19)
     public void testDeleteCustomerByValidId() {
         // Arrange
         String url = String.format("/customers/%d", this.id);
@@ -447,7 +553,7 @@ public class CustomerIntegrationTests {
      * delete the first customer with an invalid id
      */
     @Test
-    @Order(17)
+    @Order(20)
     public void testDeleteCustomerByInvalidId() {
         // Arrange
         String url = String.format("/customers/%d", -1);
@@ -463,7 +569,7 @@ public class CustomerIntegrationTests {
      * Invalid creation of a customer
      */
     @Test
-    @Order(18)
+    @Order(21)
     public void testCreateCustomerWithInvalidPassword() {
         // Arrange
         String email="zouzou@mcgill.ca";

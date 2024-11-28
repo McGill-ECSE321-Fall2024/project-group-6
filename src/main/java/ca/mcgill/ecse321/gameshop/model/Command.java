@@ -1,6 +1,8 @@
 /*PLEASE DO NOT EDIT THIS CODE*/
 /*This code was generated using the UMPLE 1.35.0.7523.c616a4dce modeling language!*/
 package ca.mcgill.ecse321.gameshop.model;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -13,7 +15,7 @@ import jakarta.persistence.ManyToOne;
  */
 // line 45 "model.ump"
 // line 128 "model.ump"
-  @Entity
+@Entity
 public class Command
 {
 
@@ -32,13 +34,14 @@ public class Command
   @ManyToOne
   private Payment payment;
   @ManyToOne
+  @JsonBackReference
   private Customer customer;
   //------------------------
   // CONSTRUCTOR
   //------------------------
-public Command (){
+  public Command (){
 
-}
+  }
   public Command( String aCommandDate, float aTotalPrice)
   {
     commandDate = aCommandDate;
