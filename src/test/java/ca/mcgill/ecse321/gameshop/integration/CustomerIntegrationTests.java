@@ -51,6 +51,7 @@ public class CustomerIntegrationTests {
 
     private int id;
     private int catID;
+    private int gameID;
 
     /**
      * Clear all used repositories after end of tests
@@ -114,7 +115,7 @@ public class CustomerIntegrationTests {
         // Assert
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        //this.id = response.getBody().getCustomerId();
+        this.gameID = response.getBody().getGameId();
 
         assertEquals("FC 24", response.getBody().getName());
 
@@ -267,7 +268,7 @@ public class CustomerIntegrationTests {
         HttpEntity<String> entity = new HttpEntity<>(gameToAdd, headers);
 
         // Act
-        ResponseEntity<CustomerResponseDto> response = client.exchange(url, HttpMethod.PUT, entity, CustomerResponseDto.class);
+        ResponseEntity<CustomerResponseDto> response = client.exchange(url, HttpMethod.PUT, new HttpEntity<>(gameRepo.findGameByGameId(this.gameID)), CustomerResponseDto.class);
 
         //Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -289,7 +290,7 @@ public class CustomerIntegrationTests {
         HttpEntity<String> entity = new HttpEntity<>(gameToAdd, headers);
 
         // Act
-        ResponseEntity<CustomerResponseDto> response = client.exchange(url, HttpMethod.PUT, entity, CustomerResponseDto.class);
+        ResponseEntity<CustomerResponseDto> response = client.exchange(url, HttpMethod.PUT, new HttpEntity<>(gameRepo.findGameByGameId(this.gameID)), CustomerResponseDto.class);
 
         assertNotNull(response);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
@@ -309,7 +310,7 @@ public class CustomerIntegrationTests {
         HttpEntity<String> entity = new HttpEntity<>(gameToAdd, headers);
 
         // Act
-        ResponseEntity<CustomerResponseDto> response = client.exchange(url, HttpMethod.PUT, entity, CustomerResponseDto.class);
+        ResponseEntity<CustomerResponseDto> response = client.exchange(url, HttpMethod.PUT, new HttpEntity<>(gameRepo.findGameByGameId(this.gameID)), CustomerResponseDto.class);
 
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -331,7 +332,7 @@ public class CustomerIntegrationTests {
         HttpEntity<String> entity = new HttpEntity<>(gameToAdd, headers);
 
         // Act
-        ResponseEntity<CustomerResponseDto> response = client.exchange(url, HttpMethod.PUT, entity, CustomerResponseDto.class);
+        ResponseEntity<CustomerResponseDto> response = client.exchange(url, HttpMethod.PUT, new HttpEntity<>(gameRepo.findGameByGameId(this.gameID)), CustomerResponseDto.class);
 
         assertNotNull(response);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
@@ -352,7 +353,7 @@ public class CustomerIntegrationTests {
         HttpEntity<String> entity = new HttpEntity<>(gameToAdd, headers);
 
         // Act
-        ResponseEntity<CustomerResponseDto> response = client.exchange(url, HttpMethod.PUT, entity, CustomerResponseDto.class);
+        ResponseEntity<CustomerResponseDto> response = client.exchange(url, HttpMethod.PUT, new HttpEntity<>(gameRepo.findGameByGameId(this.gameID)), CustomerResponseDto.class);
 
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -374,7 +375,7 @@ public class CustomerIntegrationTests {
         HttpEntity<String> entity = new HttpEntity<>(gameToAdd, headers);
 
         // Act
-        ResponseEntity<CustomerResponseDto> response = client.exchange(url, HttpMethod.PUT, entity, CustomerResponseDto.class);
+        ResponseEntity<CustomerResponseDto> response = client.exchange(url, HttpMethod.PUT, new HttpEntity<>(gameRepo.findGameByGameId(this.gameID)), CustomerResponseDto.class);
 
         assertNotNull(response);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
@@ -395,7 +396,7 @@ public class CustomerIntegrationTests {
         HttpEntity<String> entity = new HttpEntity<>(gameToAdd, headers);
 
         // Act
-        ResponseEntity<CustomerResponseDto> response = client.exchange(url, HttpMethod.PUT, entity, CustomerResponseDto.class);
+        ResponseEntity<CustomerResponseDto> response = client.exchange(url, HttpMethod.PUT, new HttpEntity<>(gameRepo.findGameByGameId(this.gameID)), CustomerResponseDto.class);
 
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -417,7 +418,7 @@ public class CustomerIntegrationTests {
         HttpEntity<String> entity = new HttpEntity<>(gameToAdd, headers);
 
         // Act
-        ResponseEntity<CustomerResponseDto> response = client.exchange(url, HttpMethod.PUT, entity, CustomerResponseDto.class);
+        ResponseEntity<CustomerResponseDto> response = client.exchange(url, HttpMethod.PUT, new HttpEntity<>(gameRepo.findGameByGameId(this.gameID)), CustomerResponseDto.class);
 
         assertNotNull(response);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());

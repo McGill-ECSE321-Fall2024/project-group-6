@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-
+@CrossOrigin(origins = "http://localhost:8088")
 @RestController
 public class CustomerController {
 
@@ -100,14 +100,14 @@ public class CustomerController {
     /**
      * Add a game to a customer's cart
      * @param cid
-     * @param name
+     * @param game
      * @return
      */
     @PutMapping("/customers/{cid}/cart")
-    public CustomerResponseDto addGameToCart(@PathVariable int cid, @RequestBody String name) {
+    public CustomerResponseDto addGameToCart(@PathVariable int cid, @RequestBody Game game) {
 
-            Game g = gameService.getGameByName(name);
-            Customer c = customerService.addGameToCustomerCart(cid, g);
+            //Game g = gameService.getGameByName(name);
+            Customer c = customerService.addGameToCustomerCart(cid, game);
             return new CustomerResponseDto(c);
         }
 
@@ -115,22 +115,23 @@ public class CustomerController {
     /**
      * remove a game from customer's cart
      * @param cid
-     * @param name
+     * @param game
      * @return
      */
     @PutMapping("/customers/{cid}/cart/game")
-    public CustomerResponseDto removeGameFromCart(@PathVariable int cid, @RequestBody String name) {
-        Game g = gameService.getGameByName(name);
-        Customer c = customerService.deleteGameFromCustomerCart(cid, g);
+    public CustomerResponseDto removeGameFromCart(@PathVariable int cid, @RequestBody Game game) {
+        //Game g = gameService.getGameByName(name);
+        Customer c = customerService.deleteGameFromCustomerCart(cid, game);
         return new CustomerResponseDto(c);
     }
 
     /**
      * Add a game to a customer's wishlist
      * @param cid
-     * @param name
+     * @param game
      * @return
      */
+    /*
     @PutMapping("/customers/{cid}/wishlist")
     public CustomerResponseDto addGameToWishlist(@PathVariable int cid, @RequestBody String name) {
         Game g = gameService.getGameByName(name);
@@ -138,16 +139,24 @@ public class CustomerController {
         return new CustomerResponseDto(c);
     }
 
+
+     */
+    @PutMapping("/customers/{cid}/wishlist")
+    public CustomerResponseDto addGameToWishlist(@PathVariable int cid, @RequestBody Game game) {
+        //Game g = gameService.getGameByName(name);
+        Customer c = customerService.addGameToCustomerWishList(cid, game);
+        return new CustomerResponseDto(c);
+    }
     /**
      * Remove a game from a customer wishlist
      * @param cid
-     * @param name
+     * @param game
      * @return
      */
     @PutMapping("/customers/{cid}/wishlist/game")
-    public CustomerResponseDto DeleteGameFromWishlist(@PathVariable int cid, @RequestBody String name) {
-        Game g = gameService.getGameByName(name);
-        Customer c = customerService.deleteGameFromCustomerWishList(cid, g);
+    public CustomerResponseDto DeleteGameFromWishlist(@PathVariable int cid, @RequestBody Game game) {
+        //Game g = gameService.getGameByName(name);
+        Customer c = customerService.deleteGameFromCustomerWishList(cid, game);
         return new CustomerResponseDto(c);
     }
 

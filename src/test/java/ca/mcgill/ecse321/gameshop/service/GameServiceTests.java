@@ -271,7 +271,6 @@ public class GameServiceTests {
         Game foundGame= service.getGameByName(name);
 
         assertNotNull(foundGame);
-        assertNotNull(foundGame);
         assertEquals(name,foundGame.getName());
         assertEquals(description,foundGame.getDescription());
         assertEquals(price,foundGame.getPrice());

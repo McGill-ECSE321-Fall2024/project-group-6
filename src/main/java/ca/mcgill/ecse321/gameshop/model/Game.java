@@ -4,6 +4,7 @@
 
 package ca.mcgill.ecse321.gameshop.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -256,8 +257,8 @@ public Game(String aName, String aDescription, float aPrice, int aStockQuantity,
 
   public List<Review> getReviews()
   {
-    List<Review> newReviews = Collections.unmodifiableList(reviews);
-    return newReviews;
+    //List<Review> newReviews = Collections.unmodifiableList(reviews);
+    return reviews;
   }
 
   public int numberOfReviews()

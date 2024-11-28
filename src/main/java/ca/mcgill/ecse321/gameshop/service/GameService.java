@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class GameService {
@@ -156,10 +155,9 @@ public class GameService {
     @Transactional
     public Game getGameByName(String name) {
         if(name==null){throw new GameShopException(HttpStatus.NOT_FOUND,String.format("Name cannot be empty."));}
-        List<Game> games = (List<Game>) gameRepository.findAll();
 
-        for (Game game : games) {
-            if (Objects.equals(game.getName(), name)) {
+        for (Game game : gameRepository.findAll()) {
+            if (game.getName()== name) {
                 return game;
 
             }

@@ -1,4 +1,5 @@
 <template>
+    
     <link href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.4/css/boxicons.min.css" rel="stylesheet">
     <header>
         <nav class="navbar">
@@ -65,6 +66,7 @@ import { RouterLink } from 'vue-router';
 export default {
     data() {
         return {
+            /*
             wishlist: [
                 {
                     id: 1,
@@ -91,32 +93,48 @@ export default {
                     stockQuantity: 10
                 }
             ],
+            */
+            customer: null,
+            wishlist: [],
             cart: [],
             showPopup: false,
             popupMessage: "",
         };
     },
     methods: {
-
-        async fetchGames() {
+        async fetchWishlist() {
             try {
-                const response = await axios.get('http://localhost:8080/customers');
-                this.games = response.data;
+                const response = await axios.get(`http://localhost:8080/customers/703`);
+                this.customer= response.data;
+                this.wishlist = this.customer.wishlist; 
+                console.log("Customer Wishlist:", this.wishlist);
             } catch (error) {
-                console.error('Error fetching games:', error);
+                console.error("Error fetching wishlist:", error);
             }
         },
+
         addToCart(game) {
-            this.cart.push(game);
-            this.wishlist = this.wishlist.filter(item => item.id !== game.id);
+            axios.put(`http://localhost:8080/customers/this.customer.id/cart`, { game })
+        .then(() => {
+            return axios.delete(`http://localhost:8080/customers/this.customer.id/wishlist`, { game } );
+        })
+        .then(() => {
+            this.customer.cart.push(game);
+            this.customer.wishlist = this.wishlist.filter(item => item.id !== game.id);
             this.popupMessage = `${game.name} was added to your cart.`;
             this.showPopup = true;
 
             setTimeout(() => {
                 this.showPopup = false;
             }, 3000);
+        })
+        .catch(error => {
+            console.error("Error updating wishlist and cart:", error);
+        });
         },
         removeFromWishlist(game) {
+            axios.delete(`http://localhost:8080/customers/this.customer.id/wishlist`, { game } )
+            .then(()=>{
             this.wishlist = this.wishlist.filter(item => item.id !== game.id);
             this.popupMessage = `${game.name} was removed from the wishlist.`;
             this.showPopup = true;
@@ -124,7 +142,9 @@ export default {
             setTimeout(() => {
                 this.showPopup = false;
             }, 3000);
+        });
         },
+        /*
         async addWishlistToCart() {
             this.cart.push(this.wishlist);
             this.wishlist = [];
@@ -135,8 +155,13 @@ export default {
                 this.showPopup = false;
             }, 3000);
         }
-    }
-}
+            */
+    },
+    mounted() {
+    this.fetchWishlist();
+  },
+    
+};
 </script>
 
 <style>
@@ -146,6 +171,7 @@ export default {
     text-decoration: none;
     list-style: none;
     font-family: "poppins";
+
 }
 
 
@@ -225,9 +251,9 @@ header img {
 
 .main-header h5 {
     font-size: 20px;
-    font-weight: 550px;
-    margin-top: 10px;
-    margin-bottom: 15px;
+    font-weight: bold;
+    padding-bottom: 10px;
+    padding-left: 5px;
 }
 
 .main-header h2 {
@@ -235,11 +261,12 @@ header img {
     font-size: 38px;
     width: 500px;
     margin-top: 10px;
-    margin-bottom: 15px;
+    
 }
 
 .main-header .a {
     margin-bottom: 30px;
+    
 }
 
 .main-header .btn {
@@ -259,9 +286,8 @@ header img {
 
 
 .wishlist .container {
-    padding: 200px;
+    padding: 150px 200px;
     align-items: center;
-
 }
 
 .wishlist,
@@ -280,7 +306,6 @@ html {
 .wishlist .returnCart .list {
     border-top: 1px solid #eee;
     padding: 20px 0;
-    ;
 }
 
 .returnCart .list .item img {
