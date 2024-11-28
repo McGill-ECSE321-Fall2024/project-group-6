@@ -137,6 +137,7 @@ export default {
   font-weight: 500;
   margin-left: 20px; /* Adjust spacing */
   text-decoration: none; /* Prevent underline */
+  align-items: center;
 }
 
 .navmenu {
@@ -161,7 +162,7 @@ export default {
 }
 
 .search-box {
-  margin-left: 40px; /* Adjust position */
+  margin-left: 20px; /* Adjust position */
   display: flex;
   align-items: center; /* Center search box vertically */
 }
@@ -177,13 +178,13 @@ export default {
 
 .iconAccount img {
   width: 50px; /* Slightly larger icon */
-  margin-left: 20px;
+  margin-left: 5px;
   cursor: pointer;
 }
 
 .iconAccount {
   display: flex;
-  align-items: right; /* Centers vertically */
+  align-items: center; /* Centers vertically */
 }
 
 /* Tasks Section */
