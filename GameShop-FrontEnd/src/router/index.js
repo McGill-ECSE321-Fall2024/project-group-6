@@ -1,19 +1,20 @@
 // Authors: Joseph, Marine
 
 import { createRouter, createWebHistory } from 'vue-router'
-import EventDetailsView from '../views/EventDetailsView.vue'
-import EventsView from '../views/EventsView.vue'
+
 import SignUp from '@/views/SignUp.vue'
 import SignIn from '@/views/SignIn.vue'
 import HomePageView from '@/views/HomePageView.vue'
-import EmployeeHome from '@/views/EmployeeHome.vue'   // Add employee Home component
+import Wishlist from '@/views/Wishlist.vue'
+import EmployeeHomePage from '@/views/EmployeeHomePage.vue'
+import EmployeeAccount from '@/views/EmployeeAccount.vue'
 
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',
+      path: '/SignUp',
       name: 'events',
       component: SignUp
     },
@@ -24,35 +25,42 @@ const router = createRouter({
     },
    
     {
-      path: '/hello',
-      name: 'home',
+      path: '/SignIn',
+      name: 'sign in',
       component: SignIn,
     },
     {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue'),
+      path: '/wishlist',
+      name: 'wishlist',
+      component: Wishlist,
     },
     {
-      path: '/employee',
-      name: 'employee-dashboard', // Ensure this matches SignIn.vue
-      component: EmployeeHome, // Points to EmployeeHome.vue
-      meta: { requiresAuth: true, role: 'employee' },
+      path: '/employeeHomePage/:employeeId/:loggedIn',
+      name: 'employee-homepage',
+      component: EmployeeHomePage,
+      props: true,
+      beforeEnter: (to, from, next) => {
+        if (localStorage.getItem('loggedIn') === 'true') {
+          next();
+        } else {
+          alert('Please sign in before accessing this page.');
+          next({ name: 'sign in' });
+        }
+      }
     },
+
     {
-      path: '/game/:id',
-      name: 'game-details',
-      component: () => import('@/views/GameDetails.vue'),
-      meta: { requiresAuth: true, role: 'employee' },
-    },
-    {
-      path: '/account',
-      name: 'account',
-      component: () => import('@/views/EmployeeAccount.vue'),
-      meta: { requiresAuth: true },
+      path: '/employeeAccount',
+      name: 'employee-account',
+      component: EmployeeAccount,
+      beforeEnter: (to, from, next) => {
+        if (localStorage.getItem('loggedIn') === 'true') {
+          next();
+        } else {
+          alert('Please sign in before accessing this page.');
+          next({ name: 'signin' });
+        }
+      },
     }
   ],
 })

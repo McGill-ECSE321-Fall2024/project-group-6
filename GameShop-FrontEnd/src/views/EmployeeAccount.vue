@@ -49,45 +49,48 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from "axios";
+import { RouterLink } from "vue-router";
 
 export default {
+  props: ["employeeId", "loggedIn"],
+
   data() {
     return {
       employee: {
-        username: '',
-        email: '',
-        password: '',
-        phone: '',
-        address: '',
+        name: "",
+        employeeId: 0,
+        role: "",
+        email: "",
+        phone: "",
       },
     };
   },
-  computed: {
-    employeeId() {
-      // Access employee ID directly from the Vuex store
-      return this.$store.state.userId;
-    },
-  },
   methods: {
+    isLoggedIn() {
+      return this.loggedIn;
+    },
     async fetchEmployeeDetails() {
       try {
-        const response = await axios.get(`http://localhost:8080/employee/${this.employeeId}`);
+        const response = await axios.get(
+          `http://localhost:8080/employees/${this.employeeId}`
+        );
         this.employee = response.data;
       } catch (error) {
-        console.error('Error fetching employee details:', error);
+        console.error("Error fetching employee details:", error);
+        alert("Unable to fetch employee details. Please try again later.");
       }
     },
     async saveChanges() {
       try {
-        const response = await axios.put(
-          `http://localhost:8080/employee/${this.employeeId}`,
+        await axios.put(
+          `http://localhost:8080/employees/${this.employeeId}`,
           this.employee
         );
-        alert('Your information has been updated.');
+        alert("Changes saved successfully!");
       } catch (error) {
-        console.error('Error saving changes:', error);
-        alert('Failed to update information.');
+        console.error("Error saving employee details:", error);
+        alert("Failed to save changes. Please try again.");
       }
     },
     goToEmployeeHome() {
@@ -97,12 +100,13 @@ export default {
       this.$router.push('/signin');
     },
   },
-  async created() {
-    if (!this.employeeId) {
-      this.$router.push('/signin'); // Redirect if no employee ID is found
-      return;
+  created() {
+    if (!this.isLoggedIn()) {
+      this.$router.push({ name: "sign in" });
+      alert("Please log in before accessing this page.");
+    } else {
+      this.fetchEmployeeDetails();
     }
-    await this.fetchEmployeeDetails();
   },
 };
 </script>
