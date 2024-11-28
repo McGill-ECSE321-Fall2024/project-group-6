@@ -6,7 +6,7 @@
         <input type="email" placeholder="Email" v-model="email" />
         <input type="password" placeholder="Password" v-model="password" />
         <input type="text" placeholder="Shipping Address" v-model="shippingAddress" />
-        <input type="text" placeholder="Phone Number" v-model="phoneNumber" />
+        <input type="text" placeholder="Phone Number" v-model="phone" />
         <button id="signup-btn" @click="signUp" v-bind:disabled="!isFormValid()">Sign Up</button>
         <button class="danger-btn" @click="clearInputs">Clear</button>
       </div>
@@ -28,13 +28,13 @@
         email: '',
         password: '',
         shippingAddress: '',
-        phoneNumber: '',
+        phone: '',
         errorMessage: ''
       };
     },
     methods: {
       isFormValid() {
-        return this.username && this.email && this.password && this.shippingAddress && this.phoneNumber;
+        return this.username && this.email && this.password && this.shippingAddress && this.phone;
       },
       async signUp() {
         try {
@@ -42,23 +42,28 @@
             shippingAddress: this.shippingAddress,
             username: this.username,
             email: this.email,
-            phoneNumber: this.phoneNumber,
+            phone: this.phone,
             password: this.password,
             cart: null,         
             wishlist: null      
           };
-          await axiosClient.post('/signup', newUser);
+          await axiosClient.post('/customers', newUser);
           this.clearInputs();
-        } catch (error) {
-          this.errorMessage = 'Error signing up';
-        }
+        }  catch (error) {
+      if (this.password.length<10) {
+        this.errorMessage = "Your password is less than 10 characters";
+      } else {
+        this.errorMessage = 'You are already a regisstered customer, use sign in';
+      }
+    }
+
       },
       clearInputs() {
         this.username = '';
         this.email = '';
         this.password = '';
         this.shippingAddress = '';
-        this.phoneNumber = '';
+        this.phone = '';
         this.errorMessage = '';
       }
     }

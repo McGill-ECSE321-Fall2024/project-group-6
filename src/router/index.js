@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+
 import SignUp from '@/views/SignUp.vue'
 import SignIn from '@/views/SignIn.vue'
 import HomePageView from '@/views/HomePageView.vue'
@@ -46,6 +47,7 @@ const router = createRouter({
       name: 'customer-home-page',
       component: CustomerMainPage,
     },
+    
   ],
 })
 
