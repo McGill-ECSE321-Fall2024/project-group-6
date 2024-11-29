@@ -186,6 +186,14 @@ public class CustomerService {
         if(game==null){
             throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Game can not be null"));
         }
+        List<Game> gamesCart = new ArrayList<>();
+        for (Game g: customerFromDB.getCart()){
+            if(g.getGameId()!=game.getGameId()){
+                gamesCart.add(g);
+            }
+        }
+        customerFromDB.setCart(gamesCart);
+        /*
         List<Game> gamesCart = customerFromDB.getCart();
         if (gamesCart == null) {
             gamesCart = new ArrayList<>();
@@ -193,6 +201,8 @@ public class CustomerService {
 
         gamesCart.remove(game);
         customerFromDB.setCart(gamesCart);
+
+         */
 
         return customerRepo.save(customerFromDB);
     }
@@ -238,12 +248,22 @@ public class CustomerService {
         if(game==null){
             throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Game can not be null"));
         }
+        List<Game> gamesWishlist = new ArrayList<>();
+        for (Game g: customerFromDB.getWishlist()){
+            if(g.getGameId()!=game.getGameId()){
+                gamesWishlist.add(g);
+            }
+        }
+        customerFromDB.setWishlist(gamesWishlist);
+        /*
         List<Game> gamesWishlist = customerFromDB.getWishlist();
         if (gamesWishlist == null) {
             gamesWishlist = new ArrayList<>();
         }
 
         gamesWishlist.remove(game);
+
+         */
 
 
         customerFromDB.setWishlist(gamesWishlist);

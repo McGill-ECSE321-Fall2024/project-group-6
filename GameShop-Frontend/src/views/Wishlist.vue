@@ -1,5 +1,5 @@
 <template>
-    
+
     <link href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.4/css/boxicons.min.css" rel="stylesheet">
     <header>
         <nav class="navbar">
@@ -38,7 +38,7 @@
                     <div class="list">
                         <div v-for="game in wishlist" :key="game.id" class="game-card">
                             <div class="item">
-                                <img :src="game.imageUrl">
+                                <img :src="game.photoURL">
                                 <div class="info">
                                     <div class="name">{{ game.name }}</div>
                                     <p><strong>Description:</strong> {{ game.description }}</p>
@@ -104,63 +104,60 @@ export default {
     methods: {
         async fetchWishlist() {
             try {
-                const response = await axios.get(`http://localhost:8080/customers/703`);
-                this.customer= response.data;
-                this.wishlist = this.customer.wishlist; 
-                console.log("Customer Wishlist:", this.wishlist);
+                const response = await axios.get(`http://localhost:8080/customers/1402`);
+                this.customer = response.data;
+                this.wishlist = this.customer.wishlist;
+
+
             } catch (error) {
                 console.error("Error fetching wishlist:", error);
             }
         },
 
-        addToCart(game) {
-            axios.put(`http://localhost:8080/customers/this.customer.id/cart`, { game })
-        .then(() => {
-            return axios.delete(`http://localhost:8080/customers/this.customer.id/wishlist`, { game } );
-        })
-        .then(() => {
-            this.customer.cart.push(game);
-            this.customer.wishlist = this.wishlist.filter(item => item.id !== game.id);
-            this.popupMessage = `${game.name} was added to your cart.`;
-            this.showPopup = true;
+        async addToCart(game) {
+            try {
+                // Make API call to add game to cart
+                const response = await axios.put(`http://localhost:8080/customers/${this.customer.id}/cart`,game );
 
-            setTimeout(() => {
-                this.showPopup = false;
-            }, 3000);
-        })
-        .catch(error => {
-            console.error("Error updating wishlist and cart:", error);
-        });
+                // Update local state with the updated cart
+                this.customer = response.data; // Assuming the response contains the updated customer object
+                this.wishlist = this.wishlist.filter(item => item.id !== game.id); // Remove from wishlist
+
+                // Display success message
+                this.popupMessage = `${game.name} was added to your cart.`;
+                this.showPopup = true;
+                setTimeout(() => (this.showPopup = false), 3000);
+
+                console.log("Game added to cart successfully:", response.data);
+            } catch (error) {
+                console.error("Error adding game to cart:", error);
+            }
         },
-        removeFromWishlist(game) {
-            axios.delete(`http://localhost:8080/customers/this.customer.id/wishlist`, { game } )
-            .then(()=>{
-            this.wishlist = this.wishlist.filter(item => item.id !== game.id);
-            this.popupMessage = `${game.name} was removed from the wishlist.`;
-            this.showPopup = true;
+        async removeFromWishlist(game) {
+            try {
+                // Remove game from the wishlist in backend
+                await axios.put(`http://localhost:8080/customers/${this.customer.id}/wishlist/game`,{game});
 
-            setTimeout(() => {
-                this.showPopup = false;
-            }, 3000);
-        });
-        },
-        /*
-        async addWishlistToCart() {
-            this.cart.push(this.wishlist);
-            this.wishlist = [];
-            this.popupMessage = `Wishlist was added to your cart.`;
-            this.showPopup = true;
+                // Update frontend state
+                this.wishlist = this.wishlist.filter(item => item.id !== game.id);
 
-            setTimeout(() => {
-                this.showPopup = false;
-            }, 3000);
+                // Show confirmation message
+                this.popupMessage = `${game.name} was removed from the wishlist.`;
+                this.showPopup = true;
+
+                // Hide popup after 3 seconds
+                setTimeout(() => {
+                    this.showPopup = false;
+                }, 3000);
+            } catch (error) {
+                console.error("Error removing game from wishlist:", error);
+            }
         }
-            */
     },
     mounted() {
-    this.fetchWishlist();
-  },
-    
+        this.fetchWishlist();
+    },
+
 };
 </script>
 
@@ -261,12 +258,12 @@ header img {
     font-size: 38px;
     width: 500px;
     margin-top: 10px;
-    
+
 }
 
 .main-header .a {
     margin-bottom: 30px;
-    
+
 }
 
 .main-header .btn {

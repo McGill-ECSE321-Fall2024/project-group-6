@@ -4,6 +4,7 @@ import SignIn from '@/views/SignIn.vue'
 import HomePageView from '@/views/HomePageView.vue'
 import Wishlist from '@/views/Wishlist.vue'
 import Checkout from '@/views/Checkout.vue'
+import Command from '@/views/Command.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -34,6 +35,12 @@ const router = createRouter({
       name: 'checkout',
       component: Checkout,
     },
+    {
+      path: '/command',
+      name: 'command',
+      component: Command,
+    },
+    
     {
       path: '/about',
       name: 'about',

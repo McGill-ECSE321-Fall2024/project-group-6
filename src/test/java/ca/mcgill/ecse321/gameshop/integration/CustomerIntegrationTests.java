@@ -253,9 +253,11 @@ public class CustomerIntegrationTests {
         assertEquals(email2, customers.get(1).getEmail());
 
     }
+
     /**
      * add game to the first customer's cart
      */
+
     @Test
     @Order(8)
     public void testAddGameToCustomerCart() {
@@ -427,6 +429,7 @@ public class CustomerIntegrationTests {
     /**
      * delete the first customer with valid a id
      */
+
     @Test
     @Order(16)
     public void testDeleteCustomerByValidId() {

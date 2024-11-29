@@ -30,7 +30,7 @@
                     </div>
                     <div v-for="game in cart" :key="game.id" class="game-card">
                         <div class="item">
-                            <img :src="game.imageUrl">
+                            <img :src="game.photoURL">
                             <div class="info">
                                 <div class="name">{{ game.name }}</div>
                                 <p><strong>Stock:</strong> {{ game.stockQuantity }} left</p>
@@ -142,6 +142,7 @@ import { RouterLink } from 'vue-router';
 export default {
     data() {
         return {
+            /*
             cart: [
                 {
                     id: 1,
@@ -168,6 +169,7 @@ export default {
                     stockQuantity: 10
                 }
             ],
+            */
             isAddPaymentVisible: false,
             payements: [
                 {
@@ -180,9 +182,15 @@ export default {
 
                 }
             ],
+            cart: [],
+            customer: null,
             selectedPayment: null,
             showPopup: false,
             popupMessage: "",
+            command: {
+                customer: this.customer
+    
+            }
         };
     },
     computed: {
@@ -194,12 +202,15 @@ export default {
         }
     },
     methods: {
-        async fetchGames() {
+        async fetchCart() {
             try {
-                const response = await axios.get('http://localhost:8080/customers');
-                this.games = response.data;
+                const response = await axios.get(`http://localhost:8080/customers/1402`);
+                this.customer= response.data;
+                this.cart = this.customer.cart; 
+               
+                
             } catch (error) {
-                console.error('Error fetching games:', error);
+                console.error("Error fetching cart:", error);
             }
         },
 
@@ -211,18 +222,23 @@ export default {
             }
         },
         removeFromCart(game) {
+            axios.put(`http://localhost:8080/customers/${this.customer.id}/cart/game`, { game } )
             this.cart = this.cart.filter(item => item.id !== game.id);
-            this.popupMessage = `${game.name} was removed from the cart.`;
+            this.popupMessage = `${game.name} was removed from the wishlist.`;
             this.showPopup = true;
 
             setTimeout(() => {
                 this.showPopup = false;
             }, 3000);
+        
         },
         checkout() {
-
+            axios.post(`http://localhost:8080/commands`, { command } )
         }
-    }
+    },
+    mounted() {
+    this.fetchCart();
+  },
 };
 </script>
 

@@ -13,7 +13,7 @@ html{
     height: 100%; /* Ensures the page's height is 100% of the viewport */
     margin: 0; /* Removes default margin */
     overflow: hidden; /* Prevents scrolling if not needed */
-    background-color: #fff;
+    
 }
 .app {
     height: 100%;
@@ -74,7 +74,11 @@ nav a:first-of-type {
 
   nav {
     text-align: left;
-    
+    margin-left: -1rem;
+    font-size: 1rem;
+
+    padding: 1rem 0;
+    margin-top: 1rem;
   }
 }
 </style>
