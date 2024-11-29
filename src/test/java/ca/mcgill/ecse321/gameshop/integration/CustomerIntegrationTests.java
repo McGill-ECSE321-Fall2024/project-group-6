@@ -6,6 +6,7 @@ package ca.mcgill.ecse321.gameshop.integration;
 import ca.mcgill.ecse321.gameshop.GameshopApplication;
 import ca.mcgill.ecse321.gameshop.dto.*;
 import ca.mcgill.ecse321.gameshop.model.Category;
+import ca.mcgill.ecse321.gameshop.model.Game;
 import ca.mcgill.ecse321.gameshop.model.Payment;
 import ca.mcgill.ecse321.gameshop.repository.*;
 import ca.mcgill.ecse321.gameshop.service.PaymentService;
@@ -60,7 +61,7 @@ public class CustomerIntegrationTests {
     private int payment1Id;
     private int payment2Id;
     private int payment3Id;
-
+    private int gameid;
     /**
      * Clear all used repositories after end of tests
      */
@@ -120,7 +121,7 @@ public class CustomerIntegrationTests {
 
         // Act
         ResponseEntity<GameResponseDto> response = client.postForEntity("/customers/test", request, GameResponseDto.class);
-
+        this.gameid=response.getBody().getGameId();
         // Assert
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -270,18 +271,16 @@ public class CustomerIntegrationTests {
     public void testAddGameToCustomerCart() {
         // Arrange
 
-        String url = String.format("/customers/%d/cart", this.id);
-        String gameToAdd = "FC 24";
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.TEXT_PLAIN);
-        HttpEntity<String> entity = new HttpEntity<>(gameToAdd, headers);
+        String url = String.format("/customers/%d/cart/add/%d", this.id,this.gameid);
+        Game gameToAdd = gameRepo.findGameByGameId(gameid);
+
 
         // Act
-        ResponseEntity<CustomerResponseDto> response = client.exchange(url, HttpMethod.PUT, entity, CustomerResponseDto.class);
+        ResponseEntity<CustomerResponseDto> response = client.exchange(url, HttpMethod.PUT, null, CustomerResponseDto.class);
 
         //Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(gameToAdd, response.getBody().getCart().get(0).getName());
+        assertEquals(gameToAdd.getName(), response.getBody().getCart().get(0).getName());
 
     }
     /**
@@ -292,14 +291,11 @@ public class CustomerIntegrationTests {
     public void testAddGameToCustomerCartWithInvalidId() {
         // Arrange
         // Arrange
-        String url = String.format("/customers/%d/cart", -1);
-        String gameToAdd = "FC 24";
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.TEXT_PLAIN);
-        HttpEntity<String> entity = new HttpEntity<>(gameToAdd, headers);
+        String url = String.format("/customers/%d/cart/add/%d", -1,this.gameid);
+
 
         // Act
-        ResponseEntity<CustomerResponseDto> response = client.exchange(url, HttpMethod.PUT, entity, CustomerResponseDto.class);
+        ResponseEntity<CustomerResponseDto> response = client.exchange(url, HttpMethod.PUT, null, CustomerResponseDto.class);
 
         assertNotNull(response);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
@@ -312,18 +308,14 @@ public class CustomerIntegrationTests {
     @Order(10)
     public void testAddGameToCustomerWishlist() {
         // Arrange
-        String url = String.format("/customers/%d/wishlist", this.id);
-        String gameToAdd = "FC 24";
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.TEXT_PLAIN);
-        HttpEntity<String> entity = new HttpEntity<>(gameToAdd, headers);
-
+        String url = String.format("/customers/%d/wishlist/add/%d", this.id,this.gameid);
+        Game gameToAdd=gameRepo.findGameByGameId(gameid);
         // Act
-        ResponseEntity<CustomerResponseDto> response = client.exchange(url, HttpMethod.PUT, entity, CustomerResponseDto.class);
+        ResponseEntity<CustomerResponseDto> response = client.exchange(url, HttpMethod.PUT, null, CustomerResponseDto.class);
 
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(gameToAdd, response.getBody().getWishlist().get(0).getName());
+        assertEquals(gameToAdd.getName(), response.getBody().getWishlist().get(0).getName());
 
     }
     /**
@@ -334,14 +326,11 @@ public class CustomerIntegrationTests {
     public void testAddGameToCustomerWishlistWithInvalidId() {
         // Arrange
         // Arrange
-        String url = String.format("/customers/%d/wishlist", -1);
-        String gameToAdd = "FC 24";
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.TEXT_PLAIN);
-        HttpEntity<String> entity = new HttpEntity<>(gameToAdd, headers);
+        String url = String.format("/customers/%d/wishlist/add/%d", -1,this.gameid);
+        Game gameToAdd = gameRepo.findGameByGameId(gameid);
 
         // Act
-        ResponseEntity<CustomerResponseDto> response = client.exchange(url, HttpMethod.PUT, entity, CustomerResponseDto.class);
+        ResponseEntity<CustomerResponseDto> response = client.exchange(url, HttpMethod.PUT, null, CustomerResponseDto.class);
 
         assertNotNull(response);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
@@ -355,14 +344,11 @@ public class CustomerIntegrationTests {
     public void testDeleteGameFromCustomerCart() {
         // Arrange
         // Arrange
-        String url = String.format("/customers/%d/cart/game", this.id);
-        String gameToAdd = "FC 24";
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.TEXT_PLAIN);
-        HttpEntity<String> entity = new HttpEntity<>(gameToAdd, headers);
+        String url = String.format("/customers/%d/cart/%d", this.id, this.gameid);
+
 
         // Act
-        ResponseEntity<CustomerResponseDto> response = client.exchange(url, HttpMethod.PUT, entity, CustomerResponseDto.class);
+        ResponseEntity<CustomerResponseDto> response = client.exchange(url, HttpMethod.PUT, null, CustomerResponseDto.class);
 
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -377,14 +363,10 @@ public class CustomerIntegrationTests {
     public void testDeleteGameFromCustomerCartWithInvalidId() {
         // Arrange
         // Arrange
-        String url = String.format("/customers/%d/cart/game", -1);
-        String gameToAdd = "FC 24";
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.TEXT_PLAIN);
-        HttpEntity<String> entity = new HttpEntity<>(gameToAdd, headers);
+        String url = String.format("/customers/%d/cart/game/%d", -1,this.gameid);
 
         // Act
-        ResponseEntity<CustomerResponseDto> response = client.exchange(url, HttpMethod.PUT, entity, CustomerResponseDto.class);
+        ResponseEntity<CustomerResponseDto> response = client.exchange(url, HttpMethod.PUT, null, CustomerResponseDto.class);
 
         assertNotNull(response);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
@@ -398,14 +380,10 @@ public class CustomerIntegrationTests {
     public void testDeleteGameFromCustomerWishlist() {
         // Arrange
         // Arrange
-        String url = String.format("/customers/%d/wishlist/game", this.id);
-        String gameToAdd = "FC 24";
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.TEXT_PLAIN);
-        HttpEntity<String> entity = new HttpEntity<>(gameToAdd, headers);
+        String url = String.format("/customers/%d/wishlist/%d", this.id,this.gameid);
 
         // Act
-        ResponseEntity<CustomerResponseDto> response = client.exchange(url, HttpMethod.PUT, entity, CustomerResponseDto.class);
+        ResponseEntity<CustomerResponseDto> response = client.exchange(url, HttpMethod.PUT, null, CustomerResponseDto.class);
 
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -420,14 +398,10 @@ public class CustomerIntegrationTests {
     public void testDeleteGameTFromCustomerWishlistWithInvalidId() {
         // Arrange
         // Arrange
-        String url = String.format("/customers/%d/wishlist/game", -1);
-        String gameToAdd = "FC 24";
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.TEXT_PLAIN);
-        HttpEntity<String> entity = new HttpEntity<>(gameToAdd, headers);
+        String url = String.format("/customers/%d/wishlist/%d", -1,this.gameid);
 
         // Act
-        ResponseEntity<CustomerResponseDto> response = client.exchange(url, HttpMethod.PUT, entity, CustomerResponseDto.class);
+        ResponseEntity<CustomerResponseDto> response = client.exchange(url, HttpMethod.PUT, null, CustomerResponseDto.class);
 
         assertNotNull(response);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());

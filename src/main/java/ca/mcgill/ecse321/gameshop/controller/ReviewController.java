@@ -8,6 +8,11 @@ import ca.mcgill.ecse321.gameshop.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import ca.mcgill.ecse321.gameshop.repository.CustomerRepository;
+import ca.mcgill.ecse321.gameshop.repository.GameRepository;
+import ca.mcgill.ecse321.gameshop.model.Customer;
+import ca.mcgill.ecse321.gameshop.model.Game;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +20,10 @@ import java.util.List;
 public class ReviewController {
     @Autowired
     private ReviewService reviewService;
+    @Autowired
+    private CustomerRepository customerRepo;
+    @Autowired
+    private GameRepository gameRepo;
 
     /**
      * Create the new review
@@ -23,9 +32,11 @@ public class ReviewController {
      * @return The new review.
      */
     @CrossOrigin(origins = "http://localhost:8087")
-    @PostMapping("/review")
-    public ReviewResponseDto createReview(@RequestBody ReviewRequestDto review) {
-        Review r = reviewService.createReview(review.getRating(), review.getComment());
+    @PostMapping("/review/{cId}/{gId}")
+    public ReviewResponseDto createReview(@PathVariable int cId, @PathVariable int gId, @RequestBody ReviewRequestDto review) {
+        Customer customer = customerRepo.findCustomerByRoleId(cId);
+        Game game = gameRepo.findGameByGameId(gId);
+        Review r = reviewService.createReview(review.getRating(), review.getComment(), customer, game);
         return new ReviewResponseDto(r);
     }
 

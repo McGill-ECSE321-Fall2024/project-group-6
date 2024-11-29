@@ -31,7 +31,7 @@ public class Customer extends Role
 
   //Customer Associations
   @OneToMany
-  private List<Review> reviews;
+  private List<Review> reviews = new ArrayList<Review>();;
   @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true)
   @JsonIgnore
   private List<Payment> payments;
@@ -42,7 +42,7 @@ public class Customer extends Role
   // CONSTRUCTOR
   //------------------------
 public Customer(){
-
+  reviews = new ArrayList<Review>();
 }
   public Customer( Person aPerson, String aShippingAddress)
   {
