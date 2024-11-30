@@ -345,6 +345,7 @@ public class EmployeeServiceTests {
         Employee existingEmployee= new Employee(aPerson,true);
 
         when(mockRepo.findEmployeeByRoleId(ID)).thenReturn(existingEmployee);
+        when(repo.findPersonByUserId(0)).thenReturn(existingEmployee.getPerson());
 
 
         service.deactivateEmployee(ID);

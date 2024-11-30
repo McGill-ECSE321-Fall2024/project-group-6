@@ -1,5 +1,6 @@
 package ca.mcgill.ecse321.gameshop.dto;
 
+import ca.mcgill.ecse321.gameshop.model.Customer;
 import ca.mcgill.ecse321.gameshop.model.Payment;
 
 /**
@@ -9,6 +10,7 @@ public class PaymentResponseDto {
     // Payment attributes
     private String billingAddress;
     private int paymentId;
+    private Customer customer;
 
     public PaymentResponseDto() {
     } //default constructor
@@ -16,6 +18,8 @@ public class PaymentResponseDto {
     public PaymentResponseDto(Payment payment) {
         this.billingAddress = payment.getBillingAddress();
         this.paymentId = payment.getPaymentId();
+        this.customer=payment.getCustomer();
+
     }
 
     //GETTERS
@@ -27,5 +31,7 @@ public class PaymentResponseDto {
     public int getPaymentId() {
         return paymentId;
     }
+
+
 }
 
