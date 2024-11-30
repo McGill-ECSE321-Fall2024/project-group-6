@@ -13,10 +13,14 @@
             <input type="search" v-model="searchQuery" class="search" placeholder="Search game..." />
             <i class="bx bx-search" @click="searchByName"></i>
           </div>
-          
-          <RouterLink to="/account" ><img src="../assets/person-circle.svg" class="account-img" ></RouterLink>
-        
+          </div>
+          <div class="nav-buttons">
+          <button @click="goToEmployeeAccount" ><img src="../assets/person-circle.svg" class="account-img" @click="goToEmployeeAccount"></button>
         </div>
+        <div class="nav-buttons">
+          <button @click="logout" class="logout-btn">Logout</button>
+        </div>
+        
       </nav>
     </header>
     <div class="container">
@@ -25,8 +29,8 @@
       <select v-model="selectedCategory" @change="filterByCategory">
         <option value="" disabled>Select Category</option>
         <option value="all">All games</option>
-        <option v-for="category in categories" :key="category.id" :value="category.name">
-          {{ category.name }}
+        <option v-for="category in categories" :key="category.id" :value="`${category.name}`" class="options">
+          {{ `${category.name} (${category.id})` }}
         </option>
       </select>
     </aside>
@@ -42,6 +46,7 @@
             <p class="game-price"><strong>Price:</strong> ${{ game.price }}</p>
             <p class="game-description"><strong>Description:</strong> {{ game.description }}</p>
             <p class="game-stock"><strong>Stock:</strong> {{ game.stockQuantity }} left</p>
+            <button class="btn-danger" @click="viewGameDetails(game.gameId)">Edit</button>
           </div>
         </div>
       </main>
@@ -63,6 +68,7 @@
   <script>
 import axios from "axios";
 import { RouterLink } from 'vue-router';
+import router from '@/router';
 
 export default {
 props: ['employeeId', 'loggedIn'],
@@ -113,7 +119,12 @@ props: ['employeeId', 'loggedIn'],
       }
     },
     viewGameDetails(gameId) {
-      this.$router.push({ name: "game-details", params: { gameId: gameId } });
+      this.$router.push({ name: "employee-gamepage", 
+      params: { 
+        gameId: gameId,
+        employeeId:this.employeeID,
+        loggedIn:true
+      } });
     },
 
     async searchByName() {
@@ -130,13 +141,28 @@ props: ['employeeId', 'loggedIn'],
         await this.fetchGames();
       } else {
         try {
+          console.log(this.selectedCategory);
           const response = await axios.get(`http://localhost:8080/games/category/${this.selectedCategory}`);
           this.games = response.data["games"];
         } catch (error) {
           console.error('Error filtering games by category:', error);
         }
       }
-    }
+    },
+    async goToEmployeeAccount(){
+      router.push({
+          name: 'employee-account',
+          params: {
+            employeeId: this.employeeID,
+            loggedIn: true
+          }
+          
+        });
+        
+    },
+    logout() {
+        this.$router.push('/SignIn');
+      }
   },
   created() {
     
@@ -192,13 +218,6 @@ props: ['employeeId', 'loggedIn'],
   
 }
 
-.navmenu img {
-    align-items: center;
-    position: relative;
-    margin: 10px;
-    display: inline-block;
-    height: 40px;
-}
 
 .search-box .search {
   width: 600px;
@@ -349,12 +368,64 @@ transition: transform 0.2s;
   font-weight: bold;
 }
 .account-img {
-    padding-top: 10px;
+    padding-top: -2px;
    
 }
 #catalog-title{
     padding-bottom: 20px;
 }
+.nav-buttons {
 
+    display: flex;
+    align-items: center;
+  }
   
+  .nav-buttons button {
+    background-color: #0056b3;
+    color: #0056b3;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;  /* Centers the text horizontally */
+    height: 50px;  /* Set a fixed height to ensure vertical centering */
+    display: flex;
+    justify-content: center;
+    align-items: center;  /* Centers the button text vertically */
+  }
+  .nav-buttons button img{
+    padding-bottom: 15px;
+    padding-left: 10px;
+    
+  }
+  
+  .nav-buttons button:hover {
+    background-color: #eff2f1;
+  }
+  .nav-buttons{
+    padding: 10px;
+  }
+
+  .btn-danger {
+    background-color: yellow; /* Yellow background */
+    color: black; /* Black text */
+    border: none; /* No border */
+    padding: 10px 20px; /* Padding for the button */
+    border-radius: 5px; /* Rounded corners */
+    font-size: 16px; /* Font size */
+    cursor: pointer; /* Pointer cursor on hover */
+    font-weight: bold; /* Bold text */
+    transition: background-color 0.3s; /* Smooth transition */
+  }
+
+  .btn-danger:hover {
+    background-color: darkorange; /* Darker shade on hover */
+  }
+  .options{
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  color: black;
+}
+
   </style>

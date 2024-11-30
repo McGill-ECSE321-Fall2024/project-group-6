@@ -5,6 +5,9 @@ import SignIn from '@/views/SignIn.vue'
 import HomePageView from '@/views/HomePageView.vue'
 import Wishlist from '@/views/Wishlist.vue'
 import EmployeeHomePage from '@/views/EmployeeHomePage.vue'
+import EmployeeAccount from '@/views/EmployeeAccount.vue'
+import CustomerAccount from '@/views/CustomerAccount.vue'
+import EmployeeGameView from '@/views/EmployeeGameView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -30,6 +33,28 @@ const router = createRouter({
       name: 'wishlist',
       component: Wishlist,
     },
+    {
+      path: '/employeeAccount/:employeeId/:loggedIn',
+      name: 'employee-account',
+      component: EmployeeAccount,
+      
+      props:true,
+      
+      beforeEnter: (to, from, next) => {
+        if (localStorage.getItem('loggedIn') === 'true') {
+          next();
+        } else {
+          alert('Please sign in before accessing this page.');
+          next({ name: 'sign in' });
+        }
+      }
+      
+    },
+    {
+      path: '/customerAccount',
+      name: 'customer-account',
+      component: CustomerAccount,
+    },
       {
         path: '/employeeHomePage/:employeeId/:loggedIn',
         name: 'employee-homepage',
@@ -43,6 +68,21 @@ const router = createRouter({
             next({ name: 'sign in' });
           }
         }
+      },
+      {
+        path: '/employeeGamePage/:employeeId/:loggedIn/:gameId',
+        name: 'employee-gamepage',
+        component: EmployeeGameView,
+        props: true,
+        beforeEnter: (to, from, next) => {
+          if (localStorage.getItem('loggedIn') === 'true') {
+            next();
+          } else {
+            alert('Please sign in before accessing this page.');
+            next({ name: 'sign in' });
+          }
+        }
+          
       }
       
 
