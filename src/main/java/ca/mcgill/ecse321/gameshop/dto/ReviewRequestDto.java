@@ -20,7 +20,6 @@ public class ReviewRequestDto {
         this.comment = aComment;
         this.amountOfLikes = aAmountOfLikes;
         this.reply = aReply;
-
     }
 
     public Review.StarRating getRating() {

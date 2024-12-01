@@ -2,10 +2,10 @@ package ca.mcgill.ecse321.gameshop.service;
 
 
 import ca.mcgill.ecse321.gameshop.exception.GameShopException;
-import ca.mcgill.ecse321.gameshop.model.Category;
-import ca.mcgill.ecse321.gameshop.model.Game;
+import ca.mcgill.ecse321.gameshop.model.*;
 import ca.mcgill.ecse321.gameshop.repository.CategoryRepository;
 import ca.mcgill.ecse321.gameshop.repository.GameRepository;
+import ca.mcgill.ecse321.gameshop.repository.ReviewRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -16,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -32,6 +33,8 @@ public class GameServiceTests {
     private GameRepository repo;
     @Mock
     private CategoryRepository catRepo;
+    @Mock
+    private ReviewRepository reviewRepo;
     @InjectMocks
     private GameService service;
 
@@ -343,8 +346,57 @@ public class GameServiceTests {
         assertEquals("The game does not exist in the database",ex.getMessage());
     }
 
+    /**
+     * Test get all customer payment methods
+     */
+    @Test
+    public void testGetGameReviews() {
+        // Test Data
+        Review.StarRating rating1 = Review.StarRating.FiveStar;
+        Review.StarRating rating2 = Review.StarRating.FourStar;
+        Review.StarRating rating3 = Review.StarRating.TwoStar;
 
+        String comment1 = "Amazing game!";
+        String comment2 = "Great graphics!";
+        String comment3 = "Not my type of game.";
 
+        Customer customer = new Customer();
+        customer.setRoleId(1); // Setting customer ID
+
+        Game createdGame = new Game(name, description, price, stock, photo, categories);
+        createdGame.setGameId(ID); // Setting the game's ID to match the test scenario
+
+        Game otherGame = new Game(newName, newDescription, newPrice, newStock, newPhoto, categories);
+        otherGame.setGameId(99); // An unrelated game ID for negative testing
+
+        Review review1 = new Review(rating1, comment1, customer.getRoleId());
+        review1.setGame(createdGame);
+
+        Review review2 = new Review(rating2, comment2, customer.getRoleId());
+        review2.setGame(createdGame);
+
+        Review review3 = new Review(rating3, comment3, customer.getRoleId());
+        review3.setGame(otherGame);
+
+        List<Review> allReviews = new ArrayList<>(List.of(review1, review2, review3));
+
+        // Mocking Behavior
+        when(repo.findGameByGameId(ID)).thenReturn(createdGame);
+        when(reviewRepo.findAll()).thenReturn(allReviews);
+
+        // Act
+        List<Review> gameReviews = service.getGameReviews(ID);
+
+        // Assert
+        assertNotNull(gameReviews);
+        assertEquals(2, gameReviews.size()); // Only reviews linked to the specified game
+        assertTrue(gameReviews.contains(review1));
+        assertTrue(gameReviews.contains(review2));
+        assertFalse(gameReviews.contains(review3)); // Reviews for other games should not be included
+
+        verify(repo, times(1)).findGameByGameId(ID);
+        verify(reviewRepo, times(1)).findAll();
+    }
 
 
 }

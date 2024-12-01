@@ -101,4 +101,17 @@ public class EmployeeController {
         Employee e = employeeService.assignTask(eid,task);
         return new EmployeeResponseDto(e);
     }
+
+    /**
+     * Method to extract employeeId using userId, no need to integrate or unit test
+     * @param eid
+     * @return
+     */
+    @CrossOrigin(origins = "http://localhost:8087")
+    @GetMapping("/employees/id/{eid}")
+    public int getEmployeeEmployeeId(@PathVariable int eid) {
+       return employeeService.getEmployeeEmployeeId(eid);
+    }
+
 }
+

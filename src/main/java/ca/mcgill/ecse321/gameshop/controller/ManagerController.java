@@ -76,4 +76,14 @@ public class ManagerController {
 
         return new ManagerResponseDto(m);
     }
+    /**
+     * Method to extract managerId using userId, no need to integrate or unit test
+     * @param mid
+     * @return
+     */
+    @CrossOrigin(origins = "http://localhost:8087")
+    @GetMapping("/manager/id/{mid}")
+    public int getManagerManagerId(@PathVariable int mid) {
+        return managerService.getManagerManagerId(mid);
+    }
     }

@@ -8,6 +8,7 @@ import ca.mcgill.ecse321.gameshop.model.Customer;
 import ca.mcgill.ecse321.gameshop.model.Game;
 import ca.mcgill.ecse321.gameshop.model.Payment;
 import ca.mcgill.ecse321.gameshop.model.Person;
+import ca.mcgill.ecse321.gameshop.repository.GameRepository;
 import ca.mcgill.ecse321.gameshop.repository.PaymentRepository;
 import ca.mcgill.ecse321.gameshop.service.CustomerService;
 import ca.mcgill.ecse321.gameshop.service.GameService;
@@ -28,7 +29,8 @@ public class CustomerController {
     private GameService gameService;
     @Autowired
     private PaymentService paymentService;
-
+    @Autowired
+    private GameRepository gameRepo;
     /**
      * Create a customer
      * @param customerToCreate
@@ -113,15 +115,14 @@ public class CustomerController {
     /**
      * Add a game to a customer's cart
      * @param cid
-     * @param name
+     * @param gid
      * @return
      */
     @CrossOrigin(origins = "http://localhost:8087")
-    @PutMapping("/customers/{cid}/cart")
-    public CustomerResponseDto addGameToCart(@PathVariable int cid, @RequestBody String name) {
-
-            Game g = gameService.getGameByName(name);
-            Customer c = customerService.addGameToCustomerCart(cid, g);
+    @PutMapping("/customers/{cid}/cart/add/{gid}")
+    public CustomerResponseDto addGameToCart(@PathVariable int cid, @PathVariable int gid) {
+            Game game= gameRepo.findGameByGameId(gid);
+            Customer c = customerService.addGameToCustomerCart(cid, game);
             return new CustomerResponseDto(c);
         }
 
@@ -129,13 +130,13 @@ public class CustomerController {
     /**
      * remove a game from customer's cart
      * @param cid
-     * @param name
+     * @param gid
      * @return
      */
     @CrossOrigin(origins = "http://localhost:8087")
-    @PutMapping("/customers/{cid}/cart/game")
-    public CustomerResponseDto removeGameFromCart(@PathVariable int cid, @RequestBody String name) {
-        Game g = gameService.getGameByName(name);
+    @PutMapping("/customers/{cid}/cart/{gid}")
+    public CustomerResponseDto removeGameFromCart(@PathVariable int cid, @PathVariable int gid) {
+        Game g= gameRepo.findGameByGameId(gid);
         Customer c = customerService.deleteGameFromCustomerCart(cid, g);
         return new CustomerResponseDto(c);
     }
@@ -143,27 +144,28 @@ public class CustomerController {
     /**
      * Add a game to a customer's wishlist
      * @param cid
-     * @param name
+     * @param gid
      * @return
      */
     @CrossOrigin(origins = "http://localhost:8087")
-    @PutMapping("/customers/{cid}/wishlist")
-    public CustomerResponseDto addGameToWishlist(@PathVariable int cid, @RequestBody String name) {
-        Game g = gameService.getGameByName(name);
-        Customer c = customerService.addGameToCustomerWishList(cid, g);
+    @PutMapping("/customers/{cid}/wishlist/add/{gid}")
+    public CustomerResponseDto addGameToWishlist(@PathVariable int cid, @PathVariable int gid) {
+        Game game= gameRepo.findGameByGameId(gid);
+        Customer c = customerService.addGameToCustomerWishList(cid, game);
         return new CustomerResponseDto(c);
     }
 
     /**
      * Remove a game from a customer wishlist
      * @param cid
-     * @param name
+     * @param gid
      * @return
      */
     @CrossOrigin(origins = "http://localhost:8087")
-    @PutMapping("/customers/{cid}/wishlist/game")
-    public CustomerResponseDto DeleteGameFromWishlist(@PathVariable int cid, @RequestBody String name) {
-        Game g = gameService.getGameByName(name);
+    @PutMapping("/customers/{cid}/wishlist/{gid}")
+    public CustomerResponseDto deleteGameFromWishlist(@PathVariable int cid, @PathVariable int gid) {
+
+        Game g= gameRepo.findGameByGameId(gid);
         Customer c = customerService.deleteGameFromCustomerWishList(cid, g);
         return new CustomerResponseDto(c);
     }
@@ -182,5 +184,15 @@ public class CustomerController {
         }
         return new PaymentListDto(payments);
 
+    }
+    /**
+     * Method to extract customerId using userId, no need to integrate or unit test
+     * @param cid
+     * @return
+     */
+    @CrossOrigin(origins = "http://localhost:8087")
+    @GetMapping("/customers/id/{cid}")
+    public int getCustomerCustomerId(@PathVariable int cid) {
+        return customerService.getCustomerCustomerId(cid);
     }
 }

@@ -12,7 +12,6 @@ public class ReviewResponseDto {
     private int reviewId;
     private String reply;
 
-
     public ReviewResponseDto() {
     }
 

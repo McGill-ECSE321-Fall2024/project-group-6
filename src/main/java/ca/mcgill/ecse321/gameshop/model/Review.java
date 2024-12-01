@@ -81,7 +81,6 @@ public Review(){
       throw new RuntimeException("Unable to create review due to game. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
     }
   }
-
   public Review(StarRating aRating, String aComment, int aAmountOfLikes, Customer aCustomer, Game aGame)
   {
     rating = aRating;
@@ -99,7 +98,6 @@ public Review(){
       throw new RuntimeException("Unable to create review due to game. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
     }
   }
-
   //------------------------
   // INTERFACE
   //------------------------
@@ -198,7 +196,7 @@ public Review(){
     {
       existingCustomer.removeReview(this);
     }
-    //customer.addReview(this);
+   // customer.addReview(this);
     wasSet = true;
     return wasSet;
   }

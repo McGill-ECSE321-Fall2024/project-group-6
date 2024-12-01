@@ -76,5 +76,19 @@ public class GameController {
         gameService.deleteGame(id);
     }
 
+    /**
+     * Controller method to get all the reviews  of a Game
+     * @param id
+     * @return
+     */
+    @CrossOrigin(origins = "http://localhost:8087")
+    @GetMapping("/games/{id}/reviews")
+    public ReviewListDto getAllGameReviews(@PathVariable int id) {
+        List<ReviewResponseDto> reviews = new ArrayList<>();
+        for (Review r: gameService.getGameReviews(id)) {
+            reviews.add(new ReviewResponseDto(r));
+        }
+        return new ReviewListDto(reviews);
+    }
 
 }
