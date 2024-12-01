@@ -50,13 +50,18 @@
               <h3>{{ employee.name }}</h3>
               <p>Email: {{ employee.email }}</p>
             </div>
-            <button @click="deleteEmployee(employee.id)" class="btn">Delete</button>
+            <div class="actions">
+              <button @click="deleteEmployee(employee.id)" class="btn">Delete</button>
+              <button @click="deactivateEmployee(employee.id)" class="btn">Deactivate</button>
+              <button @click="assignTask(employee.id)" class="btn">Assign Task</button>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
 </template>
+
 <script>
 import axios from 'axios';
 
@@ -103,6 +108,27 @@ export default {
       } catch (error) {
         console.error('Error deleting employee:', error);
         alert('Failed to delete employee.');
+      }
+    },
+    async deactivateEmployee(id) {
+      try {
+        await axios.patch(`http://localhost:8080/employees/${id}/deactivate`);
+        alert('Employee deactivated successfully!');
+        this.fetchEmployees(); // Refresh employee list
+      } catch (error) {
+        console.error('Error deactivating employee:', error);
+        alert('Failed to deactivate employee.');
+      }
+    },
+    async assignTask(id) {
+      const task = prompt('Enter the task to assign:');
+      if (!task) return; // No task provided
+      try {
+        await axios.post(`http://localhost:8080/employees/${id}/assign-task`, { task });
+        alert('Task assigned successfully!');
+      } catch (error) {
+        console.error('Error assigning task:', error);
+        alert('Failed to assign task.');
       }
     },
     logout() {
@@ -218,4 +244,16 @@ export default {
 .employee-card .info p {
   margin: 5px 0;
 }
+
+/* Employee Card Actions */
+.employee-card .actions {
+  display: flex;
+  gap: 10px;
+}
+
+.actions .btn {
+  flex: 1;
+  text-align: center;
+}
+
 </style>
