@@ -55,6 +55,11 @@ public class EmployeeService {
 
         Person person = new Person(username, emailAddress, password, phone);
         Employee employee = new Employee(person, true);
+        Person personCheckExistence= personrepo.findPersonByEmail(emailAddress);
+
+        if(personCheckExistence!=null){
+            throw new GameShopException(HttpStatus.BAD_REQUEST, String.format("This employee exists already"));
+        }
         if(password.length()<10){
             throw new GameShopException(HttpStatus.LENGTH_REQUIRED, String.format("Password needs to be at least 10 characters long"));
         }
@@ -82,10 +87,18 @@ public class EmployeeService {
     public Employee deactivateEmployee(int id) {
 
         Employee employeeFromDB = repo.findEmployeeByRoleId(id);
+
         if (employeeFromDB== null) {
             throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Employee with ID " + id + " does not exist."));
         }
+        int id2=employeeFromDB.getPerson().getUserId();
+        Person personFromDb= personrepo.findPersonByUserId(id2);
+        if (personFromDb== null) {
+            throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Employee with ID " + id + " does not exist."));
+        }
         employeeFromDB.setActivated(false);
+        personFromDb.setUsername("deactivated");
+        personrepo.save(personFromDb);
         return repo.save(employeeFromDB);
     }
 
@@ -154,7 +167,21 @@ public class EmployeeService {
     }
 
 
+    /**
+     * Service method to extract employeeId
+     * @param id
+     * @return
+     */
+    @Transactional
+    public int getEmployeeEmployeeId(int id) {
 
+        List <Employee> employees= (List<Employee>) repo.findAll();
 
-
+        for (int i=0; i< employees.size();i++){
+            if(employees.get(i).getPerson().getUserId()==id){
+                return employees.get(i).getRoleId();
+            }
+        }
+     return -1;
+    }
 }

@@ -1,11 +1,15 @@
 package ca.mcgill.ecse321.gameshop.service;
 
+import ca.mcgill.ecse321.gameshop.repository.CustomerRepository;
+import ca.mcgill.ecse321.gameshop.repository.GameRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import ca.mcgill.ecse321.gameshop.exception.GameShopException;
 import ca.mcgill.ecse321.gameshop.model.Review;
+import ca.mcgill.ecse321.gameshop.model.Customer;
+import ca.mcgill.ecse321.gameshop.model.Game;
 import ca.mcgill.ecse321.gameshop.repository.ReviewRepository;
 import jakarta.transaction.Transactional;
 
@@ -15,6 +19,12 @@ public class ReviewService {
     // Inject ReviewRepository to handle database operations
     @Autowired
     private ReviewRepository reviewRepo;
+
+    @Autowired
+    private CustomerRepository customerRepo;
+
+    @Autowired
+    private GameRepository gameRepo;
 
     /**
      * Creates a new review and saves it in the repository.
@@ -26,13 +36,28 @@ public class ReviewService {
      * @throws GameShopException If the rating is null.
      */
     @Transactional
-    public Review createReview(Review.StarRating aRating, String aComment) {
+    public Review createReview(Review.StarRating aRating, String aComment, Customer aCustomer, Game aGame) {
         // Check if rating is null
         if (aRating == null) {
             throw new GameShopException(HttpStatus.BAD_REQUEST, "Rating cannot be empty");
         }
+        if(aCustomer==null){
+            throw new GameShopException(HttpStatus.BAD_REQUEST, "Customer field is null");
+        }
+        Customer customerFromDb= customerRepo.findCustomerByRoleId(aCustomer.getRoleId());
+        if(customerFromDb==null){
+            throw new GameShopException(HttpStatus.NOT_FOUND, "Customer associated with this review does not exist");
+        }
+        if(aGame==null){
+            throw new GameShopException(HttpStatus.BAD_REQUEST, "Game field is null");
+        }
+        Game gameFromDb= gameRepo.findGameByGameId(aGame.getGameId());
 
-        Review r = new Review(aRating, aComment, 0);
+        if(gameFromDb==null){
+            throw new GameShopException(HttpStatus.NOT_FOUND, "Game associated with this review does not exist");
+        }
+        Review r = new Review(aRating, aComment, 0, aCustomer, aGame);
+
         // Set an empty reply if it's not initialized
         r.setReply(r.getReply() != null ? r.getReply() : "");
 
@@ -160,4 +185,5 @@ public class ReviewService {
 
         return reviewRepo.save(review);
     }
+
 }

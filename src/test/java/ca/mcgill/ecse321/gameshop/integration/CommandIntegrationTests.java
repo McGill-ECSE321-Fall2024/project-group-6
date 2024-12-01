@@ -2,6 +2,7 @@
 package ca.mcgill.ecse321.gameshop.integration;
 
 import ca.mcgill.ecse321.gameshop.dto.CommandListDto;
+import ca.mcgill.ecse321.gameshop.dto.CommandRequestDto;
 import ca.mcgill.ecse321.gameshop.dto.CommandResponseDto;
 import ca.mcgill.ecse321.gameshop.model.Category;
 import ca.mcgill.ecse321.gameshop.model.Customer;
@@ -58,6 +59,8 @@ public class CommandIntegrationTests {
 
     @AfterAll
     public void clearDatabase() {
+
+
         customerRepo.deleteAll();
         personRepo.deleteAll();
         gameRepo.deleteAll();
@@ -94,10 +97,11 @@ public class CommandIntegrationTests {
     public void testCreateValidCommand() {
         // Arrange
 
-        //CommandRequestDto command = new CommandRequestDto(timID);
-        String url = String.format("/command/%d", timID);
+        String url = String.format("/command/%d", this.timID);
+        CommandRequestDto request = new CommandRequestDto();
+
         // Act
-        ResponseEntity<CommandResponseDto> response = client.postForEntity(url,timID,CommandResponseDto.class);
+        ResponseEntity<CommandResponseDto> response = client.postForEntity(url, request, CommandResponseDto.class);
         // Assert
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -105,11 +109,13 @@ public class CommandIntegrationTests {
         ID = response.getBody().getCommandId();
         assertEquals(total, response.getBody().getTotalPrice());
         assertEquals(date.toString(), response.getBody().getCommandDate());
+
+        assertEquals(0,response.getBody().getCustomer().getCart().size());
     }
 
     @Test
     @Order(2)
-    public void testGetAllPeople() {
+    public void testGetAllCommands() {
         // Arrange
         // Act
         ResponseEntity<CommandListDto> response = client.getForEntity("/command", CommandListDto.class);
@@ -128,6 +134,8 @@ public class CommandIntegrationTests {
     public void testGetCommandById() {
         // Arrange
         String url = String.format("/command/%d", ID);
+
+        System.out.println(String.format("URL: %s", url));
 
         // Act
         ResponseEntity<CommandResponseDto> response = client.getForEntity(url, CommandResponseDto.class);

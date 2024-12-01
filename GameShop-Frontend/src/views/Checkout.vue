@@ -28,7 +28,7 @@
                     <div v-if="showPopup" class="popup">
                         {{ popupMessage }}
                     </div>
-                    <div v-for="game in cart" :key="game.id" class="game-card">
+                    <div v-for="game in customer.cart" :key="game.id" class="game-card">
                         <div class="item">
                             <img :src="game.photoURL">
                             <div class="info">
@@ -43,22 +43,23 @@
                         </div>
                     </div>
                 </div>
-                <div class="payement">
-                    <h1>Payement Method</h1>
+                <div class="payment">
+                    <h1>Payment Method</h1>
                     <div class="list">
-                        <div v-for="payement in payements" :key="payement.id" class="payement-card">
+                        <div v-for="payment in payments" :key="payment.paymentId" class="payment-card">
                             <div class="item">
-                                <input type="radio" id="payment-{{ payement.id }}" name="payment" :value="payement.id"
-                                    v-model="selectedPayment" @click="handleClick(payement.id)" />
+                                <input type="radio" id="payment-{{ payment.paymentId }}" name="payment"
+                                    :value="payment.paymentId" v-model="selectedPayment"
+                                    @click="handleClick(payment.paymentId)" />
 
                                 <img src="https://pngimg.com/d/credit_card_PNG24.png">
                                 <div class="info">
-                                    <div class="name">{{ payement.name }}</div>
-                                    <div class="number">Credit Card ending in {{ payement.number }}</div>
+                                    <div class="name">Credit Card ending in {{ payment.paymentNumber }}</div>
+                                    <div class="number">Billing Address {{ payment.billingAddress }}</div>
                                 </div>
                             </div>
                         </div>
-                        <div class="add-payement">
+                        <div class="add-payment">
                             <h2 @click="isAddPaymentVisible = !isAddPaymentVisible" style="cursor: pointer;">
                                 <span v-if="isAddPaymentVisible">▲</span>
                                 <span v-else>▼</span>
@@ -66,17 +67,18 @@
                             </h2>
                             <div class="form" v-show="isAddPaymentVisible">
                                 <div class="group">
-                                    <input type="text" name="number" id="number" placeholder="Enter Card">
+                                    <input type="number" v-model="newPayment.creditCardNumber" placeholder="Enter Card">
                                 </div>
 
                                 <div class="group">
-                                    <input type="text" name="exp" id="exp" placeholder="MMYY">
-                                    <input type="text" name="cvv" id="cvv" placeholder="CVV">
+                                    <input type="text" v-model="newPayment.expirationDate" placeholder="MM/YY">
+                                    <input type="number" v-model="newPayment.cvc" placeholder="CVC">
                                 </div>
                                 <div class="group">
-                                    <input type="text" name="address" id="address" placeholder="Billing address">
+                                    <input type="text" v-model="newPayment.billingAddress"
+                                        placeholder="Billing address">
                                 </div>
-                                <button @click=addPayement() class="savePayement">Save</button>
+                                <button @click=addPayment() class="savePayment">Save</button>
                             </div>
                         </div>
                     </div>
@@ -88,18 +90,18 @@
 
                 <div class="form">
                     <div class="group">
-                        <label for="name">Full Name</label>
-                        <input type="text" name="name" id="name">
+                        <label for="name">E-mail address</label>
+                        <input type="text" v-model="customer.email" name="name" id="name">
                     </div>
 
                     <div class="group">
                         <label for="phone">Phone number</label>
-                        <input type="text" name="number" id="number">
+                        <input type="text" v-model="customer.phone" name="number" id="number">
                     </div>
 
                     <div class="group">
                         <label for="address">Address</label>
-                        <input type="text" name="address" id="address">
+                        <input type="text" v-model="customer.shippingAddress" name="address" id="address">
                     </div>
 
                     <div class="group">
@@ -142,107 +144,179 @@ import { RouterLink } from 'vue-router';
 export default {
     data() {
         return {
-            /*
-            cart: [
-                {
-                    id: 1,
-                    name: 'Cyberpunk 2077',
-                    imageUrl: "https://upload.wikimedia.org/wikipedia/en/9/9f/Cyberpunk_2077_box_art.jpg",
-                    price: 59.99,
-                    description: 'An open-world, action-adventure story set in Night City.',
-                    stockQuantity: 20
-                },
-                {
-                    id: 2,
-                    name: 'Rainbow 6 Siege',
-                    imageUrl: 'https://upload.wikimedia.org/wikipedia/en/4/47/Tom_Clancy%27s_Rainbow_Six_Siege_cover_art.jpg',
-                    price: 39.99,
-                    description: 'A tactical, team-based FPS where players engage in strategic battles with unique operators.',
-                    stockQuantity: 15
-                },
-                {
-                    id: 3,
-                    name: 'Red Dead Redemption 2',
-                    imageUrl: 'https://upload.wikimedia.org/wikipedia/en/4/44/Red_Dead_Redemption_II.jpg',
-                    price: 49.99,
-                    description: 'An epic tale of life in America’s unforgiving heartland.',
-                    stockQuantity: 10
-                }
-            ],
-            */
-            isAddPaymentVisible: false,
-            payements: [
-                {
-                    id: 1,
-                    name: "Maissa Mehdi",
-                    number: "••••7654",
-                    date: "08/25",
-                    address: "3454 Milton street",
-                    cvc: 343,
 
-                }
-            ],
-            cart: [],
-            customer: null,
+            payments: [],
+            //Updating customer's info
+
+
+            //Adding a payment
+            isAddPaymentVisible: false,
+            newPayment: {
+                creditCardNumber: null,
+                expirationDate: "",
+                billingAddress: "",
+                cvc: null,
+            },
+            
+            command: {},
+            customer: {
+                shippingAddress: "",
+                username: "",
+                email: "",
+                phone: "",
+                customerId: null,
+                wishlist: [],
+                cart: []
+
+            },
             selectedPayment: null,
             showPopup: false,
             popupMessage: "",
-            command: {
-                customer: this.customer
-    
-            }
         };
     },
     computed: {
         totalQuantity() {
-            return this.cart.length;
+            return this.customer.cart.length;
         },
         totalPrice() {
-            return this.cart.reduce((total, game) => total + game.price, 0);
-        }
+            return this.customer.cart.reduce((total, game) => total + game.price, 0);
+        },
+
     },
     methods: {
         async fetchCart() {
             try {
-                const response = await axios.get(`http://localhost:8080/customers/1402`);
-                this.customer= response.data;
-                this.cart = this.customer.cart; 
-               
-                
+                const response = await axios.get(`http://localhost:8080/customers/1652`);
+                this.customer = response.data;
+                //this.newCustomer = JSON.parse(JSON.stringify(this.customer));
+
             } catch (error) {
                 console.error("Error fetching cart:", error);
             }
         },
+        async fetchPayments() {
+            try {
+                const response = await axios.get(`http://localhost:8080/customers/${this.customer.customerId}/payments`);
+                this.payments = response.data.payments;
 
-        handleClick(id) {
-            if (this.selectedPayment === id) {
-                this.selectedPayment = null;
-            } else {
-                this.selectedPayment = id;
+            } catch (error) {
+                console.error("Error fetching payments:", error);
             }
         },
-        removeFromCart(game) {
-            axios.put(`http://localhost:8080/customers/${this.customer.id}/cart/game`, { game } )
-            this.cart = this.cart.filter(item => item.id !== game.id);
-            this.popupMessage = `${game.name} was removed from the wishlist.`;
+
+        handleClick(paymentId) {
+            if (this.selectedPayment === paymentId) {
+                this.selectedPayment = null;
+            } else {
+                this.selectedPayment = paymentId;
+            }
+        },
+        async removeFromCart(game) {
+
+            await axios.put(`http://localhost:8080/customers/${this.customer.customerId}/cart/${game.gameId}`)
+
+            this.fetchCart();
+
+            this.popupMessage = `${game.name} was removed from the cart.`;
             this.showPopup = true;
 
             setTimeout(() => {
                 this.showPopup = false;
             }, 3000);
-        
+
         },
-        checkout() {
-            axios.post(`http://localhost:8080/commands`, { command } )
+
+        async addPayment() {
+            // Basic validation
+            const { creditCardNumber, expirationDate, billingAddress, cvc } = this.newPayment;
+            if (!creditCardNumber || !expirationDate || !billingAddress || !cvc) {
+                this.popupMessage = "Please fill in all fields.";
+                this.showPopup = true;
+                setTimeout(() => (this.showPopup = false), 3000);
+                return;
+            }
+
+            try {
+                //  add the new payment
+                await axios.post(
+                    `http://localhost:8080/payment/${this.customer.customerId}`, this.newPayment);
+
+                this.popupMessage = `this.newPayment `;
+                this.showPopup = true;
+                // Reset form fields
+
+                this.newPayment = {
+                    creditCardNumber: null,
+                    expirationDate: "",
+                    billingAddress: "",
+                    cvc: null,
+                };
+
+                this.isAddPaymentVisible = false;
+
+                this.fetchPayments();
+
+                this.popupMessage = "Payment method added successfully!";
+                this.showPopup = true;
+                setTimeout(() => (this.showPopup = false), 3000);
+            } catch (error) {
+                console.error("Error adding payment:", error);
+                this.popupMessage = "Failed to add payment method.";
+                this.showPopup = true;
+                setTimeout(() => (this.showPopup = false), 3000);
+            }
+        },
+
+        async checkout() {
+            //const { shippingAddress, phone, email } = this.newCustomer;
+            
+            if (this.selectedPayment == null) {
+                this.popupMessage = "Please select a payment method.";
+                this.showPopup = true;
+                setTimeout(() => (this.showPopup = false), 3000);
+                return;
+            }
+            if (!this.customer.cart || this.customer.cart.length === 0) {
+                this.popupMessage = "Cannot checkout with an empty cart";
+                this.showPopup = true;
+                setTimeout(() => (this.showPopup = false), 3000);
+                return;
+            }
+                try {
+                    await axios.put(`http://localhost:8080/customers/${this.customer.customerId}`, this.customer)
+                } catch (error) {
+                    console.error("Error updating customer's info:", error);
+                }
+            
+
+            //Update customer
+
+
+            //save cart
+            sessionStorage.setItem('cart', JSON.stringify(this.customer.cart));
+
+            try {
+                const response = await axios.post(`http://localhost:8080/command/${this.customer.customerId}`, this.command)
+                this.command = response.data;
+
+
+                this.$router.push(`/command/${this.command.commandId}/${this.selectedPayment}`);
+
+            } catch (error) {
+                console.error("Error creating command:", error);
+                alert("An error occurred while creating the command. Please try again.");
+            }
         }
     },
     mounted() {
-    this.fetchCart();
-  },
+        this.fetchCart().then(() => {
+            this.fetchPayments();
+        });
+    },
 };
 </script>
 
-<style>
+<style scoped>
 * {
     margin: 0;
     padding: 0;
@@ -452,7 +526,7 @@ h2 {
 
 }
 
-.payement .list .item {
+.payment .list .item {
     display: grid;
     grid-template-columns: 40px 1fr 300px;
     align-items: center;
@@ -463,7 +537,7 @@ h2 {
     border-radius: 20px;
 }
 
-.add-payement {
+.add-payment {
     display: grid;
     align-items: center;
     gap: 20px;
@@ -473,7 +547,7 @@ h2 {
     border-radius: 20px;
 }
 
-.add-payement .form {
+.add-payment .form {
     display: grid;
     grid-template-columns: 1fr;
     gap: 10px;
@@ -481,7 +555,7 @@ h2 {
 
 }
 
-.add-payement .form .group {
+.add-payment .form .group {
     display: grid;
     grid-template-columns: 1fr 1fr;
     /* Two equal columns */
@@ -489,12 +563,12 @@ h2 {
 
 }
 
-.add-payement .form .group:first-child {
+.add-payment .form .group:first-child {
     grid-template-columns: 1fr;
     /* Single column for Enter Card */
 }
 
-.add-payement .form input {
+.add-payment .form input {
     padding: 10px;
     border: 1px solid #ddd;
     color: #000000;
@@ -504,7 +578,7 @@ h2 {
     background-color: #eee;
 }
 
-.add-payement button {
+.add-payment button {
     padding: 10px;
     background-color: #3148de;
     color: white;
@@ -513,11 +587,5 @@ h2 {
     cursor: pointer;
     font-weight: bold;
     width: 100%;
-}
-
-.payement .list .item .name {
-    width: 100%;
-    font-size: large;
-    font-weight: bold;
 }
 </style>

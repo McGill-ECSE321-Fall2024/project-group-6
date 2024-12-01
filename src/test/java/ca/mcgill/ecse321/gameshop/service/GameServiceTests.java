@@ -271,6 +271,7 @@ public class GameServiceTests {
         Game foundGame= service.getGameByName(name);
 
         assertNotNull(foundGame);
+        assertNotNull(foundGame);
         assertEquals(name,foundGame.getName());
         assertEquals(description,foundGame.getDescription());
         assertEquals(price,foundGame.getPrice());
@@ -283,7 +284,7 @@ public class GameServiceTests {
 
         when(repo.findAll()).thenReturn(List.of(c));
 
-        List<Game> games = service.getGamesByCategory(category1);
+        List<Game> games = service.getGamesByCategory(category1.getCategoryName());
 
         List<Game> result = new ArrayList<>();
         result.add(c);

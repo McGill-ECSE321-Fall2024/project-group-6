@@ -34,6 +34,7 @@ public class GameResponseDto {
         this.toBeRemoved = game.getToBeRemoved();
         this.stockQuantity = game.getStockQuantity();
         this.categories=game.getCategories();
+
     }
 
     public boolean setName(String aName) {

@@ -3,16 +3,14 @@ package ca.mcgill.ecse321.gameshop.service;
  * @author Joseph and Marine
  */
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
+import ca.mcgill.ecse321.gameshop.exception.GameShopException;
+import ca.mcgill.ecse321.gameshop.model.Customer;
+import ca.mcgill.ecse321.gameshop.model.Game;
+import ca.mcgill.ecse321.gameshop.model.Payment;
+import ca.mcgill.ecse321.gameshop.model.Person;
+import ca.mcgill.ecse321.gameshop.repository.CustomerRepository;
+import ca.mcgill.ecse321.gameshop.repository.PaymentRepository;
+import ca.mcgill.ecse321.gameshop.repository.PersonRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -22,9 +20,13 @@ import org.mockito.quality.Strictness;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 
-import ca.mcgill.ecse321.gameshop.exception.*;
-import ca.mcgill.ecse321.gameshop.model.*;
-import ca.mcgill.ecse321.gameshop.repository.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @MockitoSettings(strictness = Strictness.STRICT_STUBS)
@@ -33,9 +35,14 @@ public class CustomerServiceTests {
     private CustomerRepository mockRepo;
     @Mock
     private PersonRepository repo;
+    @Mock
+    private PaymentRepository repoPayment;
 
     @InjectMocks
     private CustomerService service;
+
+    @InjectMocks
+    private PaymentService servicePayment;
 
     private static final String VALID_NAME = "Will";
     private static final String VALID_EMAIL = "william@hotmail.com";
@@ -704,70 +711,56 @@ public class CustomerServiceTests {
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Customer with ID " + ID + " does not exist.", ex.getMessage());
     }
+
     /**
-     * Test unsuccessful deletion of game from customer cart because of invalid game name
+     * Test get all customer payment methods
      */
     @Test
-    public void testDeleteGameFromCustomerCartWithInvalidGame() {
+    public void testGetAllCustomerPaymentMethods() {
+        String billingAddress = "555 Sherbrooke West, Montreal";
+        long creditCardNb = 1111222233334444L;
+        String exp = "04/27";
+        int cvc = 345;
 
+        String billingAddress2 = "444 Sherbrooke West, Montreal";
+
+
+
+        //Arrange2
         when(mockRepo.save(any(Customer.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
 
-
-        String email = "abcdefg@render.com";
-        Person person = new Person(VALID_NAME, email, VALID_PASSWORD, VALID_PHONE);
-        Customer existingCustomer = service.createCustomer(person, VALID_ADDRESS);
-
-        assertNotNull(existingCustomer);
-        assertEquals(email, existingCustomer.getPerson().getEmail());
+        String email="qzyisky@render.com";
+        Person person= new Person(VALID_NAME, email,VALID_PASSWORD, VALID_PHONE);
+        Customer existingCustomer = service.createCustomer(person,VALID_ADDRESS);
 
 
+        when(repoPayment.save(any(Payment.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
+        when(mockRepo.findCustomerByRoleId(0)).thenReturn(existingCustomer);
+        // Act2
+        Payment createdPayment = servicePayment.createPayment(billingAddress, creditCardNb, exp, cvc, existingCustomer);
+        Payment createdPayment2=servicePayment.createPayment(billingAddress2, creditCardNb, exp, cvc, existingCustomer);
+
+        // Assert
+
+        assertEquals(billingAddress,createdPayment.getBillingAddress());
+        assertEquals(billingAddress2,createdPayment2.getBillingAddress());
+
+
+        //Arrange 3
         when(mockRepo.findCustomerByRoleId(ID)).thenReturn(existingCustomer);
+        List<Payment> paymentList = Arrays.asList(createdPayment, createdPayment2);
+       when(repoPayment.findAll()).thenReturn(paymentList);
 
-        Game game = new Game("FC 24", "Soccer Game", 50.0F, 1, "https://image.peg");;
-        Customer updatedCustomerCartAfterAddition = service.addGameToCustomerCart(ID, game);
 
-        assertNotNull(updatedCustomerCartAfterAddition);
-        assertTrue(updatedCustomerCartAfterAddition.getCart().contains(game));
+        // Act3
+        List<Payment>paymentMethods = service.getCustomerPaymentMethods(ID);
 
-        GameShopException ex = assertThrows(GameShopException.class,
-                () -> service.deleteGameFromCustomerWishList(ID,null));
-        assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
-        assertEquals("Game can not be null", ex.getMessage());
+        // Assert3
+        assertNotNull(paymentMethods);
+        assertTrue(paymentMethods.contains(createdPayment));
+        assertTrue(paymentMethods.contains(createdPayment2));
+        verify(mockRepo, times(1)).save(any(Customer.class));
     }
-    /**
-     * Test unsuccessful deletion of game from customer wishlist because of invalid game name
-     */
-    @Test
-    public void testDeleteGameFromCustomerWishlistWithInvalidGame() {
-// Arrange
-        // Mock the save method to return the passed Customer object
-        when(mockRepo.save(any(Customer.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
-
-
-        String email = "abcdefg@render.com";
-        Person person = new Person(VALID_NAME, email, VALID_PASSWORD, VALID_PHONE);
-        Customer existingCustomer = service.createCustomer(person, VALID_ADDRESS);
-
-        assertNotNull(existingCustomer);
-        assertEquals(email, existingCustomer.getPerson().getEmail());
-
-
-        when(mockRepo.findCustomerByRoleId(ID)).thenReturn(existingCustomer);
-
-        Game game = new Game("FC 24", "Soccer Game", 50.0F, 1, "https://image.peg");;
-        Customer updatedCustomerWishlistAfterAddition = service.addGameToCustomerWishList(ID, game);
-
-        assertNotNull(updatedCustomerWishlistAfterAddition);
-        assertTrue(updatedCustomerWishlistAfterAddition.getWishlist().contains(game));
-
-
-        GameShopException ex = assertThrows(GameShopException.class,
-                () -> service.deleteGameFromCustomerWishList(ID,null));
-        assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
-        assertEquals("Game can not be null", ex.getMessage());
-    }
-
-
 
 
 

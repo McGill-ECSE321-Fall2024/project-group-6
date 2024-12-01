@@ -4,7 +4,6 @@
 
 package ca.mcgill.ecse321.gameshop.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -52,9 +51,9 @@ public class Game
   //------------------------
   // CONSTRUCTOR
   //------------------------
-public Game(){
+  public Game(){
 
-}
+  }
   public Game(String aName, String aDescription, float aPrice, int aStockQuantity,String aPhotoURL)
   {
     name = aName;
@@ -97,27 +96,27 @@ public Game(){
       throw new RuntimeException("Unable to create Game, must have at least 1 categories. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
     }
   }
-//(aName,aDescription,aPrice,aStockQuantity,aPhotoURL,tobeAdded,allCategories)
-public Game(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL, List<Category> allCategories)
-{
-  name = aName;
-  description = aDescription;
-  price = aPrice;
-  stockQuantity = aStockQuantity;
-  photoURL = aPhotoURL;
-  toBeAdded = true;
-
-  reviews = new ArrayList<Review>();
-
-
-  guests = new ArrayList<Guest>();
-  categories = new ArrayList<Category>();
-  boolean didAddCategories = setCategories(allCategories);
-  if (!didAddCategories)
+  //(aName,aDescription,aPrice,aStockQuantity,aPhotoURL,tobeAdded,allCategories)
+  public Game(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL, List<Category> allCategories)
   {
-    throw new RuntimeException("Unable to create Game, must have at least 1 categories. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
+    name = aName;
+    description = aDescription;
+    price = aPrice;
+    stockQuantity = aStockQuantity;
+    photoURL = aPhotoURL;
+    toBeAdded = true;
+
+    reviews = new ArrayList<Review>();
+
+
+    guests = new ArrayList<Guest>();
+    categories = new ArrayList<Category>();
+    boolean didAddCategories = setCategories(allCategories);
+    if (!didAddCategories)
+    {
+      throw new RuntimeException("Unable to create Game, must have at least 1 categories. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
+    }
   }
-}
   //------------------------
   // INTERFACE
   //------------------------
@@ -257,8 +256,8 @@ public Game(String aName, String aDescription, float aPrice, int aStockQuantity,
 
   public List<Review> getReviews()
   {
-    //List<Review> newReviews = Collections.unmodifiableList(reviews);
-    return reviews;
+    List<Review> newReviews = Collections.unmodifiableList(reviews);
+    return newReviews;
   }
 
   public int numberOfReviews()
@@ -390,7 +389,7 @@ public Game(String aName, String aDescription, float aPrice, int aStockQuantity,
   }
   /* Code from template association_AddIndexControlFunctions */
   public boolean addReviewAt(Review aReview, int index)
-  {  
+  {
     boolean wasAdded = false;
     if(addReview(aReview))
     {
@@ -413,8 +412,8 @@ public Game(String aName, String aDescription, float aPrice, int aStockQuantity,
       reviews.remove(aReview);
       reviews.add(index, aReview);
       wasAdded = true;
-    } 
-    else 
+    }
+    else
     {
       wasAdded = addReviewAt(aReview, index);
     }
@@ -510,7 +509,7 @@ public Game(String aName, String aDescription, float aPrice, int aStockQuantity,
   }
   /* Code from template association_AddIndexControlFunctions */
   public boolean addGuestAt(Guest aGuest, int index)
-  {  
+  {
     boolean wasAdded = false;
     if(addGuest(aGuest))
     {
@@ -533,8 +532,8 @@ public Game(String aName, String aDescription, float aPrice, int aStockQuantity,
       guests.remove(aGuest);
       guests.add(index, aGuest);
       wasAdded = true;
-    } 
-    else 
+    }
+    else
     {
       wasAdded = addGuestAt(aGuest, index);
     }
@@ -649,7 +648,7 @@ public Game(String aName, String aDescription, float aPrice, int aStockQuantity,
   }
   /* Code from template association_AddIndexControlFunctions */
   public boolean addCategoryAt(Category aCategory, int index)
-  {  
+  {
     boolean wasAdded = false;
     if(addCategory(aCategory))
     {
@@ -672,8 +671,8 @@ public Game(String aName, String aDescription, float aPrice, int aStockQuantity,
       categories.remove(aCategory);
       categories.add(index, aCategory);
       wasAdded = true;
-    } 
-    else 
+    }
+    else
     {
       wasAdded = addCategoryAt(aCategory, index);
     }

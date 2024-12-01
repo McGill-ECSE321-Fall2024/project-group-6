@@ -1,4 +1,3 @@
-
 <template>
   <main class="signup-container">
     <h1>User Sign-Up</h1>
@@ -6,6 +5,7 @@
       <input type="text" placeholder="Username" v-model="username" />
       <input type="email" placeholder="Email" v-model="email" />
       <input type="password" placeholder="Password" v-model="password" />
+      <input type="password" placeholder="Retype Password" v-model="passwordCopy" />
       <input type="text" placeholder="Shipping Address" v-model="shippingAddress" />
       <input type="text" placeholder="Phone Number" v-model="phone" />
       <button id="signup-btn" @click="signUp" v-bind:disabled="!isFormValid()">Sign Up</button>
@@ -30,7 +30,8 @@ export default {
       password: '',
       shippingAddress: '',
       phone: '',
-      errorMessage: ''
+      errorMessage: '',
+      passwordCopy:''
     };
   },
   methods: {
@@ -53,6 +54,10 @@ export default {
       }  catch (error) {
     if (this.password.length<10) {
       this.errorMessage = "Your password is less than 10 characters";
+    }
+    else if(this.password!==this.passwordCopy){
+      this.errorMessage = "Your passwords don't match";
+    
     } else {
       this.errorMessage = 'You are already a regisstered customer, use sign in';
     }
@@ -135,4 +140,3 @@ p.danger-btn {
   text-align: center;
 }
 </style>
-

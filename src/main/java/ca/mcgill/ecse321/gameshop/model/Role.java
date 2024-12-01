@@ -6,6 +6,7 @@ package ca.mcgill.ecse321.gameshop.model;
 import java.util.*;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 /**
  * Abstract Role class

@@ -8,6 +8,7 @@ import ca.mcgill.ecse321.gameshop.exception.GameShopException;
 import ca.mcgill.ecse321.gameshop.model.Person;
 import ca.mcgill.ecse321.gameshop.repository.PersonRepository;
 import jakarta.transaction.Transactional;
+
 /**
  * @author Joseph and Mario
  */
@@ -33,7 +34,7 @@ public class PersonService {
         if (aPhone == null) {
             throw new GameShopException(HttpStatus.BAD_REQUEST, String.format("Phone number can not be null"));
         }
-        
+
         if (aUsername == null) {
             throw new GameShopException(HttpStatus.BAD_REQUEST, String.format("Username can not be null"));
         }
@@ -52,7 +53,7 @@ public class PersonService {
 
         // Throw an exception if no person is found
         if (p == null) {
-			throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Person with ID " + id + " does not exist."));
+            throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Person with ID " + id + " does not exist."));
         }
 
         return p;
@@ -64,7 +65,7 @@ public class PersonService {
         Person p = personRepo.findPersonByUserId(id);
 
         if (p == null) {
-			throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Person with ID " + id + " does not exist."));
+            throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Person with ID " + id + " does not exist."));
         }
 
         if(aPassword.length()<10){
@@ -97,31 +98,30 @@ public class PersonService {
         Person p = personRepo.findPersonByUserId(id);
 
         if (p == null) {
-			throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Person with ID " + id + " does not exist."));
+            throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Person with ID " + id + " does not exist."));
         }
+
         personRepo.delete(p);
     }
 
     /**
-     * @author Joseph
+     * @author Mario
      * @param email
      * @param password
      * @return
      */
     @Transactional
-    public boolean login(String email, String password) {
-    Person p= personRepo.findPersonByEmail(email);
+    public Person login(String email, String password) {
+        Person p = personRepo.findPersonByEmail(email);
 
-    if(p==null){
-        throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Person with Email " + email + " does not exist."));
-    }
+        if (p == null) {
+            throw new GameShopException(HttpStatus.NOT_FOUND, "Person with email does not exist.");
+        }
 
-    else if(p.getPassword()==password){
-        return true;
-    }
+        if (!p.getPassword().equals(password)) {
+            throw new GameShopException(HttpStatus.NOT_FOUND, "Invalid credentials");
+        }
 
-    else {
-        throw new GameShopException(HttpStatus.UNAUTHORIZED, String.format("Wrong Password"));
-    }
+        return p;
     }
 }

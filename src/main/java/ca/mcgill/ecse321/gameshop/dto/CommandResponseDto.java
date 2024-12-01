@@ -1,3 +1,4 @@
+
 package ca.mcgill.ecse321.gameshop.dto;
 
 import ca.mcgill.ecse321.gameshop.model.Command;
@@ -20,7 +21,6 @@ public class CommandResponseDto {
         this.commandDate = c.getCommandDate();
         this.totalPrice = c.getTotalPrice();
         this.customer=c.getCustomer();
-        System.out.println("response: "+ c.getTotalPrice());
     }
 
     // Getters

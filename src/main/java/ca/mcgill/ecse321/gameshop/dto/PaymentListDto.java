@@ -10,6 +10,8 @@ public class PaymentListDto {
     //DTO for the getAll method
     private List<PaymentResponseDto> payments;
 
+    public PaymentListDto(){};
+
     public PaymentListDto(List<PaymentResponseDto> payments) {
         this.payments = payments;
     }

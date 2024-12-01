@@ -24,6 +24,7 @@ public class GameRequestDto {
     public List<Integer> categories;
     public GameRequestDto(){};
     public GameRequestDto(String aName, String aDescription, float aPrice, int aStockQuantity, String aPhotoURL,  boolean aToBeAdded, boolean aToBeRemoved, float aPromotion,List<Integer> allCategories) {
+        System.out.println("Request");
         this.description = aDescription;
         this.name = aName;
         this.photoURL = aPhotoURL;

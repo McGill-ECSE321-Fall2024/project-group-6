@@ -9,6 +9,13 @@ import { RouterView } from 'vue-router';
 </template>
 
 <style scoped>
+* {
+    margin: 0;
+    padding: 0;
+    text-decoration: none;
+    list-style: none;
+    font-family: "poppins";
+}
 html{
     height: 100%; /* Ensures the page's height is 100% of the viewport */
     margin: 0; /* Removes default margin */

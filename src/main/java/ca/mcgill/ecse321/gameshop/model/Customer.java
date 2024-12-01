@@ -1,14 +1,12 @@
 package ca.mcgill.ecse321.gameshop.model;/*PLEASE DO NOT EDIT THIS CODE*/
 /*This code was generated using the UMPLE 1.35.0.7523.c616a4dce modeling language!*/
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
+import java.util.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
 
 
 /**
@@ -33,17 +31,18 @@ public class Customer extends Role
 
   //Customer Associations
   @OneToMany
-  private List<Review> reviews;
-  @OneToMany
+  private List<Review> reviews = new ArrayList<Review>();;
+  @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true)
+  @JsonIgnore
   private List<Payment> payments;
   @OneToMany
   @JsonManagedReference
-  private List<Command> commands ;
+  private List<Command> commands;
   //------------------------
   // CONSTRUCTOR
   //------------------------
 public Customer(){
-
+  reviews = new ArrayList<Review>();
 }
   public Customer( Person aPerson, String aShippingAddress)
   {

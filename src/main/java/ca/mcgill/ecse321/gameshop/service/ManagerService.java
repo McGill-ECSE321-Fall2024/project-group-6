@@ -6,6 +6,7 @@ package ca.mcgill.ecse321.gameshop.service;
  */
 
 import ca.mcgill.ecse321.gameshop.exception.GameShopException;
+import ca.mcgill.ecse321.gameshop.model.Customer;
 import ca.mcgill.ecse321.gameshop.model.Manager;
 import ca.mcgill.ecse321.gameshop.model.Person;
 import ca.mcgill.ecse321.gameshop.repository.ManagerRepository;
@@ -121,5 +122,22 @@ public class ManagerService {
             throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Manager with ID " + id + " does not exist."));
         }
         repo.delete(manager);
+    }
+    /**
+     * Service method to extract managerId
+     * @param id
+     * @return
+     */
+    @Transactional
+    public int getManagerManagerId(int id) {
+
+        List <Manager> managers= (List<Manager>) repo.findAll();
+
+        for (int i=0; i< managers.size();i++){
+            if(managers.get(i).getPerson().getUserId()==id){
+                return managers.get(i).getRoleId();
+            }
+        }
+        return -1;
     }
 }

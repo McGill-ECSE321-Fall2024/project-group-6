@@ -8,6 +8,11 @@ import ca.mcgill.ecse321.gameshop.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import ca.mcgill.ecse321.gameshop.repository.CustomerRepository;
+import ca.mcgill.ecse321.gameshop.repository.GameRepository;
+import ca.mcgill.ecse321.gameshop.model.Customer;
+import ca.mcgill.ecse321.gameshop.model.Game;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +20,10 @@ import java.util.List;
 public class ReviewController {
     @Autowired
     private ReviewService reviewService;
+    @Autowired
+    private CustomerRepository customerRepo;
+    @Autowired
+    private GameRepository gameRepo;
 
     /**
      * Create the new review
@@ -22,9 +31,12 @@ public class ReviewController {
      * @param review The review to create.
      * @return The new review.
      */
-    @PostMapping("/review")
-    public ReviewResponseDto createReview(@RequestBody ReviewRequestDto review) {
-        Review r = reviewService.createReview(review.getRating(), review.getComment());
+    @CrossOrigin(origins = "http://localhost:8087")
+    @PostMapping("/review/{cId}/{gId}")
+    public ReviewResponseDto createReview(@PathVariable int cId, @PathVariable int gId, @RequestBody ReviewRequestDto review) {
+        Customer customer = customerRepo.findCustomerByRoleId(cId);
+        Game game = gameRepo.findGameByGameId(gId);
+        Review r = reviewService.createReview(review.getRating(), review.getComment(), customer, game);
         return new ReviewResponseDto(r);
     }
 
@@ -33,11 +45,24 @@ public class ReviewController {
      * @author Annabelle Huynh-Rondeau
      * @return All the reviews.
      */
+    @CrossOrigin(origins = "http://localhost:8087")
     @GetMapping("/review")
     public ReviewListDto getAllReviews() {
         List<ReviewResponseDto> reviews = new ArrayList<>();
         for (Review r : reviewService.getAllReviews()){
             reviews.add(new ReviewResponseDto(r));
+        }
+        return new ReviewListDto(reviews);
+    }
+
+    @CrossOrigin(origins = "http://localhost:8087")
+    @GetMapping("/review/game/{gId}")
+    public ReviewListDto getAllGameReviews(@PathVariable int gId) {
+        List<ReviewResponseDto> reviews = new ArrayList<>();
+        for (Review r : reviewService.getAllReviews()){
+            if(r.getGame().getGameId()==gId) {
+                reviews.add(new ReviewResponseDto(r));
+            }
         }
         return new ReviewListDto(reviews);
     }
@@ -49,6 +74,7 @@ public class ReviewController {
      * @param id The primary key of the person to find.
      * @return The review with the given ID.
      */
+    @CrossOrigin(origins = "http://localhost:8087")
     @GetMapping("/review/{id}")
     public ReviewResponseDto getReviewById(@PathVariable int id) {
         Review r = reviewService.getReviewById(id);
@@ -61,6 +87,7 @@ public class ReviewController {
      * @param id the ID of the review
      * @return The updated review with the given ID.
      */
+    @CrossOrigin(origins = "http://localhost:8087")
     @PutMapping("/review/{id}")
     public ReviewResponseDto updateReview(@PathVariable int id, @RequestBody ReviewRequestDto review) {
         Review r = reviewService.updateReview(id, review.getRating(), review.getComment(), review.getReply());
@@ -73,6 +100,7 @@ public class ReviewController {
      * @param id the id of the review to delete.
      * @return void.
      */
+    @CrossOrigin(origins = "http://localhost:8087")
     @DeleteMapping("/review/{id}")
     public void deleteReview(@PathVariable int id) {
         reviewService.deleteReview(id);

@@ -1,3 +1,4 @@
+
 package ca.mcgill.ecse321.gameshop.dto;
 
 import jakarta.validation.constraints.NotBlank;
@@ -12,11 +13,8 @@ public class CommandRequestDto {
     // Jackson needs a default constructor, but it doesn't need to be public
 
 
-    private CommandRequestDto(){}
-    public CommandRequestDto(int cId){
-        System.out.println("Request: ");
-        this.customerID=cId;
-    }
+    public CommandRequestDto(){}
+
 
     public float getTotal() {
         return totalPrice;

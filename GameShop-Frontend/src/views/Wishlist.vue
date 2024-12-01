@@ -36,7 +36,7 @@
                     </div>
                     <a href="/homepage">Keep shopping</a>
                     <div class="list">
-                        <div v-for="game in wishlist" :key="game.id" class="game-card">
+                        <div v-for="game in customer.wishlist" :key="game.id" class="game-card">
                             <div class="item">
                                 <img :src="game.photoURL">
                                 <div class="info">
@@ -66,37 +66,16 @@ import { RouterLink } from 'vue-router';
 export default {
     data() {
         return {
-            /*
-            wishlist: [
-                {
-                    id: 1,
-                    name: 'Cyberpunk 2077',
-                    imageUrl: "https://upload.wikimedia.org/wikipedia/en/9/9f/Cyberpunk_2077_box_art.jpg",
-                    price: 59.99,
-                    description: 'An open-world, action-adventure story set in Night City.',
-                    stockQuantity: 20
-                },
-                {
-                    id: 2,
-                    name: 'Rainbow 6 Siege',
-                    imageUrl: 'https://upload.wikimedia.org/wikipedia/en/4/47/Tom_Clancy%27s_Rainbow_Six_Siege_cover_art.jpg',
-                    price: 39.99,
-                    description: 'A tactical, team-based FPS where players engage in strategic battles with unique operators.',
-                    stockQuantity: 15
-                },
-                {
-                    id: 3,
-                    name: 'Red Dead Redemption 2',
-                    imageUrl: 'https://upload.wikimedia.org/wikipedia/en/4/44/Red_Dead_Redemption_II.jpg',
-                    price: 49.99,
-                    description: 'An epic tale of life in America’s unforgiving heartland.',
-                    stockQuantity: 10
-                }
-            ],
-            */
-            customer: null,
-            wishlist: [],
-            cart: [],
+            customer: {
+                shippingAddress: "",
+                username: "",
+                email: "",
+                phone: "",
+                customerId: null,
+                wishlist: [],
+                cart: []
+
+            },
             showPopup: false,
             popupMessage: "",
         };
@@ -104,10 +83,8 @@ export default {
     methods: {
         async fetchWishlist() {
             try {
-                const response = await axios.get(`http://localhost:8080/customers/1402`);
+                const response = await axios.get(`http://localhost:8080/customers/1652`);
                 this.customer = response.data;
-                this.wishlist = this.customer.wishlist;
-
 
             } catch (error) {
                 console.error("Error fetching wishlist:", error);
@@ -116,19 +93,20 @@ export default {
 
         async addToCart(game) {
             try {
-                // Make API call to add game to cart
-                const response = await axios.put(`http://localhost:8080/customers/${this.customer.id}/cart`,game );
+                const response = await axios.put(`http://localhost:8080/customers/${this.customer.customerId}/cart/add/${game.gameId}`);
 
                 // Update local state with the updated cart
                 this.customer = response.data; // Assuming the response contains the updated customer object
-                this.wishlist = this.wishlist.filter(item => item.id !== game.id); // Remove from wishlist
+                await axios.put(`http://localhost:8080/customers/${this.customer.customerId}/wishlist/${game.gameId}`);
+
+                // Update frontend state
+                this.fetchWishlist();
 
                 // Display success message
                 this.popupMessage = `${game.name} was added to your cart.`;
                 this.showPopup = true;
                 setTimeout(() => (this.showPopup = false), 3000);
 
-                console.log("Game added to cart successfully:", response.data);
             } catch (error) {
                 console.error("Error adding game to cart:", error);
             }
@@ -136,10 +114,10 @@ export default {
         async removeFromWishlist(game) {
             try {
                 // Remove game from the wishlist in backend
-                await axios.put(`http://localhost:8080/customers/${this.customer.id}/wishlist/game`,{game});
+                await axios.put(`http://localhost:8080/customers/${this.customer.customerId}/wishlist/${game.gameId}`);
 
                 // Update frontend state
-                this.wishlist = this.wishlist.filter(item => item.id !== game.id);
+                this.fetchWishlist();
 
                 // Show confirmation message
                 this.popupMessage = `${game.name} was removed from the wishlist.`;
@@ -161,7 +139,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 * {
     margin: 0;
     padding: 0;
@@ -285,6 +263,7 @@ header img {
 .wishlist .container {
     padding: 150px 200px;
     align-items: center;
+    min-height: 100vh;
 }
 
 .wishlist,
@@ -306,7 +285,7 @@ html {
 }
 
 .returnCart .list .item img {
-    height: 100%;
+    height: 90px;
 }
 
 .wishlist .returnCart .list .item {

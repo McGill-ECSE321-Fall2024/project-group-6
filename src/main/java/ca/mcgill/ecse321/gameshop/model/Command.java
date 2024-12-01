@@ -15,7 +15,7 @@ import jakarta.persistence.ManyToOne;
  */
 // line 45 "model.ump"
 // line 128 "model.ump"
-  @Entity
+@Entity
 public class Command
 {
 
@@ -39,9 +39,9 @@ public class Command
   //------------------------
   // CONSTRUCTOR
   //------------------------
-public Command (){
+  public Command (){
 
-}
+  }
   public Command( String aCommandDate, float aTotalPrice)
   {
     commandDate = aCommandDate;

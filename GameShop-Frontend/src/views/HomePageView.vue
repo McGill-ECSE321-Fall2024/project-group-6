@@ -1,40 +1,47 @@
-
 <template>
-  <div class="main-container">
-    <header class="header">
-      <div class="app-name">GameShop</div>
-      <div class="search-bar">
-        <input type="text" v-model="searchQuery" placeholder="Search for games by name" />
-        <button @click="searchByName">Search</button>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.4/css/boxicons.min.css" rel="stylesheet">
+  <header>
+    <nav class="navbar">
+      <div class="logo">
+        <h2>GameShop</h2>
       </div>
-      <div class="auth-buttons">
-        <RouterLink to="/hello">Login</RouterLink>
-        <RouterLink to="/">Sign Up</RouterLink>
-      </div>
-    </header>
-    <div class="content">
-      <aside class="categories">
-        <select v-model="selectedCategory" @change="filterByCategory">
-          <option value="" disabled>Select Category</option>
-          <option value="all">All games</option>
-          <option v-for="category in categories" :key="category.id" :value="category.name">
-            {{ category.name }}
-          </option>
-        </select>
-      </aside>
-      <main class="catalog">
-        <div v-if="games.length === 0">No games found</div>
-        <div v-for="game in games" :key="game.id" class="game-card">
-          <img :src="game.imageUrl" alt="Game Image" class="game-image" />
-          <div class="game-info">
-            <h3>{{ game.name }}</h3>
-            <p><strong>Price:</strong> ${{ game.price }}</p>
-            <p><strong>Description:</strong> {{ game.description }}</p>
-            <p><strong>Stock:</strong> {{ game.stockQuantity }} left</p>
-          </div>
+      <div class="navmenu"  >
+        <div class="search-box">
+              <input type="text" v-model="searchQuery" class="search" placeholder="Search game...">
+              <i class='bx bx-search' @click="searchByName"></i>
         </div>
-      </main>
-    </div>
+        <div class="auth-links ">
+          <RouterLink to="/SignIn">Sign In</RouterLink>
+          <RouterLink to="/SignUp" >Sign Up</RouterLink>
+        </div>
+      </div>
+    </nav>
+  </header>
+  <div class="content">
+    <aside class="categories">
+      <select v-model="selectedCategory" @change="filterByCategory">
+        <option value="" disabled>Select Category</option>
+        <option value="all">All games</option>
+        <option v-for="category in categories" :key="category.id" :value="category.name">
+          {{ category.name }}
+        </option>
+      </select>
+    </aside>
+    <main class="catalog">
+      <div v-if="games.length === 0">No games found</div>
+      <div v-for="game in games" :key="game.id" class="game-card">
+        <img :src="game.photoURL" alt="Game Image" class="game-image" />
+        <div class="game-info">
+          <h3>{{ game.name }}</h3>
+          <div class="game-info">
+  <p class="game-price"><strong>Price:</strong> ${{ game.price }}</p>
+  <p class="game-description"><strong>Description:</strong> {{ game.description }}</p>
+  <p class="game-stock"><strong>Stock:</strong> {{ game.stockQuantity }} left</p>
+</div>
+
+        </div>
+      </div>
+    </main>
   </div>
 </template>
 
@@ -48,8 +55,7 @@ export default {
       searchQuery: '',
       selectedCategory: '',
       categories: [],
-      games: [
-      ]
+      games: []
     };
   },
   methods: {
@@ -65,35 +71,32 @@ export default {
       try {
         const response = await axios.get('http://localhost:8080/games');
         this.games = response.data["games"];
+        console.log(this.games);
       } catch (error) {
         console.error('Error fetching games:', error);
       }
     },
     async searchByName() {
-      
       try {
-        
+        console.log("I am here "+this.searchQuery);
         const response = await axios.get(`http://localhost:8080/games/name/${this.searchQuery}`);
         this.games = [response.data];
-        console.log(this.games);
-       // console.log(games.length);
       } catch (error) {
         console.error('Error searching for games:', error);
       }
     },
     async filterByCategory() {
-  if (this.selectedCategory === 'all') {
-    await this.fetchGames(); //always use this, cest mieu
-  } else {
-    try {
-      const response = await axios.get(`http://localhost:8080/games/category/${this.selectedCategory}`);
-      this.games = response.data["games"];
-    } catch (error) {
-      console.error('Error filtering games by category:', error);
+      if (this.selectedCategory === 'all') {
+        await this.fetchGames();
+      } else {
+        try {
+          const response = await axios.get(`http://localhost:8080/games/category/${this.selectedCategory}`);
+          this.games = response.data["games"];
+        } catch (error) {
+          console.error('Error filtering games by category:', error);
+        }
+      }
     }
-  }
-}
-
   },
   async created() {
     await this.fetchCategories();
@@ -103,70 +106,144 @@ export default {
 </script>
 
 <style scoped>
-.main-container {
-  font-family: Arial, sans-serif;
+* {
+    margin: 0;
+    padding: 0;
+    text-decoration: none;
+    list-style: none;
+    font-family: "poppins";
 }
 
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #333;
-  padding: 1rem;
-  color: white;
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    height: 80px;
+    background: #1033a4;
 }
 
-.app-name {
-  font-size: 1.5rem;
+.navbar h2 {
+    color: #ffffff;
+    font-size: 25px;
+    font-weight: 500;
+    padding: 20px 20px;
 }
 
-.search-bar {
-  display: flex;
-  align-items: center;
+.navmenu {
+    height: 50px;
+    line-height: 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.search-bar input {
-  padding: 0.5rem;
-  font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+.search-box .search {
+    width: 500px;
+    padding: 8px 8px;
+    border-radius: 50px;
+    font-size: 16px;
 }
 
-.search-bar button {
-  padding: 0.5rem 1rem;
-  margin-left: 0.5rem;
-  background-color: #28a745;
-  border: none;
-  color: white;
-  cursor: pointer;
-  border-radius: 5px;
+.search-box {
+    margin-right: 200px;
 }
 
-.search-bar button:hover {
-  background-color: #218838;
+.navmenu .search-box i {
+    color: #ffffff;
+    position: relative;
+    right: 40px;
+    top: 2px;
+    background-color: #1140d9;
+    padding: 8px;
+    border-radius: 50px;
 }
 
-.auth-buttons {
+header img {
+    margin-top: 15px;
+    margin-right: 10px;
+    align-items: center;
+    width: 40px;
+}
+
+.navmenu .iconcCart {
+    align-items: center;
+    position: relative;
+    margin: 10px;
+    z-position: 1;
+    display: inline-block;
+}
+
+.main-header {
+    width: 100%;
+    margin: auto;
+    height: 40px;
+    display: flex;
+    padding-bottom: 30px;
+}
+
+.main-header .header {
+    margin-left: 30px;
+    margin-bottom: 30px;
+}
+
+.main-header h5 {
+    font-size: 20px;
+    font-weight: 550px;
+    margin-top: 10px;
+    margin-bottom: 15px;
+}
+
+.main-header h2 {
+    font-weight: bold;
+    font-size: 38px;
+    width: 500px;
+    margin-top: 10px;
+    margin-bottom: 15px;
+}
+
+.main-header .a {
+    margin-bottom: 30px;
+}
+
+.main-header .btn {
+    background: #88b9df;
+    border: 1px solid #88b9df;
+    font-size: 15px;
+    color: #ffffff;
+    font-weight: 400;
+    padding: 4px 20px;
+    border-radius: 50px;
+}
+
+.main-header .btn:hover {
+    color: #88b9df;
+    background: #ffffff;
+}
+
+.auth-links {
   display: flex;
   gap: 1rem;
+  padding-right: 1rem; 
 }
 
-.auth-buttons a {
+.auth-links a {
   color: white;
-  text-decoration: none;
-  background-color: #007bff;
-  padding: 0.5rem 1rem;
-  border-radius: 5px;
-  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+
 }
 
-.auth-buttons a:hover {
-  background-color: #0056b3;
+.auth-links a:hover {
+  text-decoration: underline;
 }
 
 .content {
   display: flex;
-  padding: 2rem;
+  height: calc(100% - 80px);
+  padding: 20px;
 }
 
 .categories {
@@ -189,16 +266,7 @@ export default {
   padding-left: 2rem;
 }
 
-.game-card {
-  background: #f9f9f9;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 1rem;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
+
 
 .game-card h3 {
   margin: 0;
@@ -217,5 +285,34 @@ export default {
 .game-card p {
   margin-top: 0.5rem;
 }
-</style>
+.game-info {
 
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+}
+
+.game-info:hover {
+  transform: scale(1.05);
+}
+
+.game-info p {
+  margin: 10px 0;
+}
+
+.game-price {
+  color: #e60000;
+  font-weight: bold;
+}
+
+.game-description {
+  color: #333; 
+}
+
+.game-stock {
+  color: #007bff; 
+  font-weight: bold;
+}
+
+</style>
