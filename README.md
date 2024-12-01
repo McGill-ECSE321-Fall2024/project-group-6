@@ -89,9 +89,9 @@ Table 3 : Roles of each team member Deliverable 3: <br/>
 | Annabelle   | Customer Game Page and Account (Frontend/Backend)                   |                  |
 |             | Presentation slides                  |                |
 | Marine      | Employee Dashboard, Account and Game Page (Frontend)          |                  |
-|             | Meeting Minutes                     |               |
-|             | Key Decisions                     |                  |
-|             | Presentation slides             |                 |
+|             | Meeting Minutes                     |       1        |
+|             | Key Decisions                     |         1         |
+|             | Presentation slides             |          1.5       |
 | Maissa      | Customer Wishlist and Checkout (Frontend/Backend)    |                  |
 |             | Demo         |                 |
 | Joseph      | Build system and CI specification  |                   |
