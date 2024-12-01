@@ -51,7 +51,6 @@
               <p>Email: {{ employee.email }}</p>
             </div>
             <div class="actions">
-              <button @click="deleteEmployee(employee.id)" class="btn">Delete</button>
               <button @click="deactivateEmployee(employee.id)" class="btn">Deactivate</button>
               <button @click="assignTask(employee.id)" class="btn">Assign Task</button>
             </div>
@@ -63,12 +62,21 @@
 </template>
 
 <script>
-import axios from 'axios';
-
 export default {
   data() {
     return {
-      employees: [], // List of employees
+      employees: [
+        {
+          id: 1,
+          name: 'John Doe',
+          email: 'john.doe@example.com',
+        },
+        {
+          id: 2,
+          name: 'Jane Smith',
+          email: 'jane.smith@example.com',
+        },
+      ], // Mocked employees
       newEmployee: {
         name: '',
         email: '',
@@ -78,21 +86,17 @@ export default {
   },
   methods: {
     async fetchEmployees() {
-      try {
-        const response = await axios.get('http://localhost:8080/employees');
-        this.employees = response.data;
-      } catch (error) {
-        console.error('Error fetching employees:', error);
-      }
+      // Simulating an API fetch by using the mocked data
+      console.log("Fetching employees...");
     },
     async addEmployee() {
       try {
-        await axios.post('http://localhost:8080/employees', {
+        const newEmployee = {
+          id: this.employees.length + 1,
           ...this.newEmployee,
-          role: 'employee', // Automatically set role to 'employee'
-        });
+        };
+        this.employees.push(newEmployee); // Add to the mocked list
         alert('Employee added successfully!');
-        this.fetchEmployees(); // Refresh employee list
         this.newEmployee = { name: '', email: '', password: '' }; // Reset form
       } catch (error) {
         console.error('Error adding employee:', error);
@@ -101,45 +105,27 @@ export default {
     },
     async deleteEmployee(id) {
       if (!confirm('Are you sure you want to delete this employee?')) return;
-      try {
-        await axios.delete(`http://localhost:8080/employees/${id}`);
-        alert('Employee deleted successfully!');
-        this.fetchEmployees(); // Refresh employee list
-      } catch (error) {
-        console.error('Error deleting employee:', error);
-        alert('Failed to delete employee.');
-      }
+      this.employees = this.employees.filter((employee) => employee.id !== id); // Mock deletion
+      alert('Employee deleted successfully!');
     },
     async deactivateEmployee(id) {
-      try {
-        await axios.patch(`http://localhost:8080/employees/${id}/deactivate`);
-        alert('Employee deactivated successfully!');
-        this.fetchEmployees(); // Refresh employee list
-      } catch (error) {
-        console.error('Error deactivating employee:', error);
-        alert('Failed to deactivate employee.');
-      }
+      alert(`Deactivated employee with ID: ${id}`); // Mock deactivation
     },
     async assignTask(id) {
       const task = prompt('Enter the task to assign:');
       if (!task) return; // No task provided
-      try {
-        await axios.post(`http://localhost:8080/employees/${id}/assign-task`, { task });
-        alert('Task assigned successfully!');
-      } catch (error) {
-        console.error('Error assigning task:', error);
-        alert('Failed to assign task.');
-      }
+      alert(`Assigned task "${task}" to employee with ID: ${id}`); // Mock task assignment
     },
     logout() {
       this.$router.push('/signin'); // Redirect to login
     },
   },
-  async created() {
-    await this.fetchEmployees(); // Fetch employee list on load
+  created() {
+    this.fetchEmployees(); // Initialize the mocked list
   },
 };
 </script>
+
 
 <style scoped>
 *
