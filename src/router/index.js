@@ -3,8 +3,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import SignUp from '@/views/SignUp.vue'
 import SignIn from '@/views/SignIn.vue'
 import HomePageView from '@/views/HomePageView.vue'
-import ManagerMainPage from '@/views/ManagerMainPage.vue'
-import CustomerMainPage from '@/views/CustomerMainPage.vue'
+import ManagerHomePage from '@/views/ManagerHomePage.vue'
+import CustomerHomePage from '@/views/CustomerHomePage.vue'
 import Wishlist from '@/views/Wishlist.vue'
 import EmployeeHomePage from '@/views/EmployeeHomePage.vue'
 import EmployeeAccount from '@/views/EmployeeAccount.vue'
@@ -88,6 +88,17 @@ const router = createRouter({
       path: '/customerAccount',
       name: 'customer-account',
       component: CustomerAccount,
+
+      props:true,
+      
+      beforeEnter: (to, from, next) => {
+        if (localStorage.getItem('loggedIn') === 'true') {
+          next();
+        } else {
+          alert('Please sign in before accessing this page.');
+          next({ name: 'sign in' });
+        }
+      }
     },
     {
       path: '/employeeHomePage/:employeeId/:loggedIn',
@@ -115,10 +126,8 @@ const router = createRouter({
             alert('Please sign in before accessing this page.');
             next({ name: 'sign in' });
           }
-        }
-          
-      }
-    
+        } 
+      }  
   ],
 })
 
