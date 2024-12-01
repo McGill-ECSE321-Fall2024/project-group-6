@@ -56,7 +56,7 @@ export default {
         const user = { username:"123",email: this.email, password: this.password, phone:"123" };
         const response = await axiosClient.post(`/login`, user);
 
-        if (response.data.email === this.email) {
+        if (response.data.email === this.email && response.data.username!=="deactivated") {
         /*
           if (this.userType === 'manager') {
             router.push({ name: 'manager-dashboard' });
@@ -66,15 +66,45 @@ export default {
             router.push({ name: 'customer-dashboard' });
           }
             */
+        localStorage.setItem('loggedIn', 'true'); // Set the logged-in status
+      if (this.userType === 'employee') {
+        console.log(this.getRoleID (response.data.userId));
+        
+        router.push({
+          name: 'employee-homepage',
+          params: {
+            employeeId: await this.getRoleID (response.data.userId),
+            loggedIn: true
+          }
+          
+        });
+        
+      }
+
            this.errorMessage="Successful login";
-        } else {
+        } 
+        else if(response.data.username==="deactivated"){
+          this.errorMessage="Employee has been deactivated";
+        }
+        else {
           this.errorMessage = 'Invalid login credentials';
         }
       } catch (error) {
         this.errorMessage = 'Error logging in';
-        print(error);
+        console.log(error);
       }
     },
+    async getRoleID(id) {
+      
+        try {
+          const response = await axios.get(`http://localhost:8080/employees/id/${id}`);
+          return response.data;
+        } catch (error) {
+          console.error('Error filtering games by category:', error);
+        }
+      }
+    },
+  
     clearInputs() {
       this.userType = '';
       this.email = '';
@@ -83,8 +113,8 @@ export default {
       this.managerNumber = '';
       this.errorMessage = '';
     }
-  }
-};
+  };
+
 </script>
 
 <style scoped>
