@@ -14,13 +14,18 @@
             <i class="bx bx-search" @click="searchByName"></i>
           </div>
           </div>
-          <div class="nav-buttons">
-          <button @click="goToEmployeeAccount" ><img src="../assets/person-circle.svg" class="account-img" @click="goToEmployeeAccount"></button>
+          <div class="user-options">
+            <button @click="goToCustomerCart"><img src="../assets/pngaaa.com-5034351.png" class="cart-img" @click="goToCustomerCart"></button>
+            <button @click="goToCustomerWishlist"><img src="../assets/White-Heart.png" class="wishlist-img" @click="goToCustomerWishlist"></button>
+            <div class="dropdown">
+                <button class="dropbtn"><img src="../assets/person-circle.svg" class="account-img"></button>
+                <div class="nav-buttons">
+                    <button @click="goToCustomerAccount" >Account</button>
+                    <button @click="goToCustomerOrders" class="order-btn">Orders</button>
+                    <button @click="logout" class="logout-btn">Logout</button>
+                </div>
+            </div>
         </div>
-        <div class="nav-buttons">
-          <button @click="logout" class="logout-btn">Logout</button>
-        </div>
-        
       </nav>
     </header>
     <div class="container">
@@ -50,16 +55,7 @@
           </div>
         </div>
       </main>
-  
-      <aside class="tasks-box">
-        <h3 >Your Assigned Tasks: </h3>
-        <ul v-if="tasks.length > 0">
-          <li v-for="task in tasks" >
-            <h4>{{ task }}</h4>
-          </li>
-        </ul>
-        <p v-else>No tasks assigned</p>
-      </aside>
+
     </div>
   </template>
   
@@ -71,7 +67,7 @@ import { RouterLink } from 'vue-router';
 import router from '@/router';
 
 export default {
-props: ['employeeId', 'loggedIn'],
+props: ['customerId', 'loggedIn'],
 
   data() {
     return {
@@ -80,7 +76,7 @@ props: ['employeeId', 'loggedIn'],
       categories: [],
       games: [],
       tasks: [],
-      employeeID: 0,
+      customerId: 0,
     };
   },
   methods: {
@@ -106,7 +102,7 @@ props: ['employeeId', 'loggedIn'],
     async fetchTasks() {
       try {
         const response = await axios.get(
-          `http://localhost:8080/employees/${this.employeeID}`
+          `http://localhost:8080/customers/${this.customerId}`
         );
         const taskStrings = response.data["assignedTasks"];
         for (let i = 0; i < taskStrings.length; i++) {
@@ -119,10 +115,10 @@ props: ['employeeId', 'loggedIn'],
       }
     },
     viewGameDetails(gameId) {
-      this.$router.push({ name: "employee-gamepage", 
+      this.$router.push({ name: "customer-gamepage", 
       params: { 
         gameId: gameId,
-        employeeId:this.employeeID,
+        customerId:this.customerId,
         loggedIn:true
       } });
     },
@@ -149,20 +145,49 @@ props: ['employeeId', 'loggedIn'],
         }
       }
     },
-    async goToEmployeeAccount(){
+    async goToCustomerAccount(){
       router.push({
-          name: 'employee-account',
+          name: 'customer-account',
           params: {
-            employeeId: this.employeeID,
+            customerId: this.customerId,
             loggedIn: true
           }
           
-        });
-        
+        }); 
     },
     logout() {
         this.$router.push('/SignIn');
-      }
+    },
+    async goToCustomerOrders() {
+        router.push({
+          name: 'customer-orders',
+          params: {
+            customerId: this.customerId,
+            loggedIn: true
+          }
+          
+        }); 
+    },
+    async goToCustomerCart() {
+        router.push({
+          name: 'customer-cart',
+          params: {
+            customerId: this.customerId,
+            loggedIn: true
+          }
+          
+        }); 
+    },
+    async goToCustomerWishlist() {
+        router.push({
+          name: 'customer-wishlist',
+          params: {
+            customerId: this.customerId,
+            loggedIn: true
+          }
+          
+        }); 
+    }
   },
   created() {
     
@@ -171,8 +196,8 @@ props: ['employeeId', 'loggedIn'],
       alert('Please log in before accessing this page.');
     } else {
      
-      this.employeeID = this.employeeId; 
-      console.log(this.employeeID);
+      this.customerId = this.customerId; 
+      console.log(this.customerId);
       this.fetchCategories();
       this.fetchGames();
       this.fetchTasks();

@@ -33,6 +33,12 @@
           {{ `${category.name} (${category.id})` }}
         </option>
       </select>
+      <div class="adjust-category">
+            <button @click="addCategory">Add Category</button>
+            <button @click="removeCategory">Remove Category</button>
+            <button @click="unapprovedGames">Unapproved Games</button>
+            <RouterLink to="/Manager-Homepage/Manage-Employees" class="manage-employees-button">Manage Employees</RouterLink>
+        </div>
     </aside>
       
     
@@ -50,16 +56,6 @@
           </div>
         </div>
       </main>
-  
-      <aside class="tasks-box">
-        <h3 >Your Assigned Tasks: </h3>
-        <ul v-if="tasks.length > 0">
-          <li v-for="task in tasks" >
-            <h4>{{ task }}</h4>
-          </li>
-        </ul>
-        <p v-else>No tasks assigned</p>
-      </aside>
     </div>
   </template>
   
@@ -71,7 +67,7 @@ import { RouterLink } from 'vue-router';
 import router from '@/router';
 
 export default {
-props: ['employeeId', 'loggedIn'],
+props: ['managerId', 'loggedIn'],
 
   data() {
     return {
@@ -80,7 +76,7 @@ props: ['employeeId', 'loggedIn'],
       categories: [],
       games: [],
       tasks: [],
-      employeeID: 0,
+      managerId: 0,
     };
   },
   methods: {
@@ -103,26 +99,12 @@ props: ['employeeId', 'loggedIn'],
         console.error("Error fetching games:", error);
       }
     },
-    async fetchTasks() {
-      try {
-        const response = await axios.get(
-          `http://localhost:8080/employees/${this.employeeID}`
-        );
-        const taskStrings = response.data["assignedTasks"];
-        for (let i = 0; i < taskStrings.length; i++) {
-      const taskString = taskStrings[i];
-      const parsedTask = JSON.parse(taskString.trim());
-      this.tasks.push(parsedTask.task); 
-    }
-      } catch (error) {
-        console.error("Error fetching tasks:", error);
-      }
-    },
+
     viewGameDetails(gameId) {
-      this.$router.push({ name: "employee-gamepage", 
+      this.$router.push({ name: "manager-gamepage", 
       params: { 
         gameId: gameId,
-        employeeId:this.employeeID,
+        managerId:this.managerId,
         loggedIn:true
       } });
     },
@@ -149,11 +131,11 @@ props: ['employeeId', 'loggedIn'],
         }
       }
     },
-    async goToEmployeeAccount(){
+    async goToManagerAccount(){
       router.push({
-          name: 'employee-account',
+          name: 'manager-account',
           params: {
-            employeeId: this.employeeID,
+            managerId: this.managerId,
             loggedIn: true
           }
           
@@ -171,8 +153,8 @@ props: ['employeeId', 'loggedIn'],
       alert('Please log in before accessing this page.');
     } else {
      
-      this.employeeID = this.employeeId; 
-      console.log(this.employeeID);
+      this.managerId = this.managerId; 
+      console.log(this.managerId);
       this.fetchCategories();
       this.fetchGames();
       this.fetchTasks();
@@ -274,51 +256,6 @@ props: ['employeeId', 'loggedIn'],
   border: 1px solid #ccc;
   border-radius: 5px;
 }
-
-
-.tasks-box {
-  width: 300px;
-  background: #ffffff;
-  border-radius: 8px;
-  padding: 20px;
-  margin-left: 20px; 
-  
-}
-
-
-.tasks-box h4{
-
-padding: 15px;
-border-radius: 10px;
-box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-transition: transform 0.2s;
-}
-
-
-.tasks-box h3 {
-  font-size: 20px;
-  margin-bottom: 10px;
-  color: #1140d9;
-}
-
-.tasks-box ul {
-  list-style-type: none;
-  padding: 0;
-  color: #1140d9;
-}
-
-.tasks-box h4 {
-  margin-bottom: 15px;
-  color: black
-;
-}
-
-.tasks-box li p {
-  margin: 5px 0 0;
-  font-size: 14px;
-  color: #1140d9;
-}
-
 
 .catalog {
   flex: 1;
@@ -427,5 +364,40 @@ transition: transform 0.2s;
   margin-bottom: 0.5rem;
   color: black;
 }
+.adjust-category {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
 
+.adjust-category button {
+    padding: 0.5rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    color: black;
+    background-color: white;
+    cursor: pointer;
+}
+
+.adjust-category button:hover {
+    background-color: lightgrey;
+}
+
+.adjust-category button:active {
+    background-color: grey;
+}
+
+.manage-employees-button {
+    display: flex;
+    flex-direction: column;
+    padding: 0.5rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    color: black;
+    background-color: white;
+    cursor: pointer;
+    text-align: center;
+}
   </style>
