@@ -9,7 +9,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.mcgill.ecse321.gameshop.exception.GameShopException;
+import ca.mcgill.ecse321.gameshop.model.Customer;
+import ca.mcgill.ecse321.gameshop.model.Game;
 import ca.mcgill.ecse321.gameshop.model.Review;
+import ca.mcgill.ecse321.gameshop.repository.CustomerRepository;
+import ca.mcgill.ecse321.gameshop.repository.GameRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -34,6 +38,10 @@ public class ReviewServiceTests {
 
     @Mock
     private ReviewRepository repo;
+    @Mock
+    private CustomerRepository customerRepo;
+    @Mock
+    private GameRepository gameRepo;
 
     @InjectMocks
     private ReviewService service;
@@ -43,11 +51,16 @@ public class ReviewServiceTests {
         // Arrange
         Review.StarRating rating = Review.StarRating.FiveStar;
         String comment = "Amazing experience!";
+        Customer customer = new Customer();
+        Game game = new Game();
+
         Review review = new Review(rating, comment, 0);
+        when(customerRepo.findCustomerByRoleId(customer.getRoleId())).thenReturn(customer);
+        when(gameRepo.findGameByGameId(game.getGameId())).thenReturn(game);
         when(repo.save(any(Review.class))).thenReturn(review);
 
         // Act
-        Review createdReview = service.createReview(rating, comment);
+        Review createdReview = service.createReview(rating, comment, customer, game);
 
         // Assert
         assertNotNull(createdReview);
@@ -61,14 +74,91 @@ public class ReviewServiceTests {
         // Arrange
         Review.StarRating rating = null;
         String comment = "Amazing experience!";
+        Customer customer = new Customer();
+        Game game = new Game();
 
         // Act & Assert
         GameShopException exception = assertThrows(GameShopException.class, () -> {
-            service.createReview(rating, comment);
+            service.createReview(rating, comment, customer, game);
         });
         assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
         assertEquals("Rating cannot be empty", exception.getMessage());
     }
+    @Test
+    public void testCreateReviewWithNotFoundCustomer() {
+        // Arrange
+        Review.StarRating rating = Review.StarRating.FiveStar;
+        String comment = "Great game!";
+        Customer customer = new Customer();
+        customer.setRoleId(1); // Dummy role ID
+        Game game = new Game();
+        game.setGameId(1); // Dummy game ID
+
+        when(customerRepo.findCustomerByRoleId(1)).thenReturn(null);
+
+        // Act & Assert
+        GameShopException exception = assertThrows(GameShopException.class, () -> {
+            service.createReview(rating, comment, customer, game);
+        });
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
+        assertEquals("Customer associated with this review does not exist", exception.getMessage());
+    }
+
+    @Test
+    public void testCreateReviewWithNullCustomer() {
+        // Arrange
+        Review.StarRating rating = Review.StarRating.ThreeStar;
+        String comment = "It was okay.";
+        Game game = new Game();
+        game.setGameId(1); // Dummy game ID
+
+        // Act & Assert
+        GameShopException exception = assertThrows(GameShopException.class, () -> {
+            service.createReview(rating, comment, null, game);
+        });
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
+        assertEquals("Customer field is null", exception.getMessage());
+    }
+
+    @Test
+    public void testCreateReviewWithNotFoundGame() {
+        // Arrange
+        Review.StarRating rating = Review.StarRating.FourStar;
+        String comment = "Enjoyed the graphics!";
+        Customer customer = new Customer();
+        customer.setRoleId(1); // Dummy role ID
+        Game game = new Game();
+        game.setGameId(1); // Dummy game ID
+
+        when(customerRepo.findCustomerByRoleId(1)).thenReturn(customer);
+        when(gameRepo.findGameByGameId(1)).thenReturn(null);
+
+        // Act & Assert
+        GameShopException exception = assertThrows(GameShopException.class, () -> {
+            service.createReview(rating, comment, customer, game);
+        });
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
+        assertEquals("Game associated with this review does not exist", exception.getMessage());
+    }
+
+    @Test
+    public void testCreateReviewWithNullGame() {
+        // Arrange
+        Review.StarRating rating = Review.StarRating.OneStar;
+        String comment = "Didn't enjoy the game.";
+        Customer customer = new Customer();
+        customer.setRoleId(1); // Dummy role ID
+
+        when(customerRepo.findCustomerByRoleId(1)).thenReturn(customer);
+
+        // Act & Assert
+        GameShopException exception = assertThrows(GameShopException.class, () -> {
+            service.createReview(rating, comment, customer, null);
+        });
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
+        assertEquals("Game field is null", exception.getMessage());
+    }
+
 
     @Test
     public void testUpdateReviewValidId() {

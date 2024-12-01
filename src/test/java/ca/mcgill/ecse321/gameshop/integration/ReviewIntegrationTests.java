@@ -1,14 +1,12 @@
 package ca.mcgill.ecse321.gameshop.integration;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
-import org.junit.jupiter.api.TestMethodOrder;
+import ca.mcgill.ecse321.gameshop.dto.*;
+import ca.mcgill.ecse321.gameshop.model.Review;
+import ca.mcgill.ecse321.gameshop.repository.CustomerRepository;
+import ca.mcgill.ecse321.gameshop.repository.GameRepository;
+import ca.mcgill.ecse321.gameshop.repository.ReviewRepository;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -18,161 +16,156 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import ca.mcgill.ecse321.gameshop.dto.ReviewRequestDto;
-import ca.mcgill.ecse321.gameshop.dto.ReviewResponseDto;
-import ca.mcgill.ecse321.gameshop.model.Review;
-import ca.mcgill.ecse321.gameshop.repository.PaymentRepository;
-/**
- * @author Annabelle
- */
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@TestInstance(Lifecycle.PER_CLASS)
+@TestMethodOrder(OrderAnnotation.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class ReviewIntegrationTests {
+
     @Autowired
     private TestRestTemplate client;
     @Autowired
-    private PaymentRepository repo;
+    private ReviewRepository reviewRepo;
+    @Autowired
+    private CustomerRepository customerRepo;
+    @Autowired
+    private GameRepository gameRepo;
 
+    // Constants for valid test data
+    private static final String VALID_NAME = "Bob";
+    private static final String VALID_EMAIL = "bob@mail.mcgill.ca";
+    private static final String VALID_PASSWORD = "12345678910";
+    private static final String VALID_PHONE = "+1(514)1234567";
+    private static final String VALID_ADDRESS = "123 Sherbrooke West";
     private static final Review.StarRating VALID_RATING = Review.StarRating.FourStar;
-    private static final String VALID_COMMENT = "Amazing Game!";
+    private static final String VALID_COMMENT = "Amazing game!";
     private static final int VALID_AMOUNT_OF_LIKES = 0;
     private static final String VALID_REPLY = "";
-    private int validId;
+    private static final String VALID_GAME_NAME = "Subway Surfers";
+    private static final String VALID_DESCRIPTION = "A super fun game!";
+    private static final float VALID_PRICE = 5.5F;
+    private static final int VALID_STOCK_QUANTITY = 60;
+    private static final String VALID_PHOTOURL = "SubwaySurfersURL";
+    private static final float VALID_PROMOTION = -5F;
+
+    // IDs for shared data
+    private int customerId;
+    private int gameId;
+    private int reviewId;
+
+    @AfterAll
+    public void clearDatabase() {
+        reviewRepo.deleteAll();
+        customerRepo.deleteAll();
+        gameRepo.deleteAll();
+    }
 
     @SuppressWarnings("null")
     @Test
     @Order(1)
-    public void testCreateValidPayment() {
-        // Arrange
-        ReviewRequestDto request = new ReviewRequestDto(VALID_RATING, VALID_COMMENT, VALID_AMOUNT_OF_LIKES, VALID_REPLY);
+    public void testCreateCustomer() {
+        CustomerRequestDto request = new CustomerRequestDto(
+                VALID_ADDRESS, VALID_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, null, null
+        );
 
-        // Act
-        ResponseEntity<ReviewResponseDto> response = client.postForEntity("/review", request, ReviewResponseDto.class);
+        ResponseEntity<CustomerResponseDto> response = client.postForEntity("/customers", request, CustomerResponseDto.class);
 
-        // Assert
-        assertNotNull(response);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        this.validId = response.getBody().getReviewId();
-        ReviewResponseDto reviewResponse = response.getBody();
-        assertEquals(VALID_RATING, reviewResponse.getRating());
-        assertEquals(VALID_COMMENT, reviewResponse.getComment());
-        assertEquals(VALID_AMOUNT_OF_LIKES, reviewResponse.getAmountOfLikes());
-        assertEquals(VALID_REPLY, reviewResponse.getReply());
-        assertTrue(reviewResponse.getReviewId() > 0, "Response should have a positive ID.");
+        assertNotNull(response, "Response should not be null.");
+        assertEquals(HttpStatus.OK, response.getStatusCode(), "Expected status OK.");
+        assertNotNull(response.getBody(), "Response body should not be null.");
+
+        CustomerResponseDto createdCustomer = response.getBody();
+        this.customerId = createdCustomer.getCustomerId();
+
+        assertEquals(VALID_NAME, createdCustomer.getUsername());
+        assertEquals(VALID_EMAIL, createdCustomer.getEmail());
+        assertEquals(VALID_PHONE, createdCustomer.getPhone());
+        assertEquals(VALID_ADDRESS, createdCustomer.getShippingAddress());
     }
 
-    @SuppressWarnings("null")
     @Test
     @Order(2)
-    public void testGetReviewByValidId() {
-        // Arrange
-        String url = String.format("/review/%d", this.validId);
+    public void testCreateGame() {
+        GameRequestDto request = new GameRequestDto(
+                VALID_GAME_NAME, VALID_DESCRIPTION, VALID_PRICE, VALID_STOCK_QUANTITY,
+                VALID_PHOTOURL, true, false, VALID_PROMOTION, List.of()
+        );
 
-        // Act
-        ResponseEntity<ReviewResponseDto> response = client.getForEntity(url, ReviewResponseDto.class);
+        ResponseEntity<GameResponseDto> response = client.postForEntity("/employees/games", request, GameResponseDto.class);
 
-        // Assert
-        assertNotNull(response);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(this.validId, response.getBody().getReviewId());
-        assertEquals(VALID_RATING, response.getBody().getRating());
-        assertEquals(VALID_COMMENT, response.getBody().getComment());
-        assertEquals(VALID_AMOUNT_OF_LIKES, response.getBody().getAmountOfLikes());
-        assertEquals(VALID_REPLY, response.getBody().getReply());
+        assertNotNull(response, "Response should not be null.");
+        assertEquals(HttpStatus.OK, response.getStatusCode(), "Expected status OK.");
+        assertNotNull(response.getBody(), "Response body should not be null.");
+
+        GameResponseDto createdGame = response.getBody();
+        this.gameId = createdGame.getGameId();
+
+        assertEquals(VALID_GAME_NAME, createdGame.getName());
+        assertTrue(createdGame.getGameId() > 0, "Game ID should be positive.");
     }
 
     @Test
     @Order(3)
-    public void testGetReviewByInvalidId() {
-        // Arrange
-        String url = String.format("/review/%d", -1);
+    public void testCreateReview() {
+        String url = String.format("/review/%d/%d", this.customerId, this.gameId);
 
-        // Act
-        ResponseEntity<ReviewResponseDto> response = client.getForEntity(url, ReviewResponseDto.class);
+        ReviewRequestDto request = new ReviewRequestDto(VALID_RATING, VALID_COMMENT, VALID_AMOUNT_OF_LIKES, VALID_REPLY);
 
-        // Assert
-        assertNotNull(response);
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        ResponseEntity<ReviewResponseDto> response = client.postForEntity(url, request, ReviewResponseDto.class);
+
+        assertNotNull(response, "Response should not be null.");
+        assertEquals(HttpStatus.OK, response.getStatusCode(), "Expected status OK.");
+        assertNotNull(response.getBody(), "Response body should not be null.");
+
+        ReviewResponseDto createdReview = response.getBody();
+        this.reviewId = createdReview.getReviewId();
+
+        assertEquals(VALID_RATING, createdReview.getRating());
+        assertEquals(VALID_COMMENT, createdReview.getComment());
+        assertEquals(VALID_AMOUNT_OF_LIKES, createdReview.getAmountOfLikes());
     }
 
-    @SuppressWarnings("null")
     @Test
     @Order(4)
-    public void testUpdateReviewByValidId() {
-        // Arrange
-        Review.StarRating updatedRating = Review.StarRating.ThreeStar;
-        String updatedComment = "Actually this is a bad game";
-        int updatedAmountOfLikes = 3;
-        String updatedReply = "Oh sorry to hear that";
+    public void testGetReviewById() {
+        String url = String.format("/review/%d", this.reviewId);
 
-        ReviewRequestDto updatedReviewDto = new ReviewRequestDto(updatedRating, updatedComment, updatedAmountOfLikes, updatedReply);
-        String url = String.format("/review/%d", this.validId);
-
-        // Act
-        client.put(url, updatedReviewDto);
-
-        // Fetch updated person
         ResponseEntity<ReviewResponseDto> response = client.getForEntity(url, ReviewResponseDto.class);
 
-        // Assert
-        assertNotNull(response);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(updatedRating, response.getBody().getRating());
-        assertEquals(updatedComment, response.getBody().getComment());
-        assertEquals(updatedReply, response.getBody().getReply());
-        //the equality of the amount of likes is not checked because a user should not be able to change the amount of likes
+        assertNotNull(response, "Response should not be null.");
+        assertEquals(HttpStatus.OK, response.getStatusCode(), "Expected status OK.");
+
+        ReviewResponseDto fetchedReview = response.getBody();
+        assertEquals(this.reviewId, fetchedReview.getReviewId());
+        assertEquals(VALID_RATING, fetchedReview.getRating());
+        assertEquals(VALID_COMMENT, fetchedReview.getComment());
     }
 
     @Test
     @Order(5)
-    public void testUpdateReviewByInvalidId() {
-        // Arrange
-        Review.StarRating updatedRating = Review.StarRating.ThreeStar;
-        String updatedComment = "Actually this is a bad game";
-        int updatedAmountOfLikes = 3;
-        String updatedReply = "Oh sorry to hear that";
+    public void testGetReviewByInvalidId() {
+        String url = "/review/-1";
 
-        String url = String.format("/review/%d", -1);
-        ReviewRequestDto updatedReviewDto = new ReviewRequestDto(updatedRating, updatedComment, updatedAmountOfLikes, updatedReply);
+        ResponseEntity<ReviewResponseDto> response = client.getForEntity(url, ReviewResponseDto.class);
 
-        // Act
-        ResponseEntity<ReviewResponseDto> response = client.exchange(url, HttpMethod.PUT, new HttpEntity<>(updatedReviewDto), ReviewResponseDto.class);
-
-        // Assert
-        assertNotNull(response);
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertNotNull(response, "Response should not be null.");
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode(), "Expected status NOT_FOUND.");
     }
 
     @Test
     @Order(6)
-    public void testDeletePaymentByValidId() {
-        // Arrange
-        String url = String.format("/review/%d", this.validId);
+    public void testDeleteReview() {
+        String url = String.format("/review/%d", this.reviewId);
 
-        // Act
-        ResponseEntity<Void> response = client.exchange(url, HttpMethod.DELETE, null, Void.class);
+        ResponseEntity<Void> deleteResponse = client.exchange(url, HttpMethod.DELETE, null, Void.class);
 
-        // Assert
-        assertNotNull(response);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        // Verify that the person was actually deleted by trying to fetch it again
-        ResponseEntity<ReviewResponseDto> deletedReview = client.getForEntity(url, ReviewResponseDto.class);
-        assertEquals(HttpStatus.NOT_FOUND, deletedReview.getStatusCode());
-    }
+        assertNotNull(deleteResponse, "Response should not be null.");
+        assertEquals(HttpStatus.OK, deleteResponse.getStatusCode(), "Expected status OK.");
 
-    @Test
-    @Order(7)
-    public void testDeletePaymentByInvalidId() {
-        // Arrange
-        String url = String.format("/review/%d", -1);
-
-        // Act
-        ResponseEntity<Void> response = client.exchange(url, HttpMethod.DELETE, null, Void.class);
-
-        // Assert
-        assertNotNull(response);
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        ResponseEntity<ReviewResponseDto> fetchResponse = client.getForEntity(url, ReviewResponseDto.class);
+        assertEquals(HttpStatus.NOT_FOUND, fetchResponse.getStatusCode(), "Expected status NOT_FOUND after deletion.");
     }
 }

@@ -45,6 +45,7 @@ public class CategoryIntegrationTests {
 
     @AfterAll
     public void clearDatabase() {
+
         repo.deleteAll();
     }
 

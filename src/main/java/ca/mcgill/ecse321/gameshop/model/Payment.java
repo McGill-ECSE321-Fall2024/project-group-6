@@ -185,7 +185,7 @@ public class Payment
     {
       existingCustomer.removePayment(this);
     }
-    customer.addPayment(this);
+    //customer.addPayment(this);
     wasSet = true;
     return wasSet;
   }

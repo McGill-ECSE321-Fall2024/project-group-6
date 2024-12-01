@@ -1,5 +1,6 @@
 package ca.mcgill.ecse321.gameshop.dto;
 
+import ca.mcgill.ecse321.gameshop.model.Customer;
 import jakarta.validation.constraints.NotBlank;
 
 /**
@@ -14,8 +15,11 @@ public class PaymentRequestDto {
     @NotBlank(message="CVC is required.")
     private int cvc;
 
+
     public PaymentRequestDto() {
     }
+
+
 
     public PaymentRequestDto(String billingAddress, long creditCardNumber, String expirationDate, int cvc) {
         this.billingAddress = billingAddress;
@@ -37,6 +41,7 @@ public class PaymentRequestDto {
     public String getExpirationDate() {
         return expirationDate;
     }
+
 
     public int getCvc() {
         return cvc;

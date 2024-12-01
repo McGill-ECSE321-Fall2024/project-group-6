@@ -167,18 +167,23 @@ public class GameService {
         }
         return null;
     }
+
     /**
-     * @author Maissa
-     * @param category
+     *
+     * Joseph
+     * @param name
      * @return
      */
     @Transactional
-    public List<Game> getGamesByCategory(Category category) {
+    public List<Game> getGamesByCategory(String name) {
         List<Game> games = new ArrayList<>();
         for (Game game : gameRepository.findAll()) {
-            if (game.getCategories().contains(category)) {
-                games.add(game); // add the games with category
+            for(int i=0; i<game.getCategories().size();i++){
+                if (Objects.equals(game.getCategories().get(i).getCategoryName(), name)) {
+                    games.add(game); // add the games with category
+                }
             }
+
 
         }
         return games;

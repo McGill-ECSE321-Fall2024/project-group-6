@@ -29,10 +29,13 @@ public class CommandController {
      * @paramcommand The command to create.
      * @return The created command, including their ID.
      */
-    @PostMapping("/command")
-    public CommandResponseDto createCommand(@RequestBody CommandRequestDto command) {
-        Command c = commandService.createCommand(command.getCommandDate(), command.getTotal());
-        return new CommandResponseDto(c);
+    @CrossOrigin(origins = "http://localhost:8087")
+    @PostMapping("/command/{id}")
+    public CommandResponseDto createCommand(@PathVariable int id, @RequestBody CommandRequestDto c) {
+
+        Command createdCommand = commandService.createCommand(id);
+
+        return new CommandResponseDto(createdCommand);
     }
 
     /**
@@ -40,6 +43,7 @@ public class CommandController {
      *
      * @return All the commands.
      */
+    @CrossOrigin(origins = "http://localhost:8087")
     @GetMapping("/command")
     public CommandListDto getAllCommands(){
         List<CommandResponseDto> commands = new ArrayList<>();
@@ -57,6 +61,7 @@ public class CommandController {
      * @param id The primary key of the command to find.
      * @return The command with the given ID.
      */
+    @CrossOrigin(origins = "http://localhost:8087")
     @GetMapping("/command/{id}")
     public CommandResponseDto getCommandById(@PathVariable int id){
         Command c = commandService.findCommandById(id);
@@ -69,6 +74,7 @@ public class CommandController {
      * @param id The primary key of the command to find.
      * @return void.
      */
+    @CrossOrigin(origins = "http://localhost:8087")
     @DeleteMapping("/command/{id}")
     public void deleteCommand(@PathVariable int id){
         commandService.deleteCommand(id);

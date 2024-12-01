@@ -1,3 +1,4 @@
+
 package ca.mcgill.ecse321.gameshop.dto;
 
 import jakarta.validation.constraints.NotBlank;
@@ -8,16 +9,12 @@ public class CommandRequestDto {
     private float totalPrice;
     @NotBlank(message = "Command date must not be blank.")
     private String commandDate;
-
+    private int customerID;
     // Jackson needs a default constructor, but it doesn't need to be public
-    public CommandRequestDto() {
-    }
 
-    // Constructor
-    public CommandRequestDto(float totalPrice, String commandDate) {
-        this.totalPrice = totalPrice;
-        this.commandDate = commandDate;
-    }
+
+    public CommandRequestDto(){}
+
 
     public float getTotal() {
         return totalPrice;
@@ -25,5 +22,8 @@ public class CommandRequestDto {
 
     public String getCommandDate() {
         return commandDate;
+    }
+    public int getCustomerID(){
+        return customerID;
     }
 }

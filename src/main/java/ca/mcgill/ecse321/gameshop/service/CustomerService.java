@@ -11,11 +11,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import ca.mcgill.ecse321.gameshop.exception.GameShopException;
-import ca.mcgill.ecse321.gameshop.model.Customer;
-import ca.mcgill.ecse321.gameshop.model.Game;
-import ca.mcgill.ecse321.gameshop.model.Person;
+import ca.mcgill.ecse321.gameshop.model.*;
 import ca.mcgill.ecse321.gameshop.repository.CustomerRepository;
 import ca.mcgill.ecse321.gameshop.repository.GameRepository;
+import ca.mcgill.ecse321.gameshop.repository.PaymentRepository;
 import ca.mcgill.ecse321.gameshop.repository.PersonRepository;
 import jakarta.transaction.Transactional;
 
@@ -27,6 +26,8 @@ public class CustomerService {
     private PersonRepository personRepo;
     @Autowired
     private GameRepository gameRepo;
+    @Autowired
+    private PaymentRepository paymentRepo;
 
     /**
      * Service method to create a customer
@@ -38,7 +39,10 @@ public class CustomerService {
     @Transactional
     public Customer createCustomer(Person aPerson, String aShippingAddress) {
         Customer c = new Customer(aPerson, aShippingAddress);
-
+        Person customerPresenceCheck= personRepo.findPersonByEmail(aPerson.getEmail());
+        if(customerPresenceCheck!=null){
+            throw new GameShopException(HttpStatus.BAD_REQUEST, String.format("You already have an account, please sign in"));
+        }
         if(c.getPerson().getPassword().length()<10){
             throw new GameShopException(HttpStatus.LENGTH_REQUIRED, String.format("Password needs to be at least 10 characters long"));
         }
@@ -160,12 +164,14 @@ public class CustomerService {
         if(game==null){
             throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Game can not be null"));
         }
+
         List<Game> gamesCart= customerFromDB.getCart();
 
         if(customerFromDB.getCart()==null){
             gamesCart=  new ArrayList<>();
 
         }
+
 
         gamesCart.add(game);
         customerFromDB.setCart(gamesCart);
@@ -175,28 +181,31 @@ public class CustomerService {
     /**
      * Service method to remove game from customer cart
      * @param id
-     * @param game
+     * @param g
      * @return
      */
     @Transactional
-    public Customer deleteGameFromCustomerCart(int id,Game game) {
+    public Customer deleteGameFromCustomerCart(int id,Game g) {
         Customer customerFromDB= customerRepo.findCustomerByRoleId(id);
         if (customerFromDB== null) {
             throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Customer with ID " + id + " does not exist."));
         }
-        if(game==null){
-            throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Game can not be null"));
-        }
-        List<Game> gamesCart = customerFromDB.getCart();
-        if (gamesCart == null) {
-            gamesCart = new ArrayList<>();
+
+        List<Game> gamesCartFromDb = customerFromDB.getCart();
+        List<Game> gamesCart = new ArrayList<>();
+
+        for (Game game : gamesCartFromDb) {
+            if (game.getName() != g.getName()) {
+                gamesCart.add(game);
+            }
         }
 
-        gamesCart.remove(game);
         customerFromDB.setCart(gamesCart);
 
         return customerRepo.save(customerFromDB);
     }
+
+
 
     /**
      * Service method to add game to customer wishlist
@@ -207,18 +216,22 @@ public class CustomerService {
     @Transactional
     public Customer addGameToCustomerWishList(int id, Game game) {
         Customer customerFromDB= customerRepo.findCustomerByRoleId(id);
+
         if (customerFromDB== null) {
             throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Customer with ID " + id + " does not exist."));
         }
         if(game==null){
             throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Game can not be null"));
         }
+
+
         List<Game> gamesWishlist= customerFromDB.getWishlist();
         if(customerFromDB.getWishlist()==null){
             gamesWishlist=  new ArrayList<>();
         }
+
         gamesWishlist.add(game);
-        //gameRepo.save(game);
+
         customerFromDB.setWishlist(gamesWishlist);
 
         return customerRepo.save(customerFromDB);
@@ -227,24 +240,22 @@ public class CustomerService {
     /**
      * Service method to remove a game from a customer wishlist
      * @param id
-     * @param game
+     * @param g
      * @return
      */
     @Transactional
-    public Customer deleteGameFromCustomerWishList(int id,Game game) {
+    public Customer deleteGameFromCustomerWishList(int id,Game g) {
         Customer customerFromDB= customerRepo.findCustomerByRoleId(id);
         if (customerFromDB== null) {
             throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Customer with ID " + id + " does not exist."));
         }
-        if(game==null){
-            throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Game can not be null"));
+        List<Game> gamesWishlist = new ArrayList<>();
+        List<Game> gamesWishlistFromDb = customerFromDB.getWishlist();
+        for (Game game : gamesWishlistFromDb) {
+            if (game.getName() != g.getName()) {
+                gamesWishlist.add(game);
+            }
         }
-        List<Game> gamesWishlist = customerFromDB.getWishlist();
-        if (gamesWishlist == null) {
-            gamesWishlist = new ArrayList<>();
-        }
-
-        gamesWishlist.remove(game);
 
 
         customerFromDB.setWishlist(gamesWishlist);
@@ -266,5 +277,39 @@ public class CustomerService {
 
         Game game= new Game(aName,aDescription,aPrice,aStockQuantity,aPhotoURL);
         return gameRepo.save(game);
+    }
+
+    /**
+     * Get all the payment methods of a customer
+     * @param id
+     * @return
+     */
+    @Transactional
+    public List<Payment> getCustomerPaymentMethods(int id){
+        Customer customer= customerRepo.findCustomerByRoleId(id);
+       List <Payment> payments= (List<Payment>) paymentRepo.findAll();
+        for (int i=0; i<payments.size();i++){
+            if(payments.get(i).getCustomer()!=customer){
+                payments.remove(payments.get(i));
+            }
+        }
+        return payments;
+    }
+    /**
+     * Service method to extract customerId
+     * @param id
+     * @return
+     */
+    @Transactional
+    public int getCustomerCustomerId(int id) {
+
+        List <Customer> customers= (List<Customer>) customerRepo.findAll();
+
+        for (int i=0; i< customers.size();i++){
+            if(customers.get(i).getPerson().getUserId()==id){
+                return customers.get(i).getRoleId();
+            }
+        }
+        return -1;
     }
 }

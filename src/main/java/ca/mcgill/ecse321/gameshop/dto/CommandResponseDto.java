@@ -1,12 +1,15 @@
+
 package ca.mcgill.ecse321.gameshop.dto;
 
 import ca.mcgill.ecse321.gameshop.model.Command;
+import ca.mcgill.ecse321.gameshop.model.Customer;
 
 public class CommandResponseDto {
 
     private int commandId;
-    private String commandDate;
-    private float totalPrice;
+    public String commandDate;
+    public float totalPrice;
+    private Customer customer;
 
     // Jackson needs a default constructor, but it doesn't need to be public
     public CommandResponseDto() {
@@ -17,6 +20,8 @@ public class CommandResponseDto {
         this.commandId = c.getCommandId();
         this.commandDate = c.getCommandDate();
         this.totalPrice = c.getTotalPrice();
+        this.customer=c.getCustomer();
+        System.out.println("response: "+ c.getTotalPrice());
     }
 
     // Getters
@@ -28,7 +33,10 @@ public class CommandResponseDto {
         return commandDate;
     }
 
-    public float getTotal() {
+    public float getTotalPrice() {
         return totalPrice;
+    }
+    public Customer getCustomer(){
+        return customer;
     }
 }

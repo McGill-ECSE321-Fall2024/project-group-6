@@ -120,26 +120,25 @@ public class PersonIntegrationTests {
     public void testLogin() {
         // Arrange
         PersonRequestDto request = new PersonRequestDto(VALID_NAME, VALID_EMAIL, VALID_PASSWORD, VALID_PHONE);
-    
+
         // Act
         ResponseEntity<PersonResponseDto> response = client.postForEntity("/login", request, PersonResponseDto.class);
-    
+
         // Assert
         assertNotNull(response.getBody());
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(VALID_EMAIL, response.getBody().getEmail());
     }
-    
     @Test
     @Order(6)
     public void testInvalidLogin() {
         // Arrange
         String invalidEmail = "wrongemail@mail.com";
         PersonRequestDto request = new PersonRequestDto(VALID_NAME, invalidEmail, VALID_PASSWORD, VALID_PHONE);
-    
+
         // Act
         ResponseEntity<PersonResponseDto> response = client.postForEntity("/login", request, PersonResponseDto.class);
-    
+
         // Assert
         assertNotNull(response);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
@@ -160,7 +159,7 @@ public class PersonIntegrationTests {
 
         // Act
         client.put(url, updatedPersonDto);
-    
+
         // Fetch updated person
         ResponseEntity<PersonResponseDto> response = client.getForEntity(url, PersonResponseDto.class);
 
@@ -232,12 +231,12 @@ public class PersonIntegrationTests {
         String invalidEmail = "Pierre@gmail.com";
         String invalidPassword = "";
         String invalidPhone = "123";
-    
+
         PersonRequestDto invalidPersonDto = new PersonRequestDto(invalidName, invalidEmail, invalidPassword, invalidPhone);
-    
+
         // Act
         ResponseEntity<String> response = client.postForEntity("/person", invalidPersonDto, String.class);
-    
+
         // Assert
         assertNotNull(response);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());

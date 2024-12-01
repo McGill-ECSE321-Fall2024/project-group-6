@@ -34,7 +34,7 @@ public class PersonService {
         if (aPhone == null) {
             throw new GameShopException(HttpStatus.BAD_REQUEST, String.format("Phone number can not be null"));
         }
-        
+
         if (aUsername == null) {
             throw new GameShopException(HttpStatus.BAD_REQUEST, String.format("Username can not be null"));
         }
@@ -53,7 +53,7 @@ public class PersonService {
 
         // Throw an exception if no person is found
         if (p == null) {
-			throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Person with ID " + id + " does not exist."));
+            throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Person with ID " + id + " does not exist."));
         }
 
         return p;
@@ -65,7 +65,7 @@ public class PersonService {
         Person p = personRepo.findPersonByUserId(id);
 
         if (p == null) {
-			throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Person with ID " + id + " does not exist."));
+            throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Person with ID " + id + " does not exist."));
         }
 
         if(aPassword.length()<10){
@@ -98,9 +98,9 @@ public class PersonService {
         Person p = personRepo.findPersonByUserId(id);
 
         if (p == null) {
-			throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Person with ID " + id + " does not exist."));
+            throw new GameShopException(HttpStatus.NOT_FOUND, String.format("Person with ID " + id + " does not exist."));
         }
-        
+
         personRepo.delete(p);
     }
 
