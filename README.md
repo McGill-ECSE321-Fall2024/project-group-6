@@ -96,5 +96,6 @@ Table 3 : Roles of each team member Deliverable 3: <br/>
 |             | Demo         |                 |
 | Joseph      | Build system and CI specification  |                   |
 |             | Sign Up/Sign in and Home Page (Backend)   |                 |
+|             | Employee Dashboard, Account and Game Page (Backend)          |                  |
 |             | Demo                                                  |                  |
 | Mario       | Customer Dashboard and Account (Frontend/Backend)             |                   |
