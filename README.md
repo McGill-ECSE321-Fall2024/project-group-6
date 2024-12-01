@@ -80,3 +80,21 @@ Table 2 : Roles of each team member Deliverable 2: <br/>
 |             | Unit tests for Person and Guest                      |     2              |
 |             | Integration tests for Person, Guest, Command, and Game                                                     |        11           |
 
+Table 3 : Roles of each team member Deliverable 3: <br/>
+| **Name**    | **Role**                                            | **Number of Hours** |
+|-------------|-----------------------------------------------------|---------------------|
+| Laurence    | Manager Dashboard, Game Page and Manage employees (Frontend/Backend)              |                   |
+|             | Update ReadMe file                                |                   |
+|             | Presentation slides                     |                  |
+| Annabelle   | Customer Game Page and Account (Frontend/Backend)                   |                  |
+|             | Presentation slides                  |                |
+| Marine      | Employee Dashboard, Account and Game Page (Frontend)          |                  |
+|             | Meeting Minutes                     |               |
+|             | Key Decisions                     |                  |
+|             | Presentation slides             |                 |
+| Maissa      | Customer Wishlist and Checkout (Frontend/Backend)    |                  |
+|             | Demo         |                 |
+| Joseph      | Build system and CI specification  |                   |
+|             | Sign Up/Sign in and Home Page (Backend)   |                 |
+|             | Demo                                                  |                  |
+| Mario       | Customer Dashboard and Account (Frontend/Backend)             |                   |
