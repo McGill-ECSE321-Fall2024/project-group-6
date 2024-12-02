@@ -1,4 +1,5 @@
 <template>
+
     <link href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.4/css/boxicons.min.css" rel="stylesheet">
     <header>
         <nav class="navbar">
@@ -11,11 +12,11 @@
                     <i class='bx bx-search'></i>
                 </div>
                 <div class="iconAccount">
-                    <img src="./account.png">
+                    <img src="../assets/account.png">
                 </div>
-                <RouterLink to="/wishlist"><img src="./White-Heart.png"></RouterLink>
+                <RouterLink @click="goToCart"><img src="../assets/White-Heart.png" @click="goToCart"></RouterLink>
 
-                <RouterLink to="/checkout"><img src="./pngaaa.com-5034351.png"></RouterLink>
+                <RouterLink @click="goToCart"><img src="../assets/pngaaa.com-5034351.png" @click="goToCart"></RouterLink>
             </div>
         </nav>
     </header>
@@ -33,11 +34,11 @@
                     <div v-if="showPopup" class="popup">
                         {{ popupMessage }}
                     </div>
-                    <a href="/homepage">Keep shopping</a>
+                    <a @click="goToCustomerMainPage">Keep shopping</a>
                     <div class="list">
-                        <div v-for="game in wishlist" :key="game.id" class="game-card">
+                        <div v-for="game in customer.wishlist" :key="game.id" class="game-card">
                             <div class="item">
-                                <img :src="game.imageUrl">
+                                <img :src="game.photoURL">
                                 <div class="info">
                                     <div class="name">{{ game.name }}</div>
                                     <p><strong>Description:</strong> {{ game.description }}</p>
@@ -61,91 +62,116 @@
 <script>
 import axios from "axios";
 import { RouterLink } from 'vue-router';
-
+import router from '@/router';
 export default {
+    props: ['customerId', 'loggedIn'],
     data() {
         return {
-            wishlist: [
-                {
-                    id: 1,
-                    name: 'Cyberpunk 2077',
-                    imageUrl: "https://upload.wikimedia.org/wikipedia/en/9/9f/Cyberpunk_2077_box_art.jpg",
-                    price: 59.99,
-                    description: 'An open-world, action-adventure story set in Night City.',
-                    stockQuantity: 20
-                },
-                {
-                    id: 2,
-                    name: 'Rainbow 6 Siege',
-                    imageUrl: 'https://upload.wikimedia.org/wikipedia/en/4/47/Tom_Clancy%27s_Rainbow_Six_Siege_cover_art.jpg',
-                    price: 39.99,
-                    description: 'A tactical, team-based FPS where players engage in strategic battles with unique operators.',
-                    stockQuantity: 15
-                },
-                {
-                    id: 3,
-                    name: 'Red Dead Redemption 2',
-                    imageUrl: 'https://upload.wikimedia.org/wikipedia/en/4/44/Red_Dead_Redemption_II.jpg',
-                    price: 49.99,
-                    description: 'An epic tale of life in America’s unforgiving heartland.',
-                    stockQuantity: 10
-                }
-            ],
-            cart: [],
+            customer: {
+                shippingAddress: "",
+                username: "",
+                email: "",
+                phone: "",
+                customerId: null,
+                wishlist: [],
+                cart: []
+
+            },
             showPopup: false,
             popupMessage: "",
+            customerID:0
         };
     },
     methods: {
-
-        async fetchGames() {
+        async fetchWishlist() {
             try {
-                const response = await axios.get('http://localhost:8080/customers');
-                this.games = response.data;
+                const response = await axios.get(`http://localhost:8080/customers/${this.customerID}`);
+                this.customer = response.data;
+
             } catch (error) {
-                console.error('Error fetching games:', error);
+                console.error("Error fetching wishlist:", error);
             }
         },
-        addToCart(game) {
-            this.cart.push(game);
-            this.wishlist = this.wishlist.filter(item => item.id !== game.id);
-            this.popupMessage = `${game.name} was added to your cart.`;
-            this.showPopup = true;
 
-            setTimeout(() => {
-                this.showPopup = false;
-            }, 3000);
+        async addToCart(game) {
+            try {
+                const response = await axios.put(`http://localhost:8080/customers/${this.customer.customerId}/cart/add/${game.gameId}`);
+
+                // Update local state with the updated cart
+                this.customer = response.data; // Assuming the response contains the updated customer object
+                await axios.put(`http://localhost:8080/customers/${this.customer.customerId}/wishlist/${game.gameId}`);
+
+                // Update frontend state
+                this.fetchWishlist();
+
+                // Display success message
+                this.popupMessage = `${game.name} was added to your cart.`;
+                this.showPopup = true;
+                setTimeout(() => (this.showPopup = false), 3000);
+
+            } catch (error) {
+                console.error("Error adding game to cart:", error);
+            }
         },
-        removeFromWishlist(game) {
-            this.wishlist = this.wishlist.filter(item => item.id !== game.id);
-            this.popupMessage = `${game.name} was removed from the wishlist.`;
-            this.showPopup = true;
+        async removeFromWishlist(game) {
+            try {
+                // Remove game from the wishlist in backend
+                await axios.put(`http://localhost:8080/customers/${this.customer.customerId}/wishlist/${game.gameId}`);
 
-            setTimeout(() => {
-                this.showPopup = false;
-            }, 3000);
+                // Update frontend state
+                this.fetchWishlist();
+
+                // Show confirmation message
+                this.popupMessage = `${game.name} was removed from the wishlist.`;
+                this.showPopup = true;
+
+                // Hide popup after 3 seconds
+                setTimeout(() => {
+                    this.showPopup = false;
+                }, 3000);
+            } catch (error) {
+                console.error("Error removing game from wishlist:", error);
+            }
         },
-        async addWishlistToCart() {
-            this.cart.push(this.wishlist);
-            this.wishlist = [];
-            this.popupMessage = `Wishlist was added to your cart.`;
-            this.showPopup = true;
-
-            setTimeout(() => {
-                this.showPopup = false;
-            }, 3000);
-        }
+        async goToCustomerMainPage(){
+            router.push({
+          name: 'customer-homepage',
+          params: {
+            customerId: this.customerID,
+            loggedIn: true
+          }
+          
+        });
+        },
+        async goToCart() {
+        router.push({
+          name: 'customer-cart',
+          params: {
+            customerId: this.customerId,
+            loggedIn: true
+          }
+          
+        }); 
     }
-}
+    },
+    created() {
+  
+        this.customerID = this.customerId;
+        this.fetchWishlist();
+    }
+ 
+
+};
 </script>
 
-<style>
+<style scoped>
 * {
     margin: 0;
     padding: 0;
     text-decoration: none;
     list-style: none;
     font-family: "poppins";
+
 }
 
 
@@ -225,9 +251,9 @@ header img {
 
 .main-header h5 {
     font-size: 20px;
-    font-weight: 550px;
-    margin-top: 10px;
-    margin-bottom: 15px;
+    font-weight: bold;
+    padding-bottom: 10px;
+    padding-left: 5px;
 }
 
 .main-header h2 {
@@ -235,11 +261,12 @@ header img {
     font-size: 38px;
     width: 500px;
     margin-top: 10px;
-    margin-bottom: 15px;
+
 }
 
 .main-header .a {
     margin-bottom: 30px;
+
 }
 
 .main-header .btn {
@@ -259,9 +286,9 @@ header img {
 
 
 .wishlist .container {
-    padding: 200px;
+    padding: 150px 200px;
     align-items: center;
-
+    min-height: 100vh;
 }
 
 .wishlist,
@@ -280,11 +307,10 @@ html {
 .wishlist .returnCart .list {
     border-top: 1px solid #eee;
     padding: 20px 0;
-    ;
 }
 
 .returnCart .list .item img {
-    height: 100%;
+    height: 90px;
 }
 
 .wishlist .returnCart .list .item {

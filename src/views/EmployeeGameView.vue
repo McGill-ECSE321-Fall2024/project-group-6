@@ -131,6 +131,7 @@ export default {
       }
     },
     async saveAfterCategoryChange(){
+      this.categoryIdsArray = [];
         try {
         
         await axios.put(`http://localhost:8080/games/id/${this.gameID}`, this.game);
@@ -236,7 +237,7 @@ export default {
 
 };
 </script>
-<style>
+<style scoped>
 * {
   margin: 0;
   padding: 0;

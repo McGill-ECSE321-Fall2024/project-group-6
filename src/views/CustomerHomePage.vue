@@ -14,13 +14,19 @@
             <i class="bx bx-search" @click="searchByName"></i>
           </div>
           </div>
-          <div class="nav-buttons">
-          <button @click="goToEmployeeAccount" ><img src="../assets/person-circle.svg" class="account-img" @click="goToEmployeeAccount"></button>
+          <div class="user-options">
+            <div class="dropdown">
+                <button class="dropbtn"><img src="../assets/person-circle.svg" class="account-img"></button>
+                <div class="nav-buttons">
+                    <button @click="goToCustomerAccount" >Account</button>
+                    <button @click="goToCustomerOrders" class="order-btn">Orders</button>
+                    <button @click="logout" class="logout-btn">Log Out</button>
+                    
+                </div>
+            </div>
+            <button @click="goToCustomerCart"><img src="../assets/pngaaa.com-5034351.png" class="cart-img" @click="goToCustomerCart"></button>
+            <button @click="goToCustomerWishlist"><img src="../assets/White-Heart.png" class="wishlist-img" @click="goToCustomerWishlist"></button>
         </div>
-        <div class="nav-buttons">
-          <button @click="logout" class="logout-btn">Logout</button>
-        </div>
-        
       </nav>
     </header>
     <div class="container">
@@ -46,21 +52,15 @@
             <p class="game-price"><strong>Price:</strong> ${{ game.price }}</p>
             <p class="game-description"><strong>Description:</strong> {{ game.description }}</p>
             <p class="game-stock"><strong>Stock:</strong> {{ game.stockQuantity }} left</p>
-            <button class="btn-danger" @click="viewGameDetails(game.gameId)">Edit</button>
-            <button class="btn-dangers" @click="requestDelete(game.gameId)">Request Delete</button>
+            <div class="button-container">
+                <button class="btn-add-to-cart" @click="addToCart(game.gameId)">Add to Cart</button>
+                <button class="btn-add-to-wishlist" @click="addToWishlist(game.gameId)">Add to Wishlist</button>
+            </div>
+
           </div>
         </div>
       </main>
-  
-      <aside class="tasks-box">
-        <h3 >Your Assigned Tasks: </h3>
-        <ul v-if="tasks.length > 0">
-          <li v-for="task in tasks" >
-            <h4>{{ task }}</h4>
-          </li>
-        </ul>
-        <p v-else>No tasks assigned</p>
-      </aside>
+
     </div>
   </template>
   
@@ -72,7 +72,7 @@ import { RouterLink } from 'vue-router';
 import router from '@/router';
 
 export default {
-props: ['employeeId', 'loggedIn'],
+props: ['customerId', 'loggedIn'],
 
   data() {
     return {
@@ -81,7 +81,7 @@ props: ['employeeId', 'loggedIn'],
       categories: [],
       games: [],
       tasks: [],
-      employeeID: 0,
+      customerID: 0,
     };
   },
   methods: {
@@ -107,7 +107,7 @@ props: ['employeeId', 'loggedIn'],
     async fetchTasks() {
       try {
         const response = await axios.get(
-          `http://localhost:8080/employees/${this.employeeID}`
+          `http://localhost:8080/customers/${this.customerId}`
         );
         const taskStrings = response.data["assignedTasks"];
         for (let i = 0; i < taskStrings.length; i++) {
@@ -120,12 +120,32 @@ props: ['employeeId', 'loggedIn'],
       }
     },
     viewGameDetails(gameId) {
-      this.$router.push({ name: "employee-gamepage", 
+      this.$router.push({ name: "customer-gamepage", 
       params: { 
         gameId: gameId,
-        employeeId:this.employeeID,
+        customerId:this.customerId,
         loggedIn:true
       } });
+    },
+    async addToWishlist(id) {
+      try {
+        
+        const response = await axios.put(`http://localhost:8080/customers/${this.customerID}/wishlist/add/${id}`,null);
+        this.games = [response.data];
+      } catch (error) {
+        console.error('Error searching for games:', error);
+        alert(response.data);
+      }
+    },
+    async addToCart(id) {
+      try {
+        
+        const response = await axios.put(`http://localhost:8080/customers/${this.customerID}/cart/add/${id}`,null);
+        this.games = [response.data];
+      } catch (error) {
+        console.error('Error searching for games:', error);
+        alert(response.data);
+      }
     },
 
     async searchByName() {
@@ -150,47 +170,65 @@ props: ['employeeId', 'loggedIn'],
         }
       }
     },
-    async requestDelete() {
-      try {
-       this.game.toBeRemoved=true;
-        await axios.put(`http://localhost:8080/games/id/${this.gameID}`, this.game);
-        alert("Changes saved successfully!");
-        //await this.fetchGameDetails();
-      } catch (error) {
-        console.error("Error saving game details:", error);
-        alert(error);
-      }
-    },
-    async goToEmployeeAccount(){
+    async goToCustomerAccount(){
       router.push({
-          name: 'employee-account',
+          name: 'customer-account',
           params: {
-            employeeId: this.employeeID,
+            customerId: this.customerId,
             loggedIn: true
           }
           
         });
-        
     },
+
     logout() {
         this.$router.push('/SignIn');
-      }
-  },
-  created() {
-    
-    if (!this.isLoggedIn()) {
-      this.$router.push({ name: 'sign in' });
-      alert('Please log in before accessing this page.');
-    } else {
-     
-      this.employeeID = this.employeeId; 
-      console.log(this.employeeID);
-      this.fetchCategories();
-      this.fetchGames();
-      this.fetchTasks();
+    },
+
+    async goToCustomerOrders() {
+        router.push({
+          name: 'customer-orders',
+          params: {
+            customerId: this.customerId,
+            loggedIn: true
+          }
+          
+        }); 
+    },
+    async goToCustomerCart() {
+        router.push({
+          name: 'customer-cart',
+          params: {
+            customerId: this.customerId,
+            loggedIn: true
+          }
+          
+        }); 
+    },
+    async goToCustomerWishlist() {
+        router.push({
+          name: 'customer-wishlist',
+          params: {
+            customerId: this.customerId,
+            loggedIn: true
+          }
+          
+        });
     }
   },
-};
+  created() {
+    if (!this.isLoggedIn()) {
+        this.$router.push({ name: 'sign in' });
+        alert('Please log in before accessing this page.');
+      } else {
+        this.customerID = this.customerId;
+        console.log(this.customerId);
+        this.fetchCategories();
+        this.fetchGames();
+        this.fetchTasks();
+    }
+  }
+}
 </script>
 
   
@@ -201,6 +239,37 @@ props: ['employeeId', 'loggedIn'],
   text-decoration: none;
   list-style: none;
   font-family: "poppins";
+}
+
+.user-options {
+  display: flex; /* Aligns child elements (buttons) horizontally */
+  gap: 10px; /* Adds spacing between buttons (adjust as needed) */
+  align-items: center; /* Vertically aligns buttons if needed */
+}
+
+.user-options button {
+  background: none; /* Remove default button background */
+  border: none; /* Remove default button border */
+  padding: 0; /* Remove padding around buttons */
+  cursor: pointer;
+}
+
+.user-options img {
+  width: 30px; /* Adjust size of images */
+  height: 30px;
+}
+
+.dropdown .nav-buttons {
+  display: none; /* Initially hide dropdown content */
+  position: absolute;
+  background-color: white;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown:hover .nav-buttons {
+  display: block; /* Show dropdown on hover */
 }
 
 
@@ -429,18 +498,6 @@ transition: transform 0.2s;
     font-weight: bold; /* Bold text */
     transition: background-color 0.3s; /* Smooth transition */
   }
-  .btn-dangers {
-    background-color: red; /* Yellow background */
-    color: black; /* Black text */
-    border: none; /* No border */
-    padding: 10px 20px; /* Padding for the button */
-    border-radius: 5px; /* Rounded corners */
-    font-size: 16px; /* Font size */
-    cursor: pointer; /* Pointer cursor on hover */
-    font-weight: bold; /* Bold text */
-    transition: background-color 0.3s; /* Smooth transition */
-  }
-
 
   .btn-danger:hover {
     background-color: darkorange; /* Darker shade on hover */
@@ -451,5 +508,34 @@ transition: transform 0.2s;
   margin-bottom: 0.5rem;
   color: black;
 }
+.button-container {
+    display: flex;
+    gap: 1rem; /* Add a gap between the buttons if needed */
+}
+
+.btn-add-to-cart, .btn-add-to-wishlist {
+    background-color: #28a745; /* Green background for Add to Cart button */
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+}
+
+.btn-add-to-wishlist {
+    background-color: #ffc107; /* Yellow background for Add to Wishlist button */
+}
+
+.btn-add-to-cart:hover {
+    background-color: #218838; /* Darker green on hover */
+}
+
+.btn-add-to-wishlist:hover {
+    background-color: #e0a800; /* Darker yellow on hover */
+}
+
 
   </style>
