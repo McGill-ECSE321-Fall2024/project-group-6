@@ -202,8 +202,8 @@ props: ['customerId', 'loggedIn'],
         this.fetchGames();
         this.fetchTasks();
     }
-  }
-}
+  },
+};
 </script>
 
   

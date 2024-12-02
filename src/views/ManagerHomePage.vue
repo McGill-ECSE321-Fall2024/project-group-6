@@ -236,7 +236,12 @@ props: ['loggedIn'],
       }
     },
 
-    created() {
+    logout() {
+      this.$router.push('/SignIn');
+    }
+  },
+
+  created() {
       if (!this.isLoggedIn()) {
         this.$router.push({ name: 'sign in' });
         alert('Please log in before accessing this page.');
@@ -248,12 +253,7 @@ props: ['loggedIn'],
         this.filterByCategory();
       }
     },
-
-    logout() {
-      this.$router.push('/SignIn');
-    },
-  }
-  }
+  };
 </script>
 
   

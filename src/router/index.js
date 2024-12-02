@@ -21,7 +21,7 @@ const router = createRouter({
     },
 
     {
-      path: '/Homepage',
+      path: '/',
       name: 'event-details',
       component: HomePageView
     },
