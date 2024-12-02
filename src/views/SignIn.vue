@@ -68,7 +68,7 @@ export default {
             */
         localStorage.setItem('loggedIn', 'true'); // Set the logged-in status
       if (this.userType === 'employee') {
-        console.log(this.getRoleID (response.data.userId));
+        //console.log(this.getRoleID (response.data.userId));
         
         router.push({
           name: 'employee-homepage',
@@ -80,6 +80,36 @@ export default {
         });
         
       }
+      else if(this.userType === 'manager'){
+       
+        //console.log(this.getRoleID (response.data.userId));
+        
+        router.push({
+          name: 'manager-homepage',
+          params: {
+            managerId: await this.getManagerID(response.data.userId),
+            loggedIn: true
+          }
+          
+        });
+        
+      
+      }
+      else if(this.userType === 'customer'){
+       
+       //console.log(this.getRoleID (response.data.userId));
+       
+       router.push({
+         name: 'customer-homepage',
+         params: {
+           customerId: await this.getCustomerID(response.data.userId),
+           loggedIn: true
+         }
+         
+       });
+       
+     
+     }
 
            this.errorMessage="Successful login";
         } 
@@ -102,7 +132,26 @@ export default {
         } catch (error) {
           console.error('Error filtering games by category:', error);
         }
+      },
+      async getManagerID(id) {
+      
+      try {
+        const response = await axios.get(`http://localhost:8080/manager/id/${id}`);
+        return response.data;
+      } catch (error) {
+        console.error( error);
       }
+    },
+    async getCustomerID(id) {
+      
+      try {
+        const response = await axios.get(`http://localhost:8080/customers/id/${id}`);
+        return response.data;
+      } catch (error) {
+        console.error( error);
+      }
+    }
+    
     },
   
     clearInputs() {

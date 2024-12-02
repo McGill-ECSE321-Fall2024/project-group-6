@@ -82,6 +82,7 @@ export default {
       searchQuery: "",
       categoryId: "",
       categoryIdRemove:"",
+      categories:"",
       game: {
         name: "",
         description: "",
@@ -130,6 +131,7 @@ export default {
       }
     },
     async saveAfterCategoryChange(){
+      this.categoryIdsArray = [];
         try {
         
         await axios.put(`http://localhost:8080/games/id/${this.gameID}`, this.game);
@@ -142,22 +144,40 @@ export default {
     },
    async addCategory(id) {   
     var check="false";
+    this.categoryIdsArray=[];
+    var counter=0;
+    await this.fetchCategories();
+    
+    for(var j=0; j<this.categories.length;j++){
+      console.log(this.categories[j]["id"]);
+      if(this.categories[j]["id"]!==id){
+        counter++;
+      }
+    }
+    if(counter==this.categories.length){
+      this.fetchGameDetails();
+      alert("The category does not exist");
+    }
+    else{
         this.categoryIdsArray.push(id);
         for(var i=0;i<this.game.categories.length;i++){
             if(this.game.categories[i]["categoryId"]!==id){
-            this.categoryIdsArray.push(this.game.categories[i]["categoryId"]);
-            }else{
+            this.categoryIdsArray.push(this.game.categories[i]["categoryId"]);        
+            }
+            else{
               check="true";
-              //alert("The category already is assigned to this game");
             }
         }
         this.game.categories=this.categoryIdsArray;
-        if(check =="false"){
+        if(check =="false" ){
+        this.game.categories=this.categoryIdsArray;
         await this.saveAfterCategoryChange();
         }else{
-          alert("The category already is assigned to this game");
-          await this.fetchGameDetails();
+          this.fetchGameDetails();
+            alert("The category already is assigned to this game");
+          
         }
+      }
     },
     goToEmployeeHome() {
         router.push({
@@ -169,21 +189,32 @@ export default {
           
         });
   },
+  async fetchCategories() {
+      try {
+        const response = await axios.get('http://localhost:8080/categories');
+        this.categories = response.data["categories"];
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    },
   logout() {
         this.$router.push('/SignIn');
       },
       async removeCategory(id){
+        this.categoryIdsArray=[];
         var counter=0;
         var check=this.game.categories.length;
         for(var i=0;i<this.game.categories.length;i++){
-            if(this.game.categories[i]["categoryId"]!==id){
+         console.log( this.game.categories[i]["categoryId"]+" the id I am passig is "+id);;
+            if(this.game.categories[i]["categoryId"]!=id){
+              console.log("I am here");
             this.categoryIdsArray.push(this.game.categories[i]["categoryId"]);
             counter++;
             }
         }
         this.game.categories=this.categoryIdsArray;
-        console.log(this.categoryIdsArray);
-        console.log(this.game.categories);
+      //  console.log(this.categoryIdsArray);
+      //  console.log(this.game.categories);
         if(counter!==check){
         await this.saveAfterCategoryChange();
         }else{
@@ -206,7 +237,7 @@ export default {
 
 };
 </script>
-<style>
+<style scoped>
 * {
   margin: 0;
   padding: 0;

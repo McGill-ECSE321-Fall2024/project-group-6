@@ -47,6 +47,7 @@
             <p class="game-description"><strong>Description:</strong> {{ game.description }}</p>
             <p class="game-stock"><strong>Stock:</strong> {{ game.stockQuantity }} left</p>
             <button class="btn-danger" @click="viewGameDetails(game.gameId)">Edit</button>
+            <button class="btn-dangers" @click="requestDelete(game.gameId)">Request Delete</button>
           </div>
         </div>
       </main>
@@ -149,6 +150,17 @@ props: ['employeeId', 'loggedIn'],
         }
       }
     },
+    async requestDelete() {
+      try {
+       this.game.toBeRemoved=true;
+        await axios.put(`http://localhost:8080/games/id/${this.gameID}`, this.game);
+        alert("Changes saved successfully!");
+        //await this.fetchGameDetails();
+      } catch (error) {
+        console.error("Error saving game details:", error);
+        alert(error);
+      }
+    },
     async goToEmployeeAccount(){
       router.push({
           name: 'employee-account',
@@ -182,7 +194,7 @@ props: ['employeeId', 'loggedIn'],
 </script>
 
   
-  <style>
+  <style scoped>
   * {
   margin: 0;
   padding: 0;
@@ -417,6 +429,18 @@ transition: transform 0.2s;
     font-weight: bold; /* Bold text */
     transition: background-color 0.3s; /* Smooth transition */
   }
+  .btn-dangers {
+    background-color: red; /* Yellow background */
+    color: black; /* Black text */
+    border: none; /* No border */
+    padding: 10px 20px; /* Padding for the button */
+    border-radius: 5px; /* Rounded corners */
+    font-size: 16px; /* Font size */
+    cursor: pointer; /* Pointer cursor on hover */
+    font-weight: bold; /* Bold text */
+    transition: background-color 0.3s; /* Smooth transition */
+  }
+
 
   .btn-danger:hover {
     background-color: darkorange; /* Darker shade on hover */

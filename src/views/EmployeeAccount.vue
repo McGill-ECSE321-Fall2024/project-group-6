@@ -129,7 +129,7 @@
   };
   </script>
   
-  <style>
+  <style scoped>
   /* Header styles */
   .header {
     display: flex;

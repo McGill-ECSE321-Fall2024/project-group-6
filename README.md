@@ -53,6 +53,7 @@ Table 1 : Roles of each team member Deliverable 1: <br/>
 |             | Conception of the Use Case Diagrams                 | 1.5                 |
 |             | Write test cases (Persistence layer)                | 3                   |
 |             | Installing the personal PostgreSQL                   | 0.5                 |
+# EventRegistration-Frontend
 
 Table 2 : Roles of each team member Deliverable 2: <br/>
 | **Name**    | **Role**                                            | **Number of Hours** |
@@ -99,3 +100,28 @@ Table 3 : Roles of each team member Deliverable 3: <br/>
 |             | Employee Dashboard, Account and Game Page (Backend)          |                  |
 |             | Demo                                                  |                  |
 | Mario       | Customer Dashboard and Account (Frontend/Backend)             |                   |
+## Recommended IDE Setup
+
+[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+
+## Customize configuration
+
+See [Vite Configuration Reference](https://vite.dev/config/).
+
+## Project Setup
+
+```sh
+npm install
+```
+
+### Compile and Hot-Reload for Development
+
+```sh
+npm run dev
+```
+
+### Compile and Minify for Production
+
+```sh
+npm run build
+```

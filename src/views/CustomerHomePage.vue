@@ -21,6 +21,7 @@
                     <button @click="goToCustomerAccount" >Account</button>
                     <button @click="goToCustomerOrders" class="order-btn">Orders</button>
                     <button @click="logout" class="logout-btn">Log Out</button>
+                    
                 </div>
             </div>
             <button @click="goToCustomerCart"><img src="../assets/pngaaa.com-5034351.png" class="cart-img" @click="goToCustomerCart"></button>
@@ -52,6 +53,11 @@
             <p class="game-description"><strong>Description:</strong> {{ game.description }}</p>
             <p class="game-stock"><strong>Stock:</strong> {{ game.stockQuantity }} left</p>
             <button class="btn-danger" @click="viewGameDetails(game.gameId)">Edit</button>
+            <div class="button-container">
+                <button class="btn-add-to-cart" @click="addToCart(game.gameId)">Add to Cart</button>
+                <button class="btn-add-to-wishlist" @click="addToWishlist(game.gameId)">Add to Wishlist</button>
+            </div>
+
           </div>
         </div>
       </main>
@@ -76,7 +82,7 @@ props: ['customerId', 'loggedIn'],
       categories: [],
       games: [],
       tasks: [],
-      customerId: 0,
+      customerID: 0,
     };
   },
   methods: {
@@ -121,6 +127,26 @@ props: ['customerId', 'loggedIn'],
         customerId:this.customerId,
         loggedIn:true
       } });
+    },
+    async addToWishlist(id) {
+      try {
+        
+        const response = await axios.put(`http://localhost:8080/customers/${this.customerID}/wishlist/add/${id}`,null);
+        this.games = [response.data];
+      } catch (error) {
+        console.error('Error searching for games:', error);
+        alert(response.data);
+      }
+    },
+    async addToCart(id) {
+      try {
+        
+        const response = await axios.put(`http://localhost:8080/customers/${this.customerID}/cart/add/${id}`,null);
+        this.games = [response.data];
+      } catch (error) {
+        console.error('Error searching for games:', error);
+        alert(response.data);
+      }
     },
 
     async searchByName() {
@@ -172,7 +198,7 @@ props: ['customerId', 'loggedIn'],
     },
     async goToCustomerCart() {
         router.push({
-          name: 'cart',
+          name: 'customer-cart',
           params: {
             customerId: this.customerId,
             loggedIn: true
@@ -182,7 +208,7 @@ props: ['customerId', 'loggedIn'],
     },
     async goToCustomerWishlist() {
         router.push({
-          name: 'wishlist',
+          name: 'customer-wishlist',
           params: {
             customerId: this.customerId,
             loggedIn: true
@@ -196,18 +222,18 @@ props: ['customerId', 'loggedIn'],
         this.$router.push({ name: 'sign in' });
         alert('Please log in before accessing this page.');
       } else {
-        this.customerId = this.customerId;
+        this.customerID = this.customerId;
         console.log(this.customerId);
         this.fetchCategories();
         this.fetchGames();
         this.fetchTasks();
     }
-  },
-};
+  }
+}
 </script>
 
   
-  <style>
+  <style scoped>
   * {
   margin: 0;
   padding: 0;
@@ -483,5 +509,34 @@ transition: transform 0.2s;
   margin-bottom: 0.5rem;
   color: black;
 }
+.button-container {
+    display: flex;
+    gap: 1rem; /* Add a gap between the buttons if needed */
+}
+
+.btn-add-to-cart, .btn-add-to-wishlist {
+    background-color: #28a745; /* Green background for Add to Cart button */
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+}
+
+.btn-add-to-wishlist {
+    background-color: #ffc107; /* Yellow background for Add to Wishlist button */
+}
+
+.btn-add-to-cart:hover {
+    background-color: #218838; /* Darker green on hover */
+}
+
+.btn-add-to-wishlist:hover {
+    background-color: #e0a800; /* Darker yellow on hover */
+}
+
 
   </style>
