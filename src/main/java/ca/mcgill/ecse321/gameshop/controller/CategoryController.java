@@ -19,6 +19,7 @@ import ca.mcgill.ecse321.gameshop.model.Category;
 import ca.mcgill.ecse321.gameshop.service.CategoryService;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:8087")
 public class CategoryController {
 
     @Autowired
@@ -29,7 +30,6 @@ public class CategoryController {
      * @param c
      * @return
      */
-    @CrossOrigin(origins = "http://localhost:8087")
     @PostMapping("/categories")
     public CategoryResponseDto createCategory(@RequestBody CategoryRequestDto c){
 
@@ -44,7 +44,6 @@ public class CategoryController {
      * @param name
      * @return
      */
-    @CrossOrigin(origins = "http://localhost:8087")
     @PutMapping("/categories/{ID}")
     public CategoryResponseDto updateCategory(@PathVariable int ID, @RequestBody String name){
         return new CategoryResponseDto(categoryService.updateCategory(ID,name));
@@ -55,7 +54,6 @@ public class CategoryController {
      * @param ID
      * @return
      */
-    @CrossOrigin(origins = "http://localhost:8087")
     @GetMapping("/categories/{ID}")
     public CategoryResponseDto findCategoryById(@PathVariable int ID){
         return new CategoryResponseDto(categoryService.findCategoryById(ID));
@@ -65,7 +63,6 @@ public class CategoryController {
      * Get all categories
      * @return
      */
-    @CrossOrigin(origins = "http://localhost:8087")
     @GetMapping("/categories")
     public CategoryListDto getAllCategories() {
         List<CategoryResponseDto> categories = new ArrayList<>();
@@ -79,7 +76,6 @@ public class CategoryController {
      * Delete a category
      * @param ID
      */
-    @CrossOrigin(origins = "http://localhost:8087")
     @DeleteMapping("/categories/{ID}")
     public void deleteCategory(@PathVariable int ID) {
         categoryService.deleteCategory(ID);

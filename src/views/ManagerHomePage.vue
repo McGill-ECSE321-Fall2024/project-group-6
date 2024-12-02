@@ -15,16 +15,11 @@
           </div>
           </div>
           <div class="nav-buttons">
-          <button @click="goToManagerAccount" ><img src="../assets/person-circle.svg" class="account-img" @click="goToManagerAccount"></button>
-        </div>
-        <div class="nav-buttons">
-          <button @click="logout" class="logout-btn">Logout</button>
-        </div>
-        
+            <button @click="logout" class="logout-btn">Sign Out</button>
+          </div>
       </nav>
     </header>
     <div class="container">
-     
       <aside class="categories">
       <select v-model="selectedCategory" @change="filterByCategory">
         <option value="" disabled>Select Category</option>
@@ -34,14 +29,28 @@
         </option>
       </select>
       <div class="adjust-category">
-            <button @click="addCategory">Add Category</button>
-            <button @click="removeCategory">Remove Category</button>
-            <button @click="unapprovedGames">Unapproved Games</button>
-            <RouterLink to="/Manager-Homepage/Manage-Employees" class="manage-employees-button">Manage Employees</RouterLink>
+        <div class="form-group">
+          <label for="newCategoryId">Add New Category </label>
+          <input type="number" v-model="categoryId" />
+          <button @click="addCategory(categoryId)" class="add-category">Add Category</button>
         </div>
+        <div class="form-group">
+          <label for="removeCategoryId">Remove Category </label>
+          <input type="number" v-model="categoryIdRemove" />
+          <button @click="removeCategory(categoryIdRemove)" class="add-category">Remove Category</button>
+        </div>
+        </div>
+      <aside class="unapproved-box">
+        <h3 >Unapproved Games: </h3>
+        <ul v-if="unapprovedGames.length > 0">
+          <li v-for="unapprovedGame in unapprovedGames" >
+            <h4>{{ unapprovedGame }}</h4>
+          </li>
+        </ul>
+        <p v-else>No unapproved games</p>
+      </aside>
     </aside>
-      
-    
+
       <main class="catalog">
         <h3 id="catalog-title">Game Inventory</h3>
         <div v-if="games.length === 0">No games found</div>
@@ -67,16 +76,25 @@ import { RouterLink } from 'vue-router';
 import router from '@/router';
 
 export default {
-props: ['managerId', 'loggedIn'],
+props: ['loggedIn'],
 
   data() {
     return {
       searchQuery: "",
       selectedCategory: "",
+      selectedCategoryId: null,
       categories: [],
+      categoryId: '',
+      categoryIdsArray:[],
       games: [],
-      tasks: [],
-      managerId: 0,
+      unapprovedGames: [],
+      newCategoryName: '',
+      category: {
+        categoryName: '',
+      },
+      categoryIdRemove:"",
+      successMessage: '',
+      managerId: 0
     };
   },
   methods: {
@@ -91,33 +109,7 @@ props: ['managerId', 'loggedIn'],
         console.error('Error fetching categories:', error);
       }
     },
-    async fetchGames() {
-      try {
-        const response = await axios.get("http://localhost:8080/games");
-        this.games = response.data["games"];
-      } catch (error) {
-        console.error("Error fetching games:", error);
-      }
-    },
 
-    viewGameDetails(gameId) {
-      this.$router.push({ name: "manager-gamepage", 
-      params: { 
-        gameId: gameId,
-        managerId:this.managerId,
-        loggedIn:true
-      } });
-    },
-
-    async searchByName() {
-      try {
-        
-        const response = await axios.get(`http://localhost:8080/games/name/${this.searchQuery}`);
-        this.games = [response.data];
-      } catch (error) {
-        console.error('Error searching for games:', error);
-      }
-    },
     async filterByCategory() {
       if (this.selectedCategory === 'all') {
         await this.fetchGames();
@@ -131,6 +123,87 @@ props: ['managerId', 'loggedIn'],
         }
       }
     },
+
+    async fetchGames() {
+      try {
+        const response = await axios.get("http://localhost:8080/games");
+        this.games = response.data["games"];
+      } catch (error) {
+        console.error("Error fetching games:", error);
+      }
+    },
+
+    async saveAfterCategoryChange(){
+        try {
+        
+        await axios.put(`http://localhost:8080/games/id/${this.gameID}`, this.game);
+        alert("Changes saved successfully!");
+        await this.fetchGameDetails();
+      } catch (error) {
+        console.error("Error saving game details:", error);
+        //alert(error.message);
+      }
+    },
+
+    async addCategory(id) {
+    var check="false";
+        this.categoryIdsArray.push(id);
+        for(var i=0;i<this.categories.length;i++){
+            if(this.categories[i]["categoryId"]!==id){
+            this.categoryIdsArray.push(this.categories[i]["categoryId"]);
+            }else{
+              check="true";
+              //alert("The category already is assigned to this game");
+            }
+        }
+        this.categories=this.categoryIdsArray;
+        if(check =="false"){
+        await this.saveAfterCategoryChange();
+        }else{
+          alert("The category already is assigned to this game");
+          await this.fetchGameDetails();
+        }
+    },
+
+  removeCategory() {
+    if (!this.selectedCategoryId) {
+      console.error("Please select a category to remove");
+      return;
+  }
+
+  axios
+    .delete(`http://localhost:8080/categories/${this.selectedCategoryId}`)
+    .then(response => {
+      console.log("Category removed successfully");
+      // Remove the category from the local list
+      this.categories = this.categories.filter(category => category.id !== this.selectedCategoryId);
+      this.selectedCategoryId = null; // Clear the selection
+    })
+    .catch(error => {
+      console.error("Error removing category:", error);
+    });
+  },
+
+    viewGameDetails(gameId) {
+      this.$router.push({ name: "manager-gamepage",
+      params: {
+        gameId: gameId,
+        managerId:this.managerId,
+        loggedIn:true
+      } });
+    },
+
+    async searchByName() {
+      try {
+        
+        const response = await axios.get(`http://localhost:8080/games/name/${this.searchQuery}`);
+        console.log(response.data);
+        this.games = [response.data];
+      } catch (error) {
+        console.error('Error searching for games:', error);
+      }
+    },
+
     async goToManagerAccount(){
       router.push({
           name: 'manager-account',
@@ -142,25 +215,40 @@ props: ['managerId', 'loggedIn'],
         });
         
     },
-    logout() {
-        this.$router.push('/SignIn');
-      }
-  },
-  created() {
-    
-    if (!this.isLoggedIn()) {
-      this.$router.push({ name: 'sign in' });
-      alert('Please log in before accessing this page.');
-    } else {
-     
-      this.managerId = this.managerId; 
-      console.log(this.managerId);
-      this.fetchCategories();
-      this.fetchGames();
-      this.fetchTasks();
+
+    async manageEmployees() {
+      this.$router.push('/manager/employees');
+    },
+
+    async fetchUnapprovedGames() {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/manager/${this.managerID}`
+        );
+        const unapprovedGames = response.data["unapprovedGames"];
+        for (let i = 0; i < unapprovedGames.length; i++) {
+          const unapprovedGame = unapprovedGames[i];
+          const parsedGame = JSON.parse(unapprovedGame.trim());
+          this.unapprovedGames.push(parsedGame.unapprovedGame);
     }
-  },
-};
+      } catch (error) {
+        console.error("Error fetching unapproved games:", error);
+      }
+    },
+
+    created() {
+      this.employeeID = this.employeeId;
+      console.log(this.employeeID);
+      this.fetchGames();
+      this.fetchCategories();
+      this.filterByCategory();
+    },
+
+    logout() {
+      this.$router.push('/SignIn');
+    },
+  }
+  }
 </script>
 
   
@@ -173,6 +261,11 @@ props: ['managerId', 'loggedIn'],
   font-family: "poppins";
 }
 
+.success-message {
+  color: #1140d9;
+  font-weight: bold;
+  text-align: center;
+}
 
 .navbar {
   display: flex;
@@ -200,6 +293,10 @@ props: ['managerId', 'loggedIn'],
   
 }
 
+.unapproved-box {
+  margin-top: 1rem;
+  text-align: center;
+}
 
 .search-box .search {
   width: 600px;
@@ -247,6 +344,7 @@ props: ['managerId', 'loggedIn'],
 
 .categories {
   width: 200px;
+  gap: 1rem;
 }
 
 .categories select {
@@ -255,6 +353,7 @@ props: ['managerId', 'loggedIn'],
   font-size: 1rem;
   border: 1px solid #ccc;
   border-radius: 5px;
+  margin-bottom: 1rem;
 }
 
 .catalog {
