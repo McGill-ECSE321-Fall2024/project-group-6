@@ -21,7 +21,7 @@
                     <button @click="goToCustomerAccount" >Account</button>
                     <button @click="goToCustomerOrders" class="order-btn">Orders</button>
                     <button @click="logout" class="logout-btn">Log Out</button>
-                    
+
                 </div>
             </div>
             <button @click="goToCustomerCart"><img src="../assets/pngaaa.com-5034351.png" class="cart-img" @click="goToCustomerCart"></button>
@@ -36,7 +36,7 @@
         <option value="" disabled>Select Category</option>
         <option value="all">All games</option>
         <option v-for="category in categories" :key="category.id" :value="`${category.name}`" class="options">
-          {{ `${category.name} (${category.id})` }}
+          {{ `${category.name}` }}
         </option>
       </select>
     </aside>
@@ -45,7 +45,7 @@
       <main class="catalog">
         <h3 id="catalog-title">Game Inventory</h3>
         <div v-if="games.length === 0">No games found</div>
-        <div v-for="game in games":key="game.gameId"class="game-card" @click="viewGameDetails(game.gameId)">
+        <div v-for="game in games":key="game.gameId"class="game-card" >
           <img :src="game.photoURL" alt="Game Image" class="game-image" />
           <div class="game-info">
             <h3>{{ game.name }}</h3>
@@ -182,7 +182,7 @@ props: ['customerId', 'loggedIn'],
     },
 
     logout() {
-        this.$router.push('/SignIn');
+        this.$router.push('/');
     },
 
     async goToCustomerOrders() {
@@ -510,7 +510,8 @@ transition: transform 0.2s;
 }
 .button-container {
     display: flex;
-    gap: 1rem; /* Add a gap between the buttons if needed */
+    justify-content: center;
+    gap: 3rem; /* Add a gap between the buttons if needed */
 }
 
 .btn-add-to-cart, .btn-add-to-wishlist {

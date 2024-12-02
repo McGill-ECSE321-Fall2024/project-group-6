@@ -51,6 +51,7 @@
           };
           await axiosClient.post('/customers', newUser);
           this.clearInputs();
+          await this.goToSignIn();
         }  catch (error) {
       if (this.password.length<10) {
         this.errorMessage = "Your password is less than 10 characters";
@@ -71,7 +72,15 @@
         this.shippingAddress = '';
         this.phone = '';
         this.errorMessage = '';
-      }
+      },
+      async goToSignIn(){
+      router.push({
+          name: 'sign in',
+          
+        });
+        
+    }
+
     }
   };
   </script>
