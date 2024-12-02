@@ -33,9 +33,18 @@ const router = createRouter({
     },
     
     {
-      path: '/managerHomePage',
+      path: '/managerHomePage/:managerId/:loggedIn',
       name: 'manager-homepage',
       component: ManagerHomePage,
+      props: true,
+      beforeEnter: (to, from, next) => {
+        if (localStorage.getItem('loggedIn') === 'true') {
+          next();
+        } else {
+          alert('Please sign in before accessing this page.');
+          next({ name: 'sign in' });
+        }
+      }
     },
 
     {

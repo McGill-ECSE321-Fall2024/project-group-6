@@ -237,11 +237,16 @@ props: ['loggedIn'],
     },
 
     created() {
-      this.employeeID = this.employeeId;
-      console.log(this.employeeID);
-      this.fetchGames();
-      this.fetchCategories();
-      this.filterByCategory();
+      if (!this.isLoggedIn()) {
+        this.$router.push({ name: 'sign in' });
+        alert('Please log in before accessing this page.');
+      } else {
+        this.employeeID = this.employeeId;
+        console.log(this.employeeID);
+        this.fetchGames();
+        this.fetchCategories();
+        this.filterByCategory();
+      }
     },
 
     logout() {

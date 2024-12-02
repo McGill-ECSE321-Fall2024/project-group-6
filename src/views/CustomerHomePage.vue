@@ -15,16 +15,16 @@
           </div>
           </div>
           <div class="user-options">
-            <button @click="goToCustomerCart"><img src="../assets/pngaaa.com-5034351.png" class="cart-img" @click="goToCustomerCart"></button>
-            <button @click="goToCustomerWishlist"><img src="../assets/White-Heart.png" class="wishlist-img" @click="goToCustomerWishlist"></button>
             <div class="dropdown">
                 <button class="dropbtn"><img src="../assets/person-circle.svg" class="account-img"></button>
                 <div class="nav-buttons">
                     <button @click="goToCustomerAccount" >Account</button>
                     <button @click="goToCustomerOrders" class="order-btn">Orders</button>
-                    <button @click="logout" class="logout-btn">Logout</button>
+                    <button @click="logout" class="logout-btn">Log Out</button>
                 </div>
             </div>
+            <button @click="goToCustomerCart"><img src="../assets/pngaaa.com-5034351.png" class="cart-img" @click="goToCustomerCart"></button>
+            <button @click="goToCustomerWishlist"><img src="../assets/White-Heart.png" class="wishlist-img" @click="goToCustomerWishlist"></button>
         </div>
       </nav>
     </header>
@@ -153,11 +153,13 @@ props: ['customerId', 'loggedIn'],
             loggedIn: true
           }
           
-        }); 
+        });
     },
+
     logout() {
         this.$router.push('/SignIn');
     },
+
     async goToCustomerOrders() {
         router.push({
           name: 'customer-orders',
@@ -170,7 +172,7 @@ props: ['customerId', 'loggedIn'],
     },
     async goToCustomerCart() {
         router.push({
-          name: 'customer-cart',
+          name: 'cart',
           params: {
             customerId: this.customerId,
             loggedIn: true
@@ -180,30 +182,28 @@ props: ['customerId', 'loggedIn'],
     },
     async goToCustomerWishlist() {
         router.push({
-          name: 'customer-wishlist',
+          name: 'wishlist',
           params: {
             customerId: this.customerId,
             loggedIn: true
           }
           
-        }); 
+        });
     }
   },
   created() {
-    
     if (!this.isLoggedIn()) {
-      this.$router.push({ name: 'sign in' });
-      alert('Please log in before accessing this page.');
-    } else {
-     
-      this.customerId = this.customerId; 
-      console.log(this.customerId);
-      this.fetchCategories();
-      this.fetchGames();
-      this.fetchTasks();
+        this.$router.push({ name: 'sign in' });
+        alert('Please log in before accessing this page.');
+      } else {
+        this.customerId = this.customerId;
+        console.log(this.customerId);
+        this.fetchCategories();
+        this.fetchGames();
+        this.fetchTasks();
     }
-  },
-};
+  }
+}
 </script>
 
   
@@ -214,6 +214,37 @@ props: ['customerId', 'loggedIn'],
   text-decoration: none;
   list-style: none;
   font-family: "poppins";
+}
+
+.user-options {
+  display: flex; /* Aligns child elements (buttons) horizontally */
+  gap: 10px; /* Adds spacing between buttons (adjust as needed) */
+  align-items: center; /* Vertically aligns buttons if needed */
+}
+
+.user-options button {
+  background: none; /* Remove default button background */
+  border: none; /* Remove default button border */
+  padding: 0; /* Remove padding around buttons */
+  cursor: pointer;
+}
+
+.user-options img {
+  width: 30px; /* Adjust size of images */
+  height: 30px;
+}
+
+.dropdown .nav-buttons {
+  display: none; /* Initially hide dropdown content */
+  position: absolute;
+  background-color: white;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown:hover .nav-buttons {
+  display: block; /* Show dropdown on hover */
 }
 
 
