@@ -27,7 +27,8 @@ const router = createRouter({
     {
       path: '/gamePage',
       name: 'gamePage',
-      component: GamePageView
+      component: GamePageView,
+      props: true
     },
   ],
 })

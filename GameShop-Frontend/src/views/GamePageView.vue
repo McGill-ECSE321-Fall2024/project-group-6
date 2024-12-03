@@ -8,22 +8,26 @@
         </div>
         <div class="navmenu">
           <div class="search-box">
-            <input type="search" class="search" placeholder="Search game...">
+            <input type="search" class="search" placeholder="Search game..." />
             <i class="bx bx-search"></i>
           </div>
           <div class="iconAccount">
-            <img src="./account.png" alt="Account">
+            <img src="./account.png" alt="Account" />
           </div>
-          <RouterLink to="/wishlist"><img src="./White-Heart.png" alt="Wishlist"></RouterLink>
-          <RouterLink to="/checkout"><img src="./pngaaa.com-5034351.png" alt="Cart"></RouterLink>
+          <RouterLink to="/wishlist">
+            <img src="./White-Heart.png" alt="Wishlist" />
+          </RouterLink>
+          <RouterLink to="/checkout">
+            <img src="./pngaaa.com-5034351.png" alt="Cart" />
+          </RouterLink>
         </div>
       </nav>
     </header>
-  
+
     <!-- Main Game Details Section -->
     <main class="game-page">
       <div class="game-details">
-        <img :src="game.photoUrl" alt="Game Image" class="game-image" />
+        <img v-bind:src="game.photoURL" alt="Game Image" class="game-image" />
         <div class="game-info">
           <h1>{{ game.name }}</h1>
           <p><strong>Description:</strong> {{ game.description }}</p>
@@ -40,11 +44,13 @@
         <div class="reviews" v-if="reviews.length > 0">
           <div v-for="review in reviews" :key="review.id" class="review">
             <p><strong>{{ review.reviewerName || "Anonymous" }}</strong>: {{ review.comment }}</p>
-            <p>Rating: {{ review.rating }}/5</p>
+            <p>Rating: {{ review.rating }}</p>
+            <p>Likes: {{ review.likes || 0 }}</p>
+            <button @click="likeReview(review)" class="btn-like">Like</button>
           </div>
         </div>
         <p v-else>No reviews available for this game.</p>
-        
+
         <!-- Add Review Form -->
         <h3>Add a Review</h3>
         <form @submit.prevent="submitReview">
@@ -65,18 +71,21 @@
 
 <script>
 import axios from "axios";
+import { RouterLink } from "vue-router";
 
 export default {
+  props: ["customerId", "loggedIn"],
   data() {
     return {
+      searchQuery: "",
       game: {
-        id: 1,
-        name: "Detroit: Become Human",
-        description: "Detroit: Become Human is a 2018 adventure game developed by Quantic Dream and published by Sony Interactive Entertainment.",
-        price: 50.50,
-        stockQuantity: 3,
+        id: 0,
+        name: "",
+        description: "",
+        price: 0.0,
+        stockQuantity: 0,
+        photoURL: "",
         categories: [],
-        photoUrl: "https://upload.wikimedia.org/wikipedia/en/e/ee/Detroit_Become_Human.jpg",
       },
       reviews: [],
       newReview: {
@@ -88,57 +97,62 @@ export default {
   methods: {
     async fetchGameDetails() {
       try {
-        const gameId = this.$route.params.id; 
-        const response = await axios.get(`http://localhost:8080/games/id/${gameId}`);
+        const response = await axios.get(`http://localhost:8080/games/id/${this.$route.query.id}`);
         this.game = response.data;
       } catch (error) {
         console.error("Failed to fetch game details:", error);
+        alert("Failed to load game details. Please try again later.");
       }
     },
     async fetchReviews() {
       try {
-        const gameId = this.$route.params.id;
-        const response = await axios.get(`http://localhost:8080/review/game/${gameId}`);
-        this.reviews = response.data.reviews;
+        const response = await axios.get(`http://localhost:8080/games/${this.$route.query.id}/reviews`);
+        this.reviews = response.data.reviews || [];
       } catch (error) {
         console.error("Failed to fetch reviews:", error);
+        alert("Failed to load reviews. Please try again later.");
+      }
+    },
+    async likeReview(review) {
+      try {
+        const response = await axios.post(`http://localhost:8080/reviews/${review.id}/like`);
+        review.likes = response.data.likes; // Assuming the backend returns the updated likes count
+      } catch (error) {
+        console.error("Failed to like the review:", error);
+        alert("Failed to like the review. Please try again.");
       }
     },
     async submitReview() {
       try {
-        const gameId = this.$route.params.id;
-        const payload = {
-          rating: this.newReview.rating,
-          comment: this.newReview.comment,
-          gameId: gameId,
-        };
-        await axios.post("http://localhost:8080/review", payload);
+        await axios.post(`http://localhost:8080/review/${this.customerId}/${this.$route.query.id}`, this.newReview);
         alert("Review added successfully!");
         this.fetchReviews();
         this.newReview.rating = null;
         this.newReview.comment = "";
       } catch (error) {
         console.error("Failed to submit review:", error);
-        alert("Failed to submit review. Please try again.");
+        alert("Failed to submit review. Please try again later.");
       }
     },
     async addToCart() {
       try {
-        const customerId = 1;
-        await axios.put(`http://localhost:8080/customers/${customerId}/cart`, this.game.name);
+        await axios.put(`http://localhost:8080/customers/${this.customerId}/cart/add/${this.$route.query.id}`, {
+          gameID: this.game.id,
+        });
         alert("Game added to cart successfully!");
       } catch (error) {
         console.error("Failed to add game to cart:", error);
-        alert("Failed to add game to cart. Please try again.");
+        alert("Failed to add game to cart. Please try again later.");
       }
     },
   },
-  mounted() {
+  created() {
     this.fetchGameDetails();
     this.fetchReviews();
   },
 };
 </script>
+
 
 <style>
 /* General Styles */
