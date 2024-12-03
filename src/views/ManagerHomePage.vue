@@ -69,7 +69,7 @@
       <main class="catalog">
         <h3 id="catalog-title">Game Inventory</h3>
         <div v-if="games.length === 0">No games found</div>
-        <div v-for="game in games":key="game.gameId"class="game-card" @click="viewGameDetails(game.gameId)">
+        <div v-for="game in games":key="game.gameId"class="game-card" >
           <img :src="game.photoURL" alt="Game Image" class="game-image" />
           <div class="game-info">
             <h3>{{ game.name }}</h3>
@@ -77,6 +77,7 @@
             <p class="game-description"><strong>Description:</strong> {{ game.description }}</p>
             <p class="game-stock"><strong>Stock:</strong> {{ game.stockQuantity }} left</p>
             <button class="btn-danger" @click="viewGameDetails(game.gameId)">Edit</button>
+            <button v-if="game.toBeRemoved" class="btn-dangers" @click="deleteGame(game.gameId)">Delete</button>
           </div>
         </div>
       </main>
@@ -154,6 +155,15 @@ props: ['loggedIn', 'managerId'],
         const response = await axios.get("http://localhost:8080/games");
         this.games = response.data["games"];
       } catch (error) {
+        console.error("Error fetching games:", error);
+      }
+    },
+    async deleteGame(id) {
+      try {
+        const response = await axios.delete(`http://localhost:8080/games/${id}`);
+        await this.fetchGames();
+      } catch (error) {
+        alert(error);
         console.error("Error fetching games:", error);
       }
     },
@@ -599,5 +609,17 @@ props: ['loggedIn', 'managerId'],
     border-radius: 20px;
     font-size: 0.9rem;
 }
+.btn-dangers {
+    margin-left: 5px;
+    background-color: red; /* Yellow background */
+    color: black; /* Black text */
+    border: none; /* No border */
+    padding: 10px 20px; /* Padding for the button */
+    border-radius: 5px; /* Rounded corners */
+    font-size: 16px; /* Font size */
+    cursor: pointer; /* Pointer cursor on hover */
+    font-weight: bold; /* Bold text */
+    transition: background-color 0.3s; /* Smooth transition */
+  }
 
   </style>

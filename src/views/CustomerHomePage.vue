@@ -8,55 +8,54 @@
       <div class="logo">
         <h2>GameShop</h2>
       </div>
-      <div class="navmenu">
-        <div class="search-box">
-          <input type="search" v-model="searchQuery" class="search" placeholder="Search game..." />
-          <i class="bx bx-search" @click="searchByName"></i>
-        </div>
-        </div>
-        <div class="user-options">
-          <div class="dropdown">
-              <button class="dropbtn"><img src="../assets/person-circle.svg" class="account-img"></button>
-              <div class="nav-buttons">
-                  <button @click="goToCustomerAccount" >Account</button>
-                  <button @click="goToCustomerOrders" class="order-btn">Orders</button>
-                  <button @click="logout" class="logout-btn">Log Out</button>
-                  
-              </div>
+        <div class="navmenu">
+          <div class="search-box">
+            <input type="search" v-model="searchQuery" class="search" placeholder="Search game..." />
+            <i class="bx bx-search" @click="searchByName"></i>
           </div>
-          <button @click="goToCustomerCart"><img src="../assets/pngaaa.com-5034351.png" class="cart-img" @click="goToCustomerCart"></button>
-          <button @click="goToCustomerWishlist"><img src="../assets/White-Heart.png" class="wishlist-img" @click="goToCustomerWishlist"></button>
-      </div>
-    </nav>
-  </header>
-  <div class="container">
-   
-    <aside class="categories">
-    <select v-model="selectedCategory" @change="filterByCategory">
-      <option value="" disabled>Select Category</option>
-      <option value="all">All games</option>
-      <option v-for="category in categories" :key="category.id" :value="`${category.name}`" class="options">
-        {{ `${category.name} (${category.id})` }}
-      </option>
-    </select>
-  </aside>
-    
-  
-    <main class="catalog">
-      <h3 id="catalog-title">Game Inventory</h3>
-      <div v-if="games.length === 0">No games found</div>
-      <div v-for="game in games":key="game.gameId"class="game-card" @click="viewGameDetails(game.gameId)">
-        <img :src="game.photoURL" alt="Game Image" class="game-image" />
-        <div class="game-info">
-          <h3>{{ game.name }}</h3>
-          <p class="game-price"><strong>Price:</strong> ${{ game.price }}</p>
-          <p class="game-description"><strong>Description:</strong> {{ game.description }}</p>
-          <p class="game-stock"><strong>Stock:</strong> {{ game.stockQuantity }} left</p>
-          <div class="button-container">
-              <button class="btn-add-to-cart" @click="addToCart(game.gameId)">Add to Cart</button>
-              <button class="btn-add-to-wishlist" @click="addToWishlist(game.gameId)">Add to Wishlist</button>
           </div>
+          <div class="user-options">
+            <div class="dropdown">
+                <button class="dropbtn"><img src="../assets/person-circle.svg" class="account-img"></button>
+                <div class="nav-buttons">
+                    <button @click="goToCustomerAccount" >Account</button>
+                    <button @click="goToCustomerOrders" class="order-btn">Orders</button>
+                    <button @click="logout" class="logout-btn">Log Out</button>
 
+                </div>
+            </div>
+            <button @click="goToCustomerCart"><img src="../assets/pngaaa.com-5034351.png" class="cart-img" @click="goToCustomerCart"></button>
+            <button @click="goToCustomerWishlist"><img src="../assets/White-Heart.png" class="wishlist-img" @click="goToCustomerWishlist"></button>
+        </div>
+      </nav>
+    </header>
+    <div class="container">
+     
+      <aside class="categories">
+      <select v-model="selectedCategory" @change="filterByCategory">
+        <option value="" disabled>Select Category</option>
+        <option value="all">All games</option>
+        <option v-for="category in categories" :key="category.id" :value="`${category.name}`" class="options">
+          {{ `${category.name}` }}
+        </option>
+      </select>
+    </aside>
+      
+    
+      <main class="catalog">
+        <h3 id="catalog-title">Game Inventory</h3>
+        <div v-if="games.length === 0">No games found</div>
+        <div v-for="game in games":key="game.gameId"class="game-card" >
+          <img :src="game.photoURL" alt="Game Image" class="game-image" />
+          <div class="game-info">
+            <h3>{{ game.name }}</h3>
+            <p class="game-price"><strong>Price:</strong> ${{ game.price }}</p>
+            <p class="game-description"><strong>Description:</strong> {{ game.description }}</p>
+            <p class="game-stock"><strong>Stock:</strong> {{ game.stockQuantity }} left</p>
+            <div class="button-container">
+                <button class="btn-add-to-cart" @click="addToCart(game.gameId)">Add to Cart</button>
+                <button class="btn-add-to-wishlist" @click="addToWishlist(game.gameId)">Add to Wishlist</button>
+            </div>
         </div>
       </div>
     </main>
@@ -169,6 +168,119 @@ methods: {
         console.error('Error filtering games by category:', error);
       }
     }
+    },
+
+    async fetchTasks() {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/customers/${this.customerId}`
+        );
+        const taskStrings = response.data["assignedTasks"];
+        for (let i = 0; i < taskStrings.length; i++) {
+      const taskString = taskStrings[i];
+      const parsedTask = JSON.parse(taskString.trim());
+      this.tasks.push(parsedTask.task); 
+    }
+      } catch (error) {
+        console.error("Error fetching tasks:", error);
+      }
+    },
+    viewGameDetails(gameId) {
+      this.$router.push({ name: "customer-gamepage", 
+      params: { 
+        gameId: gameId,
+        customerId:this.customerId,
+        loggedIn:true
+      } });
+    },
+    async addToWishlist(id) {
+      try {
+        
+        const response = await axios.put(`http://localhost:8080/customers/${this.customerID}/wishlist/add/${id}`,null);
+        this.games = [response.data];
+      } catch (error) {
+        console.error('Error searching for games:', error);
+        alert(response.data);
+      }
+    },
+    async addToCart(id) {
+      try {
+        
+        const response = await axios.put(`http://localhost:8080/customers/${this.customerID}/cart/add/${id}`,null);
+        this.games = [response.data];
+      } catch (error) {
+        console.error('Error searching for games:', error);
+        alert(response.data);
+      }
+    },
+
+    async searchByName() {
+      try {
+        
+        const response = await axios.get(`http://localhost:8080/games/name/${this.searchQuery}`);
+        this.games = [response.data];
+      } catch (error) {
+        console.error('Error searching for games:', error);
+      }
+    },
+    async filterByCategory() {
+      if (this.selectedCategory === 'all') {
+        await this.fetchGames();
+      } else {
+        try {
+          console.log(this.selectedCategory);
+          const response = await axios.get(`http://localhost:8080/games/category/${this.selectedCategory}`);
+          this.games = response.data["games"];
+        } catch (error) {
+          console.error('Error filtering games by category:', error);
+        }
+      }
+    },
+    async goToCustomerAccount(){
+      router.push({
+          name: 'customer-account',
+          params: {
+            customerId: this.customerId,
+            loggedIn: true
+          }
+          
+        });
+    },
+
+    logout() {
+        this.$router.push('/');
+    },
+
+    async goToCustomerOrders() {
+        router.push({
+          name: 'customer-orders',
+          params: {
+            customerId: this.customerId,
+            loggedIn: true
+          }
+          
+        }); 
+    },
+    async goToCustomerCart() {
+        router.push({
+          name: 'customer-cart',
+          params: {
+            customerId: this.customerId,
+            loggedIn: true
+          }
+          
+        }); 
+    },
+    async goToCustomerWishlist() {
+        router.push({
+          name: 'customer-wishlist',
+          params: {
+            customerId: this.customerId,
+            loggedIn: true
+          }
+          
+        });
+    }
   },
   async goToCustomerAccount(){
     router.push({
@@ -214,8 +326,8 @@ methods: {
         }
         
       });
-  }
-},
+  },
+  
 created() {
   if (!this.isLoggedIn()) {
       this.$router.push({ name: 'sign in' });
@@ -509,8 +621,9 @@ margin-bottom: 0.5rem;
 color: black;
 }
 .button-container {
-  display: flex;
-  gap: 1rem; /* Add a gap between the buttons if needed */
+    display: flex;
+    justify-content: center;
+    gap: 3rem; /* Add a gap between the buttons if needed */
 }
 
 .btn-add-to-cart, .btn-add-to-wishlist {

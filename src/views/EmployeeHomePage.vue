@@ -39,7 +39,7 @@
       <main class="catalog">
         <h3 id="catalog-title">Game Inventory</h3>
         <div v-if="games.length === 0">No games found</div>
-        <div v-for="game in games":key="game.gameId"class="game-card" @click="viewGameDetails(game.gameId)">
+        <div v-for="game in games":key="game.gameId"class="game-card" >
           <img :src="game.photoURL" alt="Game Image" class="game-image" />
           <div class="game-info">
             <h3>{{ game.name }}</h3>
@@ -82,6 +82,18 @@ props: ['employeeId', 'loggedIn'],
       games: [],
       tasks: [],
       employeeID: 0,
+      game: {
+        name: "",
+        description: "",
+        price: 0.0,
+        stockQuantity: 0.0,
+        photoURL: "",
+        toBeAdded: "",
+        toBeRemoved: "",
+        promotion: 0.0,
+        categories:""
+      },
+      categoryIdsArray:[],
     };
   },
   methods: {
@@ -150,12 +162,27 @@ props: ['employeeId', 'loggedIn'],
         }
       }
     },
-    async requestDelete() {
+    async requestDelete(id) {
+      this.categoryIdsArray=[];
+      try{
+        const response = await axios.get(`http://localhost:8080/games/id/${id}`);
+        console.log(response);
+        this.game = response.data;
+      }catch(error){
+        alert(error);
+      }
       try {
+        for(var i=0;i<this.game.categories.length;i++){
+            if(this.game.categories[i]["categoryId"]!==id){
+            this.categoryIdsArray.push(this.game.categories[i]["categoryId"]);
+            }
+          }
+        this.game.categories=this.categoryIdsArray;
        this.game.toBeRemoved=true;
-        await axios.put(`http://localhost:8080/games/id/${this.gameID}`, this.game);
+       console.log(this.game);
+        await axios.put(`http://localhost:8080/games/id/${id}`, this.game);
         alert("Changes saved successfully!");
-        //await this.fetchGameDetails();
+    
       } catch (error) {
         console.error("Error saving game details:", error);
         alert(error);
@@ -386,11 +413,14 @@ transition: transform 0.2s;
 #catalog-title{
     padding-bottom: 20px;
 }
-.nav-buttons {
-
-    display: flex;
-    align-items: center;
-  }
+.dropdown .nav-buttons {
+  display: none; /* Initially hide dropdown content */
+  position: absolute;
+  background-color: white;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+  z-index: 1;
+}
   
   .nav-buttons button {
     background-color: #0056b3;
@@ -430,6 +460,7 @@ transition: transform 0.2s;
     transition: background-color 0.3s; /* Smooth transition */
   }
   .btn-dangers {
+    margin-left: 5px;
     background-color: red; /* Yellow background */
     color: black; /* Black text */
     border: none; /* No border */
