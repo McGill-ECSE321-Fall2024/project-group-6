@@ -119,6 +119,7 @@ props: ['customerId', 'loggedIn'],
         console.error("Error fetching tasks:", error);
       }
     },
+    
     viewGameDetails(gameId) {
       this.$router.push({ name: "customer-gamepage", 
       params: { 
@@ -127,11 +128,14 @@ props: ['customerId', 'loggedIn'],
         loggedIn:true
       } });
     },
+    
     async addToWishlist(id) {
       try {
         
         const response = await axios.put(`http://localhost:8080/customers/${this.customerID}/wishlist/add/${id}`,null);
         this.games = [response.data];
+        alert("Successful addition of game to wishlist");
+        this.fetchGames();
       } catch (error) {
         console.error('Error searching for games:', error);
         alert(response.data);
@@ -142,6 +146,8 @@ props: ['customerId', 'loggedIn'],
         
         const response = await axios.put(`http://localhost:8080/customers/${this.customerID}/cart/add/${id}`,null);
         this.games = [response.data];
+        alert("Successful addition of game to cart");
+        this.fetchGames();
       } catch (error) {
         console.error('Error searching for games:', error);
         alert(response.data);

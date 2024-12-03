@@ -57,12 +57,12 @@
         </li>
       </ul>
         <div class="form-group">
-          <label for="newCategoryId">Add New Category </label>
+          <label for="newCategoryId">Add New Category To Game </label>
           <input type="number" v-model="categoryId" />
           <button @click="addCategory(categoryId)" class="add-category">Add Category</button>
         </div>
         <div class="form-group">
-          <label for="removeCategoryId">Remove Category </label>
+          <label for="removeCategoryId">Remove Category For This Game </label>
           <input type="number" v-model="categoryIdRemove" />
           <button @click="removeCategory(categoryIdRemove)" class="add-category">Remove Category</button>
         </div>

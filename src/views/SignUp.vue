@@ -17,7 +17,7 @@
   
   <script>
   import axios from "axios";
-  
+  import router from '@/router';
   const axiosClient = axios.create({
     baseURL: "http://localhost:8080"
   });
@@ -71,6 +71,7 @@
         this.password = '';
         this.shippingAddress = '';
         this.phone = '';
+        this.passwordCopy='';
         this.errorMessage = '';
       },
       async goToSignIn(){

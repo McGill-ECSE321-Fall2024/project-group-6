@@ -64,6 +64,7 @@
           tasks:"",
           activated:""
         },
+        
         //String username, String email, String phone, String password, List <String> tasks,boolean activated
       };
     },
@@ -77,6 +78,7 @@
             `http://localhost:8080/employees/${this.employeeID}`
           );
           this.employee = response.data;
+          
         } catch (error) {
           //console.error("Error fetching employee details:", error);
           alert("Unable to fetch employee details. Please try again later.");
@@ -84,6 +86,7 @@
       },
       async saveChanges() {
         try {
+          
           await axios.put(
             `http://localhost:8080/employees/${this.employeeID}`,
             this.employee
