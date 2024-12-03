@@ -8,17 +8,17 @@
         </div>
         <div class="navmenu">
           <div class="search-box">
-            <input type="search" class="search" placeholder="Search game..." />
-            <i class="bx bx-search"></i>
+            <input type="search" v-model="searchQuery" class="search" placeholder="Search game..." />
+            <i class="bx bx-search" @click="searchByName"></i>
           </div>
           <div class="iconAccount">
-            <img src="./account.png" alt="Account" />
+            <img src="../assets/account.png" alt="Account" />
           </div>
           <RouterLink to="/wishlist">
-            <img src="./White-Heart.png" alt="Wishlist" />
+            <img src="../assets/White-Heart.png" alt="Wishlist" />
           </RouterLink>
           <RouterLink to="/checkout">
-            <img src="./pngaaa.com-5034351.png" alt="Cart" />
+            <img src="../assets/pngaaa.com-5034351.png" alt="Cart" />
           </RouterLink>
         </div>
       </nav>
@@ -63,8 +63,10 @@ import axios from "axios";
 import { RouterLink } from "vue-router";
 
 export default {
+  props: ['customerId', 'loggedIn'],
   data() {
     return {
+      customerID: 0,
       account: {
         username: "",
         email: "",
@@ -75,10 +77,13 @@ export default {
     };
   },
   methods: {
+    isLoggedIn(){
+        return this.loggedIn;
+    },
     async fetchAccountInfo() {
       try {
         const response = await axios.get(
-          `http://localhost:8080/customers/${this.$route.query.id}`
+          `http://localhost:8080/customers/${this.customerID}`
         );
         this.account = response.data;
         debugger
@@ -90,7 +95,7 @@ export default {
     },
     async updateAccount() {
       try {
-        await axios.put(`http://localhost:8080/customers/${this.$route.query.id}`, this.account);
+        await axios.put(`http://localhost:8080/customers/${this.customerID}`, this.account);
         alert("Account updated successfully!");
         await this.fetchAccountInfo();
       } catch (error) {
@@ -98,10 +103,66 @@ export default {
         alert("Failed to update account. Please try again later.");
       }
     },
+    async searchByName() {
+      try {
+        
+        const response = await axios.get(`http://localhost:8080/games/name/${this.searchQuery}`);
+        this.games = [response.data];
+      } catch (error) {
+        console.error('Error searching for games:', error);
+      }
+    },
+    goToCustomerHome() {
+        router.push({
+          name: 'customer-homepage',
+          params: {
+            employeeId: this.customerID,
+            loggedIn: true
+          }
+        });        
+    },
+    async goToCustomerMainPage(){
+            router.push({
+          name: 'customer-homepage',
+          params: {
+            customerId: this.customerId,
+            loggedIn: true
+          }  
+        });
+    },
+    async goToCart() {
+        router.push({
+          name: 'customer-cart',
+          params: {
+            customerId: this.customerId,
+            loggedIn: true
+          }         
+        }); 
+    },
+    async goToCustomerWishlist() {
+        router.push({
+          name: 'customer-wishlist',
+          params: {
+            customerId: this.customerId,
+            loggedIn: true
+          }
+          
+        });
+    },    
+    logout() {
+        this.$router.push('/SignIn');
+    },
   },
   created() {
-    this.fetchAccountInfo();
-  },
+      if (!this.isLoggedIn()) {
+        this.$router.push({ name: "sign in" });
+        alert("Please log in before accessing this page.");
+      } 
+      else {
+        this.customerID = this.customerId; 
+        this.fetchAccountInfo();
+      }   
+    },
 };
 </script>
 
