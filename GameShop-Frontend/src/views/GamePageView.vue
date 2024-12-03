@@ -11,15 +11,18 @@
             <input type="search" v-model="searchQuery" class="search" placeholder="Search game..." />
             <i class="bx bx-search" @click="searchByName"></i>
           </div>
-          <div class="iconAccount">
-            <img src="../assets/account.png" alt="Account" />
-          </div>
-          <RouterLink to="/wishlist">
-            <img src="../assets/White-Heart.png" alt="Wishlist" />
-          </RouterLink>
-          <RouterLink to="/checkout">
-            <img src="../assets/pngaaa.com-5034351.png" alt="Cart" />
-          </RouterLink>
+        </div>
+          <div class="user-options">
+            <button @click="goToCart"><img src="../assets/pngaaa.com-5034351.png" alt="Cart" class="cart-img" @click="goToCart"></button>
+            <button @click="goToCustomerWishlist"><img src="../assets/White-Heart.png" alt="WishList" class="wishlist-img" @click="goToCustomerWishlist"></button>
+            <div class="dropdown">
+                <button class="dropbtn"><img src="../assets/person-circle.svg" alt="Account" class="account-img"></button>
+                <div class="nav-buttons">
+                    <button @click="goToCustomerAccount" >Account</button>
+                    <button @click="goToCustomerOrders" class="order-btn">Orders</button>
+                    <button @click="logout" class="logout-btn">Logout</button>
+                </div>
+            </div>
         </div>
       </nav>
     </header>
@@ -61,6 +64,13 @@
               @click="unlikeReview(review)"
               class="btn-unlike">
               Unlike
+            </button>
+            <!-- Delete Button -->
+            <button 
+            v-if="review.customer.roleId == this.customerID"  
+            @click="deleteReview(review)"
+              class="btn-delete">
+              Delete
             </button>
           </div>
         </div>
@@ -200,7 +210,18 @@ export default {
         this.likedReviews.push(review.reviewId);
       }
     },
-
+    async deleteReview(review){
+      try {   
+        if (review.customer.roleId == this.customerID){
+          const response = await axios.delete(`http://localhost:8080/review/${review.reviewId}`);
+          this.fetchReviews(); // Refresh the reviews list after updating
+        }
+      } catch (error) {
+        console.error("Failed to unlike the review:", error);
+        alert("Failed to like/unlike the review. Please try again.");
+        this.likedReviews.push(review.reviewId);
+      }
+    },
     async submitReview() {
       try {
         await axios.post(`http://localhost:8080/review/${this.customerId}/${this.gameId}`, this.newReview);
@@ -271,6 +292,25 @@ export default {
           }
           
         });
+    },
+    async goToCustomerOrders() {
+        router.push({
+          name: 'customer-orders',
+          params: {
+            customerId: this.customerId,
+            loggedIn: true
+          }
+        }); 
+    },
+    async goToCustomerAccount(){
+      router.push({
+          name: 'customer-account',
+          params: {
+            customerId: this.customerId,
+            loggedIn: true
+          }
+          
+        }); 
     },
     logout() {
       this.$router.push('/SignIn');
@@ -349,6 +389,55 @@ export default {
   margin-left: 20px;
 }
 
+.cart-img,
+.wishlist-img,
+.account-img {
+  width: 40px; /* Set the width */
+  height: auto; /* Let the height adjust automatically to maintain aspect ratio */
+  object-fit: contain; /* Ensure the image is contained without distortion */
+}
+
+.user-options {
+  display: flex;
+  align-items: center; /* Ensures the icons and buttons are vertically centered */
+  gap: 20px; /* Adds space between the elements */
+}
+
+.user-options button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.user-options img {
+  width: 30px; /* Adjust to your desired size */
+  height: 30px;
+}
+
+.dropdown {
+  position: relative;
+}
+
+.nav-buttons {
+  display: none;
+  flex-direction: column;
+  position: absolute;
+  background-color: #fff;
+  top: 40px;
+  right: 0;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+}
+
+.dropdown:hover .nav-buttons, .nav-buttons:hover {
+  display: flex; /* Show dropdown on hover */
+}
+
+.dropdown:hover .nav-buttons {
+  display: flex !important; /* Ensure it is displayed when hovering over the parent */
+}
+
 /* Main Game Page */
 .game-page {
   padding: 40px 20px;
@@ -366,7 +455,7 @@ export default {
 }
 
 .game-image {
-  width: 250px;
+  width: 400px;
   height: auto;
   border-radius: 10px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -471,7 +560,7 @@ textarea {
 }
 
 /* Like/Unlike Button Styles */
-.btn-like, .btn-unlike {
+.btn-like, .btn-unlike, .btn-delete {
   padding: 5px 15px;
   font-size: 14px;
   background-color: #49D8B9;
@@ -481,11 +570,11 @@ textarea {
   cursor: pointer;
 }
 
-.btn-like:hover, .btn-unlike:hover {
+.btn-like:hover, .btn-unlike:hover, .btn-delete:hover {
   background-color: #1033a4;
 }
 
-.btn-unlike {
+.btn-unlike, .btn-delete {
   background-color: #D84949;
 }
 </style>

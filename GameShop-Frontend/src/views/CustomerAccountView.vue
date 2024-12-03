@@ -11,15 +11,17 @@
             <input type="search" v-model="searchQuery" class="search" placeholder="Search game..." />
             <i class="bx bx-search" @click="searchByName"></i>
           </div>
-          <div class="iconAccount">
-            <img src="../assets/account.png" alt="Account" />
-          </div>
-          <RouterLink to="/wishlist">
-            <img src="../assets/White-Heart.png" alt="Wishlist" />
-          </RouterLink>
-          <RouterLink to="/checkout">
-            <img src="../assets/pngaaa.com-5034351.png" alt="Cart" />
-          </RouterLink>
+        </div>
+          <div class="user-options">
+            <button @click="goToCart"><img src="../assets/pngaaa.com-5034351.png" alt="Cart" class="cart-img" @click="goToCustomerCart"></button>
+            <button @click="goToCustomerWishlist"><img src="../assets/White-Heart.png" alt="WishList" class="wishlist-img" @click="goToCustomerWishlist"></button>
+            <div class="dropdown">
+                <button class="dropbtn"><img src="../assets/person-circle.svg" alt="Account" class="account-img"></button>
+                <div class="nav-buttons">
+                    <button @click="goToCustomerOrders" class="order-btn">Orders</button>
+                    <button @click="logout" class="logout-btn">Logout</button>
+                </div>
+            </div>
         </div>
       </nav>
     </header>
@@ -148,7 +150,16 @@ export default {
           }
           
         });
-    },    
+    }, 
+    async goToCustomerOrders() {
+        router.push({
+          name: 'customer-orders',
+          params: {
+            customerId: this.customerId,
+            loggedIn: true
+          }
+        }); 
+    },   
     logout() {
         this.$router.push('/SignIn');
     },
@@ -221,6 +232,55 @@ export default {
 .navmenu img {
   width: 40px;
   margin-left: 20px;
+}
+
+.cart-img,
+.wishlist-img,
+.account-img {
+  width: 40px; /* Set the width */
+  height: auto; /* Let the height adjust automatically to maintain aspect ratio */
+  object-fit: contain; /* Ensure the image is contained without distortion */
+}
+
+.user-options {
+  display: flex;
+  align-items: center; /* Ensures the icons and buttons are vertically centered */
+  gap: 20px; /* Adds space between the elements */
+}
+
+.user-options button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.user-options img {
+  width: 30px; /* Adjust to your desired size */
+  height: 30px;
+}
+
+.dropdown {
+  position: relative;
+}
+
+.nav-buttons {
+  display: none;
+  flex-direction: column;
+  position: absolute;
+  background-color: #fff;
+  top: 40px;
+  right: 0;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+}
+
+.dropdown:hover .nav-buttons, .nav-buttons:hover {
+  display: flex; /* Show dropdown on hover */
+}
+
+.dropdown:hover .nav-buttons {
+  display: flex !important; 
 }
 
 /* Account Info Page Styles */
