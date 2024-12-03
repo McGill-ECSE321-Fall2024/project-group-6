@@ -12,6 +12,7 @@ public class CustomerResponseDto {
     private String email;
     private String phone;
     private int customerId;
+    private String password;
     private List<Game> wishlist=new ArrayList<>();
 
     private List<Game> cart=new ArrayList<>();
@@ -29,6 +30,7 @@ public class CustomerResponseDto {
         this.shippingAddress = customer.getShippingAddress();
         this.cart=customer.getCart();
         this.wishlist=customer.getWishlist();
+        this.password=customer.getPerson().getPassword();
     }
 
     public String getShippingAddress() {
@@ -55,5 +57,8 @@ public class CustomerResponseDto {
     }
     public List <Game> getWishlist() {
         return wishlist;
+    }
+    public String getPassword() {
+        return password;
     }
 }

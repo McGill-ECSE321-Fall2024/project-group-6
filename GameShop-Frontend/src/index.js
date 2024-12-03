@@ -13,8 +13,6 @@ import ManagerHomePage from '@/views/ManagerHomePage.vue'
 import CustomerHomePage from '@/views/CustomerHomePage.vue'
 import Checkout from '@/views/Checkout.vue'
 import Command from '@/views/Command.vue'
-import CustomerOrders from '@/views/CustomerOrders.vue'
-
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -126,21 +124,6 @@ const router = createRouter({
         path: '/customerHomePage/:customerId/:loggedIn',
         name: 'customer-homepage',
         component: CustomerHomePage,
-        props: true,
-        beforeEnter: (to, from, next) => {
-          if (localStorage.getItem('loggedIn') === 'true') {
-            next();
-          } else {
-            alert('Please sign in before accessing this page.');
-            next({ name: 'sign in' });
-          }
-        }
-          
-      },
-      {
-        path: '/customerOrders/:customerId/:loggedIn',
-        name: 'customer-orders',
-        component: CustomerOrders,
         props: true,
         beforeEnter: (to, from, next) => {
           if (localStorage.getItem('loggedIn') === 'true') {

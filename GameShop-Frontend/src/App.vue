@@ -3,30 +3,11 @@ import { RouterView } from 'vue-router';
 </script>
 
 <template>
-   <div class="app">
-     <RouterView />
-    </div>
+  <RouterView />
 </template>
 
-<style scoped>
-* {
-    margin: 0;
-    padding: 0;
-    text-decoration: none;
-    list-style: none;
-    font-family: "poppins";
-}
-html{
-    height: 100%; /* Ensures the page's height is 100% of the viewport */
-    margin: 0; /* Removes default margin */
-    overflow: hidden; /* Prevents scrolling if not needed */
-    
-}
-.app {
-    height: 100%;
-    width: 100%;
-    
-}
+<style >
+
 header {
   line-height: 1.5;
   max-height: 100vh;

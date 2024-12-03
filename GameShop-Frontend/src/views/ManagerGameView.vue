@@ -1,9 +1,10 @@
+
 <template>
     <div class="game-details-container">
         <header class="header">
-            <div class="app-name">GameShop - Game Management</div>
-            <div class="navmenu">
-        
+          
+            <div class="app-name">GameShop</div>
+            <div class="button-container">
             <button @click="goToManagerHome" class="manager-btn">HomePage</button>
             <button @click="logout" class="logout-btn">Logout</button>
         </div>
@@ -97,8 +98,9 @@
 
 <script>
 import axios from "axios";
-
+import router from '@/router';
 export default {
+    props: ['managerId', 'loggedIn', 'gameId'],
     data() {
         return {
             searchQuery: "",
@@ -119,7 +121,7 @@ export default {
             categoryIdsArray: [],
 
             gameID: 0,
-            managerId: null,
+            managerID: 0,
 
             reviews: [],
             addReply: "",
@@ -135,15 +137,16 @@ export default {
         async fetchGameDetails() {
 
             try {
-
+                console.log("The game Id is "+this.gameID);
                 const response = await axios.get(`http://localhost:8080/games/id/${this.gameID}`);
-                //console.log(response);
+                console.log(response);
                 this.game = response.data;
             } catch (error) {
                 console.error("Error fetching game details:", error);
             }
         },
         async saveChanges() {
+            this.categoryIdsArray = [];
             try {
                 for (var i = 0; i < this.game.categories.length; i++) {
                     this.categoryIdsArray.push(this.game.categories[i]["categoryId"]);
@@ -282,15 +285,12 @@ export default {
             this.$router.push("/SignIn"); // Redirect to login
         },
     },
-    mounted() {
-       
-            this.managerID = 1803;
-            this.gameID = 1652;
-            this.fetchGameDetails().then(() => {
-                this.fetchReviews();
-            });
-        
-    }
+    created(){
+    this.managerID = this.managerId; 
+    this.gameID = this.gameId; 
+    console.log("The game id before accessing is "+this.gameId);
+     this.fetchGameDetails();
+  }
     };
 </script>
 
@@ -534,5 +534,10 @@ export default {
 .reply-btn:hover {
     background-color: #ffffff;
     color: #88b9df;
+}
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem; /* Add a gap between the buttons if needed */
 }
 </style>

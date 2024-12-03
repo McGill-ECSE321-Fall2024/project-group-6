@@ -24,7 +24,9 @@ public class PaymentResponseDto {
     }
 
     //GETTERS
-
+    public int getPaymentNumber() {
+        return number;
+    }
     public String getBillingAddress() {
         return billingAddress;
     }
@@ -32,9 +34,7 @@ public class PaymentResponseDto {
     public int getPaymentId() {
         return paymentId;
     }
-    public int getPaymentNumber() {
-        return number;
-    }
+
 
 
 }

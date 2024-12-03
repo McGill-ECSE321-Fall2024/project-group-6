@@ -39,7 +39,7 @@
       <main class="catalog">
         <h3 id="catalog-title">Game Inventory</h3>
         <div v-if="games.length === 0">No games found</div>
-        <div v-for="game in games":key="game.gameId"class="game-card" @click="viewGameDetails(game.gameId)">
+        <div v-for="game in games":key="game.gameId"class="game-card" >
           <img :src="game.photoURL" alt="Game Image" class="game-image" />
           <div class="game-info">
             <h3>{{ game.name }}</h3>
@@ -47,6 +47,7 @@
             <p class="game-description"><strong>Description:</strong> {{ game.description }}</p>
             <p class="game-stock"><strong>Stock:</strong> {{ game.stockQuantity }} left</p>
             <button class="btn-danger" @click="viewGameDetails(game.gameId)">Edit</button>
+            <button class="btn-dangers" @click="requestDelete(game.gameId)">Request Delete</button>
           </div>
         </div>
       </main>
@@ -81,6 +82,18 @@ props: ['employeeId', 'loggedIn'],
       games: [],
       tasks: [],
       employeeID: 0,
+      game: {
+        name: "",
+        description: "",
+        price: 0.0,
+        stockQuantity: 0.0,
+        photoURL: "",
+        toBeAdded: "",
+        toBeRemoved: "",
+        promotion: 0.0,
+        categories:""
+      },
+      categoryIdsArray:[],
     };
   },
   methods: {
@@ -149,6 +162,32 @@ props: ['employeeId', 'loggedIn'],
         }
       }
     },
+    async requestDelete(id) {
+      this.categoryIdsArray=[];
+      try{
+        const response = await axios.get(`http://localhost:8080/games/id/${id}`);
+        console.log(response);
+        this.game = response.data;
+      }catch(error){
+        alert(error);
+      }
+      try {
+        for(var i=0;i<this.game.categories.length;i++){
+            if(this.game.categories[i]["categoryId"]!==id){
+            this.categoryIdsArray.push(this.game.categories[i]["categoryId"]);
+            }
+          }
+        this.game.categories=this.categoryIdsArray;
+       this.game.toBeRemoved=true;
+       console.log(this.game);
+        await axios.put(`http://localhost:8080/games/id/${id}`, this.game);
+        alert("Changes saved successfully!");
+    
+      } catch (error) {
+        console.error("Error saving game details:", error);
+        alert(error);
+      }
+    },
     async goToEmployeeAccount(){
       router.push({
           name: 'employee-account',
@@ -182,7 +221,7 @@ props: ['employeeId', 'loggedIn'],
 </script>
 
   
-<style scoped>
+  <style scoped>
   * {
   margin: 0;
   padding: 0;
@@ -374,11 +413,14 @@ transition: transform 0.2s;
 #catalog-title{
     padding-bottom: 20px;
 }
-.nav-buttons {
-
-    display: flex;
-    align-items: center;
-  }
+.dropdown .nav-buttons {
+  display: none; /* Initially hide dropdown content */
+  position: absolute;
+  background-color: white;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+  z-index: 1;
+}
   
   .nav-buttons button {
     background-color: #0056b3;
@@ -417,6 +459,19 @@ transition: transform 0.2s;
     font-weight: bold; /* Bold text */
     transition: background-color 0.3s; /* Smooth transition */
   }
+  .btn-dangers {
+    margin-left: 5px;
+    background-color: red; /* Yellow background */
+    color: black; /* Black text */
+    border: none; /* No border */
+    padding: 10px 20px; /* Padding for the button */
+    border-radius: 5px; /* Rounded corners */
+    font-size: 16px; /* Font size */
+    cursor: pointer; /* Pointer cursor on hover */
+    font-weight: bold; /* Bold text */
+    transition: background-color 0.3s; /* Smooth transition */
+  }
+
 
   .btn-danger:hover {
     background-color: darkorange; /* Darker shade on hover */

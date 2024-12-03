@@ -244,6 +244,8 @@ header img {
   display: flex;
   height: calc(100% - 80px);
   padding: 20px;
+  background-color: #ffffff;
+  color: #000;
 }
 
 .categories {
