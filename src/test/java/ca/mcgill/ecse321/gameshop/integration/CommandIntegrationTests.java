@@ -4,6 +4,7 @@ package ca.mcgill.ecse321.gameshop.integration;
 import ca.mcgill.ecse321.gameshop.dto.CommandListDto;
 import ca.mcgill.ecse321.gameshop.dto.CommandRequestDto;
 import ca.mcgill.ecse321.gameshop.dto.CommandResponseDto;
+import ca.mcgill.ecse321.gameshop.dto.PaymentRequestDto;
 import ca.mcgill.ecse321.gameshop.model.Category;
 import ca.mcgill.ecse321.gameshop.model.Customer;
 import ca.mcgill.ecse321.gameshop.model.Game;
@@ -80,6 +81,7 @@ public class CommandIntegrationTests {
         Game g2= new Game("Minecraft", "Great game", 50, 6,"URL",categories);
         gameRepo.save(g1);
         gameRepo.save(g2);
+
         Person timPerson= new Person("Tim","Tim@gmail.com","password","438777906");
         personRepo.save(timPerson);
         cart.add(g1);

@@ -129,6 +129,7 @@ public class PersonIntegrationTests {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(VALID_EMAIL, response.getBody().getEmail());
     }
+
     @Test
     @Order(6)
     public void testInvalidLogin() {

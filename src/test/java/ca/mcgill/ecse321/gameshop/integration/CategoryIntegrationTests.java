@@ -1,17 +1,11 @@
 package ca.mcgill.ecse321.gameshop.integration;
 
-/**
- * @author Joseph and Maissa
- */
-import org.junit.jupiter.api.AfterAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestMethodOrder;
+
+import ca.mcgill.ecse321.gameshop.dto.CategoryListDto;
+import ca.mcgill.ecse321.gameshop.dto.CategoryRequestDto;
+import ca.mcgill.ecse321.gameshop.dto.CategoryResponseDto;
+import ca.mcgill.ecse321.gameshop.repository.CategoryRepository;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -20,16 +14,15 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import ca.mcgill.ecse321.gameshop.dto.CategoryRequestDto;
-import ca.mcgill.ecse321.gameshop.dto.CategoryResponseDto;
-import ca.mcgill.ecse321.gameshop.repository.CategoryRepository;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 /**
  * @author Joseph and Maissa
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-
 
 public class CategoryIntegrationTests {
 
@@ -39,9 +32,9 @@ public class CategoryIntegrationTests {
     private CategoryRepository repo;
 
 
-    private static final String name = "Action";
+    private static String name = "Kids";
     private int ID;
-
+    String newName = "Farm";
 
     @AfterAll
     public void clearDatabase() {
@@ -49,7 +42,8 @@ public class CategoryIntegrationTests {
         repo.deleteAll();
     }
 
-    @SuppressWarnings("null")
+
+
     @Test
     @Order(1)
     public void testCreateValidCategory() {
@@ -61,16 +55,15 @@ public class CategoryIntegrationTests {
         // Act
         ResponseEntity<CategoryResponseDto> response = client.postForEntity("/categories", category, CategoryResponseDto.class);
 
-
         // Assert
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertTrue(response.getBody().getId() > 0, "The ID should be positive.");
         this.ID=response.getBody().getId();
+        System.out.println(this.ID);
         assertEquals(name, response.getBody().getName());
     }
 
-    @SuppressWarnings("null")
     @Test
     @Order(2)
     public void testGetValidCategoryById() {
@@ -105,9 +98,10 @@ public class CategoryIntegrationTests {
     @Order(4)
     public void testUpdateCategoryByValidId() {
         // Arrange
-        String newName = "Sports";
+
         //CategoryRequestDto updatedCategoryDto = new CategoryRequestDto(newName);
         String url = String.format("/categories/%d", this.ID);
+
 
         // Act
         client.put(url, newName);
@@ -124,7 +118,6 @@ public class CategoryIntegrationTests {
     @Order(5)
     public void testUpdateCategoryByInvalidId() {
         // Arrange
-        String newName = "Sports";
         String url = String.format("/categories/%d", -1);
         CategoryRequestDto updatedCategoryDto = new CategoryRequestDto(newName);
 
@@ -135,9 +128,27 @@ public class CategoryIntegrationTests {
         assertNotNull(response);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
-
     @Test
     @Order(6)
+    public void testGetAllCategories() {
+        // Arrange
+        CategoryRequestDto request = new CategoryRequestDto("RPG");
+
+        // Act
+        client.postForEntity("/categories", request, CategoryResponseDto.class);
+
+        ResponseEntity<CategoryListDto> response = client.getForEntity("/categories", CategoryListDto.class);
+
+        //Assert
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        List<CategoryResponseDto> categories = response.getBody().getCategories();
+        assertEquals(newName, categories.get(0).getName());
+        assertEquals("RPG", categories.get(1).getName());
+    }
+
+    @Test
+    @Order(7)
     public void testDeleteCategoryByValidId() {
         // Arrange
         String url = String.format("/categories/%d", this.ID);
@@ -149,13 +160,13 @@ public class CategoryIntegrationTests {
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
-        // Verify that the person was actually deleted by trying to fetch it again
+        // Verify that the categoory was actually deleted by trying to fetch it again
         ResponseEntity<CategoryResponseDto> deletedCategory = client.getForEntity(url, CategoryResponseDto.class);
         assertEquals(HttpStatus.NOT_FOUND, deletedCategory.getStatusCode());
     }
 
     @Test
-    @Order(7)
+    @Order(8)
     public void testDeleteCategoryByInvalidId() {
         // Arrange
         String url = String.format("/categories/%d", -1);
@@ -167,9 +178,5 @@ public class CategoryIntegrationTests {
         assertNotNull(response);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
-
-
-
-
 
 }

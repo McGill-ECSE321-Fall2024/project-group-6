@@ -3,15 +3,14 @@ package ca.mcgill.ecse321.gameshop.integration;
  * @author Joseph
  */
 
-import org.junit.jupiter.api.AfterAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import ca.mcgill.ecse321.gameshop.GameshopApplication;
+import ca.mcgill.ecse321.gameshop.dto.ManagerRequestDto;
+import ca.mcgill.ecse321.gameshop.dto.ManagerResponseDto;
+import ca.mcgill.ecse321.gameshop.repository.ManagerRepository;
+import ca.mcgill.ecse321.gameshop.repository.PersonRepository;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -21,11 +20,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import ca.mcgill.ecse321.gameshop.GameshopApplication;
-import ca.mcgill.ecse321.gameshop.dto.ManagerRequestDto;
-import ca.mcgill.ecse321.gameshop.dto.ManagerResponseDto;
-import ca.mcgill.ecse321.gameshop.repository.ManagerRepository;
-import ca.mcgill.ecse321.gameshop.repository.PersonRepository;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = GameshopApplication.class)

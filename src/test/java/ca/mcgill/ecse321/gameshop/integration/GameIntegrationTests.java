@@ -1,18 +1,13 @@
 package ca.mcgill.ecse321.gameshop.integration;
 
-import java.util.List;
-
-import org.junit.jupiter.api.AfterAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
+import ca.mcgill.ecse321.gameshop.dto.GameRequestDto;
+import ca.mcgill.ecse321.gameshop.dto.GameResponseDto;
+import ca.mcgill.ecse321.gameshop.model.Category;
+import ca.mcgill.ecse321.gameshop.repository.CategoryRepository;
+import ca.mcgill.ecse321.gameshop.repository.GameRepository;
+import jakarta.transaction.Transactional;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -22,12 +17,9 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import ca.mcgill.ecse321.gameshop.dto.GameRequestDto;
-import ca.mcgill.ecse321.gameshop.dto.GameResponseDto;
-import ca.mcgill.ecse321.gameshop.model.Category;
-import ca.mcgill.ecse321.gameshop.repository.CategoryRepository;
-import ca.mcgill.ecse321.gameshop.repository.GameRepository;
-import jakarta.transaction.Transactional;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -55,6 +47,11 @@ public class GameIntegrationTests {
     private static final boolean toBeRemoved = false;
     private static final float VALID_PROMOTION = -5F;
 
+    private static final String INVALID_NAME = "";
+    private static final String INVALID_DESCRIPTION = "";
+    private static final float INVALID_PRICE = -5.5F;
+    private static final int INVALID_STOCK_QUANTITY = -60;
+    private static final String INVALID_PHOTOURL = "";
     private int validId;
     private int cat1ID;
     private int cat2ID;
@@ -65,7 +62,7 @@ public class GameIntegrationTests {
         categoryRepo.deleteAll();
         repo.deleteAll();
     }
-    @BeforeAll
+   @BeforeAll
     public void setup() {
         // This ensures categories are available for testing
         Category category1 = new Category();
@@ -79,7 +76,6 @@ public class GameIntegrationTests {
         this.cat2ID=category2.getCategoryId();
     }
 
-    @SuppressWarnings("null")
     @Test
     @Order(1)
     public void testCreateValidGame() {

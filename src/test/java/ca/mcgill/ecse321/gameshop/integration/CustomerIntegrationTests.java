@@ -3,38 +3,8 @@ package ca.mcgill.ecse321.gameshop.integration;
  * @author Joseph and Marine
  */
 
-import java.util.List;
-
-import org.junit.jupiter.api.AfterAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
-import org.junit.jupiter.api.TestMethodOrder;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-
 import ca.mcgill.ecse321.gameshop.GameshopApplication;
-import ca.mcgill.ecse321.gameshop.dto.CustomerListDto;
-import ca.mcgill.ecse321.gameshop.dto.CustomerRequestDto;
-import ca.mcgill.ecse321.gameshop.dto.CustomerResponseDto;
-import ca.mcgill.ecse321.gameshop.dto.GameRequestDto;
-import ca.mcgill.ecse321.gameshop.dto.GameResponseDto;
-import ca.mcgill.ecse321.gameshop.dto.PaymentListDto;
-import ca.mcgill.ecse321.gameshop.dto.PaymentRequestDto;
-import ca.mcgill.ecse321.gameshop.dto.PaymentResponseDto;
+import ca.mcgill.ecse321.gameshop.dto.*;
 import ca.mcgill.ecse321.gameshop.model.Category;
 import ca.mcgill.ecse321.gameshop.model.Game;
 import ca.mcgill.ecse321.gameshop.model.Payment;
@@ -592,4 +562,3 @@ public class CustomerIntegrationTests {
 
 
 }
-

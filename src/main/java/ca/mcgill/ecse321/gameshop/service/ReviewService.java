@@ -57,7 +57,6 @@ public class ReviewService {
             throw new GameShopException(HttpStatus.NOT_FOUND, "Game associated with this review does not exist");
         }
         Review r = new Review(aRating, aComment, 0, aCustomer, aGame);
-
         // Set an empty reply if it's not initialized
         r.setReply(r.getReply() != null ? r.getReply() : "");
 
