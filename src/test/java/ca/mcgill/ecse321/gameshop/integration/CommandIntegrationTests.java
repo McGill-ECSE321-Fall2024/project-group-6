@@ -81,7 +81,6 @@ public class CommandIntegrationTests {
         Game g2= new Game("Minecraft", "Great game", 50, 6,"URL",categories);
         gameRepo.save(g1);
         gameRepo.save(g2);
-
         Person timPerson= new Person("Tim","Tim@gmail.com","password","438777906");
         personRepo.save(timPerson);
         cart.add(g1);

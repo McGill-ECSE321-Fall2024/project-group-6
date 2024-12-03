@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestMethodOrder(OrderAnnotation.class)
 @TestInstance(Lifecycle.PER_CLASS)
 public class CustomerIntegrationTests {
-    
+
     @Autowired
     private TestRestTemplate client;
     @Autowired
@@ -498,7 +498,7 @@ public class CustomerIntegrationTests {
         assertEquals(2,response.getBody().getPayments().size());
         assertEquals(VALID_BILLING_ADDRESS,response.getBody().getPayments().get(0).getBillingAddress());
         assertEquals(VALID_BILLING_ADDRESS2,response.getBody().getPayments().get(1).getBillingAddress());
-      //  paymentRepo.deleteAll();
+        //  paymentRepo.deleteAll();
     }
 
 
@@ -557,8 +557,8 @@ public class CustomerIntegrationTests {
         assertEquals(HttpStatus.LENGTH_REQUIRED, response.getStatusCode());
 
     }
-    
-     
+
+
 
 
 }

@@ -21,6 +21,7 @@ public class CommandResponseDto {
         this.commandDate = c.getCommandDate();
         this.totalPrice = c.getTotalPrice();
         this.customer=c.getCustomer();
+        System.out.println("response: "+ c.getTotalPrice());
     }
 
     // Getters

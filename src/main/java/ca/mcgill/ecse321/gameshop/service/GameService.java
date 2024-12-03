@@ -9,10 +9,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import ca.mcgill.ecse321.gameshop.exception.GameShopException;
-import ca.mcgill.ecse321.gameshop.model.Category;
-import ca.mcgill.ecse321.gameshop.model.Game;
+import ca.mcgill.ecse321.gameshop.model.*;
 import ca.mcgill.ecse321.gameshop.repository.CategoryRepository;
 import ca.mcgill.ecse321.gameshop.repository.GameRepository;
+import ca.mcgill.ecse321.gameshop.repository.ReviewRepository;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -22,6 +22,8 @@ public class GameService {
     private GameRepository gameRepository;
     @Autowired
     private CategoryRepository categoryRepo;
+    @Autowired
+    private ReviewRepository reviewRepo;
 
     /**
      * @author Maissa
@@ -201,6 +203,12 @@ public class GameService {
         if (!this.approvalToRemoveGame(gameId)) {
             throw new GameShopException(HttpStatus.NOT_FOUND, String.format("This game is not authorized to be deleted"));
         } else {
+            for (Review r: reviewRepo.findAll()){
+                if (r.getGame() == game){
+                    reviewRepo.delete(r);
+                    r.delete();
+                }
+            }
             gameRepository.deleteById(gameId);
             game.delete();
         }
@@ -234,6 +242,23 @@ public class GameService {
         if(gameFromDb==null){
             throw new GameShopException(HttpStatus.NOT_FOUND,String.format("The game does not exist in the database"));
         } else {return gameFromDb.getToBeRemoved();}
+    }
+
+    /**
+     * Get all the payment methods of a customer
+     * @param id
+     * @return
+     */
+    @Transactional
+    public List<Review> getGameReviews(int id) {
+        Game game= gameRepository.findGameByGameId(id);
+        List<Review> reviews= (List<Review>) reviewRepo.findAll();
+        for (int i=0; i<reviews.size();i++){
+            if(reviews.get(i).getGame()!=game){
+                reviews.remove(reviews.get(i));
+            }
+        }
+        return reviews;
     }
 
 

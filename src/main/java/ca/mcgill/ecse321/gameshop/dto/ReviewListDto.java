@@ -5,6 +5,8 @@ import java.util.List;
 public class ReviewListDto {
     private List<ReviewResponseDto> reviews;
 
+    public ReviewListDto() {
+    }
     public ReviewListDto(List<ReviewResponseDto> reviews) {
         this.reviews = reviews;
     }
