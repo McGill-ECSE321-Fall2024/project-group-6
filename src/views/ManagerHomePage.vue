@@ -93,7 +93,7 @@ const axiosClient = axios.create({
     baseURL: "http://localhost:8080"
   });
 export default {
-props: ['loggedIn'],
+props: ['loggedIn', 'managerId'],
 
   data() {
     return {

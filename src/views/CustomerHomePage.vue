@@ -456,20 +456,20 @@ font-weight: bold;
   padding-bottom: 20px;
 }
 .nav-buttons {
-
   display: flex;
   align-items: center;
 }
 
 .nav-buttons button {
   background-color: #0056b3;
-  color: #0056b3;
+  color: white;
   border: none;
   padding: 0.5rem 1rem;
   border-radius: 5px;
   cursor: pointer;
   text-align: center;  /* Centers the text horizontally */
   height: 50px;  /* Set a fixed height to ensure vertical centering */
+  width: 100px;
   display: flex;
   justify-content: center;
   align-items: center;  /* Centers the button text vertically */
