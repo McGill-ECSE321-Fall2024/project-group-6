@@ -98,7 +98,10 @@ export default {
     async fetchGameDetails() {
       try {
         const response = await axios.get(`http://localhost:8080/games/id/${this.$route.query.id}`);
-        this.game = response.data;
+        const gameInfo = response.data;
+        gameInfo.categories = gameInfo.categories.map(category => category.categoryName);
+        this.game = gameInfo;
+        debugger
       } catch (error) {
         console.error("Failed to fetch game details:", error);
         alert("Failed to load game details. Please try again later.");
