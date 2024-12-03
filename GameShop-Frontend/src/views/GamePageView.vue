@@ -8,17 +8,17 @@
         </div>
         <div class="navmenu">
           <div class="search-box">
-            <input type="search" class="search" placeholder="Search game..." />
-            <i class="bx bx-search"></i>
+            <input type="search" v-model="searchQuery" class="search" placeholder="Search game..." />
+            <i class="bx bx-search" @click="searchByName"></i>
           </div>
           <div class="iconAccount">
-            <img src="./account.png" alt="Account" />
+            <img src="../assets/account.png" alt="Account" />
           </div>
           <RouterLink to="/wishlist">
-            <img src="./White-Heart.png" alt="Wishlist" />
+            <img src="../assets/White-Heart.png" alt="Wishlist" />
           </RouterLink>
           <RouterLink to="/checkout">
-            <img src="./pngaaa.com-5034351.png" alt="Cart" />
+            <img src="../assets/pngaaa.com-5034351.png" alt="Cart" />
           </RouterLink>
         </div>
       </nav>
@@ -35,6 +35,7 @@
           <p><strong>Stock Quantity:</strong> {{ game.stockQuantity }}</p>
           <p><strong>Categories:</strong> {{ game.categories.join(", ") }}</p>
           <button @click="addToCart" class="btn-add-to-cart">Add to Cart</button>
+          <button @click="addToWishlist" class="btn-add-to-wishlist">Add to Wishlist</button> <!-- Added Wishlist Button -->
         </div>
       </div>
 
@@ -42,11 +43,25 @@
       <div class="reviews-section">
         <h2>Reviews</h2>
         <div class="reviews" v-if="reviews.length > 0">
-          <div v-for="review in reviews" :key="review.id" class="review">
-            <p><strong>{{ review.reviewerName || "Anonymous" }}</strong>: {{ review.comment }}</p>
+          <div v-for="review in reviews" :key="review.reviewId" class="review">
+            <p><strong>{{ review.customer.person.username || "Anonymous" }}</strong>: {{ review.comment }}</p>
             <p>Rating: {{ review.rating }}</p>
-            <p>Likes: {{ review.likes || 0 }}</p>
-            <button @click="likeReview(review)" class="btn-like">Like</button>
+            <p>Likes: {{ review.amountOfLikes || 0 }}</p>
+            <!-- Like Button -->
+            <button 
+              v-if="!checkIfLiked(review.reviewId)"
+              @click="likeReview(review)"
+              class="btn-like">
+              Like
+            </button>
+            
+            <!-- Unlike Button -->
+            <button 
+              v-else
+              @click="unlikeReview(review)"
+              class="btn-unlike">
+              Unlike
+            </button>
           </div>
         </div>
         <p v-else>No reviews available for this game.</p>
@@ -74,9 +89,11 @@ import axios from "axios";
 import { RouterLink } from "vue-router";
 
 export default {
-  props: ["customerId", "loggedIn"],
+  props: ['customerId', 'loggedIn', 'gameId'],
   data() {
     return {
+      customerID: 0,
+      gameID: 0,
       searchQuery: "",
       game: {
         id: 0,
@@ -92,44 +109,103 @@ export default {
         rating: null,
         comment: "",
       },
+      likedReviews:[],
     };
   },
   methods: {
+    isLoggedIn() {
+      return this.loggedIn;
+    },
     async fetchGameDetails() {
       try {
-        const response = await axios.get(`http://localhost:8080/games/id/${this.$route.query.id}`);
+        const response = await axios.get(`http://localhost:8080/games/id/${this.gameID}`);
         const gameInfo = response.data;
         gameInfo.categories = gameInfo.categories.map(category => category.categoryName);
         this.game = gameInfo;
-        debugger
       } catch (error) {
         console.error("Failed to fetch game details:", error);
         alert("Failed to load game details. Please try again later.");
       }
     },
+
     async fetchReviews() {
       try {
-        const response = await axios.get(`http://localhost:8080/games/${this.$route.query.id}/reviews`);
+        const response = await axios.get(`http://localhost:8080/games/${this.gameID}/reviews`);
         this.reviews = response.data.reviews || [];
+        
+        // Initialize 'likedByCustomer' for each review
+        this.reviews.forEach((review) => {
+          review.likedByCustomer = this.checkIfLiked(review);
+        });
       } catch (error) {
         console.error("Failed to fetch reviews:", error);
         alert("Failed to load reviews. Please try again later.");
       }
     },
+
+    checkIfLiked(reviewId) {
+      return this.likedReviews.includes(reviewId);
+    },
+
+    parseRating(rating) {
+      const ratingMap = {
+        "OneStar": 0,
+        "TwoStar": 1,
+        "ThreeStar": 2,
+        "FourStar": 3,
+        "FiveStar": 4
+      };
+      return ratingMap[rating] || 0;
+    },
+
     async likeReview(review) {
       try {
-        const response = await axios.post(`http://localhost:8080/reviews/${review.id}/like`);
-        review.likes = response.data.likes; // Assuming the backend returns the updated likes count
+        debugger
+        const payload = {
+          rating: this.parseRating(review.rating),
+          comment: review.comment,
+          amountOfLikes: review.amountOfLikes + 1,
+          reply: review.reply || "",
+        };
+        if (review.customer.roleId == this.customerID){
+          alert("You cannot like your own review.")
+        }
+        else{
+          const response = await axios.put(`http://localhost:8080/review/${review.reviewId}`, payload);
+          this.fetchReviews(); // Refresh the reviews list after updating
+          this.likedReviews.push(review.reviewId);
+        }
+
       } catch (error) {
         console.error("Failed to like the review:", error);
-        alert("Failed to like the review. Please try again.");
+        alert("Failed to like/unlike the review. Please try again.");
+        this.likedReviews = this.likedReviews.filter(id => id !== review.reviewId);
       }
     },
+
+    async unlikeReview(review) {
+      try {   
+        const payload = {
+          rating: this.parseRating(review.rating),
+          comment: review.comment,
+          amountOfLikes: review.amountOfLikes - 1,
+          reply: review.reply || "",
+        };
+        const response = await axios.put(`http://localhost:8080/review/${review.reviewId}`, payload);
+        this.fetchReviews(); // Refresh the reviews list after updating
+        this.likedReviews = this.likedReviews.filter(id => id !== review.reviewId);
+      } catch (error) {
+        console.error("Failed to unlike the review:", error);
+        alert("Failed to like/unlike the review. Please try again.");
+        this.likedReviews.push(review.reviewId);
+      }
+    },
+
     async submitReview() {
       try {
-        await axios.post(`http://localhost:8080/review/${this.customerId}/${this.$route.query.id}`, this.newReview);
+        await axios.post(`http://localhost:8080/review/${this.customerId}/${this.gameId}`, this.newReview);
         alert("Review added successfully!");
-        this.fetchReviews();
+        this.fetchReviews();  // Refresh the reviews after adding a new one
         this.newReview.rating = null;
         this.newReview.comment = "";
       } catch (error) {
@@ -137,9 +213,10 @@ export default {
         alert("Failed to submit review. Please try again later.");
       }
     },
+
     async addToCart() {
       try {
-        await axios.put(`http://localhost:8080/customers/${this.customerId}/cart/add/${this.$route.query.id}`, {
+        await axios.put(`http://localhost:8080/customers/${this.customerId}/cart/add/${this.gameId}`, {
           gameID: this.game.id,
         });
         alert("Game added to cart successfully!");
@@ -148,16 +225,73 @@ export default {
         alert("Failed to add game to cart. Please try again later.");
       }
     },
+
+    async addToWishlist() {
+      try {        
+        const response = await axios.put(`http://localhost:8080/customers/${this.customerID}/wishlist/add/${this.gameId}`, null);
+        alert("Game added to wishlist successfully!");
+      } catch (error) {
+        console.error("Failed to add game to wishlist:", error);
+        alert("Failed to add game to wishlist. Please try again later.");
+      }
+    },
+    async searchByName() {
+      try {
+        
+        const response = await axios.get(`http://localhost:8080/games/name/${this.searchQuery}`);
+        this.games = [response.data];
+      } catch (error) {
+        console.error('Error searching for games:', error);
+      }
+    },
+    async goToCustomerMainPage(){
+            router.push({
+          name: 'customer-homepage',
+          params: {
+            customerId: this.customerId,
+            loggedIn: true
+          }  
+        });
+    },
+    async goToCart() {
+        router.push({
+          name: 'customer-cart',
+          params: {
+            customerId: this.customerId,
+            loggedIn: true
+          }         
+        }); 
+    },
+    async goToCustomerWishlist() {
+        router.push({
+          name: 'customer-wishlist',
+          params: {
+            customerId: this.customerId,
+            loggedIn: true
+          }
+          
+        });
+    },
+    logout() {
+      this.$router.push('/SignIn');
+    },
   },
+
   created() {
-    this.fetchGameDetails();
-    this.fetchReviews();
-  },
+    if (!this.isLoggedIn()) {
+      this.$router.push({ name: "sign in" });
+      alert("Please log in before accessing this page.");
+    } else {
+      this.customerID = this.customerId; 
+      this.gameID = this.gameId; 
+      this.fetchGameDetails();
+      this.fetchReviews();
+    }
+  }
 };
 </script>
 
-
-<style>
+<style scoped>
 /* General Styles */
 * {
   margin: 0;
@@ -266,6 +400,22 @@ export default {
   margin-top: 10px;
 }
 
+.btn-add-to-wishlist {
+  padding: 10px 20px;
+  background-color: #49D8B9;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  max-width: 200px; /* Set a max-width to prevent stretching */
+  align-self: flex-start; /* Align the button to the left, inside the game-info section */
+  margin-top: 10px;
+}
+.btn-add-to-wishlist:hover {
+  background-color: #1033a4;
+}
+
 .btn-add-to-cart:hover {
   background-color: #1033a4;
 }
@@ -318,5 +468,24 @@ textarea {
 
 .btn-submit-review:hover {
   background-color: #1033a4;
+}
+
+/* Like/Unlike Button Styles */
+.btn-like, .btn-unlike {
+  padding: 5px 15px;
+  font-size: 14px;
+  background-color: #49D8B9;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-like:hover, .btn-unlike:hover {
+  background-color: #1033a4;
+}
+
+.btn-unlike {
+  background-color: #D84949;
 }
 </style>
