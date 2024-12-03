@@ -3,8 +3,6 @@ import { createRouter, createWebHistory } from 'vue-router'
 import SignUp from '@/views/SignUp.vue'
 import SignIn from '@/views/SignIn.vue'
 import HomePageView from '@/views/HomePageView.vue'
-import ManagerHomePage from '@/views/ManagerHomePage.vue'
-import CustomerHomePage from '@/views/CustomerHomePage.vue'
 import Wishlist from '@/views/Wishlist.vue'
 import EmployeeHomePage from '@/views/EmployeeHomePage.vue'
 import EmployeeAccount from '@/views/EmployeeAccount.vue'
@@ -24,49 +22,17 @@ const router = createRouter({
       name: 'events',
       component: SignUp
     },
-
     {
       path: '/',
       name: 'event-details',
       component: HomePageView
     },
-
+   
     {
       path: '/SignIn',
       name: 'sign in',
       component: SignIn,
     },
-    
-    {
-      path: '/managerHomePage/:managerId/:loggedIn',
-      name: 'manager-homepage',
-      component: ManagerHomePage,
-      props: true,
-      beforeEnter: (to, from, next) => {
-        if (localStorage.getItem('loggedIn') === 'true') {
-          next();
-        } else {
-          alert('Please sign in before accessing this page.');
-          next({ name: 'sign in' });
-        }
-      }
-    },
-
-    {
-      path: '/customerHomePage/:customerId/:loggedIn',
-      name: 'customer-homepage',
-      component: CustomerHomePage,
-      props: true,
-      beforeEnter: (to, from, next) => {
-        if (localStorage.getItem('loggedIn') === 'true') {
-          next();
-        } else {
-          alert('Please sign in before accessing this page.');
-          next({ name: 'sign in' });
-        }
-      }
-    },
-
     {
       path: '/wishlist',
       name: 'wishlist',
@@ -93,32 +59,21 @@ const router = createRouter({
       path: '/customerAccount',
       name: 'customer-account',
       component: CustomerAccount,
-
-      props:true,
-      
-      beforeEnter: (to, from, next) => {
-        if (localStorage.getItem('loggedIn') === 'true') {
-          next();
-        } else {
-          alert('Please sign in before accessing this page.');
-          next({ name: 'sign in' });
-        }
-      }
     },
-    {
-      path: '/employeeHomePage/:employeeId/:loggedIn',
-      name: 'employee-homepage',
-      component: EmployeeHomePage,
-      props: true,
-      beforeEnter: (to, from, next) => {
-        if (localStorage.getItem('loggedIn') === 'true') {
-          next();
-        } else {
-          alert('Please sign in before accessing this page.');
-          next({ name: 'sign in' });
+      {
+        path: '/employeeHomePage/:employeeId/:loggedIn',
+        name: 'employee-homepage',
+        component: EmployeeHomePage,
+        props: true,
+        beforeEnter: (to, from, next) => {
+          if (localStorage.getItem('loggedIn') === 'true') {
+            next();
+          } else {
+            alert('Please sign in before accessing this page.');
+            next({ name: 'sign in' });
+          }
         }
-      }
-    },
+      },
       {
         path: '/employeeGamePage/:employeeId/:loggedIn/:gameId',
         name: 'employee-gamepage',
@@ -131,7 +86,8 @@ const router = createRouter({
             alert('Please sign in before accessing this page.');
             next({ name: 'sign in' });
           }
-        } 
+        }
+          
       },
       {
         path: '/managerHomePage/:managerId/:loggedIn',

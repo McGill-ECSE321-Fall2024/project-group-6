@@ -12,10 +12,10 @@
               <i class="bx bx-search"></i>
             </div>
             <div class="iconAccount">
-              <img src="./account.png" alt="Account">
+              <img src="../assets/account.png" alt="Account">
             </div>
-            <RouterLink to="/wishlist"><img src="./White-Heart.png" alt="Wishlist"></RouterLink>
-            <RouterLink to="/checkout"><img src="./pngaaa.com-5034351.png" alt="Cart"></RouterLink>
+            <RouterLink to="/wishlist"><img src="../assets/White-Heart.png" alt="Wishlist"></RouterLink>
+            <RouterLink to="/checkout"><img src="../assets/pngaaa.com-5034351.png" alt="Cart"></RouterLink>
           </div>
         </nav>
       </header>

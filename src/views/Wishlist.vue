@@ -14,9 +14,8 @@
                 <div class="iconAccount">
                     <img src="../assets/account.png">
                 </div>
-                <RouterLink @click="goToCart"><img src="../assets/White-Heart.png" @click="goToCart"></RouterLink>
-
-                <RouterLink @click="goToCart"><img src="../assets/pngaaa.com-5034351.png" @click="goToCart"></RouterLink>
+                <RouterLink @click="goToCart"><img src="../assets/White-Heart.png"></RouterLink>
+                <RouterLink @click="goToCart"><img src="../assets/pngaaa.com-5034351.png"></RouterLink>
             </div>
         </nav>
     </header>
