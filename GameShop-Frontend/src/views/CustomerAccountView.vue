@@ -1,4 +1,8 @@
 <template>
+  <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
   <div>
     <!-- Header Section -->
     <header>
@@ -17,7 +21,8 @@
             <button @click="goToCustomerWishlist"><img src="../assets/White-Heart.png" alt="WishList" class="wishlist-img" @click="goToCustomerWishlist"></button>
             <div class="dropdown">
                 <button class="dropbtn"><img src="../assets/person-circle.svg" alt="Account" class="account-img"></button>
-                <div class="nav-buttons">
+                <div class="nav-buttons">                    
+                    <button @click="goToCustomerMainPage" class="mainpage-btn">Home</button>
                     <button @click="goToCustomerOrders" class="order-btn">Orders</button>
                     <button @click="logout" class="logout-btn">Logout</button>
                 </div>
@@ -107,15 +112,13 @@ export default {
     },
     async searchByName() {
       try {
-        
         const response = await axios.get(`http://localhost:8080/games/name/${this.searchQuery}`);
-        this.games = [response.data];
       } catch (error) {
         console.error('Error searching for games:', error);
       }
     },
-    goToCustomerHome() {
-        router.push({
+    async goToCustomerHome() {
+      this.$router.push({
           name: 'customer-homepage',
           params: {
             employeeId: this.customerID,
@@ -124,7 +127,7 @@ export default {
         });        
     },
     async goToCustomerMainPage(){
-            router.push({
+        this.$router.push({
           name: 'customer-homepage',
           params: {
             customerId: this.customerId,
@@ -133,7 +136,7 @@ export default {
         });
     },
     async goToCart() {
-        router.push({
+      this.$router.push({
           name: 'customer-cart',
           params: {
             customerId: this.customerId,
@@ -142,7 +145,7 @@ export default {
         }); 
     },
     async goToCustomerWishlist() {
-        router.push({
+      this.$router.push({
           name: 'customer-wishlist',
           params: {
             customerId: this.customerId,
@@ -152,7 +155,7 @@ export default {
         });
     }, 
     async goToCustomerOrders() {
-        router.push({
+      this.$router.push({
           name: 'customer-orders',
           params: {
             customerId: this.customerId,
