@@ -3,17 +3,17 @@ package ca.mcgill.ecse321.gameshop.controller;
 /**
  * @author Joseph
  */
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
 
 import ca.mcgill.ecse321.gameshop.dto.EmployeeListDto;
 import ca.mcgill.ecse321.gameshop.dto.EmployeeRequestDto;
 import ca.mcgill.ecse321.gameshop.dto.EmployeeResponseDto;
 import ca.mcgill.ecse321.gameshop.model.Employee;
 import ca.mcgill.ecse321.gameshop.service.EmployeeService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 public class EmployeeController {

@@ -3,6 +3,14 @@ package ca.mcgill.ecse321.gameshop.service;
  * @author Joseph and Marine
  */
 
+import ca.mcgill.ecse321.gameshop.exception.GameShopException;
+import ca.mcgill.ecse321.gameshop.model.*;
+import ca.mcgill.ecse321.gameshop.repository.CustomerRepository;
+import ca.mcgill.ecse321.gameshop.repository.GameRepository;
+import ca.mcgill.ecse321.gameshop.repository.PaymentRepository;
+import ca.mcgill.ecse321.gameshop.repository.PersonRepository;
+import jakarta.transaction.Transactional;
+
 import java.util.ArrayList;
 import java.util.List;
 

@@ -1,0 +1,591 @@
+<template>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <h2>GameShop</h2>
+            </div>
+            <div class="navmenu">
+                <div class="search-box">
+                    <input type="search" class="search" placeholder="Search game...">
+                    <i class='bx bx-search'></i>
+                </div>
+                <div class="iconAccount">
+                    <img src="./account.png">
+                </div>
+                <RouterLink to="/wishlist"><img src="./White-Heart.png"></RouterLink>
+
+                <RouterLink to="/checkout"><img src="./pngaaa.com-5034351.png"></RouterLink>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <div class="checkoutLayout">
+            <div class="returnCart">
+                <a href="/homepage">Keep shopping</a>
+                <h1>List Product in Cart</h1>
+                <div class="list">
+                    <div v-if="showPopup" class="popup">
+                        {{ popupMessage }}
+                    </div>
+                    <div v-for="game in customer.cart" :key="game.id" class="game-card">
+                        <div class="item">
+                            <img :src="game.photoURL">
+                            <div class="info">
+                                <div class="name">{{ game.name }}</div>
+                                <p><strong>Stock:</strong> {{ game.stockQuantity }} left</p>
+                                <div class="price">{{ game.price }}</div>
+                            </div>
+                            <div class="returnPrice">{{ game.price }}$</div>
+                            <div class="buttons">
+                                <a @click="removeFromCart(game)" class="btn">-</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="payment">
+                    <h1>Payment Method</h1>
+                    <div class="list">
+                        <div v-for="payment in payments" :key="payment.paymentId" class="payment-card">
+                            <div class="item">
+                                <input type="radio" id="payment-{{ payment.paymentId }}" name="payment"
+                                    :value="payment.paymentId" v-model="selectedPayment"
+                                    @click="handleClick(payment.paymentId)" />
+
+                                <img src="https://pngimg.com/d/credit_card_PNG24.png">
+                                <div class="info">
+                                    <div class="name">Credit Card ending in {{ payment.paymentNumber }}</div>
+                                    <div class="number">Billing Address {{ payment.billingAddress }}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="add-payment">
+                            <h2 @click="isAddPaymentVisible = !isAddPaymentVisible" style="cursor: pointer;">
+                                <span v-if="isAddPaymentVisible">▲</span>
+                                <span v-else>▼</span>
+                                Add Payment
+                            </h2>
+                            <div class="form" v-show="isAddPaymentVisible">
+                                <div class="group">
+                                    <input type="number" v-model="newPayment.creditCardNumber" placeholder="Enter Card">
+                                </div>
+
+                                <div class="group">
+                                    <input type="text" v-model="newPayment.expirationDate" placeholder="MM/YY">
+                                    <input type="number" v-model="newPayment.cvc" placeholder="CVC">
+                                </div>
+                                <div class="group">
+                                    <input type="text" v-model="newPayment.billingAddress"
+                                        placeholder="Billing address">
+                                </div>
+                                <button @click=addPayment() class="savePayment">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="right">
+                <h1>Checkout</h1>
+
+                <div class="form">
+                    <div class="group">
+                        <label for="name">E-mail address</label>
+                        <input type="text" v-model="customer.email" name="name" id="name">
+                    </div>
+
+                    <div class="group">
+                        <label for="phone">Phone number</label>
+                        <input type="text" v-model="customer.phone" name="number" id="number">
+                    </div>
+
+                    <div class="group">
+                        <label for="address">Address</label>
+                        <input type="text" v-model="customer.shippingAddress" name="address" id="address">
+                    </div>
+
+                    <div class="group">
+                        <label for="country">Country</label>
+                        <select name="country" id="country">
+                            <option value="">Choose..</option>
+                            <option value="">Canada</option>
+                        </select>
+                    </div>
+
+                    <div class="group">
+                        <label for="city">Province</label>
+                        <select name="city" id="city">
+                            <option value="">Choose..</option>
+                            <option value="">Quebec</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="return">
+                    <div class="row">
+                        <div>Total Quantity</div>
+                        <div class="totalQuantity">{{ totalQuantity }}</div>
+                    </div>
+                    <div class="row">
+                        <div>Total Price</div>
+                        <div class="totalPrice">{{ totalPrice }}</div>
+                    </div>
+                </div>
+                <button @click=checkout() class="buttonCheckout">CHECKOUT</button>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+import axios from "axios";
+import { RouterLink } from 'vue-router';
+
+export default {
+    data() {
+        return {
+
+            payments: [],
+            //Updating customer's info
+
+
+            //Adding a payment
+            isAddPaymentVisible: false,
+            newPayment: {
+                creditCardNumber: null,
+                expirationDate: "",
+                billingAddress: "",
+                cvc: null,
+            },
+            
+            command: {},
+            customer: {
+                shippingAddress: "",
+                username: "",
+                email: "",
+                phone: "",
+                customerId: null,
+                wishlist: [],
+                cart: []
+
+            },
+            selectedPayment: null,
+            showPopup: false,
+            popupMessage: "",
+        };
+    },
+    computed: {
+        totalQuantity() {
+            return this.customer.cart.length;
+        },
+        totalPrice() {
+            return this.customer.cart.reduce((total, game) => total + game.price, 0);
+        },
+
+    },
+    methods: {
+        async fetchCart() {
+            try {
+                const response = await axios.get(`http://localhost:8080/customers/1652`);
+                this.customer = response.data;
+                //this.newCustomer = JSON.parse(JSON.stringify(this.customer));
+
+            } catch (error) {
+                console.error("Error fetching cart:", error);
+            }
+        },
+        async fetchPayments() {
+            try {
+                const response = await axios.get(`http://localhost:8080/customers/${this.customer.customerId}/payments`);
+                this.payments = response.data.payments;
+
+            } catch (error) {
+                console.error("Error fetching payments:", error);
+            }
+        },
+
+        handleClick(paymentId) {
+            if (this.selectedPayment === paymentId) {
+                this.selectedPayment = null;
+            } else {
+                this.selectedPayment = paymentId;
+            }
+        },
+        async removeFromCart(game) {
+
+            await axios.put(`http://localhost:8080/customers/${this.customer.customerId}/cart/${game.gameId}`)
+
+            this.fetchCart();
+
+            this.popupMessage = `${game.name} was removed from the cart.`;
+            this.showPopup = true;
+
+            setTimeout(() => {
+                this.showPopup = false;
+            }, 3000);
+
+        },
+
+        async addPayment() {
+            // Basic validation
+            const { creditCardNumber, expirationDate, billingAddress, cvc } = this.newPayment;
+            if (!creditCardNumber || !expirationDate || !billingAddress || !cvc) {
+                this.popupMessage = "Please fill in all fields.";
+                this.showPopup = true;
+                setTimeout(() => (this.showPopup = false), 3000);
+                return;
+            }
+
+            try {
+                //  add the new payment
+                await axios.post(
+                    `http://localhost:8080/payment/${this.customer.customerId}`, this.newPayment);
+
+                this.popupMessage = `this.newPayment `;
+                this.showPopup = true;
+                // Reset form fields
+
+                this.newPayment = {
+                    creditCardNumber: null,
+                    expirationDate: "",
+                    billingAddress: "",
+                    cvc: null,
+                };
+
+                this.isAddPaymentVisible = false;
+
+                this.fetchPayments();
+
+                this.popupMessage = "Payment method added successfully!";
+                this.showPopup = true;
+                setTimeout(() => (this.showPopup = false), 3000);
+            } catch (error) {
+                console.error("Error adding payment:", error);
+                this.popupMessage = "Failed to add payment method.";
+                this.showPopup = true;
+                setTimeout(() => (this.showPopup = false), 3000);
+            }
+        },
+
+        async checkout() {
+            //const { shippingAddress, phone, email } = this.newCustomer;
+            
+            if (this.selectedPayment == null) {
+                this.popupMessage = "Please select a payment method.";
+                this.showPopup = true;
+                setTimeout(() => (this.showPopup = false), 3000);
+                return;
+            }
+            if (!this.customer.cart || this.customer.cart.length === 0) {
+                this.popupMessage = "Cannot checkout with an empty cart";
+                this.showPopup = true;
+                setTimeout(() => (this.showPopup = false), 3000);
+                return;
+            }
+                try {
+                    await axios.put(`http://localhost:8080/customers/${this.customer.customerId}`, this.customer)
+                } catch (error) {
+                    console.error("Error updating customer's info:", error);
+                }
+            
+
+            //Update customer
+
+
+            //save cart
+            sessionStorage.setItem('cart', JSON.stringify(this.customer.cart));
+
+            try {
+                const response = await axios.post(`http://localhost:8080/command/${this.customer.customerId}`, this.command)
+                this.command = response.data;
+
+
+                this.$router.push(`/command/${this.command.commandId}/${this.selectedPayment}`);
+
+            } catch (error) {
+                console.error("Error creating command:", error);
+                alert("An error occurred while creating the command. Please try again.");
+            }
+        }
+    },
+    mounted() {
+        this.fetchCart().then(() => {
+            this.fetchPayments();
+        });
+    },
+};
+</script>
+
+<style scoped>
+* {
+    margin: 0;
+    padding: 0;
+    text-decoration: none;
+    list-style: none;
+    font-family: "poppins";
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    height: 80px;
+    background: #1033a4;
+}
+
+.navbar h2 {
+    color: #ffffff;
+    font-size: 25px;
+    font-weight: 500;
+    padding: 20px 20px;
+}
+
+.navmenu {
+    height: 50px;
+    line-height: 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.search-box .search {
+    width: 500px;
+    padding: 8px 8px;
+    border-radius: 50px;
+    font-size: 16px;
+}
+
+.search-box {
+    margin-right: 200px;
+}
+
+.navmenu .search-box i {
+    color: #ffffff;
+    position: relative;
+    right: 40px;
+    top: 2px;
+    background-color: #1140d9;
+    padding: 8px;
+    border-radius: 50px;
+}
+
+header img {
+    margin-top: 15px;
+    margin-right: 10px;
+    align-items: center;
+    width: 40px;
+}
+
+.navmenu .iconcCart {
+    align-items: center;
+    position: relative;
+    margin: 10px;
+    z-position: 1;
+    display: inline-block;
+}
+
+
+html {
+    font-family: "poppins";
+}
+
+.container {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+h2 {
+    padding-top: 0.5em;
+}
+
+.popup {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #eee;
+    color: #000000;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    font-weight: bold;
+    z-index: 0;
+}
+
+.checkoutLayout {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 50px;
+    padding: 20px;
+}
+
+.checkoutLayout .right {
+    margin-top: 80px;
+    background-color: #3148de;
+    border-radius: 20px;
+    padding: 40px;
+    color: #fff;
+}
+
+.checkoutLayout .right .form {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    border-bottom: 1px solid #3e78ff;
+    padding-bottom: 20px;
+}
+
+.checkoutLayout h1 {
+    font-weight: bold;
+}
+
+.checkoutLayout .form h1,
+.checkoutLayout .form .group:nth-child(-n+3) {
+    grid-column-start: 1;
+    grid-column-end: 3;
+}
+
+.checkoutLayout .form input,
+.checkoutLayout .form select {
+    width: 100%;
+    padding: 10px 20px;
+    box-sizing: border-box;
+    border-radius: 20px;
+    margin-top: 10px;
+    border: none;
+    background-color: #3e78ff;
+    color: #fff;
+}
+
+.checkoutLayout .right .return .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.checkoutLayout .right .return .row div:nth-child(2) {
+    font-weight: bold;
+    font-size: x-large;
+}
+
+.buttonCheckout {
+    width: 100%;
+    height: 40px;
+    border: none;
+    border-radius: 20px;
+    background-color: #49D8B9;
+    margin-top: 40px;
+    font-weight: bold;
+    color: #fff;
+}
+
+.returnCart h1 {
+    border-top: 1px solid #eee;
+    padding: 20px 0;
+}
+
+.returnCart .list {
+    border-bottom: 2px solid #eee;
+    padding: 20px 0;
+}
+
+.returnCart .list .item img {
+    height: 80px;
+}
+
+.returnCart .list .item .buttons a {
+    padding: 0 6px;
+    width: 100%;
+    height: 40px;
+    border: none;
+    border-radius: 20px;
+    background-color: red;
+    margin-top: 20px;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+.returnCart .list .item {
+    display: grid;
+    grid-template-columns: 80px 1fr 70px 30px;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 20px;
+    padding: 10px;
+    box-shadow: 0 10px 20px #5555;
+    border-radius: 20px;
+}
+
+.returnCart .list .item .name,
+.returnCart .list .item .returnPrice {
+    font-size: large;
+    font-weight: bold;
+
+}
+
+.payment .list .item {
+    display: grid;
+    grid-template-columns: 40px 1fr 300px;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 20px;
+    padding: 10px;
+    box-shadow: 0 10px 20px #5555;
+    border-radius: 20px;
+}
+
+.add-payment {
+    display: grid;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 20px;
+    padding: 10px;
+    box-shadow: 0 10px 20px #5555;
+    border-radius: 20px;
+}
+
+.add-payment .form {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+
+}
+
+.add-payment .form .group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    /* Two equal columns */
+    gap: 10px;
+
+}
+
+.add-payment .form .group:first-child {
+    grid-template-columns: 1fr;
+    /* Single column for Enter Card */
+}
+
+.add-payment .form input {
+    padding: 10px;
+    border: 1px solid #ddd;
+    color: #000000;
+    border-radius: 5px;
+    width: 100%;
+    box-sizing: border-box;
+    background-color: #eee;
+}
+
+.add-payment button {
+    padding: 10px;
+    background-color: #3148de;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    width: 100%;
+}
+</style>

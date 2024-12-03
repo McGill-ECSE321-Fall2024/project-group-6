@@ -63,7 +63,6 @@ public class ReviewIntegrationTests {
         gameRepo.deleteAll();
     }
 
-    @SuppressWarnings("null")
     @Test
     @Order(1)
     public void testCreateCustomer() {
