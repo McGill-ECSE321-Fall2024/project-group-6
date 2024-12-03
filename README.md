@@ -88,7 +88,7 @@ Table 3 : Roles of each team member Deliverable 3: <br/>
 |             | Presentation slides                     |                  |
 | Annabelle   | Customer Game Page and Account (Frontend/Backend)                   |                  |
 |             | Presentation slides                  |                |
-| Marine      | Employee Dashboard, Account and Game Page (Frontend)          |                  |
+| Marine      | Employee Dashboard, Account and Game Page (Frontend)          |         6         |
 |             | Meeting Minutes                     |       1        |
 |             | Key Decisions                     |         1         |
 |             | Presentation slides             |          1.5       |
