@@ -46,23 +46,22 @@
     </aside>
 
 
-    <main class="catalog">
+    <main class="catalog"  >
      
       <div v-if="games.length === 0">No games found</div>
       <div v-for="game in games" :key="game.gameId" class="game-card">
-        <img :src="game.photoURL" alt="Game Image" class="game-image" />
-        <div class="game-info" @click="goToGamePage(game)">
+        <img :src="game.photoURL" alt="Game Image" class="game-image" @click="goToGamePage(game)"/>
+        <div class="game-info" >
           <h3>{{ game.name }}</h3>
           <p class="game-price"><strong>Price:</strong> ${{ game.price }}</p>
           <p class="game-stock"><strong>Stock:</strong> {{ game.stockQuantity }} left</p>
           <p class="game-promotion"><strong>Promotion:</strong> {{ game.promotion }}</p>
-
           <div class="button-container">
             <button class="btn" @click="addToCart(game)">Add to Cart</button>
             <button class="btn" @click="addToWishlist(game)">Add to Wishlist</button>
           </div>
-
         </div>
+        
       </div>
     </main>
 

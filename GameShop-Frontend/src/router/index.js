@@ -67,7 +67,7 @@ const router = createRouter({
       
     },
     {
-      path: '/customerAccount',
+      path: '/customerAccount/:customerId/:loggedIn',
       name: 'customer-account',
       component: CustomerAccount,
     },

@@ -110,6 +110,7 @@
 <script>
 import axios from "axios";
 import { RouterLink } from "vue-router";
+import router from '@/router';
 
 export default {
   props: ['customerId', 'loggedIn', 'gameId'],

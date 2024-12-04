@@ -55,18 +55,6 @@ public class ReviewController {
         return new ReviewListDto(reviews);
     }
 
-    @CrossOrigin(origins = "http://localhost:8087")
-    @GetMapping("/review/game/{gId}")
-    public ReviewListDto getAllGameReviews(@PathVariable int gId) {
-        List<ReviewResponseDto> reviews = new ArrayList<>();
-        for (Review r : reviewService.getAllReviews()){
-            if(r.getGame().getGameId()==gId) {
-                reviews.add(new ReviewResponseDto(r));
-            }
-        }
-        return new ReviewListDto(reviews);
-    }
-
 
     /**
      * Return the review with the given ID.
