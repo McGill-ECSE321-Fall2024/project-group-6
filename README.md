@@ -95,9 +95,10 @@ Table 3 : Roles of each team member Deliverable 3: <br/>
 | Maissa      | Customer Wishlist and Checkout (Frontend/Backend)    |                  |
 |             | Demo         |                 |
 | Joseph      | Build system and CI specification  |                   |
-|             | Sign Up/Sign in and Home Page   |                 |
-|             | Employee Dashboard, Account and Game Page          |                  |
-|             | Manager HomePage and Manager Game View        |                  |
-|             | Demo                                                  |                  |
+|             | Sign Up/Sign in and Home Page   |       8          |
+|             | Employee Dashboard, Account and Game Page          |        9          |
+|             | Manager HomePage and Manager Game View        |      9            |
+|             | Demo                                                  |         5         |
 |             | Testing of the application                                                |                  |
+|             | Backend Setup                                                |       7          |
 | Mario       | Customer Dashboard and Account (Frontend/Backend)             |                   |
