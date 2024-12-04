@@ -1,13 +1,13 @@
 <template>
-    
-      <link href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.4/css/boxicons.min.css" rel="stylesheet" />
-      <header>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.4/css/boxicons.min.css" rel="stylesheet" />
+    <header>
     <nav class="navbar">
       <div class="logo">
         <h2>GameShop</h2>
       </div>
       <div class="navmenu">
-        
+       
 
         <div class="user-options">
           <div class="dropdown">
@@ -28,102 +28,101 @@
       </div>
     </nav>
   </header>
-  
-      <div class="command">
+
+    <div class="command">
         <div class="main-header">
-          <div class="header">
-            <h2>Your Order has been placed!</h2>
-            <h5>
-              You will receive an email confirmation once your order has been
-              shipped.
-            </h5>
-          </div>
+            <div class="header">
+                <h2>Your Orders</h2>
+            </div>
         </div>
-        <div class="receipt" v-if="command">
-          <div class="id">Order number: {{ command.commandId }}</div>
-          <div class="list">
-            <div class="order">
-              <h5>Items:</h5>
-              <div v-for="game in cart" :key="game.id" class="game-row">
-                <p class="game-name">{{ game.name }}</p>
-                <p class="game-price">{{ game.price }}$</p>
-              </div>
-  
-              <div class="returnPrice"><strong>Total: </strong> {{ totalPrice }}$</div>
-              <h5>Order details:</h5>
-              <div class="shippement">
-                <strong>Shipping Address:</strong> {{ command.customer.shippingAddress }}
-              </div>
-              <div class="payement">
-                <strong>Payment ending in: {{ selectedPayment.paymentNumber }} </strong> 
-              </div>
+        <div class="receipt">
+            <div class="list" v-for="command in commands">
+
+                <div class="id">Order number: {{ command.commandId }}</div>
+                <div class="order">
+                    <h5>Order details:</h5>
+                    <div class="returnPrice"><strong>Total: </strong> {{ command.totalPrice }}$</div>
+                    <div class="Date"><strong>Placed on: </strong> {{ command.commandDate }}</div>
+
+                    <div class="shippement">
+                        <strong>Shipping Address:</strong> {{ customer.shippingAddress }}
+                    </div>
+
+                </div>
+
             </div>
             <a @click="backHome">Return to main page</a>
-          </div>
         </div>
-        <div v-else>
-          <h3>Loading order details...</h3>
-        </div>
-  
-      </div>
-    
-  </template>
-  
-  
-  <script>
-  import { RouterLink } from "vue-router";
-  import axios from 'axios';
-  import router from '@/router';
-  export default {
-    props: ['paymentId', 'commandId','customerId','loggedIn'],
+
+    </div>
+
+
+
+
+</template>
+
+
+<script>
+import { RouterLink } from "vue-router";
+import axios from 'axios';
+import router from '@/router';
+export default {
+    props: ['customerId', 'loggedIn'],
     data() {
 
-      return {
-       
-        command: null,
-        selectedPayment: null,
-        cart: []
-      };
+        return {
+
+            commands: null,
+
+            customer: null,
+            customerID: null,
+        };
     },
     methods: {
-      async fetchCommand() {
-        try {
-          const commandId = this.$route.params.commandId
-  
-          const response = await axios.get(`http://localhost:8080/command/${commandId}`);
-          this.command = response.data;
-  
-  
-  
-        } catch (error) {
-          console.error("Error fetching order:", error);
-        }
-      },
-      async backHome(){
-        router.push({
-          name: 'customer-homepage',
-          params: {
-            customerId: this.customerId,
-            loggedIn: true
-          }
-          
-        });
-      },
-  
-      async fetchPayment() {
-        try {
-          const paymentId = this.$route.params.paymentId;
-  
-          const response = await axios.get(`http://localhost:8080/payment/${paymentId}`);
-          this.selectedPayment = response.data;
-  
-  
-  
-        } catch (error) {
-          console.error("Error fetching payment:", error);
-        }
-      },
-      async goToWishlist() {
+        async fetchCommands() {
+            try {
+                this.customerID = this.$route.params.customerId;
+
+                const response = await axios.get(`http://localhost:8080/command`);
+
+                const allCommands = response.data.commands; // Assuming this is an array of customer commands
+                console.log(allCommands);
+                console.log(allCommands[42].customer.commands)
+                for (let i = 0; i < allCommands.length; i++) {
+                    const command = allCommands[i]; // Access each command using index
+                    if (command.customer.roleId == this.customerID) {
+                        this.customer = command.customer;
+                        this.commands = command.customer.commands
+                        /*
+                        const commands = command.customer.commands;
+                        for (let i = 0; i < commands.length; i++) {
+                        this.commands.push(commands[i]);
+                        }
+                        */
+                    }
+                }
+
+                console.log(this.commands)
+                // Find the customer matching the current customerID
+                //const matchedCommand = allCommands.find(command => command.customer.roleId === this.customerID);
+
+
+            } catch (error) {
+                console.error("Error fetching customer:", error);
+            }
+        },
+        async backHome() {
+            router.push({
+                name: 'customer-homepage',
+                params: {
+                    customerId: this.customerId,
+                    loggedIn: true
+                }
+
+            });
+        },
+
+        async goToWishlist() {
             router.push({
                 name: 'customer-wishlist',
                 params: {
@@ -169,27 +168,16 @@
             });
         }
     },
-    computed: {
-      totalPrice() {
-        return this.cart.reduce((total, game) => total + game.price, 0);
-      },
-      
-    },
+
     mounted() {
-      
-      const cart = JSON.parse(sessionStorage.getItem('cart'));
-      this.cart = cart ? cart : [];
-      this.fetchCommand().then(() => {
-        this.fetchPayment();
-      }
-      );
+        this.fetchCommands()
     }
-  };
-  </script>
-  
-  
-  <style scoped>
-  * {
+};
+</script>
+
+
+<style scoped>
+* {
     margin: 0;
     padding: 0;
     text-decoration: none;
@@ -316,7 +304,19 @@ padding: 10px;
     font-size: 16px;
 }
 
-
+.popup {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #eee;
+    color: #000000;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    font-weight: bold;
+    z-index: 0;
+}
 
 .search-box {
     margin-right: 200px;
@@ -338,122 +338,108 @@ header .img {
     align-items: center;
     width: 40px;
 }
-  
-  .main-header {
+
+
+
+.main-header {
     width: 90%;
     margin: auto;
     height: 40px;
     display: flex;
     padding-bottom: 30px;
-  }
-  
-  .main-header .header {
+}
+
+.main-header .header {
     margin-left: 30px;
-    margin-bottom: 30px;
-  }
-  
-  .main-header h5 {
-    font-size: 20px;
-    font-weight: bold;
-    padding-bottom: 10px;
-    padding-left: 5px;
-  }
-  
-  .main-header h2 {
+
+}
+
+
+.main-header h2 {
     font-weight: bold;
     font-size: 38px;
     width: 500px;
-    margin-top: 10px;
-  
-  }
-  
-  .main-header .a {
-    margin-bottom: 30px;
-  }
-  
-  
-  .command .receipt {
+    margin: 20px;
+
+}
+
+.main-header .a {
+    margin-bottom: 10px;
+}
+
+
+.command .receipt {
     padding: 150px 200px;
     align-items: center;
-  }
-  
-  .command,
-  .main-header {
+}
+
+.command,
+.main-header {
     background-color: #ffffff;
     color: #000000;
     margin: 0;
     padding: 0;
-  }
-  
-  html {
+}
+
+html {
     font-family: "poppins";
-  }
-  
-  .command {
+}
+
+.command {
     min-height: 100vh;
-  }
-  
-  .command a {
+}
+
+.command a {
     text-align: center;
     color: #d45119;
-  }
-  
-  .command .receipt .list {
+}
+
+.command .receipt .list {
     border-top: 1px solid #eee;
     padding: 20px 0;
-  }
-  
-  
-  .receipt .id {
+}
+
+
+.receipt .id {
     font-size: 20px;
     font-weight: bold;
-  }
-  
-  .receipt .order h5 {
+}
+
+.receipt .order h5 {
     font-size: 15px;
     font-weight: bold;
     margin-bottom: 10px;
     border-bottom: 1px solid #eee;
-  }
-  
-  
-  .command .receipt .list .order {
+}
+
+
+.command .receipt .list .order {
     margin-bottom: 30px;
     padding: 10px;
     box-shadow: 0 10px 20px #5555;
     border-radius: 20px;
-  }
-  
-  .command .receipt .list .game-row {
+}
+
+.command .receipt .list .game-row {
     display: grid;
     grid-template-columns: 1fr auto;
     gap: 20px;
     margin-bottom: 15px;
     align-items: center;
-  }
-  
-  .game-name {
-    font-size: 16px;
-    font-weight: 500;
-  }
-  
-  .game-price {
-    font-size: 16px;
-    font-weight: bold;
+}
+
+
+.command .receipt .list .returnPrice {
+
     text-align: right;
-  }
-  
-  .command .receipt .list .returnPrice {
-  
-    text-align: right;
-  }
-  
-  .returnPrice,
-  .shippement,
-  .payement {
+}
+
+.returnPrice,
+.shippement,
+.payement {
     margin-top: 20px;
     font-size: 16px;
     font-weight: bold;
     margin-bottom: 10px;
-  }
-  </style>
+}
+</style>

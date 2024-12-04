@@ -5,14 +5,14 @@
       <div class="logo">
         <h2>GameShop</h2>
       </div>
-      <div class="navmenu"  >
+      <div class="navmenu">
         <div class="search-box">
-              <input type="text" v-model="searchQuery" class="search" placeholder="Search game...">
-              <i class='bx bx-search' @click="searchByName"></i>
+          <input type="text" v-model="searchQuery" class="search" placeholder="Search game...">
+          <i class='bx bx-search' @click="searchByName"></i>
         </div>
         <div class="auth-links ">
           <RouterLink to="/SignIn">Sign In</RouterLink>
-          <RouterLink to="/SignUp" >Sign Up</RouterLink>
+          <RouterLink to="/SignUp">Sign Up</RouterLink>
         </div>
       </div>
     </nav>
@@ -31,14 +31,10 @@
       <div v-if="games.length === 0">No games found</div>
       <div v-for="game in games" :key="game.id" class="game-card">
         <img :src="game.photoURL" alt="Game Image" class="game-image" />
-        <div class="game-info">
+        <div @click="goToGamePage(game)" class="game-info">
           <h3>{{ game.name }}</h3>
-          <div class="game-info">
-  <p class="game-price"><strong>Price:</strong> ${{ game.price }}</p>
-  <p class="game-description"><strong>Description:</strong> {{ game.description }}</p>
-  <p class="game-stock"><strong>Stock:</strong> {{ game.stockQuantity }} left</p>
-</div>
-
+            <p class="game-price"><strong>Price:</strong> ${{ game.price }}</p>
+            <p class="game-stock"><strong>Stock:</strong> {{ game.stockQuantity }} left</p>
         </div>
       </div>
     </main>
@@ -48,7 +44,7 @@
 <script>
 import axios from 'axios';
 import { RouterLink } from 'vue-router';
-
+import router from '@/router';
 export default {
   data() {
     return {
@@ -78,12 +74,21 @@ export default {
     },
     async searchByName() {
       try {
-        console.log("I am here "+this.searchQuery);
+        console.log("I am here " + this.searchQuery);
         const response = await axios.get(`http://localhost:8080/games/name/${this.searchQuery}`);
         this.games = [response.data];
       } catch (error) {
         console.error('Error searching for games:', error);
       }
+    },
+    async goToGamePage(game){
+      router.push({
+                name: 'gamepage',
+                params: {
+                    gameId: game.gameId
+                }
+
+            });
     },
     async filterByCategory() {
       if (this.selectedCategory === 'all') {
@@ -107,126 +112,126 @@ export default {
 
 <style scoped>
 * {
-    margin: 0;
-    padding: 0;
-    text-decoration: none;
-    list-style: none;
-    font-family: "poppins";
+  margin: 0;
+  padding: 0;
+  text-decoration: none;
+  list-style: none;
+  font-family: "poppins";
 }
 
 
 .navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    text-align: center;
-    width: 100%;
-    height: 80px;
-    background: #1033a4;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  height: 80px;
+  background: #1033a4;
 }
 
 .navbar h2 {
-    color: #ffffff;
-    font-size: 25px;
-    font-weight: 500;
-    padding: 20px 20px;
+  color: #ffffff;
+  font-size: 25px;
+  font-weight: 500;
+  padding: 20px 20px;
 }
 
 .navmenu {
-    height: 50px;
-    line-height: 60px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  height: 50px;
+  line-height: 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .search-box .search {
-    width: 500px;
-    padding: 8px 8px;
-    border-radius: 50px;
-    font-size: 16px;
+  width: 500px;
+  padding: 8px 8px;
+  border-radius: 50px;
+  font-size: 16px;
 }
 
 .search-box {
-    margin-right: 200px;
+  margin-right: 200px;
 }
 
 .navmenu .search-box i {
-    color: #ffffff;
-    position: relative;
-    right: 40px;
-    top: 2px;
-    background-color: #1140d9;
-    padding: 8px;
-    border-radius: 50px;
+  color: #ffffff;
+  position: relative;
+  right: 40px;
+  top: 2px;
+  background-color: #1140d9;
+  padding: 8px;
+  border-radius: 50px;
 }
 
 header img {
-    margin-top: 15px;
-    margin-right: 10px;
-    align-items: center;
-    width: 40px;
+  margin-top: 15px;
+  margin-right: 10px;
+  align-items: center;
+  width: 40px;
 }
 
 .navmenu .iconcCart {
-    align-items: center;
-    position: relative;
-    margin: 10px;
-    z-position: 1;
-    display: inline-block;
+  align-items: center;
+  position: relative;
+  margin: 10px;
+  z-position: 1;
+  display: inline-block;
 }
 
 .main-header {
-    width: 100%;
-    margin: auto;
-    height: 40px;
-    display: flex;
-    padding-bottom: 30px;
+  width: 100%;
+  margin: auto;
+  height: 40px;
+  display: flex;
+  padding-bottom: 30px;
 }
 
 .main-header .header {
-    margin-left: 30px;
-    margin-bottom: 30px;
+  margin-left: 30px;
+  margin-bottom: 30px;
 }
 
 .main-header h5 {
-    font-size: 20px;
-    font-weight: 550px;
-    margin-top: 10px;
-    margin-bottom: 15px;
+  font-size: 20px;
+  font-weight: 550px;
+  margin-top: 10px;
+  margin-bottom: 15px;
 }
 
 .main-header h2 {
-    font-weight: bold;
-    font-size: 38px;
-    width: 500px;
-    margin-top: 10px;
-    margin-bottom: 15px;
+  font-weight: bold;
+  font-size: 38px;
+  width: 500px;
+  margin-top: 10px;
+  margin-bottom: 15px;
 }
 
 .main-header .a {
-    margin-bottom: 30px;
+  margin-bottom: 30px;
 }
 
 .main-header .btn {
-    background: #88b9df;
-    border: 1px solid #88b9df;
-    font-size: 15px;
-    color: #ffffff;
-    font-weight: 400;
-    padding: 4px 20px;
-    border-radius: 50px;
+  background: #88b9df;
+  border: 1px solid #88b9df;
+  font-size: 15px;
+  color: #ffffff;
+  font-weight: 400;
+  padding: 4px 20px;
+  border-radius: 50px;
 }
 
 .main-header .btn:hover {
-    color: #88b9df;
-    background: #ffffff;
+  color: #88b9df;
+  background: #ffffff;
 }
 
 .auth-links {
   display: flex;
   gap: 1rem;
-  padding-right: 1rem; 
+  padding-right: 1rem;
 }
 
 .auth-links a {
@@ -244,6 +249,8 @@ header img {
   display: flex;
   height: calc(100% - 80px);
   padding: 20px;
+  background-color: #ffffff;
+  color: #000;
 }
 
 .categories {
@@ -285,6 +292,7 @@ header img {
 .game-card p {
   margin-top: 0.5rem;
 }
+
 .game-info {
 
   padding: 15px;
@@ -307,12 +315,11 @@ header img {
 }
 
 .game-description {
-  color: #333; 
+  color: #333;
 }
 
 .game-stock {
-  color: #007bff; 
+  color: #007bff;
   font-weight: bold;
 }
-
 </style>

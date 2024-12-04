@@ -1,28 +1,36 @@
 <template>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.4/css/boxicons.min.css" rel="stylesheet">
     <header>
-        <nav class="navbar">
-            <div class="logo">
-                <h2>GameShop</h2>
-            </div>
-            <div class="navmenu">
-                <div class="search-box">
-                    <input type="search" class="search" placeholder="Search game...">
-                    <i class='bx bx-search'></i>
-                </div>
-                <div class="iconAccount">
-                    <img src="../assets/account.png">
-                </div>
-                <RouterLink to="/wishlist"><img src="../assets/White-Heart.png"></RouterLink>
+    <nav class="navbar">
+      <div class="logo">
+        <h2>GameShop</h2>
+      </div>
+      <div class="navmenu">
+        
 
-                <RouterLink to="/checkout"><img src="../assets/pngaaa.com-5034351.png"></RouterLink>
+        <div class="user-options">
+          <div class="dropdown">
+            <button class="dropbtn"><img src="../assets/account.png" class="account-img"></button>
+            <div class="nav-buttons">
+              <button @click="goToCustomerAccount">Account</button>
+              <button @click="goToCustomerOrders" class="order-btn">Orders</button>
+              <button @click="logout" class="logout-btn">Log Out</button>
             </div>
-        </nav>
-    </header>
+          </div>
+
+          <RouterLink><img src="../assets/White-Heart.png" @click="goToWishlist">
+          </RouterLink>
+
+          <RouterLink><img src="../assets/pngaaa.com-5034351.png" @click="goToCart">
+          </RouterLink>
+        </div>
+      </div>
+    </nav>
+  </header>
     <div class="container">
         <div class="checkoutLayout">
             <div class="returnCart">
-                <a href="/homepage">Keep shopping</a>
+                <a @click="goToCustomerMainPage">Keep shopping</a>
                 <h1>List Product in Cart</h1>
                 <div class="list">
                     <div v-if="showPopup" class="popup">
@@ -54,7 +62,7 @@
 
                                 <img src="https://pngimg.com/d/credit_card_PNG24.png">
                                 <div class="info">
-                                    <div class="name">Credit Card ending in {{ payment.paymentNb }}</div>
+                                    <div class="name">Credit Card ending in {{ payment.paymentNumber }}</div>
                                     <div class="number">Billing Address {{ payment.billingAddress }}</div>
                                 </div>
                             </div>
@@ -106,17 +114,17 @@
 
                     <div class="group">
                         <label for="country">Country</label>
-                        <select name="country" id="country">
-                            <option value="">Choose..</option>
-                            <option value="">Canada</option>
+                        <select name="country" id="country" v-model="country">
+                            <option value="" >Choose..</option>
+                            <option value="Canada">Canada</option>
                         </select>
                     </div>
 
                     <div class="group">
                         <label for="city">Province</label>
-                        <select name="city" id="city">
+                        <select name="city" id="city" v-model="city">
                             <option value="">Choose..</option>
-                            <option value="">Quebec</option>
+                            <option value="Quebec">Quebec</option>
                         </select>
                     </div>
                 </div>
@@ -144,7 +152,7 @@ import router from '@/router';
 export default {
     props: ['customerId', 'loggedIn'],
     data() {
-        
+
         return {
 
             payments: [],
@@ -159,22 +167,24 @@ export default {
                 billingAddress: "",
                 cvc: null,
             },
-            
+
             command: {},
             customer: {
                 shippingAddress: "",
                 username: "",
                 email: "",
                 phone: "",
-                customerId: null,
+                password: "",
                 wishlist: [],
                 cart: []
 
             },
+            country:"",
+            city:"",
             selectedPayment: null,
             showPopup: false,
             popupMessage: "",
-            customerID:0,
+            customerID: 0,
         };
     },
     computed: {
@@ -191,6 +201,7 @@ export default {
             try {
                 const response = await axios.get(`http://localhost:8080/customers/${this.customerID}`);
                 this.customer = response.data;
+                this.customer.password=response.data.password;
                 //this.newCustomer = JSON.parse(JSON.stringify(this.customer));
 
             } catch (error) {
@@ -199,7 +210,7 @@ export default {
         },
         async fetchPayments() {
             try {
-                const response = await axios.get(`http://localhost:8080/customers/${this.customer.customerId}/payments`);
+                const response = await axios.get(`http://localhost:8080/customers/${this.customerID}/payments`);
                 this.payments = response.data.payments;
 
             } catch (error) {
@@ -216,7 +227,7 @@ export default {
         },
         async removeFromCart(game) {
 
-            await axios.put(`http://localhost:8080/customers/${this.customer.customerId}/cart/${game.gameId}`)
+            await axios.put(`http://localhost:8080/customers/${this.customerID}/cart/${game.gameId}`)
 
             this.fetchCart();
 
@@ -242,7 +253,7 @@ export default {
             try {
                 //  add the new payment
                 await axios.post(
-                    `http://localhost:8080/payment/${this.customer.customerId}`, this.newPayment);
+                    `http://localhost:8080/payment/${this.customerID}`, this.newPayment);
 
                 this.popupMessage = `this.newPayment `;
                 this.showPopup = true;
@@ -263,8 +274,11 @@ export default {
                 this.showPopup = true;
                 setTimeout(() => (this.showPopup = false), 3000);
             } catch (error) {
-                console.error("Error adding payment:", error);
-                this.popupMessage = "Failed to add payment method.";
+                if (error.response && error.response.data && error.response.data.errors) {
+                    this.popupMessage = `Failed to add payment method: ${error.response.data.errors}`; //display error from backend
+                } else {
+                    this.popupMessage = "Failed to add payment method."; 
+                }
                 this.showPopup = true;
                 setTimeout(() => (this.showPopup = false), 3000);
             }
@@ -272,7 +286,7 @@ export default {
 
         async checkout() {
             //const { shippingAddress, phone, email } = this.newCustomer;
-            
+
             if (this.selectedPayment == null) {
                 this.popupMessage = "Please select a payment method.";
                 this.showPopup = true;
@@ -285,19 +299,35 @@ export default {
                 setTimeout(() => (this.showPopup = false), 3000);
                 return;
             }
-               
-            //await axios.put(`http://localhost:8080/customers/${this.customer.customerId}`, this.customer)
-                
-            
+            if(!this.customer.email||!this.customer.shippingAddress||!this.customer.phone||!this.country||!this.city){
+                this.popupMessage = "Please fill out all the fields";
+                this.showPopup = true;
+                setTimeout(() => (this.showPopup = false), 3000);
+                return;
+            }
 
-            //Update customer
+            try{
+                await axios.put(`http://localhost:8080/customers/${this.customerID}`, this.customer)
+            }catch(error){
+                if (error.response && error.response.data && error.response.data.errors) {
+                    this.showPopup = true;
+                setTimeout(() => (this.showPopup = false), 3000);
+                     this.popupMessage = `Failed to update information: ${error.response.data.errors}`; //display error from backend
+                } else {
+                    this.showPopup = true;
+                setTimeout(() => (this.showPopup = false), 3000);
+                     this.popupMessage = "Failed to update information."; 
+                }
+                
+            }
+
 
 
             //save cart
             sessionStorage.setItem('cart', JSON.stringify(this.customer.cart));
 
             try {
-                const response = await axios.post(`http://localhost:8080/command/${this.customer.customerId}`, this.command)
+                const response = await axios.post(`http://localhost:8080/command/${this.customerID}`, this.command)
                 this.command = response.data;
 
 
@@ -307,16 +337,71 @@ export default {
                 console.error("Error creating command:", error);
                 alert("An error occurred while creating the command. Please try again.");
             }
+        },
+        async goToWishlist() {
+            router.push({
+                name: 'customer-wishlist',
+                params: {
+                    customerId: this.customerID,
+                    loggedIn: true
+                }
+
+            });
+        },
+        async goToCart() {
+            router.push({
+                name: 'customer-cart',
+                params: {
+                    customerId: this.customerId,
+                    loggedIn: true
+                }
+
+            });
+        },
+        async goToCustomerMainPage() {
+            router.push({
+                name: 'customer-homepage',
+                params: {
+                    customerId: this.customerID,
+                    loggedIn: true
+                }
+
+            });
+        },
+        async goToCustomerAccount() {
+            router.push({
+                name: 'customer-account',
+                params: {
+                    customerId: this.customerId,
+                    loggedIn: true
+                }
+
+            });
+        },
+
+        logout() {
+            this.$router.push('/');
+        },
+
+        async goToCustomerOrders() {
+            router.push({
+                name: 'customer-orders',
+                params: {
+                    customerId: this.customerId,
+                    loggedIn: true
+                }
+
+            });
         }
     },
     created() {
-  
-  this.customerID = this.customerId;
-  this.fetchCart().then(()=>{
-    this.fetchPayments();
-  })
-  
-}
+
+        this.customerID = this.$route.params.customerId;
+        this.fetchCart().then(() => {
+            this.fetchPayments();
+        })
+
+    }
 };
 </script>
 
@@ -328,6 +413,93 @@ export default {
     list-style: none;
     font-family: "poppins";
 }
+
+.user-options {
+    display: flex;
+
+    align-items: center;
+    /* Vertically aligns buttons if needed */
+}
+
+.user-options button {
+    background: none;
+    /* Remove default button background */
+    border: none;
+    /* Remove default button border */
+    padding: 0;
+    /* Remove padding around buttons */
+    cursor: pointer;
+}
+
+.user-options img {
+    margin-top: 15px;
+    margin-right: 10px;
+    align-items: center;
+    width: 40px;
+}
+
+.dropdown .nav-buttons {
+    display: none;
+    /* Initially hide dropdown content */
+    position: absolute;
+    background-color: rgba(255, 255, 255, 0.906);
+    background: #ffff;
+
+    color: #ffff;
+    z-index: 1;
+}
+
+.dropdown:hover .nav-buttons {
+    display: block;
+    /* Show dropdown on hover */
+    border: solid;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown:hover .nav-buttons button {
+    display: flex;
+    /* Show dropdown on hover */
+
+}
+
+.nav-buttons {
+
+display: flex;
+align-items: center;
+}
+
+.nav-buttons button {
+
+color: #1033a4;
+border: none;
+padding: 0.5rem 1rem;
+border-radius: 5px;
+cursor: pointer;
+text-align: center;
+/* Centers the text horizontally */
+height: 50px;
+/* Set a fixed height to ensure vertical centering */
+display: flex;
+justify-content: center;
+align-items: center;
+/* Centers the button text vertically */
+}
+
+.nav-buttons button img {
+padding-bottom: 15px;
+padding-left: 10px;
+
+}
+
+.nav-buttons button:hover {
+background-color: #eff2f1;
+}
+
+.nav-buttons {
+padding: 10px;
+}
+
 
 .navbar {
     display: flex;
@@ -361,6 +533,8 @@ export default {
     font-size: 16px;
 }
 
+
+
 .search-box {
     margin-right: 200px;
 }
@@ -375,26 +549,12 @@ export default {
     border-radius: 50px;
 }
 
-header img {
+header .img {
     margin-top: 15px;
     margin-right: 10px;
     align-items: center;
     width: 40px;
 }
-
-.navmenu .iconcCart {
-    align-items: center;
-    position: relative;
-    margin: 10px;
-    z-position: 1;
-    display: inline-block;
-}
-
-
-html {
-    font-family: "poppins";
-}
-
 .container {
     background-color: #ffffff;
     color: #000000;

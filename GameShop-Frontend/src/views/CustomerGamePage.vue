@@ -1,107 +1,110 @@
 <template>
-  <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.4/css/boxicons.min.css"
-      rel="stylesheet"
-    />
-  <div>
-    <!-- Header Section -->
-    <header>
-      <nav class="navbar">
-        <div class="logo">
-          <h2>GameShop</h2>
-        </div>
-        <div class="navmenu">
-          <div class="search-box">
-            <input type="search" v-model="searchQuery" class="search" placeholder="Search game..." />
-            <i class="bx bx-search" @click="searchByName"></i>
-          </div>
-        </div>
-          <div class="user-options">
-            <button @click="goToCart"><img src="../assets/pngaaa.com-5034351.png" alt="Cart" class="cart-img" @click="goToCart"></button>
-            <button @click="goToCustomerWishlist"><img src="../assets/White-Heart.png" alt="WishList" class="wishlist-img" @click="goToCustomerWishlist"></button>
-            <div class="dropdown">
-                <button class="dropbtn"><img src="../assets/person-circle.svg" alt="Account" class="account-img"></button>
-                <div class="nav-buttons">
-                    <button @click="goToCustomerMainPage" class="mainpage-btn">Home</button>
-                    <button @click="goToCustomerAccount" >Account</button>
-                    <button @click="goToCustomerOrders" class="order-btn">Orders</button>
-                    <button @click="logout" class="logout-btn">Logout</button>
-                </div>
-            </div>
-        </div>
-      </nav>
-    </header>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.4/css/boxicons.min.css" rel="stylesheet" />
 
-    <!-- Main Game Details Section -->
-    <main class="game-page">
-      <div class="game-details">
-        <img v-bind:src="game.photoURL" alt="Game Image" class="game-image" />
-        <div class="game-info">
+  <!-- Header Section -->
+  <header>
+    <nav class="navbar">
+      <div class="logo">
+        <h2>GameShop</h2>
+      </div>
+      <div class="navmenu">
+        
+
+        <div class="user-options">
+          <div class="dropdown">
+            <button class="dropbtn"><img src="../assets/account.png" class="account-img"></button>
+            <div class="nav-buttons">
+              <button @click="goToCustomerAccount">Account</button>
+              <button @click="goToCustomerOrders" class="order-btn">Orders</button>
+              <button @click="logout" class="logout-btn">Log Out</button>
+            </div>
+          </div>
+
+          <RouterLink><img src="../assets/White-Heart.png" @click="goToCustomerWishlist">
+          </RouterLink>
+
+          <RouterLink><img src="../assets/pngaaa.com-5034351.png" @click="goToCustomerCart">
+          </RouterLink>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Game Details Section -->
+  <div class="content">
+    <a @click="goToMainPage">Keep shopping</a>
+    <div v-if="showPopup" class="popup">
+      {{ popupMessage }}
+    </div>
+    <div class="game-info">
+      <div class="game-content">
+        <div class="game-image-container">
+          <img :src="game.photoURL" alt="Game Image" class="game-image" />
+        </div>
+        <main class="catalog">
           <h1>{{ game.name }}</h1>
           <p><strong>Description:</strong> {{ game.description }}</p>
           <p><strong>Price:</strong> ${{ game.price }}</p>
+          <p><strong v-if="game.promotion > 0">Promotion: -{{ game.promotion }}%</strong></p>
           <p><strong>Stock Quantity:</strong> {{ game.stockQuantity }}</p>
           <p><strong>Categories:</strong> {{ game.categories.join(", ") }}</p>
           <button @click="addToCart" class="btn-add-to-cart">Add to Cart</button>
-          <button @click="addToWishlist" class="btn-add-to-wishlist">Add to Wishlist</button> <!-- Added Wishlist Button -->
+          <button @click="addToWishlist" class="btn-add-to-wishlist">Add to Wishlist</button>
+        </main>
+      </div>
+    </div>
+
+
+    <!-- Reviews Section -->
+    <div class="comments-section">
+      <h2>Reviews</h2>
+      <div class="comment-card" v-if="reviews.length > 0">
+        <div v-for="review in reviews" :key="review.reviewId" class="review">
+          <div class="comment-header">
+            <p><strong>{{ review.customer.person.username }}</strong> said:</p>
+            <p class="comment-content">{{ review.comment }}</p>
+          </div>
+          <p>Rating: {{ review.rating }}</p>
+          <p>Likes: {{ review.amountOfLikes || 0 }}</p>
+          <!-- Like Button -->
+          <button v-if="!checkIfLiked(review.reviewId)" @click="likeReview(review)" class="btn-like">
+            Like
+          </button>
+
+          <!-- Unlike Button -->
+          <button v-else @click="unlikeReview(review)" class="btn-unlike">
+            Unlike
+          </button>
+          <!-- Delete Button -->
+          <button v-if="review.customer.roleId == this.customerID" @click="deleteReview(review)" class="btn-delete">
+            Delete
+          </button>
         </div>
       </div>
+      <p v-else>No reviews available for this game.</p>
 
-      <!-- Reviews Section -->
-      <div class="reviews-section">
-        <h2>Reviews</h2>
-        <div class="reviews" v-if="reviews.length > 0">
-          <div v-for="review in reviews" :key="review.reviewId" class="review">
-            <p><strong>{{ review.customer.person.username || "Anonymous" }}</strong>: {{ review.comment }}</p>
-            <p>Rating: {{ review.rating }}</p>
-            <p>Likes: {{ review.amountOfLikes || 0 }}</p>
-            <!-- Like Button -->
-            <button 
-              v-if="!checkIfLiked(review.reviewId)"
-              @click="likeReview(review)"
-              class="btn-like">
-              Like
-            </button>
-            
-            <!-- Unlike Button -->
-            <button 
-              v-else
-              @click="unlikeReview(review)"
-              class="btn-unlike">
-              Unlike
-            </button>
-            <!-- Delete Button -->
-            <button 
-            v-if="review.customer.roleId == this.customerID"  
-            @click="deleteReview(review)"
-              class="btn-delete">
-              Delete
-            </button>
-          </div>
-        </div>
-        <p v-else>No reviews available for this game.</p>
-
-        <!-- Add Review Form -->
-        <h3>Add a Review</h3>
-        <form @submit.prevent="submitReview">
-          <div class="form-group">
+      <!-- Add Review Form -->
+      <h3>Add a Review</h3>
+      <form @submit.prevent="submitReview">
+        <div class="form-group">
             <label for="rating">Rating (1-5):</label>
             <input type="number" id="rating" v-model="newReview.rating" min="1" max="5" required />
           </div>
-          <div class="form-group">
-            <label for="comment">Comment:</label>
-            <textarea id="comment" v-model="newReview.comment" required></textarea>
-          </div>
-          <button type="submit" class="btn-submit-review">Submit Review</button>
-        </form>
-      </div>
-    </main>
+        <div class="form-group">
+          <label for="comment">Comment:</label>
+          <textarea id="comment" v-model="newReview.comment" required></textarea>
+        </div>
+        <button type="submit" class="btn-submit-review">Submit Review</button>
+      </form>
+    </div>
+
   </div>
 </template>
 
 <script>
 import axios from "axios";
 import { RouterLink } from "vue-router";
+import router from '@/router';
 
 export default {
   props: ['customerId', 'loggedIn', 'gameId'],
@@ -124,7 +127,7 @@ export default {
         rating: null,
         comment: "",
       },
-      likedReviews:[],
+      likedReviews: [],
     };
   },
   methods: {
@@ -147,14 +150,14 @@ export default {
       try {
         const response = await axios.get(`http://localhost:8080/games/${this.gameID}/reviews`);
         this.reviews = response.data.reviews || [];
-        
+
         // Initialize 'likedByCustomer' for each review
         this.reviews.forEach((review) => {
           review.likedByCustomer = this.checkIfLiked(review);
         });
       } catch (error) {
         console.error("Failed to fetch reviews:", error);
-        alert("Failed to load reviews. Please try again later.");
+
       }
     },
 
@@ -182,10 +185,10 @@ export default {
           amountOfLikes: review.amountOfLikes + 1,
           reply: review.reply || "",
         };
-        if (review.customer.roleId == this.customerID){
+        if (review.customer.roleId == this.customerID) {
           alert("You cannot like your own review.")
         }
-        else{
+        else {
           const response = await axios.put(`http://localhost:8080/review/${review.reviewId}`, payload);
           this.fetchReviews(); // Refresh the reviews list after updating
           this.likedReviews.push(review.reviewId);
@@ -199,7 +202,7 @@ export default {
     },
 
     async unlikeReview(review) {
-      try {   
+      try {
         const payload = {
           rating: this.parseRating(review.rating),
           comment: review.comment,
@@ -215,9 +218,9 @@ export default {
         this.likedReviews.push(review.reviewId);
       }
     },
-    async deleteReview(review){
-      try {   
-        if (review.customer.roleId == this.customerID){
+    async deleteReview(review) {
+      try {
+        if (review.customer.roleId == this.customerID) {
           const response = await axios.delete(`http://localhost:8080/review/${review.reviewId}`);
           this.fetchReviews(); // Refresh the reviews list after updating
         }
@@ -229,6 +232,7 @@ export default {
     },
     async submitReview() {
       try {
+        debugger
         await axios.post(`http://localhost:8080/review/${this.customerId}/${this.gameId}`, this.newReview);
         alert("Review added successfully!");
         this.fetchReviews();  // Refresh the reviews after adding a new one
@@ -253,7 +257,7 @@ export default {
     },
 
     async addToWishlist() {
-      try {        
+      try {
         const response = await axios.put(`http://localhost:8080/customers/${this.customerID}/wishlist/add/${this.gameId}`, null);
         alert("Game added to wishlist successfully!");
       } catch (error) {
@@ -268,56 +272,60 @@ export default {
         console.error('Error searching for games:', error);
       }
     },
-    async goToCustomerMainPage(){
+    async goToCustomerMainPage() {
       this.$router.push({
-          name: 'customer-homepage',
-          params: {
-            customerId: this.customerId,
-            loggedIn: true
-          }  
-        });
+        name: 'customer-homepage',
+        params: {
+          customerId: this.customerId,
+          loggedIn: true
+        }
+      });
     },
-    async goToCart() {
+    async goToCustomerAccount() {
       this.$router.push({
-          name: 'customer-cart',
-          params: {
-            customerId: this.customerId,
-            loggedIn: true
-          }         
-        }); 
+        name: 'customer-account',
+        params: {
+          customerId: this.customerId,
+          loggedIn: true
+        }
+
+      });
+    },
+
+    logout() {
+      this.$router.push('/');
+    },
+
+    async goToCustomerOrders() {
+      this.$router.push({
+        name: 'customer-orders',
+        params: {
+          customerId: this.customerId,
+          loggedIn: true
+        }
+
+      });
+    },
+    async goToCustomerCart() {
+      this.$router.push({
+        name: 'customer-cart',
+        params: {
+          customerId: this.customerId,
+          loggedIn: true
+        }
+
+      });
     },
     async goToCustomerWishlist() {
       this.$router.push({
-          name: 'customer-wishlist',
-          params: {
-            customerId: this.customerId,
-            loggedIn: true
-          }
-          
-        });
-    },
-    async goToCustomerOrders() {
-      this.$router.push({
-          name: 'customer-orders',
-          params: {
-            customerId: this.customerId,
-            loggedIn: true
-          }
-        }); 
-    },
-    async goToCustomerAccount(){
-      this.$router.push({
-          name: 'customer-account',
-          params: {
-            customerId: this.customerId,
-            loggedIn: true
-          }
-          
-        }); 
-    },
-    logout() {
-      this.$router.push('/SignIn');
-    },
+        name: 'customer-wishlist',
+        params: {
+          customerId: this.customerId,
+          loggedIn: true
+        }
+
+      });
+    }
   },
 
   created() {
@@ -325,8 +333,8 @@ export default {
       this.$router.push({ name: "sign in" });
       alert("Please log in before accessing this page.");
     } else {
-      this.customerID = this.customerId; 
-      this.gameID = this.gameId; 
+      this.customerID = this.customerId;
+      this.gameID = this.gameId;
       this.fetchGameDetails();
       this.fetchReviews();
     }
@@ -339,144 +347,196 @@ export default {
 * {
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
-  font-family: "Poppins", sans-serif;
-}
-
-/* Navbar Styles */
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 80px;
-  background: #1033a4;
-  padding: 0 20px;
-  width: 100%;
-}
-
-.navbar h2 {
-  color: #fff;
-  font-size: 25px;
-}
-
-.navmenu {
-  display: flex;
-  align-items: center;
-}
-
-.search-box {
-  margin-right: 20px;
-  position: relative;
-}
-
-.search-box .search {
-  width: 300px;
-  padding: 8px;
-  border-radius: 20px;
-  border: none;
-}
-
-.search-box .bx-search {
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: #1140d9;
-  color: #fff;
-  padding: 8px;
-  border-radius: 50%;
-}
-
-.navmenu img {
-  width: 40px;
-  margin-left: 20px;
-}
-
-.cart-img,
-.wishlist-img,
-.account-img {
-  width: 40px; /* Set the width */
-  height: auto; /* Let the height adjust automatically to maintain aspect ratio */
-  object-fit: contain; /* Ensure the image is contained without distortion */
+  text-decoration: none;
+  list-style: none;
+  font-family: "poppins";
 }
 
 .user-options {
   display: flex;
-  align-items: center; /* Ensures the icons and buttons are vertically centered */
-  gap: 20px; /* Adds space between the elements */
+  /* Aligns child elements (buttons) horizontally */
+
+  /* Adds spacing between buttons (adjust as needed) */
+  align-items: center;
+  /* Vertically aligns buttons if needed */
 }
 
 .user-options button {
   background: none;
+  /* Remove default button background */
   border: none;
+  /* Remove default button border */
   padding: 0;
+  /* Remove padding around buttons */
   cursor: pointer;
 }
 
 .user-options img {
-  width: 30px; /* Adjust to your desired size */
-  height: 30px;
+  margin-top: 15px;
+  margin-right: 10px;
+  align-items: center;
+  width: 40px;
 }
 
-.dropdown {
-  position: relative;
-}
-
-.nav-buttons {
+.dropdown .nav-buttons {
   display: none;
-  flex-direction: column;
+  /* Initially hide dropdown content */
   position: absolute;
-  background-color: #fff;
-  top: 40px;
-  right: 0;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  padding: 10px;
-}
+  background-color: rgba(255, 255, 255, 0.906);
+  background: #ffff;
 
-.dropdown:hover .nav-buttons, .nav-buttons:hover {
-  display: flex; /* Show dropdown on hover */
+  color: #ffff;
+  z-index: 1;
 }
 
 .dropdown:hover .nav-buttons {
-  display: flex !important; /* Ensure it is displayed when hovering over the parent */
+  display: block;
+  /* Show dropdown on hover */
+  border: solid;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
+
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  height: 80px;
+  background: #1033a4;
+}
+
+.navbar h2 {
+  color: #ffffff;
+  font-size: 25px;
+  font-weight: 500;
+  padding: 20px 20px;
+}
+
+.navmenu {
+  height: 50px;
+  line-height: 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.search-box .search {
+  width: 500px;
+  padding: 8px 8px;
+  border-radius: 50px;
+  font-size: 16px;
+}
+
+.popup {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #eee;
+  color: #000000;
+  padding: 10px 20px;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  font-weight: bold;
+  z-index: 0;
+}
+
+.search-box {
+  margin-right: 200px;
+}
+
+.navmenu .search-box i {
+  color: #ffffff;
+  position: relative;
+  right: 40px;
+  top: 2px;
+  background-color: #1140d9;
+  padding: 8px;
+  border-radius: 50px;
+}
+
+header .img {
+  margin-top: 15px;
+  margin-right: 10px;
+  align-items: center;
+  width: 40px;
+}
+
+
 
 /* Main Game Page */
-.game-page {
-  padding: 40px 20px;
-  background-color: #f9f9f9;
-  min-height: calc(100vh - 80px); /* Full height minus the navbar */
-  width: 100vw; /* Ensures the page spans full width */
-}
-
-.game-details {
+/* Content */
+.content {
+  min-height: 100vh;
+  margin: 0;
   display: flex;
-  align-items: flex-start;
-  gap: 20px;
-  margin-bottom: 40px;
-  width: 100%; /* Full width */
-}
-
-.game-image {
-  width: 400px;
-  height: auto;
-  border-radius: 10px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  flex-direction: column;
+  gap: 2rem;
+  background-color: #ffffff;
+  color: #000;
 }
 
 .game-info {
-  flex-grow: 1;
+  background-color: white;
+  grid-template-columns: 200px 70px;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 10px 20px rgba(85, 85, 85, 0.2);
+}
+
+.game-info h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.game-content {
+  display: grid;
+  /* Use grid layout */
+  grid-template-columns: 1fr 2fr;
+  /* Two columns: image (1fr), description (2fr) */
+  gap: 1.5rem;
+  /* Space between columns */
+  align-items: start;
+  /* Align content at the top */
+}
+
+.game-image-container {
+  display: flex;
+  justify-content: center;
+  /* Center the image horizontally */
+}
+
+.game-image {
+  max-width: 100%;
+  /* Ensure the image fits its container */
+  height: auto;
+  border-radius: 10px;
+}
+
+.game-description {
+  font-size: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  /* Spacing between paragraphs */
+}
+
+.game-description p {
+  margin: 10px;
+}
+
+.catalog {
+  flex: 2;
+  padding: 20px;
   display: flex;
   flex-direction: column;
 }
 
-.game-info h1 {
-  color: #1033a4;
-  margin-bottom: 10px;
-}
-
-.game-info p {
-  margin-bottom: 10px;
+.catalog h3 {
+  font-weight: bold;
 }
 
 .btn-add-to-cart {
@@ -487,8 +547,10 @@ export default {
   border-radius: 5px;
   font-size: 16px;
   cursor: pointer;
-  max-width: 200px; /* Set a max-width to prevent stretching */
-  align-self: flex-start; /* Align the button to the left, inside the game-info section */
+  max-width: 200px;
+  /* Set a max-width to prevent stretching */
+  align-self: flex-start;
+  /* Align the button to the left, inside the game-info section */
   margin-top: 10px;
 }
 
@@ -500,10 +562,13 @@ export default {
   border-radius: 5px;
   font-size: 16px;
   cursor: pointer;
-  max-width: 200px; /* Set a max-width to prevent stretching */
-  align-self: flex-start; /* Align the button to the left, inside the game-info section */
+  max-width: 200px;
+  /* Set a max-width to prevent stretching */
+  align-self: flex-start;
+  /* Align the button to the left, inside the game-info section */
   margin-top: 10px;
 }
+
 .btn-add-to-wishlist:hover {
   background-color: #1033a4;
 }
@@ -513,9 +578,47 @@ export default {
 }
 
 /* Reviews Section */
+.comments-section {
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 10px 20px rgba(85, 85, 85, 0.2);
+}
+
+.comments-section h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.comment-card {
+  border-top: 1px solid #eee;
+  padding: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.comment-header {
+  display: flex;
+  flex-direction: column;
+}
+
+.comment-content {
+  font-size: 1rem;
+  margin: 0.5rem 0;
+}
+
+
+
+
+
+
+
+
 .reviews-section {
   margin-top: 40px;
-  width: 100%; /* Full width */
+  width: 100%;
+  /* Full width */
 }
 
 .reviews {
@@ -553,8 +656,10 @@ textarea {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  max-width: 200px; /* Set a max-width to prevent stretching */
-  align-self: flex-start; /* Align the button to the left */
+  max-width: 200px;
+  /* Set a max-width to prevent stretching */
+  align-self: flex-start;
+  /* Align the button to the left */
   margin-top: 10px;
 }
 
@@ -563,7 +668,9 @@ textarea {
 }
 
 /* Like/Unlike Button Styles */
-.btn-like, .btn-unlike, .btn-delete {
+.btn-like,
+.btn-unlike,
+.btn-delete {
   padding: 5px 15px;
   font-size: 14px;
   background-color: #49D8B9;
@@ -573,11 +680,14 @@ textarea {
   cursor: pointer;
 }
 
-.btn-like:hover, .btn-unlike:hover, .btn-delete:hover {
+.btn-like:hover,
+.btn-unlike:hover,
+.btn-delete:hover {
   background-color: #1033a4;
 }
 
-.btn-unlike, .btn-delete {
+.btn-unlike,
+.btn-delete {
   background-color: #D84949;
 }
 </style>

@@ -180,7 +180,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 /* General Styles */
 * {
   margin: 0;

@@ -6,48 +6,23 @@ import HomePageView from '@/views/HomePageView.vue'
 import Wishlist from '@/views/Wishlist.vue'
 import EmployeeHomePage from '@/views/EmployeeHomePage.vue'
 import EmployeeAccount from '@/views/EmployeeAccount.vue'
-import CustomerAccountView from '@/views/CustomerAccountView.vue'
+import CustomerAccount from '@/views/CustomerAccount.vue'
 import EmployeeGameView from '@/views/EmployeeGameView.vue'
 import ManagerGameView from '@/views/ManagerGameView.vue'
 import ManagerHomePage from '@/views/ManagerHomePage.vue'
 import CustomerHomePage from '@/views/CustomerHomePage.vue'
 import Checkout from '@/views/Checkout.vue'
 import Command from '@/views/Command.vue'
-import GamePageView from '@/views/GamePageView.vue'
+import CustomerOrders from '@/views/CustomerOrders.vue'
+import CustomerGamePage from '@/views/CustomerGamePage.vue'
+import GamePage from '@/views/GamePage.vue'
+import ManageEmployees from '@/views/ManageEmployees.vue'
+
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    {
-      path: '/customerAccount/:customerId/:loggedIn',
-      name: 'customer-account',
-      component: CustomerAccountView,
-      props:true,
-      
-      beforeEnter: (to, from, next) => {
-        if (localStorage.getItem('loggedIn') === 'true') {
-          next();
-        } else {
-          alert('Please sign in before accessing this page.');
-          next({ name: 'sign in' });
-        }
-      }
-    },
-    {
-      path: '/customerGamePage/:customerId/:loggedIn/:gameId',
-      name: 'customer-gamepage',
-      component: GamePageView,
-      props: true,
-      beforeEnter: (to, from, next) => {
-        if (localStorage.getItem('loggedIn') === 'true') {
-          next();
-        } else {
-          alert('Please sign in before accessing this page.');
-          next({ name: 'sign in' });
-        }
-      }
-        
-    },
     {
       path: '/SignUp',
       name: 'events',
@@ -70,6 +45,11 @@ const router = createRouter({
       component: Wishlist,
     },
     {
+      path: '/gamePage/:gameId',
+      name: 'gamepage',
+      component: GamePage,
+    },
+    {
       path: '/employeeAccount/:employeeId/:loggedIn',
       name: 'employee-account',
       component: EmployeeAccount,
@@ -85,6 +65,21 @@ const router = createRouter({
         }
       }
       
+    },
+    {
+      path: '/customerAccount/:customerId/:loggedIn',
+      name: 'customer-account',
+      component: CustomerAccount,
+      props:true,
+      
+      beforeEnter: (to, from, next) => {
+        if (localStorage.getItem('loggedIn') === 'true') {
+          next();
+        } else {
+          alert('Please sign in before accessing this page.');
+          next({ name: 'sign in' });
+        }
+      }
     },
       {
         path: '/employeeHomePage/:employeeId/:loggedIn',
@@ -162,6 +157,36 @@ const router = createRouter({
           
       },
       {
+        path: '/customerGamePage/:customerId/:loggedIn/:gameId',
+        name: 'customer-gamepage',
+        component: CustomerGamePage,
+        props: true,
+        beforeEnter: (to, from, next) => {
+          if (localStorage.getItem('loggedIn') === 'true') {
+            next();
+          } else {
+            alert('Please sign in before accessing this page.');
+            next({ name: 'sign in' });
+          }
+        }
+          
+      },
+      {
+        path: '/customerOrders/:customerId/:loggedIn',
+        name: 'customer-orders',
+        component: CustomerOrders,
+        props: true,
+        beforeEnter: (to, from, next) => {
+          if (localStorage.getItem('loggedIn') === 'true') {
+            next();
+          } else {
+            alert('Please sign in before accessing this page.');
+            next({ name: 'sign in' });
+          }
+        }
+          
+      },
+      {
         path: '/wishlist/:customerId/:loggedIn',
         name: 'customer-wishlist',
         component: Wishlist,
@@ -206,6 +231,9 @@ const router = createRouter({
         }
           
       }
+      
+    
+    
   ],
 })
 
