@@ -150,11 +150,13 @@ export default {
       try {
         await axios.put(`http://localhost:8080/employees/deactivate/${id}`);
         alert("Changes saved successfully!");
+        /*
         for (let i = 0; i < this.employees.length; i++) {
           if (this.employees[i].username === "deactivated") {
             this.employees.splice(i, 1);  // Remove the employee at index i
           }
         }
+          */
         this.fetchEmployees();
       } catch (error) {
         console.error("Error deactivating employee:", error);

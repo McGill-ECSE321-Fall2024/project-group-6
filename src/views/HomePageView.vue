@@ -35,7 +35,6 @@
           <h3>{{ game.name }}</h3>
           <div class="game-info">
   <p class="game-price"><strong>Price:</strong> ${{ game.price }}</p>
-  <p class="game-description"><strong>Description:</strong> {{ game.description }}</p>
   <p class="game-stock"><strong>Stock:</strong> {{ game.stockQuantity }} left</p>
 </div>
 
@@ -96,11 +95,34 @@ export default {
           console.error('Error filtering games by category:', error);
         }
       }
+    },
+    async createManager(){
+
+var check="false"
+var people=[];
+  const response = await axios.get(`http://localhost:8080/person`);
+  people= response.data["people"];
+  for(var i=0; i<people.lenght;i++){
+  if(people[i]["username"]=="Manager"){
+    check="true";
+  }
+  }
+    if(check=="false"){
+    const manager={
+    username: "Manager",
+    email: "manager@example.com",
+    phone: "1234567890",
+    password: "examplePassword"
+    };
+    await axios.post(`http://localhost:8080/manager`,manager);
     }
+  }
   },
+    
   async created() {
     await this.fetchCategories();
     await this.fetchGames();
+    await this.createManager();
   }
 };
 </script>
@@ -273,9 +295,10 @@ header img {
 }
 
 .game-image {
+  
   max-width: 100%;
-  height: auto;
-  margin: 0.5rem 0;
+  height: 60%;
+  margin: 0.5rem ;
 }
 
 .game-info {
