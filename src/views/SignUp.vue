@@ -43,7 +43,7 @@
           const newUser = {
             shippingAddress: this.shippingAddress,
             username: this.username,
-            email: this.email,
+            email: this.email.toLowerCase(),
             phone: this.phone,
             password: this.password,
             cart: null,         

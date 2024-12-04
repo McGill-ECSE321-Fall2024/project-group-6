@@ -13,6 +13,7 @@ import ManagerHomePage from '@/views/ManagerHomePage.vue'
 import CustomerHomePage from '@/views/CustomerHomePage.vue'
 import Checkout from '@/views/Checkout.vue'
 import Command from '@/views/Command.vue'
+import ManageEmployees from '@/views/ManageEmployees.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -179,6 +180,21 @@ const router = createRouter({
           }
         }
           
+      },
+      {
+        path: '/manageEmployees/:managerId/:loggedIn',
+        name: 'manage-employees',
+        component: ManageEmployees,
+        props:true,
+        beforeEnter: (to, from, next) => {
+          if (localStorage.getItem('loggedIn') === 'true') {
+            next();
+          } else {
+            alert('Please sign in before accessing this page.');
+            next({ name: 'sign in' });
+          }
+        }
+      
       }
       
     

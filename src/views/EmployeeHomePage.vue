@@ -15,11 +15,12 @@
           </div>
           </div>
           <div class="nav-buttons">
-          <button @click="goToEmployeeAccount" ><img src="../assets/person-circle.svg" class="account-img" @click="goToEmployeeAccount"></button>
-        </div>
-        <div class="nav-buttons">
+          <button @click="goToEmployeeAccount" ><img src="../assets/person-circle.svg" class="nav-btn"  @click="goToEmployeeAccount"></button>
+          </div>
+          <div class="button-container">
           <button @click="logout" class="logout-btn">Logout</button>
         </div>
+        
         
       </nav>
     </header>
@@ -200,7 +201,7 @@ props: ['employeeId', 'loggedIn'],
         
     },
     logout() {
-        this.$router.push('/SignIn');
+        this.$router.push('/');
       }
   },
   created() {
@@ -237,7 +238,7 @@ props: ['employeeId', 'loggedIn'],
   justify-content: space-between;
   width: 100%;
   height: 90px;
-  background: #1033a4;
+  background: #0056b3;
   padding: 0 40px; 
   align-items: center;
 }
@@ -441,9 +442,7 @@ transition: transform 0.2s;
     
   }
   
-  .nav-buttons button:hover {
-    background-color: #eff2f1;
-  }
+ 
   .nav-buttons{
     padding: 10px;
   }
@@ -482,5 +481,58 @@ transition: transform 0.2s;
   margin-bottom: 0.5rem;
   color: black;
 }
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem; 
+}
 
+.button-container:hover {
+  cursor: pointer;
+}
+
+
+.logout-btn:hover {
+  background-color: #fa8c82;
+}
+
+.logout-btn {
+  background-color: #ff6f61;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+}
+
+
+
+.nav-btn  {
+background-color: #0056b3;
+color: #0056b3;
+border: none;
+padding: 0.5rem 1rem;
+
+cursor: pointer;
+text-align: center;  /* Centers the text horizontally */
+height: 50px;  /* Set a fixed height to ensure vertical centering */
+display: flex;
+justify-content:end;
+align-items:end;  /* Centers the button text vertically */
+}
+.nav-btn img{
+padding-bottom: 15px;
+padding-left: 10px;
+
+}
+
+
+.nav-btn:hover {
+background-color: #eff2f1;
+}
+.nav-buttons{
+padding-left: 10px;
+margin-left: 15%;
+
+}
   </style>

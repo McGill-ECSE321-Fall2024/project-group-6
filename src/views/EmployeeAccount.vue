@@ -11,10 +11,10 @@
         <div class="navmenu">
          
         </div>
-        <div class="nav-buttons">
-          <button @click="goToEmployeeHome" >HomePage</button>
-        </div>
-        <div class="nav-buttons">
+        <div class="button-container">
+          <button @click="goToEmployeeHome" class="homepage-btn" >HomePage</button>
+       
+        
           <button @click="logout" class="logout-btn">Logout</button>
         </div>
       </header>
@@ -114,7 +114,7 @@
      
       
       logout() {
-        this.$router.push('/SignIn');
+        this.$router.push('/');
       },
     },
     
@@ -195,30 +195,14 @@
     align-items: center;
   }
   
-  .nav-buttons button {
-    background-color: white;
-    color: #0056b3;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 5px;
-    cursor: pointer;
-    text-align: center;  /* Centers the text horizontally */
-    height: 50px;  /* Set a fixed height to ensure vertical centering */
-    display: flex;
-    justify-content: center;
-    align-items: center;  /* Centers the button text vertically */
-  }
-  
+
   .nav-buttons button:hover {
     background-color: #eff2f1;
   }
   .nav-buttons{
     padding: 10px;
   }
-  .logout-btn {
-    background-color: #0056b3;
-  }
-  
+ 
   /* Form styles */
   .content {
     padding: 2rem;
@@ -268,4 +252,47 @@
     background-color: #ffff;
     color: #000;
   }
+  .button-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem; 
+}
+
+.button-container:hover {
+  cursor: pointer;
+}
+.homepage-btn {
+  display: flex;
+ 
+  padding: 0.5rem 1rem;
+}
+
+.homepage-btn {
+  display: flex;
+  background-color: #22bae0;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+}
+
+.homepage-btn:hover {
+  background-color: #48bbd8;
+
+}
+
+.logout-btn:hover {
+  background-color: #fa8c82;
+}
+
+.logout-btn {
+  background-color: #ff6f61;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+}
+
   </style>

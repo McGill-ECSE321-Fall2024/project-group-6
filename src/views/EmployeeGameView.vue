@@ -9,11 +9,11 @@
           <h2>GameShop</h2>
         </div>
         <div class="navmenu"></div>
-        <div class="nav-buttons">
-          <button @click="goToEmployeeHome" >HomePage</button>
-        </div>
-        <div class="nav-buttons">
-          <button @click="logout" >Logout</button>
+        <div class="button-container">
+          <button @click="goToEmployeeHome" class="homepage-btn" >HomePage</button>
+       
+        
+          <button @click="logout" class="logout-btn">Logout</button>
         </div>
       
       </nav>
@@ -56,15 +56,25 @@
           <span class="category-id">{{ category.categoryId }}</span>
         </li>
       </ul>
+     
+      <div classs="container">
+        <h3 style="margin: 1;">Search for Category Ids</h3>
+      <select >
+        <option v-for="category in catList" :key="category.id" :value="category.name">
+          {{ `${category.name} (${category.id})` }}
+        </option>
+      </select>
+    </div>
+    
         <div class="form-group">
           <label for="newCategoryId">Add New Category To Game </label>
           <input type="number" v-model="categoryId" />
-          <button @click="addCategory(categoryId)" class="add-category">Add Category</button>
+          <button @click="addCategory(categoryId)" class="add-category">Add Category By Id</button>
         </div>
         <div class="form-group">
-          <label for="removeCategoryId">Remove Category For This Game </label>
+          <label for="removeCategoryId">Remove Category From This Game </label>
           <input type="number" v-model="categoryIdRemove" />
-          <button @click="removeCategory(categoryIdRemove)" class="add-category">Remove Category</button>
+          <button @click="removeCategory(categoryIdRemove)" class="add-category">Remove Category By Id</button>
         </div>
       
       </aside>
@@ -96,7 +106,8 @@ export default {
       },
       categoryIdsArray:[],
       employeeID: 0,
-      gameID: 0
+      gameID: 0,
+      catList:""
     };
   },
   methods: {
@@ -192,13 +203,15 @@ export default {
   async fetchCategories() {
       try {
         const response = await axios.get('http://localhost:8080/categories');
+        
         this.categories = response.data["categories"];
+        this.catList=response.data["categories"];
       } catch (error) {
         console.error('Error fetching categories:', error);
       }
     },
   logout() {
-        this.$router.push('/SignIn');
+        this.$router.push('/');
       },
       async removeCategory(id){
         this.categoryIdsArray=[];
@@ -232,6 +245,7 @@ export default {
     this.gameID = this.gameId; 
     console.log(this.gameID);
     this.fetchGameDetails();
+    this.fetchCategories();
   }
 }
 
@@ -398,5 +412,56 @@ export default {
 .category-id {
   font-size: 1rem;
 }
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem; 
+}
+
+.button-container:hover {
+  cursor: pointer;
+}
+.homepage-btn {
+  display: flex;
+ 
+  padding: 0.5rem 1rem;
+}
+
+.homepage-btn {
+  display: flex;
+  background-color: #22bae0;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+}
+
+.homepage-btn:hover {
+  background-color: #48bbd8;
+
+}
+
+.logout-btn:hover {
+  background-color: #fa8c82;
+}
+
+.logout-btn {
+  background-color: #ff6f61;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+}
+select {
+  width: 100%;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 1rem;
+}
+
 </style>
   
