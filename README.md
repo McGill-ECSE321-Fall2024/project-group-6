@@ -83,22 +83,24 @@ Table 2 : Roles of each team member Deliverable 2: <br/>
 Table 3 : Roles of each team member Deliverable 3: <br/>
 | **Name**    | **Role**                                            | **Number of Hours** |
 |-------------|-----------------------------------------------------|---------------------|
-| Laurence    | Manager Dashboard, Game Page and Manage employees (Frontend/Backend)              |                   |
-|             | Update ReadMe file                                |                   |
-|             | Presentation slides                     |                  |
-| Annabelle   | Customer Game Page and Account (Frontend/Backend)                   |                  |
-|             | Presentation slides                  |                |
-| Marine      | Employee Dashboard, Account and Game Page (Frontend)          |         6         |
-|             | Meeting Minutes                     |       1        |
-|             | Key Decisions                     |         1         |
-|             | Presentation slides             |          1.5       |
-| Maissa      | Customer Wishlist and Checkout (Frontend/Backend)    |                  |
-|             | Demo         |                 |
-| Joseph      | Build system and CI specification  |                   |
-|             | Sign Up, Sign in, and Home Page   |       8          |
-|             | Employee Dashboard, Account and Game Page          |        9          |
-|             | Manager HomePage and Manager Game View        |      9            |
-|             | Demo                                                  |         5         |
-|             | Testing of the application                                                |                  |
-|             | Backend Setup                                                |       7          |
-| Mario       | Customer Dashboard and Account (Frontend/Backend)             |                   |
+| Laurence    | Manager Dashboard, Game Page and Manage employees (Frontend/Backend)   |                   |
+|             | Update ReadMe file                                                     |                   |
+|             | Presentation slides                                                    |                  |
+| Annabelle   | Customer Game Page and Account (Frontend/Backend)                      |                  |
+|             | Presentation slides                                                    |                   |
+|             | Manager Game Page (Frontend/Backend)                                   |                   |
+| Marine      | Employee Dashboard, Account and Game Page (Frontend)                    |         6        |
+|             | Meeting Minutes                                                           |       1        |
+|             | Key Decisions                                                            |         1         |
+|             | Presentation slides                                                      |          1.5       |
+| Maissa      | Customer Wishlist and Checkout (Frontend/Backend)                          |                  |
+|             | Demo                                                                       |                 |
+| Joseph      | Build system and CI specification                                         |                   |
+|             | Sign Up, Sign in, and Home Page                                            |       8          |
+|             | Employee Dashboard, Account and Game Page                                   |        9          |
+|             | Manager HomePage, Manage Eemployee & Manager Game View                      |      9         |
+|             | Demo                                                                        |         5         |
+|             | Testing of the application                                                  |                  |
+|             | Backend Setup                                                                |       7          |
+| Mario       | Customer Dashboard and Account (Frontend/Backend)                            |                  |
+|             | Manager "Manage employee page" and Game page (Frontend/Backend)             |                  |
