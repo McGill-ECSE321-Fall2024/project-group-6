@@ -171,7 +171,7 @@ public class ReviewServiceTests {
         when(repo.save(any(Review.class))).thenReturn(existingReview);
 
         // Act
-        Review updatedReview = service.updateReview(reviewId, reviewRequestDto.getRating(), reviewRequestDto.getComment(), reviewRequestDto.getReply());
+        Review updatedReview = service.updateReview(reviewId, reviewRequestDto.getRating(), reviewRequestDto.getComment(), reviewRequestDto.getReply(), reviewRequestDto.getAmountOfLikes());
 
         // Assert
         assertNotNull(updatedReview);
@@ -191,7 +191,7 @@ public class ReviewServiceTests {
 
         // Act & Assert
         GameShopException e = assertThrows(GameShopException.class, () ->
-                service.updateReview(invalidReviewId, reviewRequestDto.getRating(), reviewRequestDto.getComment(), reviewRequestDto.getReply())
+                service.updateReview(invalidReviewId, reviewRequestDto.getRating(), reviewRequestDto.getComment(), reviewRequestDto.getReply(), reviewRequestDto.getAmountOfLikes())
         );
         assertEquals("Review with ID " + invalidReviewId + " does not exist.", e.getMessage());
         verify(repo, times(0)).save(any(Review.class)); // ensure save is not called
@@ -209,7 +209,7 @@ public class ReviewServiceTests {
 
         // Act & Assert
         GameShopException exception = assertThrows(GameShopException.class, () -> {
-            service.updateReview(reviewId, reviewRequest.getRating(), reviewRequest.getComment(), reviewRequest.getReply());
+            service.updateReview(reviewId, reviewRequest.getRating(), reviewRequest.getComment(), reviewRequest.getReply(), reviewRequest.getAmountOfLikes());
         });
         assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
         assertEquals("Rating cannot be empty", exception.getMessage());
