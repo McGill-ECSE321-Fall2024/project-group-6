@@ -89,6 +89,7 @@ Table 3 : Roles of each team member Deliverable 3: <br/>
 | Annabelle   | Customer Game Page and Account (Frontend/Backend)                      |                  |
 |             | Presentation slides                                                    |                   |
 |             | Manager Game Page (Frontend/Backend)                                   |                   |
+|             | Backend Setup                                                           |                   |
 | Marine      | Employee Dashboard, Account and Game Page (Frontend)                    |         6        |
 |             | Meeting Minutes                                                           |       1        |
 |             | Key Decisions                                                            |         1         |
@@ -98,7 +99,8 @@ Table 3 : Roles of each team member Deliverable 3: <br/>
 | Joseph      | Build system and CI specification                                         |                   |
 |             | Sign Up, Sign in, and Home Page                                            |       8          |
 |             | Employee Dashboard, Account and Game Page                                   |        9          |
-|             | Manager HomePage, Manage Eemployee & Manager Game View                      |      9         |
+|             | Customer Dashboard and Account (Frontend/Backend)                          |        9          |
+|             | Manager HomePage, Manage Employee & Manager Game View                      |      9         |
 |             | Demo                                                                        |         5         |
 |             | Testing of the application                                                  |                  |
 |             | Backend Setup                                                                |       7          |
