@@ -10,6 +10,7 @@ import CustomerAccount from '@/views/CustomerAccount.vue'
 import EmployeeGameView from '@/views/EmployeeGameView.vue'
 import ManagerGameView from '@/views/ManagerGameView.vue'
 import ManagerHomePage from '@/views/ManagerHomePage.vue'
+import ManageEmployees from '@/views/ManageEmployees.vue'
 import CustomerHomePage from '@/views/CustomerHomePage.vue'
 import Checkout from '@/views/Checkout.vue'
 import Command from '@/views/Command.vue'
@@ -101,9 +102,25 @@ const router = createRouter({
             alert('Please sign in before accessing this page.');
             next({ name: 'sign in' });
           }
-        }
-          
+        } 
       },
+
+      {
+        path: '/manageEmployees/:managerId/:loggedIn',
+        name: 'manage-employees',
+        component: ManageEmployees,
+        props:true,
+        beforeEnter: (to, from, next) => {
+          if (localStorage.getItem('loggedIn') === 'true') {
+            next();
+          } else {
+            alert('Please sign in before accessing this page.');
+            next({ name: 'sign in' });
+          }
+        }
+      
+      },
+
       {
         path: '/managerGamePage/:managerId/:loggedIn/:gameId',
         name: 'manager-gamepage',

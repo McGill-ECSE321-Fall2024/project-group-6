@@ -45,26 +45,22 @@
                         </div>
 
                         <button type="submit" class="save-btn" @click="saveChanges">Save Changes</button>
-                        <div class="categories-aside">
-                            <h3>Categories</h3>
-                            <ul class="categories-list">
-                                <li v-for="(category) in game.categories">
-                                    <span class="category-name">{{ category.categoryName }}</span>
-                                    <span class="category-id">{{ category.categoryId }}</span>
-                                </li>
-                            </ul>
-                            <div class="form-group">
-                                <label for="newCategoryId">Add New Category </label>
-                                <input type="number" v-model="categoryId" />
-                                <button @click="addCategory(categoryId)" class="add-category">Add Category</button>
-                            </div>
-                            <div class="form-group">
-                                <label for="removeCategoryId">Remove Category </label>
-                                <input type="number" v-model="categoryIdRemove" />
-                                <button @click="removeCategory(categoryIdRemove)" class="add-category">Remove
-                                    Category</button>
-                            </div>
-
+                        <h3>Categories</h3>
+                        <ul class="categories-list">
+                            <li v-for="(category) in game.categories">
+                                <span class="category-name">{{ category.categoryName }}</span>
+                                <span class="category-id">{{ category.categoryId }}</span>
+                            </li>
+                        </ul>
+                        <div class="form-group">
+                            <label for="newCategoryId">Add New Category </label>
+                            <input type="number" v-model="categoryId" />
+                            <button @click="addCategory(categoryId)" class="add-category">Add Category</button>
+                        </div>
+                        <div class="form-group">
+                            <label for="removeCategoryId">Remove Category </label>
+                            <input type="number" v-model="categoryIdRemove" />
+                            <button @click="removeCategory(categoryIdRemove)" class="remove-category">Remove Category</button>
                         </div>
                     </main>
 
@@ -405,12 +401,8 @@ export default {
     flex-direction: column;
 }
 
-.categories-aside {
-    flex: 1;
-    padding: 20px;
-
-    border-radius: 8px;
-    margin-left: 20px;
+.catalog h3 {
+    font-weight: bold;
 }
 
 .form-group {
@@ -419,6 +411,7 @@ export default {
 
 .form-group label {
     font-size: 1rem;
+    font-weight: bold;
     margin-bottom: 0.5rem;
 }
 
@@ -432,6 +425,7 @@ export default {
 
 .save-btn {
     margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
     padding: 0.75rem;
     background-color: #28a745;
     color: white;
@@ -446,12 +440,26 @@ export default {
 
 .add-category {
     margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
     padding: 0.75rem;
-    background-color: #a78928;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    background-color: #1033a4;
+    width: 100%;
+}
+
+.remove-category {
+    background-color: red;
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+    padding: 0.75rem;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
 }
 
 .add-category:hover {

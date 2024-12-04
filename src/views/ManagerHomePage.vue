@@ -15,8 +15,7 @@
           </div>
           </div>
           <div class="button-container">
-            <button @click="logout" class="manage-btn">Manage Employees</button>
-          
+            <button @click="manageEmployees" class="manage-btn">Manage Employees</button>
             <button @click="logout" class="logout-btn">Sign Out</button>
           </div>
       </nav>
@@ -168,6 +167,15 @@ props: ['loggedIn', 'managerId'],
       }
     },
 
+    async manageEmployees() {
+      router.push({
+          name: 'manage-employees',
+          params: {
+            managerId: this.managerID,
+            loggedIn: true
+          }
+        });
+    },
 
     async addCategory(name) {
     var check="false";
@@ -225,12 +233,6 @@ props: ['loggedIn', 'managerId'],
         });
         
     },
-
-    async manageEmployees() {
-      this.$router.push('/manager/employees');
-    },
-
-
 
     logout() {
       this.$router.push('/SignIn');
@@ -599,6 +601,11 @@ props: ['loggedIn', 'managerId'],
     border-radius: 20px;
     font-size: 0.9rem;
    
+}
+
+.manage-btn button:hover {
+  cursor: pointer;
+  background-color: #48bcd9;
 }
 
 .logout-btn {
