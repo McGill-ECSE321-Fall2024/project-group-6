@@ -51,11 +51,12 @@
       <div v-if="games.length === 0">No games found</div>
       <div v-for="game in games" :key="game.gameId" class="game-card">
         <img :src="game.photoURL" alt="Game Image" class="game-image" />
-        <div class="game-info">
+        <div class="game-info" @click="goToGamePage(game)">
           <h3>{{ game.name }}</h3>
           <p class="game-price"><strong>Price:</strong> ${{ game.price }}</p>
-          <p class="game-description"><strong>Description:</strong> {{ game.description }}</p>
           <p class="game-stock"><strong>Stock:</strong> {{ game.stockQuantity }} left</p>
+          <p class="game-promotion"><strong>Promotion:</strong> {{ game.promotion }}</p>
+
           <div class="button-container">
             <button class="btn" @click="addToCart(game)">Add to Cart</button>
             <button class="btn" @click="addToWishlist(game)">Add to Wishlist</button>
@@ -125,15 +126,16 @@ export default {
         console.error("Error fetching tasks:", error);
       }
     },
-    viewGameDetails(gameId) {
-      this.$router.push({
-        name: "customer-gamepage",
-        params: {
-          gameId: gameId,
-          customerId: this.customerId,
-          loggedIn: true
-        }
-      });
+    async goToGamePage(game){
+      router.push({
+                name: 'customer-gamepage',
+                params: {
+                  customerId: this.customerId,
+          loggedIn: true,
+                    gameId: game.gameId
+                }
+
+            });
     },
     async addToWishlist(game) {
       try {
@@ -447,15 +449,14 @@ header .img {
 }
 
 
-
 .game-card h3 {
   margin: 0;
 }
 
 .game-image {
   max-width: 100%;
-  height: auto;
-  margin: 0.5rem 0;
+  height: 60%;
+  margin: 0.5rem ;
 }
 
 .game-info {
@@ -480,6 +481,9 @@ header .img {
 
 .game-info p {
   margin: 10px 0;
+}
+.game-info h3 {
+  font-weight: bold;
 }
 
 .game-price {

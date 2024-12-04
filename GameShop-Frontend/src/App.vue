@@ -6,7 +6,7 @@ import { RouterView } from 'vue-router';
   <RouterView />
 </template>
 
-<style >
+<style scoped>
 
 header {
   line-height: 1.5;

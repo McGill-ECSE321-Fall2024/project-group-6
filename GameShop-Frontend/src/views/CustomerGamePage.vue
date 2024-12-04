@@ -1,0 +1,697 @@
+<template>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.4/css/boxicons.min.css" rel="stylesheet" />
+
+  <!-- Header Section -->
+  <header>
+    <nav class="navbar">
+      <div class="logo">
+        <h2>GameShop</h2>
+      </div>
+      <div class="navmenu">
+        
+
+        <div class="user-options">
+          <div class="dropdown">
+            <button class="dropbtn"><img src="../assets/account.png" class="account-img"></button>
+            <div class="nav-buttons">
+              <button @click="goToCustomerAccount">Account</button>
+              <button @click="goToCustomerOrders" class="order-btn">Orders</button>
+              <button @click="logout" class="logout-btn">Log Out</button>
+            </div>
+          </div>
+
+          <RouterLink><img src="../assets/White-Heart.png" @click="goToCustomerWishlist">
+          </RouterLink>
+
+          <RouterLink><img src="../assets/pngaaa.com-5034351.png" @click="goToCustomerCart">
+          </RouterLink>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Game Details Section -->
+  <div class="content">
+    <a @click="goToMainPage">Keep shopping</a>
+    <div v-if="showPopup" class="popup">
+      {{ popupMessage }}
+    </div>
+    <div class="game-info">
+      <div class="game-content">
+        <div class="game-image-container">
+          <img :src="game.photoURL" alt="Game Image" class="game-image" />
+        </div>
+        <main class="catalog">
+          <h1>{{ game.name }}</h1>
+          <p><strong>Description:</strong> {{ game.description }}</p>
+          <p><strong>Price:</strong> ${{ game.price }}</p>
+          <p><strong v-if="game.promotion > 0">Promotion: -{{ game.promotion }}%</strong></p>
+          <p><strong>Stock Quantity:</strong> {{ game.stockQuantity }}</p>
+          <p><strong>Categories:</strong> {{ game.categories.join(", ") }}</p>
+          <button @click="addToCart" class="btn-add-to-cart">Add to Cart</button>
+          <button @click="addToWishlist" class="btn-add-to-wishlist">Add to Wishlist</button>
+        </main>
+      </div>
+    </div>
+
+
+    <!-- Reviews Section -->
+    <div class="comments-section">
+      <h2>Reviews</h2>
+      <div class="comment-card" v-if="reviews.length > 0">
+        <div v-for="review in reviews" :key="review.reviewId" class="review">
+          <div class="comment-header">
+            <p><strong>{{ review.customer.person.username }}</strong> said:</p>
+            <p class="comment-content">{{ review.comment }}</p>
+          </div>
+          <p>Rating: {{ review.rating }}</p>
+          <p>Likes: {{ review.amountOfLikes || 0 }}</p>
+          <!-- Like Button -->
+          <button v-if="!checkIfLiked(review.reviewId)" @click="likeReview(review)" class="btn-like">
+            Like
+          </button>
+
+          <!-- Unlike Button -->
+          <button v-else @click="unlikeReview(review)" class="btn-unlike">
+            Unlike
+          </button>
+          <!-- Delete Button -->
+          <button v-if="review.customer.roleId == this.customerID" @click="deleteReview(review)" class="btn-delete">
+            Delete
+          </button>
+        </div>
+      </div>
+      <p v-else>No reviews available for this game.</p>
+
+      <!-- Add Review Form -->
+      <h3>Add a Review</h3>
+      <form @submit.prevent="submitReview">
+        <div class="form-group">
+          <label for="rating">Rating (1-5):</label>
+          <select id="rating" name="rating">
+            <option value="1">1 ★</option>
+            <option value="2">2 ★★</option>
+            <option value="3">3 ★★★</option>
+            <option value="4">4 ★★★★</option>
+            <option value="5">5 ★★★★★</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="comment">Comment:</label>
+          <textarea id="comment" v-model="newReview.comment" required></textarea>
+        </div>
+        <button type="submit" class="btn-submit-review">Submit Review</button>
+      </form>
+    </div>
+
+  </div>
+</template>
+
+<script>
+import axios from "axios";
+import { RouterLink } from "vue-router";
+
+export default {
+  props: ['customerId', 'loggedIn', 'gameId'],
+  data() {
+    return {
+      customerID: 0,
+      gameID: 0,
+      searchQuery: "",
+      game: {
+        id: 0,
+        name: "",
+        description: "",
+        price: 0.0,
+        stockQuantity: 0,
+        photoURL: "",
+        categories: [],
+      },
+      reviews: [],
+      newReview: {
+        rating: null,
+        comment: "",
+      },
+      likedReviews: [],
+    };
+  },
+  methods: {
+    isLoggedIn() {
+      return this.loggedIn;
+    },
+    async fetchGameDetails() {
+      try {
+        const response = await axios.get(`http://localhost:8080/games/id/${this.gameID}`);
+        const gameInfo = response.data;
+        gameInfo.categories = gameInfo.categories.map(category => category.categoryName);
+        this.game = gameInfo;
+      } catch (error) {
+        console.error("Failed to fetch game details:", error);
+        alert("Failed to load game details. Please try again later.");
+      }
+    },
+
+    async fetchReviews() {
+      try {
+        const response = await axios.get(`http://localhost:8080/games/${this.gameID}/reviews`);
+        this.reviews = response.data.reviews || [];
+
+        // Initialize 'likedByCustomer' for each review
+        this.reviews.forEach((review) => {
+          review.likedByCustomer = this.checkIfLiked(review);
+        });
+      } catch (error) {
+        console.error("Failed to fetch reviews:", error);
+
+      }
+    },
+
+    checkIfLiked(reviewId) {
+      return this.likedReviews.includes(reviewId);
+    },
+
+    parseRating(rating) {
+      const ratingMap = {
+        "OneStar": 0,
+        "TwoStar": 1,
+        "ThreeStar": 2,
+        "FourStar": 3,
+        "FiveStar": 4
+      };
+      return ratingMap[rating] || 0;
+    },
+
+    async likeReview(review) {
+      try {
+        debugger
+        const payload = {
+          rating: this.parseRating(review.rating),
+          comment: review.comment,
+          amountOfLikes: review.amountOfLikes + 1,
+          reply: review.reply || "",
+        };
+        if (review.customer.roleId == this.customerID) {
+          alert("You cannot like your own review.")
+        }
+        else {
+          const response = await axios.put(`http://localhost:8080/review/${review.reviewId}`, payload);
+          this.fetchReviews(); // Refresh the reviews list after updating
+          this.likedReviews.push(review.reviewId);
+        }
+
+      } catch (error) {
+        console.error("Failed to like the review:", error);
+        alert("Failed to like/unlike the review. Please try again.");
+        this.likedReviews = this.likedReviews.filter(id => id !== review.reviewId);
+      }
+    },
+
+    async unlikeReview(review) {
+      try {
+        const payload = {
+          rating: this.parseRating(review.rating),
+          comment: review.comment,
+          amountOfLikes: review.amountOfLikes - 1,
+          reply: review.reply || "",
+        };
+        const response = await axios.put(`http://localhost:8080/review/${review.reviewId}`, payload);
+        this.fetchReviews(); // Refresh the reviews list after updating
+        this.likedReviews = this.likedReviews.filter(id => id !== review.reviewId);
+      } catch (error) {
+        console.error("Failed to unlike the review:", error);
+        alert("Failed to like/unlike the review. Please try again.");
+        this.likedReviews.push(review.reviewId);
+      }
+    },
+    async deleteReview(review) {
+      try {
+        if (review.customer.roleId == this.customerID) {
+          const response = await axios.delete(`http://localhost:8080/review/${review.reviewId}`);
+          this.fetchReviews(); // Refresh the reviews list after updating
+        }
+      } catch (error) {
+        console.error("Failed to unlike the review:", error);
+        alert("Failed to like/unlike the review. Please try again.");
+        this.likedReviews.push(review.reviewId);
+      }
+    },
+    async submitReview() {
+      try {
+        await axios.post(`http://localhost:8080/review/${this.customerId}/${this.gameId}`, this.newReview);
+        alert("Review added successfully!");
+        this.fetchReviews();  // Refresh the reviews after adding a new one
+        this.newReview.rating = null;
+        this.newReview.comment = "";
+      } catch (error) {
+        console.error("Failed to submit review:", error);
+        alert("Failed to submit review. Please try again later.");
+      }
+    },
+
+    async addToCart() {
+      try {
+        await axios.put(`http://localhost:8080/customers/${this.customerId}/cart/add/${this.gameId}`, {
+          gameID: this.game.id,
+        });
+        alert("Game added to cart successfully!");
+      } catch (error) {
+        console.error("Failed to add game to cart:", error);
+        alert("Failed to add game to cart. Please try again later.");
+      }
+    },
+
+    async addToWishlist() {
+      try {
+        const response = await axios.put(`http://localhost:8080/customers/${this.customerID}/wishlist/add/${this.gameId}`, null);
+        alert("Game added to wishlist successfully!");
+      } catch (error) {
+        console.error("Failed to add game to wishlist:", error);
+        alert("Failed to add game to wishlist. Please try again later.");
+      }
+    },
+    async searchByName() {
+      try {
+        const response = await axios.get(`http://localhost:8080/games/name/${this.searchQuery}`);
+      } catch (error) {
+        console.error('Error searching for games:', error);
+      }
+    },
+    async goToCustomerMainPage() {
+      this.$router.push({
+        name: 'customer-homepage',
+        params: {
+          customerId: this.customerId,
+          loggedIn: true
+        }
+      });
+    },
+    async goToCustomerAccount() {
+      router.push({
+        name: 'customer-account',
+        params: {
+          customerId: this.customerId,
+          loggedIn: true
+        }
+
+      });
+    },
+
+    logout() {
+      this.$router.push('/');
+    },
+
+    async goToCustomerOrders() {
+      router.push({
+        name: 'customer-orders',
+        params: {
+          customerId: this.customerId,
+          loggedIn: true
+        }
+
+      });
+    },
+    async goToCustomerCart() {
+      router.push({
+        name: 'customer-cart',
+        params: {
+          customerId: this.customerId,
+          loggedIn: true
+        }
+
+      });
+    },
+    async goToCustomerWishlist() {
+      router.push({
+        name: 'customer-wishlist',
+        params: {
+          customerId: this.customerId,
+          loggedIn: true
+        }
+
+      });
+    }
+  },
+
+  created() {
+    if (!this.isLoggedIn()) {
+      this.$router.push({ name: "sign in" });
+      alert("Please log in before accessing this page.");
+    } else {
+      this.customerID = this.customerId;
+      this.gameID = this.gameId;
+      this.fetchGameDetails();
+      this.fetchReviews();
+    }
+  }
+};
+</script>
+
+<style scoped>
+/* General Styles */
+* {
+  margin: 0;
+  padding: 0;
+  text-decoration: none;
+  list-style: none;
+  font-family: "poppins";
+}
+
+.user-options {
+  display: flex;
+  /* Aligns child elements (buttons) horizontally */
+
+  /* Adds spacing between buttons (adjust as needed) */
+  align-items: center;
+  /* Vertically aligns buttons if needed */
+}
+
+.user-options button {
+  background: none;
+  /* Remove default button background */
+  border: none;
+  /* Remove default button border */
+  padding: 0;
+  /* Remove padding around buttons */
+  cursor: pointer;
+}
+
+.user-options img {
+  margin-top: 15px;
+  margin-right: 10px;
+  align-items: center;
+  width: 40px;
+}
+
+.dropdown .nav-buttons {
+  display: none;
+  /* Initially hide dropdown content */
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0.906);
+  background: #ffff;
+
+  color: #ffff;
+  z-index: 1;
+}
+
+.dropdown:hover .nav-buttons {
+  display: block;
+  /* Show dropdown on hover */
+  border: solid;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  height: 80px;
+  background: #1033a4;
+}
+
+.navbar h2 {
+  color: #ffffff;
+  font-size: 25px;
+  font-weight: 500;
+  padding: 20px 20px;
+}
+
+.navmenu {
+  height: 50px;
+  line-height: 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.search-box .search {
+  width: 500px;
+  padding: 8px 8px;
+  border-radius: 50px;
+  font-size: 16px;
+}
+
+.popup {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #eee;
+  color: #000000;
+  padding: 10px 20px;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  font-weight: bold;
+  z-index: 0;
+}
+
+.search-box {
+  margin-right: 200px;
+}
+
+.navmenu .search-box i {
+  color: #ffffff;
+  position: relative;
+  right: 40px;
+  top: 2px;
+  background-color: #1140d9;
+  padding: 8px;
+  border-radius: 50px;
+}
+
+header .img {
+  margin-top: 15px;
+  margin-right: 10px;
+  align-items: center;
+  width: 40px;
+}
+
+
+
+/* Main Game Page */
+/* Content */
+.content {
+  min-height: 100vh;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  background-color: #ffffff;
+  color: #000;
+}
+
+.game-info {
+  background-color: white;
+  grid-template-columns: 200px 70px;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 10px 20px rgba(85, 85, 85, 0.2);
+}
+
+.game-info h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.game-content {
+  display: grid;
+  /* Use grid layout */
+  grid-template-columns: 1fr 2fr;
+  /* Two columns: image (1fr), description (2fr) */
+  gap: 1.5rem;
+  /* Space between columns */
+  align-items: start;
+  /* Align content at the top */
+}
+
+.game-image-container {
+  display: flex;
+  justify-content: center;
+  /* Center the image horizontally */
+}
+
+.game-image {
+  max-width: 100%;
+  /* Ensure the image fits its container */
+  height: auto;
+  border-radius: 10px;
+}
+
+.game-description {
+  font-size: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  /* Spacing between paragraphs */
+}
+
+.game-description p {
+  margin: 10px;
+}
+
+.catalog {
+  flex: 2;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.catalog h3 {
+  font-weight: bold;
+}
+
+.btn-add-to-cart {
+  padding: 10px 20px;
+  background-color: #49D8B9;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  max-width: 200px;
+  /* Set a max-width to prevent stretching */
+  align-self: flex-start;
+  /* Align the button to the left, inside the game-info section */
+  margin-top: 10px;
+}
+
+.btn-add-to-wishlist {
+  padding: 10px 20px;
+  background-color: #49D8B9;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  max-width: 200px;
+  /* Set a max-width to prevent stretching */
+  align-self: flex-start;
+  /* Align the button to the left, inside the game-info section */
+  margin-top: 10px;
+}
+
+.btn-add-to-wishlist:hover {
+  background-color: #1033a4;
+}
+
+.btn-add-to-cart:hover {
+  background-color: #1033a4;
+}
+
+/* Reviews Section */
+.comments-section {
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 10px 20px rgba(85, 85, 85, 0.2);
+}
+
+.comments-section h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.comment-card {
+  border-top: 1px solid #eee;
+  padding: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.comment-header {
+  display: flex;
+  flex-direction: column;
+}
+
+.comment-content {
+  font-size: 1rem;
+  margin: 0.5rem 0;
+}
+
+
+
+
+
+
+
+
+.reviews-section {
+  margin-top: 40px;
+  width: 100%;
+  /* Full width */
+}
+
+.reviews {
+  margin-bottom: 20px;
+}
+
+.review {
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background: #fff;
+  margin-bottom: 10px;
+}
+
+form {
+  margin-top: 20px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+textarea {
+  width: 100%;
+  height: 100px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  padding: 10px;
+}
+
+.btn-submit-review {
+  padding: 10px 20px;
+  background-color: #49D8B9;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  max-width: 200px;
+  /* Set a max-width to prevent stretching */
+  align-self: flex-start;
+  /* Align the button to the left */
+  margin-top: 10px;
+}
+
+.btn-submit-review:hover {
+  background-color: #1033a4;
+}
+
+/* Like/Unlike Button Styles */
+.btn-like,
+.btn-unlike,
+.btn-delete {
+  padding: 5px 15px;
+  font-size: 14px;
+  background-color: #49D8B9;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-like:hover,
+.btn-unlike:hover,
+.btn-delete:hover {
+  background-color: #1033a4;
+}
+
+.btn-unlike,
+.btn-delete {
+  background-color: #D84949;
+}
+</style>

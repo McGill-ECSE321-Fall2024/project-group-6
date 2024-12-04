@@ -7,10 +7,6 @@
         <h2>GameShop</h2>
       </div>
       <div class="navmenu">
-        <div class="search-box">
-          <input type="search" v-model="searchQuery" class="search" placeholder="Search game..." />
-          <i class="bx bx-search" @click="searchByName"></i>
-        </div>
 
         <div class="user-options">
           <div class="dropdown">

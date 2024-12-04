@@ -18,7 +18,6 @@
 <script>
 import axios from "axios";
 import router from '@/router';
-
 const axiosClient = axios.create({
   baseURL: "http://localhost:8080"
 });
@@ -32,7 +31,7 @@ export default {
       shippingAddress: '',
       phone: '',
       errorMessage: '',
-      passwordCopy: ''
+      passwordCopy:''
     };
   },
   methods: {
@@ -44,43 +43,44 @@ export default {
         const newUser = {
           shippingAddress: this.shippingAddress,
           username: this.username,
-          email: this.email,
+          email: this.email.toLowerCase(),
           phone: this.phone,
           password: this.password,
-          cart: null,
-          wishlist: null,
+          cart: null,         
+          wishlist: null      
         };
-        if (this.password.length < 10) {
-          return this.errorMessage = "Your password is less than 10 characters";
-        }
-        else if (this.password !== this.passwordCopy) {
-          return this.errorMessage = "Your passwords don't match";
-        } 
-          
-        await axiosClient.post('http://localhost:8080/customers', newUser);
+        await axiosClient.post('/customers', newUser);
         this.clearInputs();
         await this.goToSignIn();
-      } catch (error) {
-        this.errorMessage = 'There was an error signing up, please try again';
-      }
+      }  catch (error) {
+    if (this.password.length<10) {
+      this.errorMessage = "Your password is less than 10 characters";
+    }
+    else if(this.password!==this.passwordCopy){
+      this.errorMessage = "Your passwords don't match";
+    
+    } else {
+      this.errorMessage = 'You are already a regisstered customer, use sign in';
+    }
+  }
 
     },
     clearInputs() {
       this.username = '';
       this.email = '';
       this.password = '';
-      this.passwordCopy = '';
       this.shippingAddress = '';
       this.phone = '';
+      this.passwordCopy='';
       this.errorMessage = '';
     },
-    async goToSignIn() {
-      router.push({
+    async goToSignIn(){
+    router.push({
         name: 'sign in',
-
+        
       });
-
-    }
+      
+  }
 
   }
 };
@@ -92,11 +92,9 @@ export default {
   margin: 0 auto;
   padding: 2rem;
   background: #f9f9f9;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   border-radius: 10px;
   font-family: 'Arial', sans-serif;
-  background-color: #ffffff;
-  color: #000;
 }
 
 .signup-container h1 {
@@ -108,8 +106,6 @@ export default {
 .form-container {
   display: flex;
   flex-direction: column;
-  background-color: #ffffff;
-  color: #000;
 }
 
 .form-container input {

@@ -53,7 +53,7 @@ export default {
       }
 
       try {
-        const user = { username:"123",email: this.email, password: this.password, phone:"123" };
+        const user = { username:"123",email: this.email.toLowerCase(), password: this.password, phone:"123" };
         const response = await axiosClient.post(`/login`, user);
 
         if (response.data.email === this.email && response.data.username!=="deactivated") {

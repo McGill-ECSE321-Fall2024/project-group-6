@@ -14,6 +14,10 @@ import CustomerHomePage from '@/views/CustomerHomePage.vue'
 import Checkout from '@/views/Checkout.vue'
 import Command from '@/views/Command.vue'
 import CustomerOrders from '@/views/CustomerOrders.vue'
+import CustomerGamePage from '@/views/CustomerGamePage.vue'
+import GamePage from '@/views/GamePage.vue'
+import ManageEmployees from '@/views/ManageEmployees.vue'
+
 
 
 const router = createRouter({
@@ -39,6 +43,11 @@ const router = createRouter({
       path: '/wishlist',
       name: 'wishlist',
       component: Wishlist,
+    },
+    {
+      path: '/gamePage/:gameId',
+      name: 'gamepage',
+      component: GamePage,
     },
     {
       path: '/employeeAccount/:employeeId/:loggedIn',
@@ -126,6 +135,21 @@ const router = createRouter({
         path: '/customerHomePage/:customerId/:loggedIn',
         name: 'customer-homepage',
         component: CustomerHomePage,
+        props: true,
+        beforeEnter: (to, from, next) => {
+          if (localStorage.getItem('loggedIn') === 'true') {
+            next();
+          } else {
+            alert('Please sign in before accessing this page.');
+            next({ name: 'sign in' });
+          }
+        }
+          
+      },
+      {
+        path: '/customerGamePage/:customerId/:loggedIn/:gameId',
+        name: 'customer-gamepage',
+        component: CustomerGamePage,
         props: true,
         beforeEnter: (to, from, next) => {
           if (localStorage.getItem('loggedIn') === 'true') {
