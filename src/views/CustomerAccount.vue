@@ -1,410 +1,387 @@
 <template>
-    <div>
-      <!-- Header Section -->
-      <header>
-        <nav class="navbar">
-          <div class="logo">
-            <h2>GameShop</h2>
-          </div>
-          <div class="navmenu">
-            <div class="search-box">
-              <input type="search" class="search" placeholder="Search game...">
-              <i class="bx bx-search"></i>
-            </div>
-            <div class="iconAccount">
-              <img src="../assets/account.png" alt="Account">
-            </div>
-            <RouterLink to="/wishlist"><img src="../assets/White-Heart.png" alt="Wishlist"></RouterLink>
-            <RouterLink to="/checkout"><img src="../assets/pngaaa.com-5034351.png" alt="Cart"></RouterLink>
-          </div>
-        </nav>
-      </header>
-  
-      <!-- Customer Account Page -->
-      <div class="account-page">
-        <div class="account-section">
-          <!-- Left Section: Account Information -->
-          <div class="account-info">
-            <h1>Account Details</h1>
-            <div class="form">
-              <div class="form-group">
-                <label for="name">Full Name</label>
-                <input type="text" id="name" v-model="account.name" placeholder="Full name">
-              </div>
-              <div class="form-group">
-                <label for="email">Email Address</label>
-                <input type="email" id="email" v-model="account.email" placeholder="Email address">
-              </div>
-              <div class="form-group">
-                <label for="phone">Phone Number</label>
-                <input type="text" id="phone" v-model="account.phone" placeholder="Phone number">
-              </div>
-              <div class="form-group">
-                <label for="address">Address</label>
-                <input type="text" id="address" v-model="account.address" placeholder="Shipping address">
-              </div>
-            </div>
-            <button @click="updateAccount" class="btn-update">Update Account</button>
-          </div>
-  
-          <!-- Right Section: Order History -->
-          <div class="order-history">
-            <h1>Order History</h1>
-            <div class="order-list">
-              <div v-if="orders.length === 0" class="no-orders">No orders found.</div>
-              <div v-else>
-                <div v-for="order in orders" :key="order.id" class="order-card">
-                  <div class="order-details">
-                    <p><strong>Order #:</strong> {{ order.id }}</p>
-                    <p><strong>Date:</strong> {{ order.date }}</p>
-                    <p><strong>Total:</strong> {{ order.total }}$</p>
-                    <p><strong>Status:</strong> {{ order.status }}</p>
-                  </div>
-                  <button @click="viewOrderDetails(order)" class="btn-view">View Details</button>
+  <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+  <div>
+    <!-- Header Section -->
+    <header>
+      <nav class="navbar">
+        <div class="logo">
+          <h2>GameShop</h2>
+        </div>
+        <div class="navmenu">
+        </div>
+          <div class="user-options">
+            <div class="dropdown">
+              <button class="dropbtn"><img src="../assets/account.png" class="account-img"></button>
+              <div class="nav-buttons">                    
+                    <button @click="goToCustomerMainPage">Home</button>
+                    <button @click="goToCustomerOrders">Orders</button>
+                    <button @click="logout">Sign out</button>
                 </div>
-              </div>
             </div>
+            <button @click="goToCustomerWishlist"><img src="../assets/White-Heart.png" alt="WishList" class="wishlist-img" @click="goToCustomerWishlist"></button>
+            <button @click="goToCart"><img src="../assets/pngaaa.com-5034351.png" alt="Cart" class="cart-img" @click="goToCustomerCart"></button>
           </div>
-  
-          <!-- Left Section: Saved Payments -->
-          <div class="saved-payments">
-            <h1>Saved Payments</h1>
-            <div class="payment-list">
-              <div v-for="payment in payments" :key="payment.cardNumber" class="payment-card">
-                <p>Card: **** **** **** {{ payment.cardNumber.slice(-4) }}</p>
-                <button @click="removePayment(payment)" class="btn-remove">Remove</button>
-              </div>
-            </div>
-  
-            <!-- Add New Payment Section -->
-            <h2>Add New Payment</h2>
-            <div class="payment-form">
-              <div class="form-group">
-                <label for="cardNumber">Card Number</label>
-                <input type="text" id="cardNumber" v-model="newPayment.cardNumber" placeholder="Enter card number" />
-              </div>
-              <div class="form-group">
-                <label for="expiryDate">Expiry Date</label>
-                <input type="month" id="expiryDate" v-model="newPayment.expiryDate" placeholder="MM/YY" />
-              </div>
-              <div class="form-group">
-                <label for="cardHolder">Cardholder Name</label>
-                <input type="text" id="cardHolder" v-model="newPayment.cardHolder" placeholder="Cardholder Name" />
-              </div>
-              <div class="form-group">
-                <label for="cvc">CVC</label>
-                <input type="text" id="cvc" v-model="newPayment.cvc" placeholder="CVC" />
-              </div>
-              <button @click="addPayment" class="btn-add-payment">Add Payment</button>
-            </div>
+      </nav>
+    </header>
+
+    <!-- Account Info Section -->
+    <div class="account-page">
+      <div class="account-info">
+        <h1>Account Details</h1>
+        <div class="form">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" v-model="account.username" />
+          </div>
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" v-model="account.email" />
+          </div>
+          <div class="form-group">
+            <label for="phone">Phone Number</label>
+            <input type="text" id="phone" v-model="account.phone" />
+          </div>
+          <div class="form-group">
+            <label for="shippingAddress">Address</label>
+            <input type="text" id="shippingAddress" v-model="account.shippingAddress" />
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" v-model="account.password" />
           </div>
         </div>
+        <button @click="updateAccount" class="btn-update">
+          Update Account
+        </button>
       </div>
     </div>
-  </template>
-  
-  <script>
+  </div>
+</template>
+
+<script>
+import axios from "axios";
+import { RouterLink } from "vue-router";
+
 export default {
+  props: ['customerId', 'loggedIn'],
   data() {
     return {
+      customerID: 0,
       account: {
-        name: "John Doe",
-        email: "john.doe@example.com",
-        phone: "123-456-7890",
-        address: "123 Main St, City, Country",
-      },
-      orders: [
-        {
-          id: 101,
-          date: "2024-11-25",
-          total: 129.99,
-          status: "Delivered",
-        },
-        {
-          id: 102,
-          date: "2024-11-20",
-          total: 59.99,
-          status: "Shipped",
-        },
-      ],
-      payments: [
-        { cardNumber: "1234 5678 9012 3456" },
-        { cardNumber: "5678 1234 8765 4321" },
-      ],
-      newPayment: {
-        cardNumber: "",
-        expirationDate: "",
-        cvc: ""
+        username: "",
+        email: "",
+        phone: "",
+        shippingAddress: "",
+        password: "",
       },
     };
   },
   methods: {
-    updateAccount() {
-      alert("Account details updated successfully!");
+    isLoggedIn(){
+        return this.loggedIn;
     },
-    viewOrderDetails(order) {
-      alert(`Viewing details for Order #${order.id}`);
-    },
-    removePayment(payment) {
-      const index = this.payments.indexOf(payment);
-      if (index !== -1) {
-        this.payments.splice(index, 1);
+    async fetchAccountInfo() {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/customers/${this.customerID}`
+        );
+        this.account = response.data;
+        debugger
+        this.account.shippingAddress = response.data.shippingAddress;
+      } catch (error) {
+        console.error("Failed to fetch account details:", error);
+        alert("Failed to load account details. Please try again later.");
       }
     },
-    addPayment() {
-      if (
-        this.newPayment.cardNumber &&
-        this.newPayment.expirationDate &&
-        this.newPayment.cvc
-      ) {
-        this.payments.push({
-          cardNumber: this.newPayment.cardNumber,
-          expirationDate: this.newPayment.expirationDate,
-          cvc: this.newPayment.cvc,
+    async updateAccount() {
+      try {
+        await axios.put(`http://localhost:8080/customers/${this.customerID}`, this.account);
+        alert("Account updated successfully!");
+        await this.fetchAccountInfo();
+      } catch (error) {
+        console.error("Failed to update account:", error);
+        alert("Failed to update account. Please try again later.");
+      }
+    },
+    async goToCustomerHome() { //nav method
+      this.$router.push({
+          name: 'customer-homepage',
+          params: {
+            employeeId: this.customerID,
+            loggedIn: true
+          }
+        });        
+    },
+    async goToCustomerMainPage(){ //nav method
+        this.$router.push({
+          name: 'customer-homepage',
+          params: {
+            customerId: this.customerId,
+            loggedIn: true
+          }  
         });
-        // Reset the form after adding the payment
-        this.newPayment.cardNumber = "";
-        this.newPayment.expirationDate = "";
-        this.newPayment.cvc = "";
-        alert("Payment method added successfully!");
-      } else {
-        alert("Please fill in all fields.");
-      }
+    },
+    async goToCart() { //nav method
+      this.$router.push({
+          name: 'customer-cart',
+          params: {
+            customerId: this.customerId,
+            loggedIn: true
+          }         
+        }); 
+    },
+    async goToCustomerWishlist() { //nav method
+      this.$router.push({
+          name: 'customer-wishlist',
+          params: {
+            customerId: this.customerId,
+            loggedIn: true
+          }
+          
+        });
+    }, 
+    async goToCustomerOrders() { //nav method
+      this.$router.push({
+          name: 'customer-orders',
+          params: {
+            customerId: this.customerId,
+            loggedIn: true
+          }
+        }); 
+    },   
+    logout() {
+        this.$router.push('/'); //go back to homepage
     },
   },
+  created() {
+      if (!this.isLoggedIn()) { //ensure user is a custoner and is logged in
+        this.$router.push({ name: "sign in" });
+        alert("Please log in before accessing this page.");
+      } 
+      else {
+        this.customerID = this.customerId; 
+        this.fetchAccountInfo();
+      }   
+    },
 };
 </script>
 
-  
-  <style scoped>
-  /* General Styles */
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: "poppins";
-  }
-  
-    .navbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      text-align: center;
-      width: 100%;
-      height: 80px;
-      background: #1033a4;
-  }
+<style scoped>
+/* General Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "poppins";
+}
 
-  .navbar h2 {
-      color: #ffffff;
-      font-size: 25px;
-      font-weight: 500;
-      padding: 20px 20px;
-  }
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  overflow-x: hidden; 
+}
 
-  .navmenu {
-      height: 50px;
-      line-height: 60px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-  }
+/* Navbar Styles */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 80px;
+  background: #1033a4;
+  padding: 0 20px;
+}
 
-  .search-box .search {
-      width: 500px;
-      padding: 8px 8px;
-      border-radius: 50px;
-      font-size: 16px;
-  }
+.navbar h2 {
+  color: #fff;
+  font-size: 25px;
+}
 
-  .search-box {
-      margin-right: 200px;
-  }
+.navmenu {
+  display: flex;
+  align-items: center;
+}
 
-  .navmenu .search-box i {
-      color: #ffffff;
-      position: relative;
-      right: 40px;
-      top: 2px;
-      background-color: #1140d9;
-      padding: 8px;
-      border-radius: 50px;
-  }
-  
-  .navmenu img {
-    width: 40px;
-    margin-left: 20px;
-  }
-  
-  .account-section {
-    display: grid;
-    background-color: #f9f9f9;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Ensure responsive layout */
-    gap: 40px;
-    max-width: 1400px; /* Max width still applies */
-    height: auto; /* Ensure height adjusts dynamically */
-    box-sizing: border-box; /* Prevents padding from causing overflow */
-  }
-  
-  /* Account Info Styles */
-  .account-info,
-  .order-history,
-  .saved-payments {
-    background: #fff;
-    padding: 20px;
-    border-radius: 20px;
-    color: black;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-  }
-  
-  .account-info h1,
-  .order-history h1,
-  .saved-payments h1 {
-    text-align: center;
-    color: #1033a4;
-  }
+.search-box {
+  margin-right: 20px;
+  position: relative;
+}
 
-  .order-details {
-    color: black;
-  }
-  
-  /* Account Form */
-  .form {
-    margin-top: 20px;
-  }
-  
-  .form-group {
-    margin-bottom: 15px;
-  }
-  
-  .form-group label {
-    display: block;
-    margin-bottom: 5px;
-    color: #1033a4;
-  }
-  
-  .form-group input {
-    width: 100%;
-    padding: 10px;
-    border-radius: 20px;
-    border: 1px solid #ccc;
-  }
-  
-  .btn-update {
-    width: 100%;
-    padding: 10px;
-    border-radius: 20px;
-    background: #1033a4;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-    margin-top: 10px;
-  }
+.search-box .search {
+  width: 300px;
+  padding: 8px;
+  border-radius: 20px;
+  border: none;
+}
 
-  .btn-update:hover {
-    background: #4f73f6;
-    color: #fff;
-  }
+.search-box .bx-search {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #1140d9;
+  color: #fff;
+  padding: 8px;
+  border-radius: 50%;
+}
 
-  /* Order History */
-  .order-list {
-    margin-top: 20px;
-  }
+.navmenu img {
+  width: 40px;
+  margin-left: 20px;
+}
 
-  .order-card {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    border-radius: 20px;
-    border: 1px solid #ccc;
-    margin-bottom: 10px;
-    background: #f9f9f9;
-  }
+.account-img {
+  padding-top: -2px;
 
-  .btn-view {
-    padding: 8px 20px;
-    background: #1033a4;
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-  }
+}
 
-  .btn-view:hover {
-    background: #4f73f6;
-    color: #fff;
-  }
+.user-options {
+  display: flex;
+  /* Aligns child elements (buttons) horizontally */
 
-  /* Saved Payments */
-  .payment-list {
-    margin-top: 20px;
-  }
+  /* Adds spacing between buttons (adjust as needed) */
+  align-items: center;
+  /* Vertically aligns buttons if needed */
+}
 
-  .payment-card {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    border-radius: 20px;
-    border: 1px solid #ccc;
-    margin-bottom: 10px;
-    background: #f9f9f9;
-    color: black;
-  }
+.user-options button {
+  background: none;
+  /* Remove default button background */
+  border: none;
+  /* Remove default button border */
+  padding: 0;
+  /* Remove padding around buttons */
+  cursor: pointer;
+}
 
-  .btn-remove {
-    padding: 8px 20px;
-    background: #c9302c;
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-  }
+.user-options img {
+  margin-top: 15px;
+  margin-right: 10px;
+  align-items: center;
+  width: 40px;
+}
 
-  .btn-remove:hover {
-    background: #d9534f;
-    color: #fff;
-  }
+.dropdown .nav-buttons {
+  display: none;
+  /* Initially hide dropdown content */
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0.906);
+  background: #ffff;
 
-  /* Add Payment Form */
-  .payment-form {
-    margin-top: 20px;
-  }
+  color: #ffff;
+  z-index: 1;
+}
 
-  .payment-form .form-group {
-    margin-bottom: 15px;
-  }
+.dropdown:hover .nav-buttons {
+  display: block;
+  /* Show dropdown on hover */
+  border: solid;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
 
-  .payment-form label {
-    display: block;
-    margin-bottom: 5px;
-    color: #1033a4;
-  }
+.nav-buttons {
+  display: flex;
+  align-items: center;
+}
 
-  .payment-form input {
-    width: 100%;
-    padding: 10px;
-    border-radius: 20px;
-    border: 1px solid #ccc;
-  }
+.nav-buttons button {
+font-size: 1rem;
+color: #1033a4;
+border: none;
+padding: 0.5rem 1rem;
+border-radius: 5px;
+cursor: pointer;
+text-align: center;
+/* Centers the text horizontally */
+height: 50px;
+/* Set a fixed height to ensure vertical centering */
+display: flex;
+justify-content: center;
+align-items: center;
+/* Centers the button text vertically */
+}
 
-  .btn-add-payment {
-    width: 100%;
-    padding: 10px;
-    border-radius: 20px;
-    background: #1033a4;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-    margin-top: 10px;
-  }
+.nav-buttons button img {
+padding-bottom: 15px;
+padding-left: 10px;
 
-  .btn-add-payment:hover {
-    background: #4f73f6;
-    color: #fff;
-  }
+}
+
+.nav-buttons button:hover {
+background-color: #eff2f1;
+}
+
+.nav-buttons {
+padding: 10px;
+}
+
+/* Account Info Page Styles */
+.account-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; 
+  width: 100%; 
+  padding: 20px; 
+  overflow-x: hidden; 
+  background-color: #f9f9f9;
+}
+
+.account-info {
+  max-width: 600px; 
+  width: 100%; 
+  margin: auto; 
+  padding: 20px;
+  border-radius: 20px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+}
+
+.account-info h1 {
+  text-align: center;
+  color: #1033a4;
+}
+
+.form {
+  margin-top: 20px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 5px;
+  color: #1033a4;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+}
+
+.btn-update {
+  width: 100%;
+  padding: 10px;
+  border-radius: 20px;
+  background: #49d8b9;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-top: 10px;
+}
+
+.btn-update:hover {
+  background: #1033a4;
+  color: #fff;
+}
 </style>

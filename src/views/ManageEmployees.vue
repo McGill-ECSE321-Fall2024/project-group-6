@@ -106,6 +106,11 @@ export default {
       try {
         const response = await axios.get("http://localhost:8080/employees");
         this.employees = response.data["employees"];
+        for (let i = 0; i < this.employees.length; i++) {
+          if (this.employees[i].username === "deactivated") {
+            this.employees.splice(i, 1);  // Remove the employee at index i
+          }
+        }
         console.log(this.employees);
       } catch (error) {
         console.error("Error fetching employees:", error);
@@ -146,11 +151,6 @@ export default {
       try {
         await axios.put(`http://localhost:8080/employees/deactivate/${id}`);
         alert("Changes saved successfully!");
-        for (let i = 0; i < this.employees.length; i++) {
-          if (this.employees[i].username === "deactivated") {
-            this.employees.splice(i, 1);  // Remove the employee at index i
-          }
-        }
         this.fetchEmployees();
       } catch (error) {
         console.error("Error deactivating employee:", error);
@@ -215,6 +215,10 @@ export default {
   color: #000000;
   padding: 0;
   margin: 0;
+}
+
+.container {
+  height: 100vh;
 }
 
 /* Navbar */
@@ -319,35 +323,38 @@ export default {
 }
 
 .add-employee h2 {
+  font-weight: bold;
   text-align: center;
 }
 
 .homepage-btn {
-  display: flex;
-  background-color: #22bae0;
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  font-size: 0.9rem;
+    display: flex;
+    background-color: #22bae0;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+   
 }
 
 .homepage-btn:hover {
-  background-color: #48bbd8;
-
-}
-
-.logout-btn:hover {
-  background-color: #fa8c82;
+  cursor: pointer;
+  background-color: #77c3d5;
 }
 
 .logout-btn {
-  background-color: #ff6f61;
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  font-size: 0.9rem;
+    background-color: #ff6f61;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+}
+
+.logout-btn:hover {
+  cursor: pointer;
+  background-color: #fa978e;
 }
 
 .input {
@@ -361,6 +368,7 @@ export default {
 .form .btn {
   width: 100%;
   text-align: center;
+  font-size: 1rem;
 }
 
 /* Employee List Section */

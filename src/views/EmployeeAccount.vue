@@ -12,9 +12,7 @@
          
         </div>
         <div class="nav-buttons">
-          <button @click="goToEmployeeHome" >HomePage</button>
-        </div>
-        <div class="nav-buttons">
+          <button @click="goToEmployeeHome" class="homepage-btn">HomePage</button>
           <button @click="logout" class="logout-btn">Logout</button>
         </div>
       </header>
@@ -189,39 +187,50 @@
   
   .nav-buttons {
     display: flex;
-    align-items: center;
+    justify-content: space-between;
+    gap: 1rem; 
+}
+
+  .homepage-btn {
+      display: flex;
+      background-color: #22bae0;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
   }
-  
-  .nav-buttons button {
-    background-color: white;
-    color: #0056b3;
+
+  .homepage-btn:hover {
+    cursor: pointer;
+    background-color: #77c3d5;
+  }
+
+  .logout-btn {
+    background-color: #ff6f61;
+    color: white;
     border: none;
     padding: 0.5rem 1rem;
-    border-radius: 5px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+  }
+
+  .logout-btn:hover {
     cursor: pointer;
-    text-align: center;  /* Centers the text horizontally */
-    height: 50px;  /* Set a fixed height to ensure vertical centering */
-    display: flex;
-    justify-content: center;
-    align-items: center;  /* Centers the button text vertically */
+    background-color: #fa978e;
   }
-  
-  .nav-buttons button:hover {
-    background-color: #eff2f1;
-  }
-  .nav-buttons{
-    padding: 10px;
-  }
-  .logout-btn {
-    background-color: #0056b3;
-  }
+
   
   /* Form styles */
   .content {
     padding: 2rem;
+    height: 100vh;
   }
   
-  h3 {
+  .content h3 {
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.5rem;
     margin-bottom: 1rem;
   }
   
@@ -236,20 +245,22 @@
   
   .form-group label {
     font-size: 1rem;
-    padding: 0 2rem;
-    margin-bottom: 0.8rem;
+    display: block;
+    font-weight: bold;
   }
   
   .form-group input {
     padding: 0.5rem;
+    width: 100%;
     font-size: 1rem;
     border: 1px solid #ccc;
     border-radius: 5px;
-  
+
   }
   
   .save-btn {
     margin-top: 2rem;
+    font-size: 1rem;
     padding: 0.8rem;
     background-color: #28a745;
     color: white;

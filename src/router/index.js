@@ -12,6 +12,9 @@ import ManagerGameView from '@/views/ManagerGameView.vue'
 import ManagerHomePage from '@/views/ManagerHomePage.vue'
 import ManageEmployees from '@/views/ManageEmployees.vue'
 import CustomerHomePage from '@/views/CustomerHomePage.vue'
+import CustomerGamePage from '@/views/CustomerGamePage.vue'
+import CustomerOrders from '@/views/CustomerOrders.vue'
+import GamePage from '@/views/GamePage.vue'
 import Checkout from '@/views/Checkout.vue'
 import Command from '@/views/Command.vue'
 
@@ -57,10 +60,36 @@ const router = createRouter({
       
     },
     {
-      path: '/customerAccount',
+      path: '/customerAccount/:customerId/:loggedIn',
       name: 'customer-account',
       component: CustomerAccount,
+      props:true,
+      
+      beforeEnter: (to, from, next) => {
+        if (localStorage.getItem('loggedIn') === 'true') {
+          next();
+        } else {
+          alert('Please sign in before accessing this page.');
+          next({ name: 'sign in' });
+        }
+      }
     },
+
+    {
+      path: '/customerGamePage/:customerId/:loggedIn/:gameId',
+      name: 'customer-gamepage',
+      component: CustomerGamePage,
+      props: true,
+      beforeEnter: (to, from, next) => {
+        if (localStorage.getItem('loggedIn') === 'true') {
+          next();
+        } else {
+          alert('Please sign in before accessing this page.');
+          next({ name: 'sign in' });
+        }
+      }  
+    },
+
       {
         path: '/employeeHomePage/:employeeId/:loggedIn',
         name: 'employee-homepage',
@@ -90,6 +119,29 @@ const router = createRouter({
         }
           
       },
+
+      {
+        path: '/customerOrders/:customerId/:loggedIn',
+        name: 'customer-orders',
+        component: CustomerOrders,
+        props: true,
+        beforeEnter: (to, from, next) => {
+          if (localStorage.getItem('loggedIn') === 'true') {
+            next();
+          } else {
+            alert('Please sign in before accessing this page.');
+            next({ name: 'sign in' });
+          }
+        }
+          
+      },
+
+      {
+        path: '/gamePage/:gameId',
+        name: 'gamepage',
+        component: GamePage,
+      },
+
       {
         path: '/managerHomePage/:managerId/:loggedIn',
         name: 'manager-homepage',

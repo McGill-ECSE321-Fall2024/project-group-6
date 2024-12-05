@@ -42,10 +42,10 @@
     <h3>Manage Games</h3>
     <form id="add-game-form">
         <label for="game-name">Name:</label>
-        <input type="String" id="game-name" name="name" placeholder="Gamey Game" v-model="gameName" required>
+        <input type="String" id="game-name" name="name" placeholder="Name" v-model="gameName" required>
 
         <label for="game-description">Description:</label>
-        <textarea type="String" id="game-description" name="description" placeholder="Write something attractive" v-model="gameDescription"  required></textarea>
+        <textarea type="String" id="game-description" name="description" placeholder="Description" v-model="gameDescription"  required></textarea>
 
         <label for="game-price">Price:</label>
         <input type="float" id="game-price" name="price" placeholder="20.0" v-model="gamePrice" required>
@@ -65,21 +65,24 @@
     </aside>
     </aside>
 
-      <main class="catalog">
-        <h3 id="catalog-title">Game Inventory</h3>
-        <div v-if="games.length === 0">No games found</div>
-        <div v-for="game in games":key="game.gameId"class="game-card" >
-          <img :src="game.photoURL" alt="Game Image" class="game-image" />
-          <div class="game-info">
-            <h3>{{ game.name }}</h3>
-            <p class="game-price"><strong>Price:</strong> ${{ game.price }}</p>
-            <p class="game-description"><strong>Description:</strong> {{ game.description }}</p>
-            <p class="game-stock"><strong>Stock:</strong> {{ game.stockQuantity }} left</p>
-            <button class="btn-danger" @click="viewGameDetails(game.gameId)">Edit</button>
-            <button v-if="game.toBeRemoved" class="btn-dangers" @click="deleteGame(game.gameId)">Delete</button>
-          </div>
+    <main class="catalog">
+      <div v-if="games.length === 0">No games found</div>
+      <div v-for="game in games" :key="game.gameId" class="game-card">
+        <img :src="game.photoURL" alt="Game Image" class="game-image" @click="viewGameDetails"/>
+        <div class="game-info" >
+          <h3>{{ game.name }}</h3>
+          <div class="price-box">
+          <p v-if="game.promotion > 0" class="game-price promo">
+            <strong>Price:</strong> ${{ game.price }} 
+            <span class="promo-badge">{{ game.promotion }}% off!</span>
+          </p>
+          <p v-else class="game-price">
+            <strong>Price:</strong> ${{ game.price }}
+          </p>
         </div>
-      </main>
+        </div>
+      </div>
+    </main>
     </div>
   </template>
   
@@ -235,7 +238,7 @@ props: ['loggedIn', 'managerId'],
     },
 
     logout() {
-      this.$router.push('/SignIn');
+      this.$router.push('/');
     },
     async createGame(){
         var check="false";
@@ -367,13 +370,30 @@ props: ['loggedIn', 'managerId'],
     align-items: right; 
 }
 
+.form-group label {
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.add-category {
+  background-color: #1140d9;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+  font-size: 1rem;
+  transition: background-color 0.3s;
+}
+
 /* Container */
 .container {
     display: flex;
     justify-content: space-between;
     background-color: #ffff;
     color: #000;
-    height: 100%;
+    height: 100vh;
     padding: 20px;
 }
 
@@ -392,45 +412,104 @@ props: ['loggedIn', 'managerId'],
     margin-bottom: 1rem;
 }
 
-/* Catalog */
 .catalog {
-    flex: 1;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  flex: 9;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  padding-left: 2rem;
 }
 
-/* Game Card */
 .game-card {
-    background: #f9f9f9;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 1rem;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 300px;
+  height: 450px; /* Ensure consistent height for all cards */
+  text-align: center;
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.game-card h3 {
-    margin: 0;
+.game-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+.promo {
+  position: relative;
+}
+
+.promo-badge {
+  display: inline-block;
+  margin-left: 10px;
+  padding: 3px 8px;
+  background-color: rgba(236, 137, 137, 0.999); /* Bright orange to catch attention */
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: bold;
+  border-radius: 5px;
+  text-transform: uppercase;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.9;
+  }
+}
+
+.game-button-container {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.game-button-container .btn {
+  background: #88b9df;
+}
+
+.game-button-container .btn:hover {
+  color: #88b9df;
+  background: #ffffff;
 }
 
 .game-image {
-    max-width: 100%;
-    height: auto;
-    margin: 0.5rem 0;
+  max-width: 100%;
+  height: 60%;
+  margin: 0.5rem ;
 }
 
 .game-info {
-    text-align: center;
+  position: absolute;
+  bottom: 10px; /* Ensure info starts from the bottom */
+  left: 0;
+  right: 0;
+  padding: 15px;
+  background-color: #fff; /* Optional: Add a subtle background */
+}
+
+.game-info h3 {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 10px;
 }
 
 .game-price {
-    color: #e60000;
-    font-weight: bold;
+  font-size: 1rem;
+  margin: 0.5em 0;
+  color: #333;
+}
+
+.game-price strong {
+  font-weight: bold;
 }
 
 .game-description {
@@ -445,10 +524,6 @@ props: ['loggedIn', 'managerId'],
 /* Specific Styles */
 .account-img {
     padding-top: -2px;
-}
-
-#catalog-title {
-    padding-bottom: 20px;
 }
 
 .nav-buttons {
@@ -503,27 +578,14 @@ props: ['loggedIn', 'managerId'],
 }
 
 .adjust-category {
+  align-items: center;
     display: flex;
     flex-direction: column;
     gap: 1rem;
 }
 
-.adjust-category button {
-    padding: 0.5rem;
-    font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    color: black;
-    background-color: white;
-    cursor: pointer;
-}
-
 .adjust-category button:hover {
-    background-color: lightgrey;
-}
-
-.adjust-category button:active {
-    background-color: grey;
+  background-color: #0d369b;
 }
 
 .manage-employees-button {
@@ -533,8 +595,6 @@ props: ['loggedIn', 'managerId'],
     font-size: 1rem;
     border: 1px solid #ccc;
     border-radius: 5px;
-    color: black;
-    background-color: white;
     cursor: pointer;
     text-align: center;
 }
@@ -549,6 +609,7 @@ props: ['loggedIn', 'managerId'],
 }
 
 .game-management-box h3 {
+  font-weight: bold;
     text-align: center;
     margin-bottom: 1rem;
 }
@@ -586,6 +647,7 @@ props: ['loggedIn', 'managerId'],
 .game-management-box button:hover {
     background-color: #0d369b;
 }
+
 .button-container {
     display: flex;
     justify-content: space-between;
@@ -600,12 +662,11 @@ props: ['loggedIn', 'managerId'],
     padding: 0.5rem 1rem;
     border-radius: 20px;
     font-size: 0.9rem;
-   
 }
 
-.manage-btn button:hover {
+.manage-btn:hover {
   cursor: pointer;
-  background-color: #48bcd9;
+  background-color: #77c3d5;
 }
 
 .logout-btn {
@@ -616,6 +677,12 @@ props: ['loggedIn', 'managerId'],
     border-radius: 20px;
     font-size: 0.9rem;
 }
+
+.logout-btn:hover {
+  cursor: pointer;
+  background-color: #fa978e;
+}
+
 .btn-dangers {
     margin-left: 5px;
     background-color: red; /* Yellow background */
