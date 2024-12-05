@@ -83,9 +83,9 @@ Table 2 : Roles of each team member Deliverable 2: <br/>
 Table 3 : Roles of each team member Deliverable 3: <br/>
 | **Name**    | **Role**                                            | **Number of Hours** |
 |-------------|-----------------------------------------------------|---------------------|
-| Laurence    | Manager Dashboard, Game Page and Manage employees (Frontend/Backend)   |                   |
-|             | Update ReadMe file                                                     |                   |
-|             | Presentation slides                                                    |                  |
+| Laurence    | Manager Dashboard, Game Page and Manage employees (Frontend/Backend)   |         8          |
+|             | Update ReadMe file                                                     |         1         |
+|             | Presentation slides                                                    |         1.5        |
 | Annabelle   | Customer Game Page and Account (Frontend/Backend)                      |         8         |
 |             | Presentation slides                                                    |         1          |
 |             | Manager Game Page (Frontend/Backend)                                   |         1.5          |
