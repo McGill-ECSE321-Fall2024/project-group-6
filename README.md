@@ -100,13 +100,13 @@ Table 3 : Roles of each team member Deliverable 3: <br/>
 |             | Ensured consistent formatting for all pages  (buttons, alerts)             |        3          |
 |             | Demo                                                                       |         2        |
 |             |
-| Joseph      | Build system and CI specification                                         |                   |
+| Joseph      | Build system and CI specification                                         |        0.5           |
 |             | Sign Up, Sign in, and Home Page                                            |       8          |
 |             | Employee Dashboard, Account and Game Page                                   |        9          |
 |             | Customer Dashboard and Account (Frontend/Backend)                          |        9          |
 |             | Manager HomePage, Manage Employee & Manager Game View                      |      9         |
 |             | Demo                                                                        |         5         |
-|             | Testing of the application                                                  |                  |
+|             | Testing of the application                                                  |         4         |
 |             | Backend Setup                                                                |       7          |
 | Mario       | Customer Dashboard and Account (Frontend/Backend)                            |        9          |
 |             | Manager "Manage employee page" and Game page (Frontend/Backend)             |         7         |
