@@ -1,6 +1,8 @@
 package ca.mcgill.ecse321.gameshop.dto;
 
 import ca.mcgill.ecse321.gameshop.model.Review;
+import ca.mcgill.ecse321.gameshop.model.Customer;
+import ca.mcgill.ecse321.gameshop.model.Game;
 
 public class ReviewResponseDto {
     // Review attributes
@@ -9,7 +11,8 @@ public class ReviewResponseDto {
     private int amountOfLikes;
     private int reviewId;
     private String reply;
-    private String customer;
+    private Customer customer;
+    private Game game;
 
     public ReviewResponseDto() {
     }
@@ -20,7 +23,8 @@ public class ReviewResponseDto {
         this.amountOfLikes = review.getAmountOfLikes();
         this.reviewId = review.getReviewId();
         this.reply = review.getReply();
-        this.customer=review.getCustomer().getPerson().getUsername();
+        this.customer = review.getCustomer();
+        this.game = review.getGame();
     }
 
     public Review.StarRating getRating() {
@@ -42,8 +46,9 @@ public class ReviewResponseDto {
     public String getReply() {
         return reply;
     }
-    public String getCustomer() {
-        return customer;
-    }
+
+    public Customer getCustomer() { return customer; }
+
+    public Game getGame() { return game; }
 }
 

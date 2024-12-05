@@ -3,14 +3,16 @@ package ca.mcgill.ecse321.gameshop.service;
  * @author Joseph and Marine
  */
 
-import ca.mcgill.ecse321.gameshop.exception.GameShopException;
-import ca.mcgill.ecse321.gameshop.model.Customer;
-import ca.mcgill.ecse321.gameshop.model.Game;
-import ca.mcgill.ecse321.gameshop.model.Payment;
-import ca.mcgill.ecse321.gameshop.model.Person;
-import ca.mcgill.ecse321.gameshop.repository.CustomerRepository;
-import ca.mcgill.ecse321.gameshop.repository.PaymentRepository;
-import ca.mcgill.ecse321.gameshop.repository.PersonRepository;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -20,13 +22,9 @@ import org.mockito.quality.Strictness;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import ca.mcgill.ecse321.gameshop.exception.*;
+import ca.mcgill.ecse321.gameshop.model.*;
+import ca.mcgill.ecse321.gameshop.repository.*;
 
 @SpringBootTest
 @MockitoSettings(strictness = Strictness.STRICT_STUBS)

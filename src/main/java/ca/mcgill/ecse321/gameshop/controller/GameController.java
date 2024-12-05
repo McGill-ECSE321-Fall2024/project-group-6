@@ -1,13 +1,13 @@
 package ca.mcgill.ecse321.gameshop.controller;
 
 
-import ca.mcgill.ecse321.gameshop.dto.GameListDto;
-import ca.mcgill.ecse321.gameshop.dto.GameRequestDto;
-import ca.mcgill.ecse321.gameshop.dto.GameResponseDto;
-import ca.mcgill.ecse321.gameshop.model.Game;
+import ca.mcgill.ecse321.gameshop.dto.*;
+import ca.mcgill.ecse321.gameshop.exception.GameShopException;
+import ca.mcgill.ecse321.gameshop.model.*;
 import ca.mcgill.ecse321.gameshop.repository.CategoryRepository;
-import ca.mcgill.ecse321.gameshop.service.GameService;
+import ca.mcgill.ecse321.gameshop.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -76,5 +76,19 @@ public class GameController {
         gameService.deleteGame(id);
     }
 
+    /**
+     * Controller method to get all the reviews  of a Game
+     * @param id
+     * @return
+     */
+    @CrossOrigin(origins = "http://localhost:8087")
+    @GetMapping("/games/{id}/reviews")
+    public ReviewListDto getAllGameReviews(@PathVariable int id) {
+        List<ReviewResponseDto> reviews = new ArrayList<>();
+        for (Review r: gameService.getGameReviews(id)) {
+            reviews.add(new ReviewResponseDto(r));
+        }
+        return new ReviewListDto(reviews);
+    }
 
 }

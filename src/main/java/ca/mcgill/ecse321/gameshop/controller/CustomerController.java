@@ -9,6 +9,7 @@ import ca.mcgill.ecse321.gameshop.model.Game;
 import ca.mcgill.ecse321.gameshop.model.Payment;
 import ca.mcgill.ecse321.gameshop.model.Person;
 import ca.mcgill.ecse321.gameshop.repository.GameRepository;
+import ca.mcgill.ecse321.gameshop.repository.PaymentRepository;
 import ca.mcgill.ecse321.gameshop.service.CustomerService;
 import ca.mcgill.ecse321.gameshop.service.GameService;
 import ca.mcgill.ecse321.gameshop.service.PaymentService;

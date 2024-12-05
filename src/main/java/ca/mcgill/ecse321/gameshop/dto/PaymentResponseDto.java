@@ -10,7 +10,6 @@ public class PaymentResponseDto {
     // Payment attributes
     private String billingAddress;
     private int paymentId;
-    private int number;
     private Customer customer;
 
     public PaymentResponseDto() {
@@ -20,13 +19,11 @@ public class PaymentResponseDto {
         this.billingAddress = payment.getBillingAddress();
         this.paymentId = payment.getPaymentId();
         this.customer=payment.getCustomer();
-        this.number= (int) Math.abs(payment.getCreditCardNb() % 10000);
+
     }
 
     //GETTERS
-    public int getPaymentNumber() {
-        return number;
-    }
+
     public String getBillingAddress() {
         return billingAddress;
     }
@@ -34,7 +31,6 @@ public class PaymentResponseDto {
     public int getPaymentId() {
         return paymentId;
     }
-
 
 
 }

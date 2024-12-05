@@ -2,6 +2,7 @@ package ca.mcgill.ecse321.gameshop.dto;
 
 import ca.mcgill.ecse321.gameshop.model.Customer;
 import ca.mcgill.ecse321.gameshop.model.Game;
+import ca.mcgill.ecse321.gameshop.model.Command;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,10 +13,11 @@ public class CustomerResponseDto {
     private String email;
     private String phone;
     private int customerId;
-    private String password;
     private List<Game> wishlist=new ArrayList<>();
 
     private List<Game> cart=new ArrayList<>();
+    private String password;
+    private List<Command> commands =  new ArrayList<>();
 
     // Jackson needs a default constructor, but it doesn't need to be public
     @SuppressWarnings("unused")
@@ -31,6 +33,8 @@ public class CustomerResponseDto {
         this.cart=customer.getCart();
         this.wishlist=customer.getWishlist();
         this.password=customer.getPerson().getPassword();
+
+        //this.commands = customer.getCommands();
     }
 
     public String getShippingAddress() {
@@ -61,4 +65,5 @@ public class CustomerResponseDto {
     public String getPassword() {
         return password;
     }
+    //public List<Command> getCommands() { return commands; }
 }
