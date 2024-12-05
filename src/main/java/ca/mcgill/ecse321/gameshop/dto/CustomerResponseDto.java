@@ -64,12 +64,8 @@ public class CustomerResponseDto {
     public List <Game> getWishlist() {
         return wishlist;
     }
-<<<<<<< HEAD
-}
-=======
     public String getPassword() {
         return password;
     }
     //public List<Command> getCommands() { return commands; }
 }
->>>>>>> main
