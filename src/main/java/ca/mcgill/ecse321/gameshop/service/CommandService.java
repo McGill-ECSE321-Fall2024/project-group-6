@@ -34,6 +34,7 @@ public class CommandService {
         Customer customer =customerRepo.findCustomerByRoleId(customerID);
         for(Game g : customer.getCart()){
             total+=g.getPrice()*(1-g.getPromotion());
+
             g.setStockQuantity(g.getStockQuantity()-1);
         }
         Date today= Date.valueOf(LocalDate.now());

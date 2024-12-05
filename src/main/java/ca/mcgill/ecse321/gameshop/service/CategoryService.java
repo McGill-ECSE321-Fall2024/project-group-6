@@ -36,7 +36,8 @@ public class CategoryService {
         }
 
         Category c = new Category(name);
-        return repo.save(c);
+
+        return  repo.save(c);
     }
 
     /**

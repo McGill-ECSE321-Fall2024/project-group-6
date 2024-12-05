@@ -38,6 +38,7 @@ jacocoTestReport {
 	}
 }
 
+
 tasks.named('jacocoTestCoverageVerification') {
 	violationRules {
 		rule {
