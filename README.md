@@ -86,10 +86,10 @@ Table 3 : Roles of each team member Deliverable 3: <br/>
 | Laurence    | Manager Dashboard, Game Page and Manage employees (Frontend/Backend)   |                   |
 |             | Update ReadMe file                                                     |                   |
 |             | Presentation slides                                                    |                  |
-| Annabelle   | Customer Game Page and Account (Frontend/Backend)                      |                  |
-|             | Presentation slides                                                    |                   |
-|             | Manager Game Page (Frontend/Backend)                                   |                   |
-|             | Backend Setup                                                           |                   |
+| Annabelle   | Customer Game Page and Account (Frontend/Backend)                      |         8         |
+|             | Presentation slides                                                    |         1          |
+|             | Manager Game Page (Frontend/Backend)                                   |         1.5          |
+|             | Backend Setup                                                           |         5          |
 | Marine      | Employee Dashboard, Account and Game Page (Frontend)                    |         6        |
 |             | Meeting Minutes                                                           |       1        |
 |             | Key Decisions                                                            |         1         |
