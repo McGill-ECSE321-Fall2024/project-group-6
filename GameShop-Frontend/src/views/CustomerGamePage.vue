@@ -64,6 +64,9 @@
             <p><strong>{{ review.customer.person.username }}</strong> wrote:</p>
             <p class="comment-content">{{ review.comment }}</p>
           </div>
+          <div v-if="review.reply && review.reply.trim()" class="manager-reply">
+            <p><strong>GameShop's Reply:</strong> {{ review.reply }}</p>
+          </div>
           <p>Rating: {{ parseRating(review.rating) + 1 }}/5</p>
           <p>Likes: {{ review.amountOfLikes || 0 }}</p>
           <!-- Like Button -->
@@ -710,7 +713,17 @@ textarea {
   border: 1px solid #ccc;
   padding: 10px;
 }
+.manager-reply {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-left: 4px solid #4caf50;
+}
 
+.manager-reply p {
+    margin: 0;
+    font-size: 14px;
+}
 .btn-submit-review {
   padding: 10px 20px;
   font-size: 1rem;
