@@ -2,12 +2,11 @@ package ca.mcgill.ecse321.gameshop.controller;
 
 
 import ca.mcgill.ecse321.gameshop.dto.*;
-import ca.mcgill.ecse321.gameshop.exception.GameShopException;
-import ca.mcgill.ecse321.gameshop.model.*;
+import ca.mcgill.ecse321.gameshop.model.Game;
+import ca.mcgill.ecse321.gameshop.model.Review;
 import ca.mcgill.ecse321.gameshop.repository.CategoryRepository;
-import ca.mcgill.ecse321.gameshop.service.*;
+import ca.mcgill.ecse321.gameshop.service.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;

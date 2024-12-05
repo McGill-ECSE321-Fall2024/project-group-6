@@ -61,10 +61,10 @@
       <div class="comment-card" v-if="reviews.length > 0">
         <div v-for="review in reviews" :key="review.reviewId" class="review">
           <div class="comment-header">
-            <p><strong>{{ review.customer.person.username }}</strong> said:</p>
+            <p><strong>{{ review.customer.person.username }}</strong> wrote:</p>
             <p class="comment-content">{{ review.comment }}</p>
           </div>
-          <p>Rating: {{ review.rating }}</p>
+          <p>Rating: {{ parseRating(review.rating)+1 }}/5</p>
           <p>Likes: {{ review.amountOfLikes || 0 }}</p>
           <!-- Like Button -->
           <button v-if="!checkIfLiked(review.reviewId)" @click="likeReview(review)" class="btn-like">
@@ -87,15 +87,9 @@
       <h3>Add a Review</h3>
       <form @submit.prevent="submitReview">
         <div class="form-group">
-          <label for="rating">Rating (1-5):</label>
-          <select id="rating" name="rating">
-            <option value="1">1 ★</option>
-            <option value="2">2 ★★</option>
-            <option value="3">3 ★★★</option>
-            <option value="4">4 ★★★★</option>
-            <option value="5">5 ★★★★★</option>
-          </select>
-        </div>
+            <label for="rating">Rating (1-5):</label>
+            <input type="number" id="rating" v-model="newReview.rating" min="1" max="5" required />
+          </div>
         <div class="form-group">
           <label for="comment">Comment:</label>
           <textarea id="comment" v-model="newReview.comment" required></textarea>
@@ -157,9 +151,8 @@ export default {
         const response = await axios.get(`http://localhost:8080/games/${this.gameID}/reviews`);
         this.reviews = response.data.reviews || [];
 
-        // Initialize 'likedByCustomer' for each review
         this.reviews.forEach((review) => {
-          review.likedByCustomer = this.checkIfLiked(review);
+          review.likedByCustomer = this.checkIfLiked(review); //update the liked status
         });
       } catch (error) {
         console.error("Failed to fetch reviews:", error);
@@ -168,10 +161,10 @@ export default {
     },
 
     checkIfLiked(reviewId) {
-      return this.likedReviews.includes(reviewId);
+      return this.likedReviews.includes(reviewId); //allows to show different buttons depending on if review was liked by customer
     },
 
-    parseRating(rating) {
+    parseRating(rating) { //parses from starRating type to integer
       const ratingMap = {
         "OneStar": 0,
         "TwoStar": 1,
@@ -194,7 +187,7 @@ export default {
         if (review.customer.roleId == this.customerID) {
           alert("You cannot like your own review.")
         }
-        else {
+        else {//update the review by increasing number of likes by 1
           const response = await axios.put(`http://localhost:8080/review/${review.reviewId}`, payload);
           this.fetchReviews(); // Refresh the reviews list after updating
           this.likedReviews.push(review.reviewId);
@@ -208,7 +201,7 @@ export default {
     },
 
     async unlikeReview(review) {
-      try {
+      try { //update the review by decreasing number of likes by 1
         const payload = {
           rating: this.parseRating(review.rating),
           comment: review.comment,
@@ -238,6 +231,8 @@ export default {
     },
     async submitReview() {
       try {
+        debugger
+        this.newReview.rating = this.newReview.rating - 1;
         await axios.post(`http://localhost:8080/review/${this.customerId}/${this.gameId}`, this.newReview);
         alert("Review added successfully!");
         this.fetchReviews();  // Refresh the reviews after adding a new one
@@ -270,14 +265,7 @@ export default {
         alert("Failed to add game to wishlist. Please try again later.");
       }
     },
-    async searchByName() {
-      try {
-        const response = await axios.get(`http://localhost:8080/games/name/${this.searchQuery}`);
-      } catch (error) {
-        console.error('Error searching for games:', error);
-      }
-    },
-    async goToCustomerMainPage() {
+    async goToCustomerMainPage() { //nav method
       this.$router.push({
         name: 'customer-homepage',
         params: {
@@ -286,8 +274,8 @@ export default {
         }
       });
     },
-    async goToCustomerAccount() {
-      router.push({
+    async goToCustomerAccount() { //nav method
+      this.$router.push({
         name: 'customer-account',
         params: {
           customerId: this.customerId,
@@ -298,11 +286,11 @@ export default {
     },
 
     logout() {
-      this.$router.push('/');
+      this.$router.push('/'); //go back to homepage
     },
 
-    async goToCustomerOrders() {
-      router.push({
+    async goToCustomerOrders() { //nav method
+      this.$router.push({
         name: 'customer-orders',
         params: {
           customerId: this.customerId,
@@ -311,8 +299,8 @@ export default {
 
       });
     },
-    async goToCustomerCart() {
-      router.push({
+    async goToCustomerCart() { //nav method
+      this.$router.push({
         name: 'customer-cart',
         params: {
           customerId: this.customerId,
@@ -321,8 +309,8 @@ export default {
 
       });
     },
-    async goToCustomerWishlist() {
-      router.push({
+    async goToCustomerWishlist() { //nav method
+      this.$router.push({
         name: 'customer-wishlist',
         params: {
           customerId: this.customerId,
@@ -333,8 +321,8 @@ export default {
     }
   },
 
-  created() {
-    if (!this.isLoggedIn()) {
+  created() { //constructor
+    if (!this.isLoggedIn()) { //ensure user is a customner and is logged in
       this.$router.push({ name: "sign in" });
       alert("Please log in before accessing this page.");
     } else {
@@ -359,20 +347,13 @@ export default {
 
 .user-options {
   display: flex;
-  /* Aligns child elements (buttons) horizontally */
-
-  /* Adds spacing between buttons (adjust as needed) */
   align-items: center;
-  /* Vertically aligns buttons if needed */
 }
 
 .user-options button {
   background: none;
-  /* Remove default button background */
   border: none;
-  /* Remove default button border */
   padding: 0;
-  /* Remove padding around buttons */
   cursor: pointer;
 }
 
@@ -385,7 +366,6 @@ export default {
 
 .dropdown .nav-buttons {
   display: none;
-  /* Initially hide dropdown content */
   position: absolute;
   background-color: rgba(255, 255, 255, 0.906);
   background: #ffff;
@@ -396,7 +376,6 @@ export default {
 
 .dropdown:hover .nav-buttons {
   display: block;
-  /* Show dropdown on hover */
   border: solid;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -499,24 +478,18 @@ header .img {
 
 .game-content {
   display: grid;
-  /* Use grid layout */
   grid-template-columns: 1fr 2fr;
-  /* Two columns: image (1fr), description (2fr) */
   gap: 1.5rem;
-  /* Space between columns */
   align-items: start;
-  /* Align content at the top */
 }
 
 .game-image-container {
   display: flex;
   justify-content: center;
-  /* Center the image horizontally */
 }
 
 .game-image {
   max-width: 100%;
-  /* Ensure the image fits its container */
   height: auto;
   border-radius: 10px;
 }
@@ -526,7 +499,6 @@ header .img {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  /* Spacing between paragraphs */
 }
 
 .game-description p {
@@ -553,9 +525,7 @@ header .img {
   font-size: 16px;
   cursor: pointer;
   max-width: 200px;
-  /* Set a max-width to prevent stretching */
   align-self: flex-start;
-  /* Align the button to the left, inside the game-info section */
   margin-top: 10px;
 }
 
@@ -568,9 +538,7 @@ header .img {
   font-size: 16px;
   cursor: pointer;
   max-width: 200px;
-  /* Set a max-width to prevent stretching */
   align-self: flex-start;
-  /* Align the button to the left, inside the game-info section */
   margin-top: 10px;
 }
 
@@ -612,12 +580,6 @@ header .img {
   font-size: 1rem;
   margin: 0.5rem 0;
 }
-
-
-
-
-
-
 
 
 .reviews-section {
@@ -662,9 +624,7 @@ textarea {
   border-radius: 5px;
   cursor: pointer;
   max-width: 200px;
-  /* Set a max-width to prevent stretching */
   align-self: flex-start;
-  /* Align the button to the left */
   margin-top: 10px;
 }
 

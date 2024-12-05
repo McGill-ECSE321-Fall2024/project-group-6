@@ -2,32 +2,32 @@
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.4/css/boxicons.min.css" rel="stylesheet" />
     <header>
-    <nav class="navbar">
-      <div class="logo">
-        <h2>GameShop</h2>
-      </div>
-      <div class="navmenu">
-       
-
-        <div class="user-options">
-          <div class="dropdown">
-            <button class="dropbtn"><img src="../assets/account.png" class="account-img"></button>
-            <div class="nav-buttons">
-              <button @click="goToCustomerAccount">Account</button>
-              <button @click="goToCustomerOrders" class="order-btn">Orders</button>
-              <button @click="logout" class="logout-btn">Log Out</button>
+        <nav class="navbar">
+            <div class="logo">
+                <h2>GameShop</h2>
             </div>
-          </div>
+            <div class="navmenu">
 
-          <RouterLink><img src="../assets/White-Heart.png" @click="goToWishlist">
-          </RouterLink>
 
-          <RouterLink><img src="../assets/pngaaa.com-5034351.png" @click="goToCart">
-          </RouterLink>
-        </div>
-      </div>
-    </nav>
-  </header>
+                <div class="user-options">
+                    <div class="dropdown">
+                        <button class="dropbtn"><img src="../assets/account.png" class="account-img"></button>
+                        <div class="nav-buttons">
+                            <button @click="goToCustomerAccount">Account</button>
+                            <button @click="goToCustomerOrders" class="order-btn">Orders</button>
+                            <button @click="logout" class="logout-btn">Log Out</button>
+                        </div>
+                    </div>
+
+                    <RouterLink><img src="../assets/White-Heart.png" @click="goToWishlist">
+                    </RouterLink>
+
+                    <RouterLink><img src="../assets/pngaaa.com-5034351.png" @click="goToCart">
+                    </RouterLink>
+                </div>
+            </div>
+        </nav>
+    </header>
 
     <div class="command">
         <div class="main-header">
@@ -45,9 +45,8 @@
                     <div class="Date"><strong>Placed on: </strong> {{ command.commandDate }}</div>
 
                     <div class="shippement">
-                        <strong>Shipping Address:</strong> {{ customer.shippingAddress }}
+                        <strong>Shipping Address: {{ customer.shippingAddress }}</strong>
                     </div>
-
                 </div>
 
             </div>
@@ -93,12 +92,7 @@ export default {
                     if (command.customer.roleId == this.customerID) {
                         this.customer = command.customer;
                         this.commands = command.customer.commands
-                        /*
-                        const commands = command.customer.commands;
-                        for (let i = 0; i < commands.length; i++) {
-                        this.commands.push(commands[i]);
-                        }
-                        */
+
                     }
                 }
 
@@ -236,39 +230,39 @@ export default {
 
 .nav-buttons {
 
-display: flex;
-align-items: center;
+    display: flex;
+    align-items: center;
 }
 
 .nav-buttons button {
 
-color: #1033a4;
-border: none;
-padding: 0.5rem 1rem;
-border-radius: 5px;
-cursor: pointer;
-text-align: center;
-/* Centers the text horizontally */
-height: 50px;
-/* Set a fixed height to ensure vertical centering */
-display: flex;
-justify-content: center;
-align-items: center;
-/* Centers the button text vertically */
+    color: #1033a4;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    /* Centers the text horizontally */
+    height: 50px;
+    /* Set a fixed height to ensure vertical centering */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* Centers the button text vertically */
 }
 
 .nav-buttons button img {
-padding-bottom: 15px;
-padding-left: 10px;
+    padding-bottom: 15px;
+    padding-left: 10px;
 
 }
 
 .nav-buttons button:hover {
-background-color: #eff2f1;
+    background-color: #eff2f1;
 }
 
 .nav-buttons {
-padding: 10px;
+    padding: 10px;
 }
 
 

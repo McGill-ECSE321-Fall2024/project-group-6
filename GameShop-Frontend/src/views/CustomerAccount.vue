@@ -11,10 +11,6 @@
           <h2>GameShop</h2>
         </div>
         <div class="navmenu">
-          <div class="search-box">
-            <input type="search" v-model="searchQuery" class="search" placeholder="Search game..." />
-            <i class="bx bx-search" @click="searchByName"></i>
-          </div>
         </div>
           <div class="user-options">
             <button @click="goToCart"><img src="../assets/pngaaa.com-5034351.png" alt="Cart" class="cart-img" @click="goToCustomerCart"></button>
@@ -110,14 +106,7 @@ export default {
         alert("Failed to update account. Please try again later.");
       }
     },
-    async searchByName() {
-      try {
-        const response = await axios.get(`http://localhost:8080/games/name/${this.searchQuery}`);
-      } catch (error) {
-        console.error('Error searching for games:', error);
-      }
-    },
-    async goToCustomerHome() {
+    async goToCustomerHome() { //nav method
       this.$router.push({
           name: 'customer-homepage',
           params: {
@@ -126,7 +115,7 @@ export default {
           }
         });        
     },
-    async goToCustomerMainPage(){
+    async goToCustomerMainPage(){ //nav method
         this.$router.push({
           name: 'customer-homepage',
           params: {
@@ -135,7 +124,7 @@ export default {
           }  
         });
     },
-    async goToCart() {
+    async goToCart() { //nav method
       this.$router.push({
           name: 'customer-cart',
           params: {
@@ -144,7 +133,7 @@ export default {
           }         
         }); 
     },
-    async goToCustomerWishlist() {
+    async goToCustomerWishlist() { //nav method
       this.$router.push({
           name: 'customer-wishlist',
           params: {
@@ -154,7 +143,7 @@ export default {
           
         });
     }, 
-    async goToCustomerOrders() {
+    async goToCustomerOrders() { //nav method
       this.$router.push({
           name: 'customer-orders',
           params: {
@@ -164,11 +153,11 @@ export default {
         }); 
     },   
     logout() {
-        this.$router.push('/SignIn');
+        this.$router.push('/'); //go back to homepage
     },
   },
   created() {
-      if (!this.isLoggedIn()) {
+      if (!this.isLoggedIn()) { //ensure user is a custoner and is logged in
         this.$router.push({ name: "sign in" });
         alert("Please log in before accessing this page.");
       } 
@@ -187,6 +176,13 @@ export default {
   padding: 0;
   box-sizing: border-box;
   font-family: "poppins";
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  overflow-x: hidden; 
 }
 
 /* Navbar Styles */
@@ -240,15 +236,15 @@ export default {
 .cart-img,
 .wishlist-img,
 .account-img {
-  width: 40px; /* Set the width */
-  height: auto; /* Let the height adjust automatically to maintain aspect ratio */
-  object-fit: contain; /* Ensure the image is contained without distortion */
+  width: 40px; 
+  height: auto;  
+  object-fit: contain; 
 }
 
 .user-options {
   display: flex;
-  align-items: center; /* Ensures the icons and buttons are vertically centered */
-  gap: 20px; /* Adds space between the elements */
+  align-items: center; 
+  gap: 20px; 
 }
 
 .user-options button {
@@ -259,7 +255,7 @@ export default {
 }
 
 .user-options img {
-  width: 30px; /* Adjust to your desired size */
+  width: 30px; 
   height: 30px;
 }
 
@@ -279,7 +275,7 @@ export default {
 }
 
 .dropdown:hover .nav-buttons, .nav-buttons:hover {
-  display: flex; /* Show dropdown on hover */
+  display: flex; 
 }
 
 .dropdown:hover .nav-buttons {
@@ -291,19 +287,21 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 40px;
+  height: calc(100vh - 80px); 
+  width: 100%; 
+  padding: 20px; 
+  overflow-x: hidden; 
   background-color: #f9f9f9;
-  height: calc(100vh - 80px); /* Full height minus the navbar */
-  width: 100vw; /* Full width */
 }
 
 .account-info {
-  background: #fff;
+  max-width: 600px; 
+  width: 100%; 
+  margin: auto; 
   padding: 20px;
   border-radius: 20px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 600px;
+  background-color: #fff;
 }
 
 .account-info h1 {

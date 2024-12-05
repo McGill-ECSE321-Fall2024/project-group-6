@@ -33,8 +33,8 @@
         <img :src="game.photoURL" alt="Game Image" class="game-image" />
         <div @click="goToGamePage(game)" class="game-info">
           <h3>{{ game.name }}</h3>
-            <p class="game-price"><strong>Price:</strong> ${{ game.price }}</p>
-            <p class="game-stock"><strong>Stock:</strong> {{ game.stockQuantity }} left</p>
+          <p class="game-price"><strong>Price:</strong> ${{ game.price }}</p>
+          <p class="game-stock"><strong>Stock:</strong> {{ game.stockQuantity }} left</p>
         </div>
       </div>
     </main>
@@ -81,14 +81,14 @@ export default {
         console.error('Error searching for games:', error);
       }
     },
-    async goToGamePage(game){
+    async goToGamePage(game) {
       router.push({
-                name: 'gamepage',
-                params: {
-                    gameId: game.gameId
-                }
+        name: 'gamepage',
+        params: {
+          gameId: game.gameId
+        }
 
-            });
+      });
     },
     async filterByCategory() {
       if (this.selectedCategory === 'all') {
@@ -101,11 +101,33 @@ export default {
           console.error('Error filtering games by category:', error);
         }
       }
+    },
+    async createManager() {
+
+      var check = "false"
+      var people = [];
+      const response = await axios.get(`http://localhost:8080/person`);
+      people = response.data["people"];
+      for (var i = 0; i < people.lenght; i++) {
+        if (people[i]["username"] == "Manager") {
+          check = "true";
+        }
+      }
+      if (check == "false") {
+        const manager = {
+          username: "Manager",
+          email: "manager@example.com",
+          phone: "1234567890",
+          password: "examplePassword"
+        };
+        await axios.post(`http://localhost:8080/manager`, manager);
+      }
     }
   },
   async created() {
     await this.fetchCategories();
     await this.fetchGames();
+    await this.createManager();
   }
 };
 </script>

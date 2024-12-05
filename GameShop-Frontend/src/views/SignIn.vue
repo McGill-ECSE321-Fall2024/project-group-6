@@ -57,19 +57,12 @@ export default {
         const response = await axiosClient.post(`/login`, user);
 
         if (response.data.email === this.email && response.data.username!=="deactivated") {
-        /*
-          if (this.userType === 'manager') {
-            router.push({ name: 'manager-dashboard' });
-          } else if (this.userType === 'employee') {
-            router.push({ name: 'employee-dashboard' });
-          } else if (this.userType === 'customer') {
-            router.push({ name: 'customer-dashboard' });
-          }
-            */
-        localStorage.setItem('loggedIn', 'true'); // Set the logged-in status
+      
+        localStorage.setItem('loggedIn', 'true'); 
       if (this.userType === 'employee') {
-        //console.log(this.getRoleID (response.data.userId));
-        
+        var idToPass= await this.getManagerID(response.data.userId);
+        const response4 = await axios.get(`http://localhost:8080/employees/${idToPass}`);
+        if(response4.data.email==this.email){
         router.push({
           name: 'employee-homepage',
           params: {
@@ -78,27 +71,36 @@ export default {
           }
           
         });
+      }else{
+      alert("This user is not registered as an employee");
+      }
         
       }
       else if(this.userType === 'manager'){
-       
-        //console.log(this.getRoleID (response.data.userId));
-        
+       var idToPass= await this.getManagerID(response.data.userId);
+        const response2 = await axios.get(`http://localhost:8080/manager/${idToPass}`);
+        console.log(response2.data.email+" comparedto "+this.email);
+        if(response2.data.email==this.email){
         router.push({
           name: 'manager-homepage',
           params: {
-            managerId: await this.getManagerID(response.data.userId),
+            managerId: idToPass,
             loggedIn: true
           }
           
         });
+      }else{
+        alert("This user is not registered as a manager");
+      }
         
       
       }
       else if(this.userType === 'customer'){
        
-       //console.log(this.getRoleID (response.data.userId));
-       
+        var idToPass= await this.getManagerID(response.data.userId);
+        const response3 = await axios.get(`http://localhost:8080/customers/${idToPass}`);
+        
+        if(response3.data.email==this.email){
        router.push({
          name: 'customer-homepage',
          params: {
@@ -107,11 +109,8 @@ export default {
          }
          
        });
-       
-     
-     }
+      } 
 
-           this.errorMessage="Successful login";
         } 
         else if(response.data.username==="deactivated"){
           this.errorMessage="Employee has been deactivated";
@@ -119,8 +118,9 @@ export default {
         else {
           this.errorMessage = 'Invalid login credentials';
         }
-      } catch (error) {
-        this.errorMessage = 'Error logging in';
+      } 
+    }catch (error) {
+        this.errorMessage = `Wrong log in information: ${error.response.data.errors}`;
         console.log(error);
       }
     },

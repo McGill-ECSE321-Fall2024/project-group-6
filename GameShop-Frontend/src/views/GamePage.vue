@@ -153,7 +153,6 @@ export default {
         this.gameID = this.$route.params.gameId;
         this.fetchGameDetails();
         this.fetchReviews();
-
     }
 };
 </script>
