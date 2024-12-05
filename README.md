@@ -94,8 +94,12 @@ Table 3 : Roles of each team member Deliverable 3: <br/>
 |             | Meeting Minutes                                                           |       1        |
 |             | Key Decisions                                                            |         1         |
 |             | Presentation slides                                                      |          1.5       |
-| Maissa      | Customer Wishlist and Checkout (Frontend/Backend)                          |                  |
-|             | Demo                                                                       |                 |
+| Maissa      | Customer Wishlist and Checkout (Frontend/Backend)                          |        10          |
+|             | Customer Orders and Command page (Frontend/Backend)                          |         6        |
+|             | Manager GamePage, Guest GamePage                                           |          6        |
+|             | Ensured consistent formatting for all pages  (buttons, alerts)             |        3          |
+|             | Demo                                                                       |         2        |
+|             |
 | Joseph      | Build system and CI specification                                         |                   |
 |             | Sign Up, Sign in, and Home Page                                            |       8          |
 |             | Employee Dashboard, Account and Game Page                                   |        9          |
