@@ -20,7 +20,7 @@ const router = createRouter({
   routes: [
     {
       path: '/SignUp',
-      name: 'events',
+      name: 'signup',
       component: SignUp
     },
     {

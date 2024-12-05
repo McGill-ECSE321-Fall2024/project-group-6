@@ -60,7 +60,7 @@
         this.errorMessage = "Your passwords don't match";
       
       } else {
-        this.errorMessage = 'You are already a regisstered customer, use sign in';
+        this.errorMessage = 'You are already a registered customer, use sign in';
       }
     }
 

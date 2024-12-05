@@ -56,9 +56,13 @@
       <aside class="tasks-box">
         <h3 >Your Assigned Tasks: </h3>
         <ul v-if="tasks.length > 0">
-          <li v-for="task in tasks" >
-            <h4>{{ task }}</h4>
-          </li>
+          <li v-for="task in tasks">
+          <h4>{{ task }}</h4>
+          <div class="buttons">
+            <button @click=" taskCompleted(task)" class="btn">Task Completed</button>
+          </div>
+        </li>
+
         </ul>
         <p v-else>No tasks assigned</p>
       </aside>
@@ -199,6 +203,46 @@ props: ['employeeId', 'loggedIn'],
           
         });
         
+    },
+    async taskCompleted(task){
+      var employee='';
+   
+      for(var i=0; i<this.tasks.length;i++){
+ 
+        if(this.tasks[i]==task){
+          this.tasks.splice(i,1);
+        }
+
+      }
+   
+      const response = await axios.get(
+            `http://localhost:8080/employees/${this.employeeID}`
+          );
+          try{
+          employee = response.data;
+          employee.assignedTasks = this.tasks.map(task => JSON.stringify({ task: task }));
+          console.log(employee.assignedTasks);
+          const newEmployee={
+          "username": employee.username,
+          "email": employee.email,
+          "phone": employee.phone,
+          "password":employee.password,
+          "assignedTasks":employee.assignedTasks,
+          "activated":true
+          };
+          console.log(newEmployee);
+       
+        
+        await axios.put(
+            `http://localhost:8080/employees/${this.employeeID}`,
+            newEmployee
+          );
+          alert("Task deleted successfully");
+        }catch(error){
+          alert(error);
+        }
+        
+     
     },
     logout() {
         this.$router.push('/');
@@ -534,5 +578,15 @@ background-color: #eff2f1;
 padding-left: 10px;
 margin-left: 15%;
 
+}
+.buttons button {
+    padding: 0 6px;
+    
+    height: 20px;
+    border: none;
+    border-radius: 20px;
+    background-color: green;
+    margin-bottom: 20px;
+    color: #ffffff;
 }
   </style>

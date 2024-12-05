@@ -56,13 +56,15 @@ export default {
         const user = { username:"123",email: this.email.toLowerCase(), password: this.password, phone:"123" };
         const response = await axiosClient.post(`/login`, user);
 
-        if (response.data.email === this.email && response.data.username!=="deactivated") {
+        if (response.data.email.toLowerCase() === this.email.toLowerCase() && response.data.username!=="deactivated") {
       
         localStorage.setItem('loggedIn', 'true'); 
+        
       if (this.userType === 'employee') {
-        var idToPass= await this.getManagerID(response.data.userId);
+        var idToPass= await this.getRoleID(response.data.userId);
         const response4 = await axios.get(`http://localhost:8080/employees/${idToPass}`);
-        if(response4.data.email==this.email){
+        console.log(response4.data.email.toLowerCase()+" "+this.email.toLowerCase());
+        if(response4.data.email.toLowerCase()==this.email.toLowerCase()){
         router.push({
           name: 'employee-homepage',
           params: {
@@ -80,7 +82,7 @@ export default {
        var idToPass= await this.getManagerID(response.data.userId);
         const response2 = await axios.get(`http://localhost:8080/manager/${idToPass}`);
         console.log(response2.data.email+" comparedto "+this.email);
-        if(response2.data.email==this.email){
+        if(response2.data.email.toLowerCase()==this.email.toLowerCase()){
         router.push({
           name: 'manager-homepage',
           params: {
@@ -97,10 +99,10 @@ export default {
       }
       else if(this.userType === 'customer'){
        
-        var idToPass= await this.getManagerID(response.data.userId);
+        var idToPass= await this.getCustomerID(response.data.userId);
         const response3 = await axios.get(`http://localhost:8080/customers/${idToPass}`);
         
-        if(response3.data.email==this.email){
+        if(response3.data.email.toLowerCase()==this.email.toLowerCase()){
        router.push({
          name: 'customer-homepage',
          params: {
