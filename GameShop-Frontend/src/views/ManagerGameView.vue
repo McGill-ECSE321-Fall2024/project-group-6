@@ -82,24 +82,40 @@
                 </div>
             </div>
 
-
+            <!-- Reviews Section -->
             <div class="comments-section">
-                <h2>Customer Reviews</h2>
-                <div class="comment-card" v-for="review in reviews" :key="review.reviewId">
-                    <div class="comment-header">
-                        <p><strong>{{ review.customer }}</strong> said:</p>
-                        <p class="comment-content">{{ review.comment }}</p>
-                    </div>
-                    <div class="replies" v-if="review.reply">
-                        <p class="reply">
-                            <strong>GameShop:</strong> {{ review.reply }}
-                        </p>
-                    </div>
-                    <textarea v-model="addReply" placeholder="Write a reply..." class="reply-input"></textarea>
-                    <button @click="replyToComment(review.reviewId)" class="btn reply-btn">
+                <h2>Reviews</h2>
+                <div class="comment-card" v-if="reviews.length > 0">
+                    <div v-for="review in reviews" :key="review.reviewId" class="review">
+                        <div class="comment-header">
+                         <p><strong>{{ review.customer.person.username }}</strong> wrote:</p>
+                         <p class="comment-content">{{ review.comment }}</p>
+                        </div>
+                        <p>Rating: {{ parseRating(review.rating) }}/5</p>
+                        <p>Likes: {{ review.amountOfLikes || 0 }}</p>
+
+                        <div v-if="review.reply && review.reply.trim()" class="manager-reply">
+                            <p><strong>Manager's Reply:</strong> {{ review.reply }}</p>
+                        </div>
+
+                        <!-- Reply Text Box : only appears if no reply for the review -->
+                        <div v-if="!checkIfReplied(review)" class="reply-box">
+                         <textarea
+                            v-model="review.replyText"
+                            placeholder="Write your reply here..."
+                            class="reply-textarea"
+                         ></textarea>
+                        </div>
+                        <!-- Reply button if no reply and delete button if reply -->
+                        <button v-if="!checkIfReplied(review)" @click="replyToComment(review.reviewId)" class="btn-reply">
                         Reply
-                    </button>
-                </div>
+                        </button>
+                        <button v-else @click="deleteReply(review)" class="btn-delete">
+                        Delete
+                        </button>
+                    </div>
+                    </div>
+                <p v-else>No reviews available for this game.</p>
             </div>
         </div>
     </div>
@@ -146,7 +162,7 @@ export default {
             return this.loggedIn;
         },
         async fetchGameDetails() {
-
+            //get game info
             try {
                 console.log("The game Id is "+this.gameID);
                 const response = await axios.get(`http://localhost:8080/games/id/${this.gameID}`);
@@ -161,7 +177,6 @@ export default {
             try {
                 for (var i = 0; i < this.game.categories.length; i++) {
                     this.categoryIdsArray.push(this.game.categories[i]["categoryId"]);
-
                 }
                 this.game.categories = this.categoryIdsArray;
                 console.log("array of category ids is " + this.categoryIdsArray);
@@ -175,13 +190,11 @@ export default {
         },
         async saveAfterCategoryChange() {
             try {
-
                 await axios.put(`http://localhost:8080/games/id/${this.gameID}`, this.game);
                 alert("Changes saved successfully!");
                 await this.fetchGameDetails();
             } catch (error) {
                 console.error("Error saving game details:", error);
-                //alert(error.message);
             }
         },
         async addCategory(id) {
@@ -235,8 +248,6 @@ export default {
             }
         }
         this.game.categories=this.categoryIdsArray;
-      //  console.log(this.categoryIdsArray);
-      //  console.log(this.game.categories);
         if(counter!==check){
         await this.saveAfterCategoryChange();
         }else{
@@ -266,31 +277,67 @@ export default {
         },
         async fetchReviews() {
             try {
-                const response = await axios.get(`http://localhost:8080/review/game/${this.game.gameId}`);
-                this.reviews = response.data.reviews;
-
+                const response = await axios.get(`http://localhost:8080/games/${this.gameID}/reviews`);
+                this.reviews = response.data.reviews || [];
             } catch (error) {
-                console.error("Error fetching reviews:", error);
+                console.error("Failed to fetch reviews:", error);
+
             }
+        },
+        checkIfReplied(review) {
+            return (review.reply != "");
         },
         async replyToComment(reviewId) {
             const review = this.reviews.find((c) => c.reviewId === reviewId);
-            review.reply = this.addReply;
+
+            if (!review || !review.replyText) {
+                alert("Please write a reply before submitting.");
+                return;
+            }
+            review.reply = review.replyText;
 
             try {
                 await axios.put(`http://localhost:8080/review/${reviewId}`, review);
+
                 this.popupMessage = `Reply posted successfully.`;
-                this.fetchReviews();
+                this.fetchReviews(); // Refresh reviews to get updated data
                 this.showPopup = true;
 
+                // popup after 3 seconds
                 setTimeout(() => {
                     this.showPopup = false;
                 }, 3000);
-
-                this.addReply = ""; // Clear reply box
+                review.replyText = "";
             } catch (error) {
                 console.error("Error posting reply:", error);
                 alert("Failed to post reply.");
+            }
+        },
+
+        parseRating(rating) {
+            const ratingMap = {
+                "OneStar": 0,
+                "TwoStar": 1,
+                "ThreeStar": 2,
+                "FourStar": 3,
+                "FiveStar": 4
+            };
+            return ratingMap[rating] || 0;
+        },
+        async deleteReply(review) {
+            try {
+                const payload = {
+                    rating: this.parseRating(review.rating),
+                    comment: review.comment,
+                    amountOfLikes: review.amountOfLikes,
+                    reply: "",
+                };
+                await axios.put(`http://localhost:8080/review/${review.reviewId}`, payload);
+                alert("Reply successfully deleted!")
+                this.fetchReviews(); // Refresh the reviews list after updating
+            } catch (error) {
+                console.error("Failed to delete the reply:", error);
+                alert("Failed to delete the reply. Please try again.");
             }
         },
         logout() {
@@ -303,6 +350,7 @@ export default {
     console.log("The game id before accessing is "+this.gameId);
      this.fetchGameDetails();
      this.fetchCategories();
+     this.fetchReviews();
   }
     };
 </script>
@@ -508,57 +556,123 @@ export default {
 
 /* Comments Section */
 .comments-section {
-    background-color: white;
-    padding: 1.5rem;
-    border-radius: 10px;
-    box-shadow: 0 10px 20px rgba(85, 85, 85, 0.2);
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 10px 20px rgba(85, 85, 85, 0.2);
 }
 
 .comments-section h2 {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .comment-card {
-    border-top: 1px solid #eee;
-    padding: 1rem 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+  border-top: 1px solid #eee;
+  padding: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .comment-header {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .comment-content {
-    font-size: 1rem;
-    margin: 0.5rem 0;
+  font-size: 1rem;
+  margin: 0.5rem 0;
 }
 
-.reply-input {
-    width: 100%;
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    resize: none;
+
+.reviews {
+  margin-bottom: 20px;
 }
 
-.reply-btn {
-    align-self: flex-end;
-    background-color: #88b9df;
-    /* Same as wishlist button */
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    font-size: 0.9rem;
+.review {
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background: #fff;
+  margin-bottom: 10px;
 }
 
-.reply-btn:hover {
-    background-color: #ffffff;
-    color: #88b9df;
+form {
+  margin-top: 20px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+textarea {
+  width: 100%;
+  height: 100px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  padding: 10px;
+}
+
+.manager-reply {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-left: 4px solid #4caf50;
+}
+.manager-reply p {
+    margin: 0;
+    font-size: 14px;
+}
+
+.stars {
+  display: flex;
+  margin-top: 5px;
+}
+
+.star {
+  font-size: 20px;
+  color: #ccc;
+}
+
+.star.filled {
+  color: gold;
+}
+
+.btn-reply, .btn-delete {
+  padding: 5px 15px;
+  font-size: 14px;
+  background-color: #49D8B9;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-reply:hover, .btn-delete:hover {
+  background-color: #0056b3;
+}
+
+.btn-delete {
+  background-color: #D84949;
+}
+
+.reply-form {
+  margin-top: 10px;
+}
+
+.reply-form textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.replies {
+  margin-top: 10px;
+}
+
+.replies h4 {
+  margin-bottom: 5px;
 }
 .button-container {
     display: flex;
