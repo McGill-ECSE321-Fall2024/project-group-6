@@ -18,6 +18,7 @@ import ca.mcgill.ecse321.gameshop.dto.PaymentRequestDto;
 import ca.mcgill.ecse321.gameshop.dto.PaymentResponseDto;
 import ca.mcgill.ecse321.gameshop.model.Customer;
 import ca.mcgill.ecse321.gameshop.model.Payment;
+import ca.mcgill.ecse321.gameshop.model.Person;
 import ca.mcgill.ecse321.gameshop.repository.CustomerRepository;
 import ca.mcgill.ecse321.gameshop.service.PaymentService;
 

@@ -1,3 +1,5 @@
+<!-- Author: Annabelle -->
+
 <template>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.4/css/boxicons.min.css" rel="stylesheet" />
 
@@ -8,7 +10,6 @@
         <h2>GameShop</h2>
       </div>
       <div class="navmenu">
-        
 
         <div class="user-options">
           <div class="dropdown">
@@ -45,7 +46,7 @@
           <h1>{{ game.name }}</h1>
           <p><strong>Description:</strong> {{ game.description }}</p>
           <p><strong>Price:</strong> ${{ game.price }}</p>
-          <p><strong v-if="game.promotion > 0">Promotion: -{{ game.promotion }}%</strong></p>
+          <p><strong v-if="game.promotion > 0">Promotion: {{ game.promotion * 100 }}%</strong></p>
           <p><strong>Stock Quantity:</strong> {{ game.stockQuantity }}</p>
           <p><strong>Categories:</strong> {{ game.categories.join(", ") }}</p>
           <button @click="addToCart" class="btn-add-to-cart">Add to Cart</button>
@@ -64,7 +65,10 @@
             <p><strong>{{ review.customer.person.username }}</strong> wrote:</p>
             <p class="comment-content">{{ review.comment }}</p>
           </div>
-          <p>Rating: {{ parseRating(review.rating)+1 }}/5</p>
+          <div v-if="review.reply && review.reply.trim()" class="manager-reply">
+            <p><strong>GameShop's Reply:</strong> {{ review.reply }}</p>
+          </div>
+          <p>Rating: {{ parseRating(review.rating) + 1 }}/5</p>
           <p>Likes: {{ review.amountOfLikes || 0 }}</p>
           <!-- Like Button -->
           <button v-if="!checkIfLiked(review.reviewId)" @click="likeReview(review)" class="btn-like">
@@ -87,9 +91,9 @@
       <h3>Add a Review</h3>
       <form @submit.prevent="submitReview">
         <div class="form-group">
-            <label for="rating">Rating (1-5):</label>
-            <input type="number" id="rating" v-model="newReview.rating" min="1" max="5" required />
-          </div>
+          <label for="rating">Rating (1-5):</label>
+          <input type="number" id="rating" v-model="newReview.rating" min="1" max="5" required />
+        </div>
         <div class="form-group">
           <label for="comment">Comment:</label>
           <textarea id="comment" v-model="newReview.comment" required></textarea>
@@ -128,6 +132,8 @@ export default {
         comment: "",
       },
       likedReviews: [],
+      showPopup: false,
+      popupMessage: "",
     };
   },
   methods: {
@@ -195,7 +201,9 @@ export default {
 
       } catch (error) {
         console.error("Failed to like the review:", error);
-        alert("Failed to like/unlike the review. Please try again.");
+        this.popupMessage = `Failed to like the review.`;
+        this.showPopup = true;
+        setTimeout(() => (this.showPopup = false), 2000);
         this.likedReviews = this.likedReviews.filter(id => id !== review.reviewId);
       }
     },
@@ -213,7 +221,9 @@ export default {
         this.likedReviews = this.likedReviews.filter(id => id !== review.reviewId);
       } catch (error) {
         console.error("Failed to unlike the review:", error);
-        alert("Failed to like/unlike the review. Please try again.");
+        this.popupMessage = "Failed to like/unlike the review. Please try again.";
+        this.showPopup = true;
+        setTimeout(() => (this.showPopup = false), 2000);
         this.likedReviews.push(review.reviewId);
       }
     },
@@ -222,10 +232,15 @@ export default {
         if (review.customer.roleId == this.customerID) {
           const response = await axios.delete(`http://localhost:8080/review/${review.reviewId}`);
           this.fetchReviews(); // Refresh the reviews list after updating
+          this.popupMessage = "Your review was deleted";
+          this.showPopup = true;
+          setTimeout(() => (this.showPopup = false), 2000);
         }
       } catch (error) {
         console.error("Failed to unlike the review:", error);
-        alert("Failed to like/unlike the review. Please try again.");
+        this.popupMessage = "Failed to delete review. Please try again.";
+        this.showPopup = true;
+        setTimeout(() => (this.showPopup = false), 2000);
         this.likedReviews.push(review.reviewId);
       }
     },
@@ -238,9 +253,14 @@ export default {
         this.fetchReviews();  // Refresh the reviews after adding a new one
         this.newReview.rating = null;
         this.newReview.comment = "";
+        this.popupMessage = "Your review was submitted.";
+        this.showPopup = true;
+        setTimeout(() => (this.showPopup = false), 2000);
       } catch (error) {
         console.error("Failed to submit review:", error);
-        alert("Failed to submit review. Please try again later.");
+        this.popupMessage = "Failed to submit review. Please try again.";
+        this.showPopup = true;
+        setTimeout(() => (this.showPopup = false), 2000);
       }
     },
 
@@ -249,20 +269,30 @@ export default {
         await axios.put(`http://localhost:8080/customers/${this.customerId}/cart/add/${this.gameId}`, {
           gameID: this.game.id,
         });
-        alert("Game added to cart successfully!");
+        this.popupMessage = `${this.game.name} was added to your cart.`;
+        this.showPopup = true;
+        setTimeout(() => (this.showPopup = false), 3000);
+
       } catch (error) {
         console.error("Failed to add game to cart:", error);
-        alert("Failed to add game to cart. Please try again later.");
+        this.popupMessage = `Failed to add ${this.game.name} to your cart.`;
+        this.showPopup = true;
+        setTimeout(() => (this.showPopup = false), 3000);
+
       }
     },
 
     async addToWishlist() {
       try {
         const response = await axios.put(`http://localhost:8080/customers/${this.customerID}/wishlist/add/${this.gameId}`, null);
-        alert("Game added to wishlist successfully!");
+        this.popupMessage = `${this.game.name} was added to your wishlist.`;
+        this.showPopup = true;
+        setTimeout(() => (this.showPopup = false), 2000);
       } catch (error) {
         console.error("Failed to add game to wishlist:", error);
-        alert("Failed to add game to wishlist. Please try again later.");
+        this.popupMessage = `Failed to add ${this.game.name} to your wishlist.`;
+        this.showPopup = true;
+        setTimeout(() => (this.showPopup = false), 3000);
       }
     },
     async goToCustomerMainPage() { //nav method
@@ -347,13 +377,18 @@ export default {
 
 .user-options {
   display: flex;
+
   align-items: center;
+  /* Vertically aligns buttons if needed */
 }
 
 .user-options button {
   background: none;
+  /* Remove default button background */
   border: none;
+  /* Remove default button border */
   padding: 0;
+  /* Remove padding around buttons */
   cursor: pointer;
 }
 
@@ -366,6 +401,7 @@ export default {
 
 .dropdown .nav-buttons {
   display: none;
+  /* Initially hide dropdown content */
   position: absolute;
   background-color: rgba(255, 255, 255, 0.906);
   background: #ffff;
@@ -376,10 +412,56 @@ export default {
 
 .dropdown:hover .nav-buttons {
   display: block;
+  /* Show dropdown on hover */
   border: solid;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
+
+.dropdown:hover .nav-buttons button {
+  display: flex;
+  /* Show dropdown on hover */
+
+}
+
+.nav-buttons {
+
+  display: flex;
+  align-items: center;
+}
+
+.nav-buttons button {
+  font-size: 1rem;
+  color: #1033a4;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+  /* Centers the text horizontally */
+  height: 50px;
+  /* Set a fixed height to ensure vertical centering */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* Centers the button text vertically */
+}
+
+.nav-buttons button img {
+  padding-bottom: 15px;
+  padding-left: 10px;
+
+}
+
+.nav-buttons button:hover {
+  background-color: #eff2f1;
+}
+
+.nav-buttons {
+  padding: 10px;
+}
+
+
 
 
 .navbar {
@@ -632,7 +714,17 @@ textarea {
   border: 1px solid #ccc;
   padding: 10px;
 }
+.manager-reply {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-left: 4px solid #4caf50;
+}
 
+.manager-reply p {
+    margin: 0;
+    font-size: 14px;
+}
 .btn-submit-review {
   padding: 10px 20px;
   font-size: 1rem;

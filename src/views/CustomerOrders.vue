@@ -1,3 +1,5 @@
+<!-- Author: Maissa -->
+
 <template>
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.4/css/boxicons.min.css" rel="stylesheet" />
@@ -7,13 +9,17 @@
         <h2>GameShop</h2>
       </div>
       <div class="navmenu">
-       
+        <div class="search-box">
+          <input type="search" v-model="searchQuery" class="search" placeholder="Search game..." />
+          <i class="bx bx-search" @click="searchByName"></i>
+        </div>
 
         <div class="user-options">
           <div class="dropdown">
             <button class="dropbtn"><img src="../assets/account.png" class="account-img"></button>
             <div class="nav-buttons">
               <button @click="goToCustomerAccount">Account</button>
+              <button @click="goToCustomerOrders" class="order-btn">Orders</button>
               <button @click="logout" class="logout-btn">Log Out</button>
             </div>
           </div>
@@ -27,7 +33,6 @@
       </div>
     </nav>
   </header>
-
     <div class="command">
         <div class="main-header">
             <div class="header">
@@ -40,7 +45,7 @@
                 <div class="id">Order number: {{ command.commandId }}</div>
                 <div class="order">
                     <h5>Order details:</h5>
-                    <div class="returnPrice"><strong>Total: </strong> {{ command.totalPrice }}$</div>
+                    <div class="returnPrice"><strong>Total: </strong> {{ command.totalPrice.toFixed(2) }}$</div>
                     <div class="Date"><strong>Placed on: </strong> {{ command.commandDate }}</div>
 
                     <div class="shippement">

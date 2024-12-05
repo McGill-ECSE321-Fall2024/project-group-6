@@ -1,3 +1,5 @@
+<!-- Author: Joseph and Mario -->
+
 <template>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.4/css/boxicons.min.css" rel="stylesheet">
   <header>
@@ -5,14 +7,14 @@
       <div class="logo">
         <h2>GameShop</h2>
       </div>
-      <div class="navmenu"  >
+      <div class="navmenu">
         <div class="search-box">
-              <input type="text" v-model="searchQuery" class="search" placeholder="Search game...">
-              <i class='bx bx-search' @click="searchByName"></i>
+          <input type="text" v-model="searchQuery" class="search" placeholder="Search game...">
+          <i class='bx bx-search' @click="searchByName"></i>
         </div>
         <div class="auth-links ">
           <RouterLink to="/SignIn">Sign In</RouterLink>
-          <RouterLink to="/SignUp" >Sign Up</RouterLink>
+          <RouterLink to="/SignUp">Sign Up</RouterLink>
         </div>
       </div>
     </nav>
@@ -30,12 +32,12 @@
     <main class="catalog">
       <div v-if="games.length === 0">No games found</div>
       <div v-for="game in games" :key="game.gameId" class="game-card">
-        <img :src="game.photoURL" alt="Game Image" class="game-image" @click="goToGamePage(game)"/>
+        <img :src="game.photoURL" alt="Game Image" class="game-image" @click="goToGamePage(game)" />
         <div class="game-info">
           <h3>{{ game.name }}</h3>
           <p v-if="game.promotion > 0" class="game-price promo">
-            <strong>Price:</strong> ${{ game.price }} 
-            <span class="promo-badge">{{ game.promotion }}% off!</span>
+            <strong>Price:</strong> ${{ game.price }}
+            <span class="promo-badge">{{ game.promotion*100 }}% off!</span>
           </p>
           <p v-else class="game-price">
             <strong>Price:</strong> ${{ game.price }}
@@ -80,20 +82,20 @@ export default {
     },
     async searchByName() {
       try {
-        console.log("I am here "+this.searchQuery);
+        console.log("I am here " + this.searchQuery);
         const response = await axios.get(`http://localhost:8080/games/name/${this.searchQuery}`);
         this.games = [response.data];
       } catch (error) {
         console.error('Error searching for games:', error);
       }
     },
-    async goToGamePage(game){
+    async goToGamePage(game) {
       router.push({
-                name: 'gamepage',
-                params: {
-                  gameId: game.gameId
-                }
-            });
+        name: 'gamepage',
+        params: {
+          gameId: game.gameId
+        }
+      });
     },
     async filterByCategory() {
       if (this.selectedCategory === 'all') {
@@ -106,136 +108,160 @@ export default {
           console.error('Error filtering games by category:', error);
         }
       }
+    },
+    async createManager() {
+
+      var check = "false"
+      var people = [];
+      const response = await axios.get("http://localhost:8080/person");
+        people = response.data["people"];
+      for (var i = 0; i < people.lenght; i++) {
+        if (people[i]["username"] == "Manager") {
+          check = "true";
+        }
+      }
+      if (check == "false") {
+        const manager = {
+          username: "Manager",
+          email: "manager@example.com",
+          phone: "1234567890",
+          password: "examplePassword"
+        };
+        await axios.post("http://localhost:8080/manager",manager);
+    }
     }
   },
+
   async created() {
     await this.fetchCategories();
     await this.fetchGames();
+    await this.createManager();
   }
 };
 </script>
 
+
 <style scoped>
 * {
-    margin: 0;
-    padding: 0;
-    text-decoration: none;
-    list-style: none;
-    font-family: "poppins";
+  margin: 0;
+  padding: 0;
+  text-decoration: none;
+  list-style: none;
+  font-family: "poppins";
 }
 
 .navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    text-align: center;
-    width: 100%;
-    height: 80px;
-    background: #1033a4;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  height: 80px;
+  background: #1033a4;
 }
 
 .navbar h2 {
-    color: #ffffff;
-    font-size: 25px;
-    font-weight: 500;
-    padding: 20px 20px;
+  color: #ffffff;
+  font-size: 25px;
+  font-weight: 500;
+  padding: 20px 20px;
 }
 
 .navmenu {
-    height: 50px;
-    line-height: 60px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  height: 50px;
+  line-height: 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .search-box .search {
-    width: 500px;
-    padding: 8px 8px;
-    border-radius: 50px;
-    font-size: 16px;
+  width: 500px;
+  padding: 8px 8px;
+  border-radius: 50px;
+  font-size: 16px;
 }
 
 .search-box {
-    margin-right: 200px;
+  margin-right: 200px;
 }
 
 .navmenu .search-box i {
-    color: #ffffff;
-    position: relative;
-    right: 40px;
-    top: 2px;
-    background-color: #1140d9;
-    padding: 8px;
-    border-radius: 50px;
+  color: #ffffff;
+  position: relative;
+  right: 40px;
+  top: 2px;
+  background-color: #1140d9;
+  padding: 8px;
+  border-radius: 50px;
 }
 
 header img {
-    margin-top: 15px;
-    margin-right: 10px;
-    align-items: center;
-    width: 40px;
+  margin-top: 15px;
+  margin-right: 10px;
+  align-items: center;
+  width: 40px;
 }
 
 .navmenu .iconcCart {
-    align-items: center;
-    position: relative;
-    margin: 10px;
-    z-position: 1;
-    display: inline-block;
+  align-items: center;
+  position: relative;
+  margin: 10px;
+  z-position: 1;
+  display: inline-block;
 }
 
 .main-header {
-    width: 100%;
-    margin: auto;
-    height: 40px;
-    display: flex;
-    padding-bottom: 30px;
+  width: 100%;
+  margin: auto;
+  height: 40px;
+  display: flex;
+  padding-bottom: 30px;
 }
 
 .main-header .header {
-    margin-left: 30px;
-    margin-bottom: 30px;
+  margin-left: 30px;
+  margin-bottom: 30px;
 }
 
 .main-header h5 {
-    font-size: 20px;
-    font-weight: 550px;
-    margin-top: 10px;
-    margin-bottom: 15px;
+  font-size: 20px;
+  font-weight: 550px;
+  margin-top: 10px;
+  margin-bottom: 15px;
 }
 
 .main-header h2 {
-    font-weight: bold;
-    font-size: 38px;
-    width: 500px;
-    margin-top: 10px;
-    margin-bottom: 15px;
+  font-weight: bold;
+  font-size: 38px;
+  width: 500px;
+  margin-top: 10px;
+  margin-bottom: 15px;
 }
 
 .main-header .a {
-    margin-bottom: 30px;
+  margin-bottom: 30px;
 }
 
 .main-header .btn {
-    background: #88b9df;
-    border: 1px solid #88b9df;
-    font-size: 15px;
-    color: #ffffff;
-    font-weight: 400;
-    padding: 4px 20px;
-    border-radius: 50px;
+  background: #88b9df;
+  border: 1px solid #88b9df;
+  font-size: 15px;
+  color: #ffffff;
+  font-weight: 400;
+  padding: 4px 20px;
+  border-radius: 50px;
 }
 
 .main-header .btn:hover {
-    color: #88b9df;
-    background: #ffffff;
+  color: #88b9df;
+  background: #ffffff;
 }
 
 .auth-links {
   display: flex;
   gap: 1rem;
-  padding-right: 1rem; 
+  padding-right: 1rem;
 }
 
 .auth-links a {
@@ -257,7 +283,8 @@ header img {
   display: inline-block;
   margin-left: 10px;
   padding: 3px 8px;
-  background-color: rgba(236, 137, 137, 0.999); /* Bright orange to catch attention */
+  background-color: rgba(236, 137, 137, 0.999);
+  /* Bright orange to catch attention */
   color: #fff;
   font-size: 0.9rem;
   font-weight: bold;
@@ -268,10 +295,13 @@ header img {
 
 /* Animation to add a pulsing effect */
 @keyframes pulse {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: scale(1);
     opacity: 1;
   }
+
   50% {
     transform: scale(1.1);
     opacity: 0.9;
@@ -314,7 +344,8 @@ header img {
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   width: 300px;
-  height: 450px; /* Ensure consistent height for all cards */
+  height: 450px;
+  /* Ensure consistent height for all cards */
   text-align: center;
   position: relative;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -328,12 +359,13 @@ header img {
 .game-image {
   max-width: 100%;
   height: 60%;
-  margin: 0.5rem ;
+  margin: 0.5rem;
 }
 
 .game-info {
   position: absolute;
-  bottom: 10px; /* Ensure info starts from the bottom */
+  bottom: 10px;
+  /* Ensure info starts from the bottom */
   left: 0;
   right: 0;
   padding: 15px;
@@ -356,7 +388,6 @@ header img {
 }
 
 .game-description {
-  color: #333; 
+  color: #333;
 }
-
 </style>

@@ -3,11 +3,6 @@ package ca.mcgill.ecse321.gameshop.controller;
 /**
  * @author Joseph
  */
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
 
 import ca.mcgill.ecse321.gameshop.dto.EmployeeListDto;
 import ca.mcgill.ecse321.gameshop.dto.EmployeeRequestDto;
@@ -89,7 +84,7 @@ public class EmployeeController {
     @CrossOrigin(origins = "http://localhost:8087")
     @PutMapping("/employees/{eid}")
     public EmployeeResponseDto updateEmployee(@PathVariable int eid, @RequestBody EmployeeRequestDto employee) {
-        Employee e = employeeService.updateEmployee(eid, employee.getUsername(),employee.getEmail(), employee.getPassword(), employee.getPhone());
+        Employee e = employeeService.updateEmployee(eid, employee.getUsername(),employee.getEmail(), employee.getPassword(), employee.getPhone(), employee.getAssignedTasks());
 
         return new EmployeeResponseDto(e);
     }

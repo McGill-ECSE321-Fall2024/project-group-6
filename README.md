@@ -84,44 +84,32 @@ Table 2 : Roles of each team member Deliverable 2: <br/>
 Table 3 : Roles of each team member Deliverable 3: <br/>
 | **Name**    | **Role**                                            | **Number of Hours** |
 |-------------|-----------------------------------------------------|---------------------|
-| Laurence    | Manager Dashboard, Game Page and Manage employees (Frontend/Backend)              |                   |
-|             | Update ReadMe file                                |                   |
-|             | Presentation slides                     |                  |
-| Annabelle   | Customer Game Page and Account (Frontend/Backend)                   |                  |
-|             | Presentation slides                  |                |
-| Marine      | Employee Dashboard, Account and Game Page (Frontend)          |                  |
-|             | Meeting Minutes                     |       1        |
-|             | Key Decisions                     |         1         |
-|             | Presentation slides             |          1.5       |
-| Maissa      | Customer Wishlist and Checkout (Frontend/Backend)    |                  |
-|             | Demo         |                 |
-| Joseph      | Build system and CI specification  |                   |
-|             | Sign Up/Sign in and Home Page (Backend)   |                 |
-|             | Employee Dashboard, Account and Game Page (Backend)          |                  |
-|             | Demo                                                  |                  |
-| Mario       | Customer Dashboard and Account (Frontend/Backend)             |                   |
-## Recommended IDE Setup
-
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
-
-```sh
-npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
-```
-
-### Compile and Minify for Production
-
-```sh
-npm run build
-```
+| Laurence    | Manager Dashboard, Game Page and Manage employees (Frontend/Backend)   |         8          |
+|             | Update ReadMe file                                                     |         1         |
+|             | Presentation slides                                                    |         1.5        |
+| Annabelle   | Customer Game Page and Account (Frontend/Backend)                      |         8         |
+|             | Presentation slides                                                    |         1          |
+|             | Manager Game Page (Frontend/Backend)                                   |         1.5          |
+|             | Backend Setup                                                           |         5          |
+| Marine      | Employee Dashboard, Account and Game Page (Frontend)                    |         6        |
+|             | Meeting Minutes                                                           |       1        |
+|             | Key Decisions                                                            |         1         |
+|             | Presentation slides                                                      |          1.5       |
+| Maissa      | Customer Wishlist and Checkout (Frontend/Backend)                          |        10          |
+|             | Customer Orders and Command page (Frontend/Backend)                          |         6        |
+|             | Manager GamePage, Guest GamePage                                           |          6        |
+|             | Ensured consistent formatting for all pages  (buttons, alerts)             |        3          |
+|             | Demo                                                                       |         2        |
+|             |
+| Joseph      | Build system and CI specification                                         |        0.5           |
+|             | Sign Up, Sign in, and Home Page                                            |       8          |
+|             | Employee Dashboard, Account and Game Page                                   |        9          |
+|             | Customer Dashboard and Account (Frontend/Backend)                          |        9          |
+|             | Manager HomePage, Manage Employee & Manager Game View                      |      9         |
+|             | Demo                                                                        |         5         |
+|             | Testing of the application                                                  |         4         |
+|             | Backend Setup                                                                |       7          |
+| Mario       | Customer Dashboard and Account (Frontend/Backend)                            |        9          |
+|             | Manager "Manage employee page" and Game page (Frontend/Backend)             |         7         |
+|             | Game catalog of all home pages                                            |           6          |
+|             | Ensured consistent formatting for all pages                                |          4         |

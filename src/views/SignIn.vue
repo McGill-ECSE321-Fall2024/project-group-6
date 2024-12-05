@@ -1,3 +1,5 @@
+<!-- Author: Joseph -->
+
 <template>
   <main class="signup-container">
     <h1>User Login</h1>
@@ -13,7 +15,7 @@
       <input v-if="userType === 'employee'" type="text" placeholder="Employee Number" v-model="employeeNumber" />
       <input v-if="userType === 'manager'" type="text" placeholder="Manager Number" v-model="managerNumber" />
       <button @click="login" :disabled="!isFormValid()">Login</button>
-      <button class="danger-btn" @click="clearInputs">Clear</button>
+      <button class="danger-btn" @click="clearInputs()">Clear</button>
     </div>
     <p v-if="errorMessage" class="danger-btn">{{ errorMessage }}</p>
   </main>
@@ -53,23 +55,18 @@ export default {
       }
 
       try {
-        const user = { username:"123",email: this.email, password: this.password, phone:"123" };
+        const user = { username:"123",email: this.email.toLowerCase(), password: this.password, phone:"123" };
         const response = await axiosClient.post(`/login`, user);
 
-        if (response.data.email === this.email && response.data.username!=="deactivated") {
-        /*
-          if (this.userType === 'manager') {
-            router.push({ name: 'manager-dashboard' });
-          } else if (this.userType === 'employee') {
-            router.push({ name: 'employee-dashboard' });
-          } else if (this.userType === 'customer') {
-            router.push({ name: 'customer-dashboard' });
-          }
-            */
-        localStorage.setItem('loggedIn', 'true'); // Set the logged-in status
-      if (this.userType === 'employee') {
-        //console.log(this.getRoleID (response.data.userId));
+        if (response.data.email.toLowerCase() === this.email.toLowerCase() && response.data.username!=="deactivated") {
+      
+        localStorage.setItem('loggedIn', 'true'); 
         
+      if (this.userType === 'employee') {
+        var idToPass= await this.getRoleID(response.data.userId);
+        const response4 = await axios.get(`http://localhost:8080/employees/${idToPass}`);
+        console.log(response4.data.email.toLowerCase()+" "+this.email.toLowerCase());
+        if(response4.data.email.toLowerCase()==this.email.toLowerCase()){
         router.push({
           name: 'employee-homepage',
           params: {
@@ -78,49 +75,54 @@ export default {
           }
           
         });
+      }else{
+      alert("This user is not registered as an employee");
+      }
         
       }
       else if(this.userType === 'manager'){
-       
-        //console.log(this.getRoleID (response.data.userId));
-        
+       var idToPass= await this.getManagerID(response.data.userId);
+        const response2 = await axios.get(`http://localhost:8080/manager/${idToPass}`);
+        console.log(response2.data.email+" comparedto "+this.email);
+        if(response2.data.email.toLowerCase()==this.email.toLowerCase()){
         router.push({
           name: 'manager-homepage',
           params: {
-            managerId: await this.getManagerID(response.data.userId),
+            managerId: idToPass,
             loggedIn: true
           }
           
         });
+      }else{
+        alert("This user is not registered as a manager");
+      }
         
       
       }
       else if(this.userType === 'customer'){
        
-       //console.log(this.getRoleID (response.data.userId));
-       
+        var idToPass= await this.getCustomerID(response.data.userId);
+        const response3 = await axios.get(`http://localhost:8080/customers/${idToPass}`);
+        
+        if(response3.data.email.toLowerCase()==this.email.toLowerCase()){
        router.push({
          name: 'customer-homepage',
          params: {
            customerId: await this.getCustomerID(response.data.userId),
            loggedIn: true
          }
-         
+        
        });
-       
-     
-     }
+      } 
+    }
 
-           this.errorMessage="Successful login";
         } 
-        else if(response.data.username==="deactivated"){
+        else if(response.data.username=="deactivated"){
           this.errorMessage="Employee has been deactivated";
         }
-        else {
-          this.errorMessage = 'Invalid login credentials';
-        }
+       
       } catch (error) {
-        this.errorMessage = 'Error logging in';
+        this.errorMessage = 'Invalid login credentials';
         console.log(error);
       }
     },
@@ -150,10 +152,7 @@ export default {
       } catch (error) {
         console.error( error);
       }
-    }
-    
     },
-  
     clearInputs() {
       this.userType = '';
       this.email = '';
@@ -162,6 +161,10 @@ export default {
       this.managerNumber = '';
       this.errorMessage = '';
     }
+    
+    },
+  
+   
   };
 
 </script>
