@@ -104,7 +104,7 @@ public class ReviewService {
      * @throws GameShopException If no review with the given ID is found or rating is null.
      */
     @Transactional
-    public Review updateReview(int id, Review.StarRating aRating, String aComment, String aReply) {
+    public Review updateReview(int id, Review.StarRating aRating, String aComment, String aReply, int aAmountOfLikes ) {
         Review r = reviewRepo.findReviewByReviewId(id);
 
         if (r == null) {
@@ -115,11 +115,10 @@ public class ReviewService {
         if (aRating == null) {
             throw new GameShopException(HttpStatus.BAD_REQUEST, "Rating cannot be empty");
         }
-
         r.setRating(aRating);
         r.setComment(aComment);
         r.setReply(aReply);
-        // The number of likes is not updated via this method as it's managed separately
+        r.setAmountOfLikes(aAmountOfLikes);
 
         return reviewRepo.save(r);
     }

@@ -78,7 +78,7 @@ public class ReviewController {
     @CrossOrigin(origins = "http://localhost:8087")
     @PutMapping("/review/{id}")
     public ReviewResponseDto updateReview(@PathVariable int id, @RequestBody ReviewRequestDto review) {
-        Review r = reviewService.updateReview(id, review.getRating(), review.getComment(), review.getReply());
+        Review r = reviewService.updateReview(id, review.getRating(), review.getComment(), review.getReply(), review.getAmountOfLikes());
         return new ReviewResponseDto(r);
     }
 

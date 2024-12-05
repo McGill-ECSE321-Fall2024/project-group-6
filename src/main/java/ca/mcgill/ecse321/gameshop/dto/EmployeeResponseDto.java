@@ -10,7 +10,7 @@ public class EmployeeResponseDto {
     private String email;
     private String phone;
     private int employeeId;
-
+    private String password;
     private List <String> assignedTasks;
     private boolean activated;
     @SuppressWarnings("unused")
@@ -24,7 +24,7 @@ public class EmployeeResponseDto {
         this.phone = employee.getPerson().getPhone();
         this.assignedTasks=employee.getAssignedTasks();
         this.activated=employee.getActivated();
-
+        this.password=employee.getPerson().getPassword();
     }
 
     /**
@@ -48,6 +48,9 @@ public class EmployeeResponseDto {
     }
     public int getEmployeeId() {
         return employeeId;
+    }
+    public String getPassword() {
+        return password;
     }
 
         public boolean getIsActivated(){

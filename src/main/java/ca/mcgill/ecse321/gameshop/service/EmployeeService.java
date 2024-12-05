@@ -137,7 +137,7 @@ public class EmployeeService {
      * @return
      */
     @Transactional
-    public Employee updateEmployee(int id, String aUsername, String aEmail, String aPassword, String aPhone) {
+    public Employee updateEmployee(int id, String aUsername, String aEmail, String aPassword, String aPhone, List<String> tasks) {
         Employee employee = repo.findEmployeeByRoleId(id);
 
         if (employee== null) {
@@ -161,6 +161,7 @@ public class EmployeeService {
         employee.getPerson().setEmail(aEmail);
         employee.getPerson().setPhone(aPhone);
         employee.getPerson().setPassword(aPassword);
+        employee.setAssignedTasks(tasks);
 
 
         return repo.save(employee);

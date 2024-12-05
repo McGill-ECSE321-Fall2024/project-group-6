@@ -2,16 +2,12 @@ package ca.mcgill.ecse321.gameshop.service;
 /**
  * @author Joseph
  */
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
+import ca.mcgill.ecse321.gameshop.exception.GameShopException;
+import ca.mcgill.ecse321.gameshop.model.Employee;
+import ca.mcgill.ecse321.gameshop.model.Person;
+import ca.mcgill.ecse321.gameshop.repository.EmployeeRepository;
+import ca.mcgill.ecse321.gameshop.repository.PersonRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -21,9 +17,13 @@ import org.mockito.quality.Strictness;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 
-import ca.mcgill.ecse321.gameshop.exception.*;
-import ca.mcgill.ecse321.gameshop.model.*;
-import ca.mcgill.ecse321.gameshop.repository.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @MockitoSettings(strictness = Strictness.STRICT_STUBS)
@@ -180,7 +180,7 @@ public class EmployeeServiceTests {
         });
 
         // Act
-        Employee updatedEmployee = service.updateEmployee(ID, updatedName, updatedEmail, updatedPassword, updatedPhone);
+        Employee updatedEmployee = service.updateEmployee(ID, updatedName, updatedEmail, updatedPassword, updatedPhone,null);
 
         // Assert
         assertNotNull(updatedEmployee);
@@ -214,7 +214,7 @@ public class EmployeeServiceTests {
 
         // Assert
         GameShopException ex = assertThrows(GameShopException.class,
-                () -> service.updateEmployee(ID, updatedName, updatedEmail, updatedPassword, updatedPhone));
+                () -> service.updateEmployee(ID, updatedName, updatedEmail, updatedPassword, updatedPhone,null));
         assertEquals(HttpStatus.LENGTH_REQUIRED, ex.getStatus());
         assertEquals("Password needs to be at least 10 characters long", ex.getMessage());
     }
@@ -239,7 +239,7 @@ public class EmployeeServiceTests {
 
         // Assert
         GameShopException ex = assertThrows(GameShopException.class,
-                () -> service.updateEmployee(ID, updatedName, updatedEmail, updatedPassword, updatedPhone));
+                () -> service.updateEmployee(ID, updatedName, updatedEmail, updatedPassword, updatedPhone,null));
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Username can not be null", ex.getMessage());
     }
@@ -265,7 +265,7 @@ public class EmployeeServiceTests {
 
         // Assert
         GameShopException ex = assertThrows(GameShopException.class,
-                () -> service.updateEmployee(ID, updatedName, updatedEmail, updatedPassword, updatedPhone));
+                () -> service.updateEmployee(ID, updatedName, updatedEmail, updatedPassword, updatedPhone,null));
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Phone number can not be null", ex.getMessage());
     }
@@ -291,7 +291,7 @@ public class EmployeeServiceTests {
 
         // Assert
         GameShopException ex = assertThrows(GameShopException.class,
-                () -> service.updateEmployee(ID, updatedName, updatedEmail, updatedPassword, updatedPhone));
+                () -> service.updateEmployee(ID, updatedName, updatedEmail, updatedPassword, updatedPhone,null));
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Email can not be null", ex.getMessage());
     }
@@ -303,7 +303,7 @@ public class EmployeeServiceTests {
 
         String email="qr@gmail.com";
         GameShopException ex = assertThrows(GameShopException.class,
-                () -> service.updateEmployee(ID, VALID_NAME, email, VALID_PASSWORD, VALID_PHONE));
+                () -> service.updateEmployee(ID, VALID_NAME, email, VALID_PASSWORD, VALID_PHONE,null));
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Employee with ID " + ID + " does not exist.", ex.getMessage());
     }
