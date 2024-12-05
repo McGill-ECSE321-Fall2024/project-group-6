@@ -1,3 +1,5 @@
+<!-- Author: Annabelle -->
+
 <template>
   <link
       href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.4/css/boxicons.min.css"
@@ -29,28 +31,31 @@
 
     <!-- Account Info Section -->
     <div class="account-page">
+      <div v-if="showPopup" class="popup">
+        {{ popupMessage }}
+      </div>
       <div class="account-info">
         <h1>Account Details</h1>
         <div class="form">
           <div class="form-group">
             <label for="username">Username</label>
-            <input type="text" id="username" v-model="account.username" />
+            <input type="text" id="username" v-model="account.username" required />
           </div>
           <div class="form-group">
             <label for="email">Email Address</label>
-            <input type="email" id="email" v-model="account.email" />
+            <input type="email" id="email" v-model="account.email" required />
           </div>
           <div class="form-group">
             <label for="phone">Phone Number</label>
-            <input type="text" id="phone" v-model="account.phone" />
+            <input type="text" id="phone" v-model="account.phone" required/>
           </div>
           <div class="form-group">
             <label for="shippingAddress">Address</label>
-            <input type="text" id="shippingAddress" v-model="account.shippingAddress" />
+            <input type="text" id="shippingAddress" v-model="account.shippingAddress" required />
           </div>
           <div class="form-group">
             <label for="password">Password</label>
-            <input type="password" id="password" v-model="account.password" />
+            <input type="password" id="password" v-model="account.password" required/>
           </div>
         </div>
         <button @click="updateAccount" class="btn-update">
@@ -77,6 +82,8 @@ export default {
         shippingAddress: "",
         password: "",
       },
+      popupMessage: "",
+      showPopup: false,
     };
   },
   methods: {
@@ -97,13 +104,23 @@ export default {
       }
     },
     async updateAccount() {
+      if(!this.account.username||!this.account.email||!this.account.shippingAddress||!this.account.password||!this.account.phone){
+        this.popupMessage = "Please fill in all the fields";
+        this.showPopup = true;
+        setTimeout(() => (this.showPopup = false), 3000);
+        return;
+      }
       try {
         await axios.put(`http://localhost:8080/customers/${this.customerID}`, this.account);
-        alert("Account updated successfully!");
+        
         await this.fetchAccountInfo();
+        this.popupMessage = "Account updated successfully!";
+        this.showPopup = true;
+        setTimeout(() => (this.showPopup = false), 3000);
       } catch (error) {
-        console.error("Failed to update account:", error);
-        alert("Failed to update account. Please try again later.");
+        this.popupMessage = "Error saving the changes, please try again.";
+        this.showPopup = true;
+        setTimeout(() => (this.showPopup = false), 3000);
       }
     },
     async goToCustomerHome() { //nav method
@@ -346,6 +363,19 @@ padding: 10px;
   color: #1033a4;
 }
 
+.popup {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #eee;
+  color: #000000;
+  padding: 10px 20px;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  font-weight: bold;
+  z-index: 0;
+}
 .form {
   margin-top: 20px;
 }

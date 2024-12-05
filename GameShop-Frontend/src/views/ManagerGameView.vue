@@ -1,3 +1,5 @@
+<!-- Author: Joseph, Annabelle, Laurence and Maissa -->
+
 <template>
     <div class="game-details-container">
         <header class="header">
@@ -93,7 +95,7 @@
                             <p><strong>{{ review.customer.person.username }}</strong> wrote:</p>
                             <p class="comment-content">{{ review.comment }}</p>
                         </div>
-                        <p>Rating: {{ parseRating(review.rating) }}/5</p>
+                        <p>Rating: {{ parseRating(review.rating)+1 }}/5</p>
                         <p>Likes: {{ review.amountOfLikes || 0 }}</p>
 
                         <div v-if="review.reply && review.reply.trim()" class="manager-reply">
@@ -244,7 +246,7 @@ export default {
                     this.game.categories = this.categoryIdsArray;
                     await this.saveAfterCategoryChange();
                 } else {
-                    //this.fetchGameDetails();
+                    this.fetchGameDetails();
                     this.popupMessage = "The category already is assigned to this game";
                     this.showPopup = true;
                     setTimeout(() => (this.showPopup = false), 3000);
@@ -272,7 +274,6 @@ export default {
                 this.popupMessage = "This category does not exist for this game, try another one";
                 this.showPopup = true;
                 setTimeout(() => (this.showPopup = false), 3000);
-                //await this.fetchGameDetails();
             }
             this.categoryIdRemove = "";
         },
@@ -287,6 +288,7 @@ export default {
             });
         },
         async fetchCategories() {
+            this.categoryIdsArray=[];
             try {
                 const response = await axios.get('http://localhost:8080/categories');
                 this.categories = response.data["categories"];
@@ -368,7 +370,7 @@ export default {
             }
         },
         logout() {
-            this.$router.push("/SignIn"); // Redirect to login
+            this.$router.push("/"); // Redirect to login
         },
     },
     created() {

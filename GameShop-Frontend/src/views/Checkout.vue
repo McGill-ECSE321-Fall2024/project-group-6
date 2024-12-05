@@ -1,3 +1,5 @@
+<!-- Author: Maissa -->
+
 <template>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.4/css/boxicons.min.css" rel="stylesheet">
     <header>
@@ -6,10 +8,7 @@
         <h2>GameShop</h2>
       </div>
       <div class="navmenu">
-        <div class="search-box">
-          <input type="search" v-model="searchQuery" class="search" placeholder="Search game..." />
-          <i class="bx bx-search" @click="searchByName"></i>
-        </div>
+        
 
         <div class="user-options">
           <div class="dropdown">
@@ -47,7 +46,7 @@
                                 <p><strong>Stock:</strong> {{ game.stockQuantity }} left</p>
                                 <p><strong>Price:</strong> {{ game.price }}$ </p>
                             </div>
-                            <div class="returnPrice">{{ game.price*(1-game.promotion) }}$</div>
+                            <div class="returnPrice">{{ (game.price*(1-game.promotion)).toFixed(2) }}$</div>
                             <div class="buttons">
                                 <a @click="removeFromCart(game)" class="btn">-</a>
                             </div>
@@ -195,7 +194,8 @@ export default {
             return this.customer.cart.length;
         },
         totalPrice() {
-            return this.customer.cart.reduce((total, game) => total + game.price*(1-game.promotion), 0);
+            const total=this.customer.cart.reduce((total, game) => total + game.price*(1-game.promotion), 0);
+            return total.toFixed(2);
         },
 
     },
@@ -558,7 +558,7 @@ header .img {
     width: 40px;
 }
 .container {
-    height: 100vh;
+    height: 150vh;
     background-color: #ffffff;
     color: #000000;
 }

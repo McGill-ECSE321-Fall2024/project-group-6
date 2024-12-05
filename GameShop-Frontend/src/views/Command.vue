@@ -1,3 +1,5 @@
+<!-- Author: Maissa -->
+
 <template>
     
   <link href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.4/css/boxicons.min.css" rel="stylesheet" />
@@ -46,10 +48,10 @@
           <h5>Items:</h5>
           <div v-for="game in cart" :key="game.id" class="game-row">
             <p class="game-name">{{ game.name }}</p>
-            <p class="game-price">{{ game.price }}$</p>
+            <p class="game-price">{{ game.price.toFixed(2) }}$</p>
           </div>
 
-          <div class="returnPrice"><strong>Total: </strong> {{ command.totalPrice }}$</div>
+          <div class="returnPrice"><strong>Total: </strong> {{ command.totalPrice.toFixed(2) }}$</div>
           <h5>Order details:</h5>
           <div class="shippement">
             <strong>Shipping Address:</strong> {{ command.customer.shippingAddress }}

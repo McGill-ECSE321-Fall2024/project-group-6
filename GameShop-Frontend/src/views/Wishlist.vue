@@ -1,33 +1,43 @@
+<!-- Author: Maissa -->
+
 <template>
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.4/css/boxicons.min.css" rel="stylesheet">
     <header>
-      <nav class="navbar">
-        <div class="logo">
-          <h2>GameShop</h2>
+    <nav class="navbar">
+      <div class="logo">
+        <h2>GameShop</h2>
+      </div>
+      <div class="navmenu">
+        <div class="search-box">
+          <input type="search" v-model="searchQuery" class="search" placeholder="Search game..." />
+          <i class="bx bx-search" @click="searchByName"></i>
         </div>
-        <div class="navmenu">
-        </div>
-          <div class="user-options">
-            <div class="dropdown">
-              <button class="dropbtn"><img src="../assets/account.png" class="account-img"></button>
-              <div class="nav-buttons">                    
-                    <button @click="goToCustomerMainPage">Home</button>
-                    <button @click="goToCustomerOrders">Orders</button>
-                    <button @click="logout">Sign out</button>
-                </div>
+
+        <div class="user-options">
+          <div class="dropdown">
+            <button class="dropbtn"><img src="../assets/account.png" class="account-img"></button>
+            <div class="nav-buttons">
+              <button @click="goToCustomerAccount">Account</button>
+              <button @click="goToCustomerOrders" class="order-btn">Orders</button>
+              <button @click="logout" class="logout-btn">Log Out</button>
             </div>
-            <button @click="goToCustomerWishlist"><img src="../assets/White-Heart.png" alt="WishList" class="wishlist-img" @click="goToCustomerWishlist"></button>
-            <button @click="goToCart"><img src="../assets/pngaaa.com-5034351.png" alt="Cart" class="cart-img" @click="goToCustomerCart"></button>
           </div>
-      </nav>
-    </header>
+          <RouterLink><img src="../assets/White-Heart.png" @click="goToWishlist">
+          </RouterLink>
+
+          <RouterLink><img src="../assets/pngaaa.com-5034351.png" @click="goToCart">
+          </RouterLink>
+        </div>
+      </div>
+    </nav>
+  </header>
     <div class="wishlist">
         <div class="main-header">
             <div class="header">
                 <h2>Your GameShop Wishlist</h2>
                 <h5>Your favorite games all in one place! Grab them now before they're gone!</h5>
-                
+
             </div>
         </div>
         <div class="container">
@@ -156,16 +166,16 @@ export default {
             });
         },
         async goToWishlist() {
-        router.push({
-          name: 'customer-wishlist',
-          params: {
-            customerId: this.customerId,
-            loggedIn: true
-          }
-          
-        }); 
-    },
-    async goToCustomerAccount() {
+            router.push({
+                name: 'customer-wishlist',
+                params: {
+                    customerId: this.customerId,
+                    loggedIn: true
+                }
+
+            });
+        },
+        async goToCustomerAccount() {
             router.push({
                 name: 'customer-account',
                 params: {
@@ -261,39 +271,39 @@ export default {
 
 .nav-buttons {
 
-display: flex;
-align-items: center;
+    display: flex;
+    align-items: center;
 }
 
 .nav-buttons button {
-font-size: 1rem;
-color: #1033a4;
-border: none;
-padding: 0.5rem 1rem;
-border-radius: 5px;
-cursor: pointer;
-text-align: center;
-/* Centers the text horizontally */
-height: 50px;
-/* Set a fixed height to ensure vertical centering */
-display: flex;
-justify-content: center;
-align-items: center;
-/* Centers the button text vertically */
+    font-size: 1rem;
+    color: #1033a4;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    /* Centers the text horizontally */
+    height: 50px;
+    /* Set a fixed height to ensure vertical centering */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* Centers the button text vertically */
 }
 
 .nav-buttons button img {
-padding-bottom: 15px;
-padding-left: 10px;
+    padding-bottom: 15px;
+    padding-left: 10px;
 
 }
 
 .nav-buttons button:hover {
-background-color: #eff2f1;
+    background-color: #eff2f1;
 }
 
 .nav-buttons {
-padding: 10px;
+    padding: 10px;
 }
 
 

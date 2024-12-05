@@ -1,3 +1,5 @@
+<!-- Author: Joseph -->
+
 <template>
   <main class="signup-container">
     <h1>User Sign-Up</h1>

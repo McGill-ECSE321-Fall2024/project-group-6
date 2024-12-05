@@ -1,3 +1,5 @@
+<!-- Author: Joseph, Mario and Laurence -->
+
 <template>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.4/css/boxicons.min.css" rel="stylesheet" />
   <div class="employee-management">
@@ -133,7 +135,6 @@ export default {
           };
 
           await axios.post('http://localhost:8080/employees', newEmployee);
-          this.empl
           await this.fetchEmployees();
           this.popupMessage = "Employee was added successfully!";
           this.showPopup = true;
@@ -235,6 +236,19 @@ export default {
 
 .container {
   height: 100vh;
+}
+.popup {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #eee;
+    color: #000000;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    font-weight: bold;
+    z-index: 0;
 }
 
 /* Navbar */

@@ -1,3 +1,5 @@
+<!-- Author: Maissa -->
+
 <template>
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.4/css/boxicons.min.css" rel="stylesheet" />
@@ -43,7 +45,7 @@
                 <div class="id">Order number: {{ command.commandId }}</div>
                 <div class="order">
                     <h5>Order details:</h5>
-                    <div class="returnPrice"><strong>Total: </strong> {{ command.totalPrice }}$</div>
+                    <div class="returnPrice"><strong>Total: </strong> {{ command.totalPrice.toFixed(2) }}$</div>
                     <div class="Date"><strong>Placed on: </strong> {{ command.commandDate }}</div>
 
                     <div class="shippement">

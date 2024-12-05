@@ -1,3 +1,5 @@
+<!-- Author: Joseph -->
+
 <template>
   <main class="signup-container">
     <h1>User Login</h1>
@@ -13,7 +15,7 @@
       <input v-if="userType === 'employee'" type="text" placeholder="Employee Number" v-model="employeeNumber" />
       <input v-if="userType === 'manager'" type="text" placeholder="Manager Number" v-model="managerNumber" />
       <button @click="login" :disabled="!isFormValid()">Login</button>
-      <button class="danger-btn" @click="clearInputs">Clear</button>
+      <button class="danger-btn" @click="clearInputs()">Clear</button>
     </div>
     <p v-if="errorMessage" class="danger-btn">{{ errorMessage }}</p>
   </main>
@@ -109,20 +111,18 @@ export default {
            customerId: await this.getCustomerID(response.data.userId),
            loggedIn: true
          }
-         
+        
        });
       } 
+    }
 
         } 
-        else if(response.data.username==="deactivated"){
+        else if(response.data.username=="deactivated"){
           this.errorMessage="Employee has been deactivated";
         }
-        else {
-          this.errorMessage = 'Invalid login credentials';
-        }
-      } 
-    }catch (error) {
-        this.errorMessage = 'Wrong log in information';
+       
+      } catch (error) {
+        this.errorMessage = 'Invalid login credentials';
         console.log(error);
       }
     },
@@ -152,10 +152,7 @@ export default {
       } catch (error) {
         console.error( error);
       }
-    }
-    
     },
-  
     clearInputs() {
       this.userType = '';
       this.email = '';
@@ -164,6 +161,10 @@ export default {
       this.managerNumber = '';
       this.errorMessage = '';
     }
+    
+    },
+  
+   
   };
 
 </script>

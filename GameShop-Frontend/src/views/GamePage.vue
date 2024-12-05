@@ -1,3 +1,5 @@
+<!-- Author: Maissa -->
+
 <template>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.4/css/boxicons.min.css" rel="stylesheet" />
 
@@ -6,6 +8,12 @@
     <nav class="navbar">
       <div class="logo">
         <h2>GameShop</h2>
+      </div>
+      <div class="navmenu">
+        <div class="auth-links ">
+          <RouterLink to="/SignIn">Sign In</RouterLink>
+          <RouterLink to="/SignUp">Sign Up</RouterLink>
+        </div>
       </div>
     </nav>
   </header>
@@ -25,7 +33,7 @@
                   <h1>{{ game.name }}</h1>
                   <p><strong>Description:</strong> {{ game.description }}</p>
                   <p><strong>Price:</strong> ${{ game.price }}</p>
-                  <p><strong v-if="game.promotion>0">Promotion: -{{ game.promotion }}%</strong></p>
+                  <p><strong v-if="game.promotion>0">Promotion: {{ game.promotion*100 }}%</strong></p>
                   <p><strong>Stock Quantity:</strong> {{ game.stockQuantity }}</p>
                   <p><strong>Categories:</strong> {{ game.categories.join(", ") }}</p>
               </main>
@@ -40,12 +48,10 @@
               <div v-for="review in reviews" :key="review.reviewId" class="review">
                   <p><strong>{{ review.customer.person.username || "Anonymous" }}</strong>: {{ review.comment }}
                   </p>
-                  <p>Rating: {{ review.rating }}</p>
+                  <p>Rating: {{ parseRating(review.rating)+1 }}/5</p>
                   <p>Likes: {{ review.amountOfLikes || 0 }}</p>
                   <!-- Like Button -->
-                  <button v-if="!checkIfLiked(review.reviewId)" @click="likeReview(review)" class="btn-like">
-                      Like
-                  </button>
+                
               </div>
           </div>
           <p v-else class="no-reviews">No reviews available for this game!</p>
@@ -153,115 +159,6 @@ export default {
 </script>
 
 <style scoped>
-/* General Styles */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "poppins";
-}
-
-/* Navbar Styles */
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 80px;
-  background: #1033a4;
-  padding: 0 20px;
-  width: 100%;
-}
-
-.navbar h2 {
-  color: #fff;
-  font-size: 25px;
-}
-
-.navmenu {
-    height: 50px;
-    line-height: 60px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.navmenu .search-box i {
-    color: #ffffff;
-    position: relative;
-    right: 40px;
-    top: 2px;
-    background-color: #1140d9;
-    padding: 8px;
-    border-radius: 50px;
-}
-
-.search-box {
-  margin-right: 20px;
-  position: relative;
-}
-
-.search-box .search {
-  width: 300px;
-  padding: 8px;
-  border-radius: 20px;
-  border: none;
-}
-
-.search-box .bx-search {
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: #1140d9;
-  color: #fff;
-  padding: 8px;
-  border-radius: 50%;
-}
-
-.navmenu img {
-  width: 40px;
-  margin-left: 20px;
-}
-.auth-links {
-display: flex;
-gap: 1rem;
-padding-right: 1rem; 
-}
-
-.auth-links a {
-color: white;
-font-size: 1rem;
-font-weight: bold;
-
-}
-
-.auth-links a:hover {
-text-decoration: underline;
-}
-
-.nav-buttons {
-  display: none;
-  flex-direction: column;
-  position: absolute;
-  background-color: #fff;
-  top: 40px;
-  right: 0;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  padding: 10px;
-}
-
-.dropdown:hover .nav-buttons,
-.nav-buttons:hover {
-  display: flex;
-  /* Show dropdown on hover */
-}
-
-.dropdown:hover .nav-buttons {
-  display: flex !important;
-  /* Ensure it is displayed when hovering over the parent */
-}
-
-/* Main Game Page */
 * {
   margin: 0;
   padding: 0;
@@ -270,67 +167,171 @@ text-decoration: underline;
   font-family: "poppins";
 }
 
-.header {
+.user-options {
+  display: flex;
+  align-items: center;
+}
+
+.user-options button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.user-options img {
+  margin-top: 15px;
+  margin-right: 10px;
+  align-items: center;
+  width: 40px;
+}
+
+.dropdown .nav-buttons {
+  display: none;
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0.906);
+  background: #ffff;
+
+  color: #ffff;
+  z-index: 1;
+}
+
+.dropdown:hover .nav-buttons {
+  display: block;
+  border: solid;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown:hover .nav-buttons button {
+  display: flex;
+ 
+}
+
+.nav-buttons {
+
+  display: flex;
+  align-items: center;
+}
+
+.nav-buttons button {
+  font-size: 1rem;
+  color: #1033a4;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+  
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.nav-buttons button img {
+  padding-bottom: 15px;
+  padding-left: 10px;
+
+}
+
+.nav-buttons button:hover {
+  background-color: #eff2f1;
+}
+
+.nav-buttons {
+  padding: 10px;
+}
+
+
+
+
+.navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #1033a4;
-  color: white;
-  padding: 1rem;
-}
-
-.app-name {
-  font-size: 1.5rem;
-}
-
-.manager-btn {
-  display: flex;
-  background-color: #22bae0;
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  font-size: 0.9rem;
-}
-
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    text-align: center;
-    width: 100%;
-    height: 80px;
-    background: #1033a4;
+  text-align: center;
+  width: 100%;
+  height: 80px;
+  background: #1033a4;
 }
 
 .navbar h2 {
-    color: #ffffff;
-    font-size: 25px;
-    font-weight: 500;
-    padding: 20px 20px;
+  color: #ffffff;
+  font-size: 25px;
+  font-weight: 500;
+  padding: 20px 20px;
 }
 
-.reviews-section h2 {
+.navmenu {
+  height: 50px;
+  line-height: 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.search-box .search {
+  width: 500px;
+  padding: 8px 8px;
+  border-radius: 50px;
+  font-size: 16px;
+}
+
+.popup {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #eee;
+  color: #000000;
+  padding: 10px 20px;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   font-weight: bold;
-  text-align: center;
-  font-size: 2rem;
+  z-index: 0;
 }
 
-.no-reviews {
-  text-align: center;
-  font-size: 1.5rem;
-  margin: 1rem;
+.search-box {
+  margin-right: 200px;
 }
 
-.logout-btn {
-  background-color: #ff6f61;
+.navmenu .search-box i {
+  color: #ffffff;
+  position: relative;
+  right: 40px;
+  top: 2px;
+  background-color: #1140d9;
+  padding: 8px;
+  border-radius: 50px;
+}
+
+.auth-links {
+  display: flex;
+  gap: 1rem;
+  padding-right: 1rem;
+}
+
+.auth-links a {
   color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  font-size: 0.9rem;
+  font-size: 1rem;
+  font-weight: bold;
+
 }
 
+.auth-links a:hover {
+  text-decoration: underline;
+}
+header .img {
+  margin-top: 15px;
+  margin-right: 10px;
+  align-items: center;
+  width: 40px;
+}
+
+
+
+/* Main Game Page */
 /* Content */
 .content {
   min-height: 100vh;
@@ -343,10 +344,8 @@ text-decoration: underline;
 }
 
 .content a {
-    text-align: center;
-    font-size: 1.5rem;
-    margin-top: 1rem;
-    font-weight: bold;
+  text-align: center;
+  font-size: 2rem;
 }
 
 .game-info {
@@ -364,24 +363,18 @@ text-decoration: underline;
 
 .game-content {
   display: grid;
-  /* Use grid layout */
   grid-template-columns: 1fr 2fr;
-  /* Two columns: image (1fr), description (2fr) */
   gap: 1.5rem;
-  /* Space between columns */
   align-items: start;
-  /* Align content at the top */
 }
 
 .game-image-container {
   display: flex;
   justify-content: center;
-  /* Center the image horizontally */
 }
 
 .game-image {
   max-width: 100%;
-  /* Ensure the image fits its container */
   height: auto;
   border-radius: 10px;
 }
@@ -391,7 +384,6 @@ text-decoration: underline;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  /* Spacing between paragraphs */
 }
 
 .game-description p {
@@ -400,27 +392,56 @@ text-decoration: underline;
 
 .catalog {
   flex: 2;
-  text-align: center;
   padding: 20px;
-  margin: 3rem;
   display: flex;
   flex-direction: column;
 }
 
 .catalog p {
-  font-size: 1rem;
-}
-
-.catalog strong {
   font-weight: bold;
 }
 
-.catalog h3 {
+h3 {
+  font-size: 1.5rem;
+  margin-top: 1rem;
   font-weight: bold;
 }
 
+.btn-add-to-cart {
+  padding: 10px 20px;
+  background-color: #49D8B9;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  max-width: 200px;
+  align-self: flex-start;
+  margin-top: 10px;
+}
 
-/* Comments Section */
+.btn-add-to-wishlist {
+  padding: 10px 20px;
+  background-color: #49D8B9;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  max-width: 200px;
+  align-self: flex-start;
+  margin-top: 10px;
+}
+
+.btn-add-to-wishlist:hover {
+  background-color: #1033a4;
+}
+
+.btn-add-to-cart:hover {
+  background-color: #1033a4;
+}
+
+/* Reviews Section */
 .comments-section {
   background-color: white;
   padding: 1.5rem;
@@ -430,6 +451,7 @@ text-decoration: underline;
 
 .comments-section h2 {
   font-size: 1.5rem;
+  font-weight: bold;
   margin-bottom: 1rem;
 }
 
@@ -451,44 +473,71 @@ text-decoration: underline;
   margin: 0.5rem 0;
 }
 
-.reply-input {
+
+.reviews-section {
+  margin-top: 40px;
   width: 100%;
-  padding: 0.5rem;
+ 
+}
+
+.reviews {
+  margin-bottom: 20px;
+}
+
+.review {
+  padding: 15px;
   border: 1px solid #ccc;
   border-radius: 10px;
-  resize: none;
+  background: #fff;
+  margin-bottom: 10px;
 }
 
-.reply-btn {
-  align-self: flex-end;
-  background-color: #88b9df;
-  /* Same as wishlist button */
+form {
+  margin-top: 20px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+textarea {
+  width: 100%;
+  height: 100px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  padding: 10px;
+}
+.manager-reply {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-left: 4px solid #4caf50;
+}
+
+.manager-reply p {
+    margin: 0;
+    font-size: 14px;
+}
+.btn-submit-review {
+  padding: 10px 20px;
+  font-size: 1rem;
+  background-color: #49D8B9;
   color: white;
   border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  font-size: 0.9rem;
-}
-
-.reply-btn:hover {
-  background-color: #ffffff;
-  color: #88b9df;
-}
-
-.button-container {
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-  /* Add a gap between the buttons if needed */
-}
-
-select {
-  width: 100%;
-  padding: 0.5rem;
-  font-size: 1rem;
-  border: 1px solid #ccc;
   border-radius: 5px;
-  margin-bottom: 1rem;
+  cursor: pointer;
+  max-width: 200px;
+  align-self: flex-start;
+  margin-top: 10px;
+}
+
+.btn-submit-review:hover {
+  background-color: #1033a4;
 }
 
 /* Like/Unlike Button Styles */

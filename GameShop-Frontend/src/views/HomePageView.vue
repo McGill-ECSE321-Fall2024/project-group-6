@@ -1,3 +1,5 @@
+<!-- Author: Joseph and Mario -->
+
 <template>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.4/css/boxicons.min.css" rel="stylesheet">
   <header>
@@ -35,7 +37,7 @@
           <h3>{{ game.name }}</h3>
           <p v-if="game.promotion > 0" class="game-price promo">
             <strong>Price:</strong> ${{ game.price }}
-            <span class="promo-badge">{{ game.promotion }}% off!</span>
+            <span class="promo-badge">{{ game.promotion*100 }}% off!</span>
           </p>
           <p v-else class="game-price">
             <strong>Price:</strong> ${{ game.price }}
