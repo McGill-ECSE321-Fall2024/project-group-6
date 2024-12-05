@@ -2,33 +2,35 @@
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.4/css/boxicons.min.css" rel="stylesheet" />
     <header>
-        <nav class="navbar">
-            <div class="logo">
-                <h2>GameShop</h2>
+    <nav class="navbar">
+      <div class="logo">
+        <h2>GameShop</h2>
+      </div>
+      <div class="navmenu">
+        <div class="search-box">
+          <input type="search" v-model="searchQuery" class="search" placeholder="Search game..." />
+          <i class="bx bx-search" @click="searchByName"></i>
+        </div>
+
+        <div class="user-options">
+          <div class="dropdown">
+            <button class="dropbtn"><img src="../assets/account.png" class="account-img"></button>
+            <div class="nav-buttons">
+              <button @click="goToCustomerAccount">Account</button>
+              <button @click="goToCustomerOrders" class="order-btn">Orders</button>
+              <button @click="logout" class="logout-btn">Log Out</button>
             </div>
-            <div class="navmenu">
+          </div>
 
+          <RouterLink><img src="../assets/White-Heart.png" @click="goToWishlist">
+          </RouterLink>
 
-                <div class="user-options">
-                    <div class="dropdown">
-                        <button class="dropbtn"><img src="../assets/account.png" class="account-img"></button>
-                        <div class="nav-buttons">
-                            <button @click="goToCustomerAccount">Account</button>
-                            <button @click="goToCustomerOrders" class="order-btn">Orders</button>
-                            <button @click="logout" class="logout-btn">Log Out</button>
-                        </div>
-                    </div>
-
-                    <RouterLink><img src="../assets/White-Heart.png" @click="goToWishlist">
-                    </RouterLink>
-
-                    <RouterLink><img src="../assets/pngaaa.com-5034351.png" @click="goToCart">
-                    </RouterLink>
-                </div>
-            </div>
-        </nav>
-    </header>
-
+          <RouterLink><img src="../assets/pngaaa.com-5034351.png" @click="goToCart">
+          </RouterLink>
+        </div>
+      </div>
+    </nav>
+  </header>
     <div class="command">
         <div class="main-header">
             <div class="header">
@@ -45,8 +47,9 @@
                     <div class="Date"><strong>Placed on: </strong> {{ command.commandDate }}</div>
 
                     <div class="shippement">
-                        <strong>Shipping Address: {{ customer.shippingAddress }}</strong>
+                        <strong>Shipping Address:</strong> {{ customer.shippingAddress }}
                     </div>
+
                 </div>
 
             </div>
@@ -86,13 +89,17 @@ export default {
 
                 const allCommands = response.data.commands; // Assuming this is an array of customer commands
                 console.log(allCommands);
-                console.log(allCommands[42].customer.commands)
                 for (let i = 0; i < allCommands.length; i++) {
                     const command = allCommands[i]; // Access each command using index
                     if (command.customer.roleId == this.customerID) {
                         this.customer = command.customer;
                         this.commands = command.customer.commands
-
+                        /*
+                        const commands = command.customer.commands;
+                        for (let i = 0; i < commands.length; i++) {
+                        this.commands.push(commands[i]);
+                        }
+                        */
                     }
                 }
 
@@ -204,22 +211,22 @@ export default {
 }
 
 .dropdown .nav-buttons {
-    display: none;
-    /* Initially hide dropdown content */
-    position: absolute;
-    background-color: rgba(255, 255, 255, 0.906);
-    background: #ffff;
+  display: none;
+  /* Initially hide dropdown content */
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0.906);
+  background: #ffff;
 
-    color: #ffff;
-    z-index: 1;
+  color: #ffff;
+  z-index: 1;
 }
 
 .dropdown:hover .nav-buttons {
-    display: block;
-    /* Show dropdown on hover */
-    border: solid;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: block;
+  /* Show dropdown on hover */
+  border: solid;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .dropdown:hover .nav-buttons button {
@@ -228,41 +235,46 @@ export default {
 
 }
 
-.nav-buttons {
+.Date strong,
+.shippement strong {
+    font-weight: bold;
+}
 
-    display: flex;
-    align-items: center;
+.nav-buttons {
+display: flex;
+align-items: center;
 }
 
 .nav-buttons button {
 
-    color: #1033a4;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 5px;
-    cursor: pointer;
-    text-align: center;
-    /* Centers the text horizontally */
-    height: 50px;
-    /* Set a fixed height to ensure vertical centering */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    /* Centers the button text vertically */
+color: #1033a4;
+border: none;
+padding: 0.5rem 1rem;
+font-size: 1rem;
+border-radius: 5px;
+cursor: pointer;
+text-align: center;
+/* Centers the text horizontally */
+height: 50px;
+/* Set a fixed height to ensure vertical centering */
+display: flex;
+justify-content: center;
+align-items: center;
+/* Centers the button text vertically */
 }
 
 .nav-buttons button img {
-    padding-bottom: 15px;
-    padding-left: 10px;
+padding-bottom: 15px;
+padding-left: 10px;
 
 }
 
 .nav-buttons button:hover {
-    background-color: #eff2f1;
+background-color: #eff2f1;
 }
 
 .nav-buttons {
-    padding: 10px;
+padding: 10px;
 }
 
 
@@ -345,9 +357,7 @@ header .img {
 
 .main-header .header {
     margin-left: 30px;
-
 }
-
 
 .main-header h2 {
     font-weight: bold;
@@ -406,6 +416,11 @@ html {
     border-bottom: 1px solid #eee;
 }
 
+.receipt a {
+    font-size: 2rem;
+    font-weight: bold;
+}
+
 
 .command .receipt .list .order {
     margin-bottom: 30px;
@@ -429,7 +444,6 @@ html {
 }
 
 .returnPrice,
-.shippement,
 .payement {
     margin-top: 20px;
     font-size: 16px;

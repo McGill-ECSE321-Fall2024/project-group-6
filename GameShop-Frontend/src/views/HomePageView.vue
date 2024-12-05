@@ -29,12 +29,17 @@
     </aside>
     <main class="catalog">
       <div v-if="games.length === 0">No games found</div>
-      <div v-for="game in games" :key="game.id" class="game-card">
-        <img :src="game.photoURL" alt="Game Image" class="game-image" />
-        <div @click="goToGamePage(game)" class="game-info">
+      <div v-for="game in games" :key="game.gameId" class="game-card">
+        <img :src="game.photoURL" alt="Game Image" class="game-image" @click="goToGamePage(game)" />
+        <div class="game-info">
           <h3>{{ game.name }}</h3>
-          <p class="game-price"><strong>Price:</strong> ${{ game.price }}</p>
-          <p class="game-stock"><strong>Stock:</strong> {{ game.stockQuantity }} left</p>
+          <p v-if="game.promotion > 0" class="game-price promo">
+            <strong>Price:</strong> ${{ game.price }}
+            <span class="promo-badge">{{ game.promotion }}% off!</span>
+          </p>
+          <p v-else class="game-price">
+            <strong>Price:</strong> ${{ game.price }}
+          </p>
         </div>
       </div>
     </main>
@@ -45,6 +50,7 @@
 import axios from 'axios';
 import { RouterLink } from 'vue-router';
 import router from '@/router';
+
 export default {
   data() {
     return {
@@ -87,7 +93,6 @@ export default {
         params: {
           gameId: game.gameId
         }
-
       });
     },
     async filterByCategory() {
@@ -106,8 +111,8 @@ export default {
 
       var check = "false"
       var people = [];
-      const response = await axios.get(`http://localhost:8080/person`);
-      people = response.data["people"];
+      const response = await axios.get("http://localhost:8080/person");
+        people = response.data["people"];
       for (var i = 0; i < people.lenght; i++) {
         if (people[i]["username"] == "Manager") {
           check = "true";
@@ -120,10 +125,11 @@ export default {
           phone: "1234567890",
           password: "examplePassword"
         };
-        await axios.post(`http://localhost:8080/manager`, manager);
-      }
+        await axios.post("http://localhost:8080/manager",manager);
+    }
     }
   },
+
   async created() {
     await this.fetchCategories();
     await this.fetchGames();
@@ -131,6 +137,7 @@ export default {
   }
 };
 </script>
+
 
 <style scoped>
 * {
@@ -140,7 +147,6 @@ export default {
   list-style: none;
   font-family: "poppins";
 }
-
 
 .navbar {
   display: flex;
@@ -267,12 +273,37 @@ header img {
   text-decoration: underline;
 }
 
-.content {
-  display: flex;
-  height: calc(100% - 80px);
-  padding: 20px;
-  background-color: #ffffff;
-  color: #000;
+.promo {
+  position: relative;
+}
+
+.promo-badge {
+  display: inline-block;
+  margin-left: 10px;
+  padding: 3px 8px;
+  background-color: rgba(236, 137, 137, 0.999);
+  /* Bright orange to catch attention */
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: bold;
+  border-radius: 5px;
+  text-transform: uppercase;
+  animation: pulse 1.5s infinite;
+}
+
+/* Animation to add a pulsing effect */
+@keyframes pulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  50% {
+    transform: scale(1.1);
+    opacity: 0.9;
+  }
 }
 
 .categories {
@@ -287,61 +318,74 @@ header img {
   border-radius: 5px;
 }
 
+.content {
+  display: flex;
+  justify-content: space-between;
+  background-color: #ffff;
+  color: #000;
+  height: 100vh;
+  padding: 20px;
+}
+
 .catalog {
-  flex: 1;
+  flex: 9;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
   padding-left: 2rem;
 }
 
+.game-card {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 300px;
+  height: 450px;
+  /* Ensure consistent height for all cards */
+  text-align: center;
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
 
-
-.game-card h3 {
-  margin: 0;
+.game-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
 }
 
 .game-image {
   max-width: 100%;
-  height: auto;
-  margin: 0.5rem 0;
+  height: 60%;
+  margin: 0.5rem;
 }
 
 .game-info {
-  text-align: center;
-}
-
-.game-card p {
-  margin-top: 0.5rem;
-}
-
-.game-info {
-
+  position: absolute;
+  bottom: 10px;
+  /* Ensure info starts from the bottom */
+  left: 0;
+  right: 0;
   padding: 15px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s;
 }
 
-.game-info:hover {
-  transform: scale(1.05);
-}
-
-.game-info p {
-  margin: 10px 0;
+.game-info h3 {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 10px;
 }
 
 .game-price {
-  color: #e60000;
+  font-size: 1rem;
+  margin: 0.5em 0;
+  color: #333;
+}
+
+.game-price strong {
   font-weight: bold;
 }
 
 .game-description {
   color: #333;
-}
-
-.game-stock {
-  color: #007bff;
-  font-weight: bold;
 }
 </style>

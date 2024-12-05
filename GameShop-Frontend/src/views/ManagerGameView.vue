@@ -1,16 +1,17 @@
-
-
 <template>
     <div class="game-details-container">
         <header class="header">
-          
+
             <div class="app-name">GameShop</div>
-            <div class="button-container">
-            <button @click="goToManagerHome" class="manager-btn">HomePage</button>
-            <button @click="logout" class="logout-btn">Logout</button>
-        </div>
+            <div class="auth-links">
+                <button @click="goToManagerHome" class="manager-btn">HomePage</button>
+                <button @click="logout" class="logout-btn">Logout</button>
+            </div>
         </header>
         <div class="content">
+            <div v-if="showPopup" class="popup">
+                {{ popupMessage }}
+            </div>
             <!-- Game Information Section -->
             <div class="game-info">
 
@@ -42,7 +43,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="promotion">Promotion</label>
+                            <label for="promotion">Promotion (From 0-1)</label>
                             <input type="number" id="promotion" v-model="game.promotion" />
                         </div>
 
@@ -61,21 +62,21 @@
                         </ul>
                         <div classs="container">
                             <h3 style="margin: 1;">Search for Category Ids</h3>
-                        <select >
-                            <option v-for="category in catList" :key="category.id" :value="category.name">
-                            {{ `${category.name} (${category.id})` }}
-                            </option>
-                        </select>
+                            <select>
+                                <option v-for="category in catList" :key="category.id" :value="category.name">
+                                    {{ `${category.name} (${category.id})` }}
+                                </option>
+                            </select>
                         </div>
                         <div class="form-group">
                             <label for="newCategoryId">Add New Category To Game </label>
                             <input type="number" v-model="categoryId" />
-                            <button @click="addCategory(categoryId)" class="add-category">Add Category By Id</button>
+                            <button @click="addCategory(categoryId)" class="add-btn">Add Category</button>
                         </div>
                         <div class="form-group">
                             <label for="removeCategoryId">Remove Category From Game </label>
                             <input type="number" v-model="categoryIdRemove" />
-                            <button @click="removeCategory(categoryIdRemove)" class="remove-category">Remove Category By Id</button>
+                            <button @click="removeCategory(categoryIdRemove)" class="add-btn">Remove Category</button>
                         </div>
                     </main>
 
@@ -89,8 +90,8 @@
                 <div class="comment-card" v-if="reviews.length > 0">
                     <div v-for="review in reviews" :key="review.reviewId" class="review">
                         <div class="comment-header">
-                         <p><strong>{{ review.customer.person.username }}</strong> wrote:</p>
-                         <p class="comment-content">{{ review.comment }}</p>
+                            <p><strong>{{ review.customer.person.username }}</strong> wrote:</p>
+                            <p class="comment-content">{{ review.comment }}</p>
                         </div>
                         <p>Rating: {{ parseRating(review.rating) }}/5</p>
                         <p>Likes: {{ review.amountOfLikes || 0 }}</p>
@@ -101,21 +102,19 @@
 
                         <!-- Reply Text Box : only appears if no reply for the review -->
                         <div v-if="!checkIfReplied(review)" class="reply-box">
-                         <textarea
-                            v-model="review.replyText"
-                            placeholder="Write your reply here..."
-                            class="reply-textarea"
-                         ></textarea>
+                            <textarea v-model="review.replyText" placeholder="Write your reply here..."
+                                class="reply-textarea"></textarea>
                         </div>
                         <!-- Reply button if no reply and delete button if reply -->
-                        <button v-if="!checkIfReplied(review)" @click="replyToComment(review.reviewId)" class="btn-reply">
-                        Reply
+                        <button v-if="!checkIfReplied(review)" @click="replyToComment(review.reviewId)"
+                            class="btn-reply">
+                            Reply
                         </button>
                         <button v-else @click="deleteReply(review)" class="btn-delete">
-                        Delete
+                            Delete
                         </button>
                     </div>
-                    </div>
+                </div>
                 <p v-else>No reviews available for this game.</p>
             </div>
         </div>
@@ -154,7 +153,9 @@ export default {
             addReply: "",
             showPopup: false,
             popupMessage: "",
-            catList:"",
+            catList: "",
+            popupMessage: "",
+            showPopup: false,
 
         };
     },
@@ -165,7 +166,7 @@ export default {
         async fetchGameDetails() {
             //get game info
             try {
-                console.log("The game Id is "+this.gameID);
+                console.log("The game Id is " + this.gameID);
                 const response = await axios.get(`http://localhost:8080/games/id/${this.gameID}`);
                 console.log(response);
                 this.game = response.data;
@@ -181,21 +182,33 @@ export default {
                 }
                 this.game.categories = this.categoryIdsArray;
                 console.log("array of category ids is " + this.categoryIdsArray);
-                await axios.put(`http://localhost:8080/games/id/${this.gameID}`, this.game);
-                alert("Changes saved successfully!");
-                await this.fetchGameDetails();
+                await axios.put(`http://localhost:8080/games/id/${this.gameID}`, this.game).then(() => {
+                    this.fetchGameDetails();
+                })
+
+                this.popupMessage = "Changes saved successfully!";
+                this.showPopup = true;
+                setTimeout(() => (this.showPopup = false), 3000);
             } catch (error) {
-                console.error("Error saving game details:", error);
-                alert(error);
+                this.popupMessage = "Error saving game details:";
+                this.showPopup = true;
+                setTimeout(() => (this.showPopup = false), 3000);
             }
         },
         async saveAfterCategoryChange() {
             try {
-                await axios.put(`http://localhost:8080/games/id/${this.gameID}`, this.game);
-                alert("Changes saved successfully!");
-                await this.fetchGameDetails();
+                await axios.put(`http://localhost:8080/games/id/${this.gameID}`, this.game).then(() => {
+                    this.fetchGameDetails();
+                })
+
+                this.popupMessage = "Changes saved successfully!";
+                this.showPopup = true;
+                setTimeout(() => (this.showPopup = false), 3000);
+
             } catch (error) {
-                console.error("Error saving game details:", error);
+                this.popupMessage = "Unable to save changes";
+                this.showPopup = true;
+                setTimeout(() => (this.showPopup = false), 3000);
             }
         },
         async addCategory(id) {
@@ -212,7 +225,9 @@ export default {
             }
             if (counter == this.categories.length) {
                 this.fetchGameDetails();
-                alert("The category does not exist");
+                this.popupMessage = "The category does not exist";
+                this.showPopup = true;
+                setTimeout(() => (this.showPopup = false), 3000);
             }
             else {
                 this.categoryIdsArray.push(id);
@@ -229,34 +244,38 @@ export default {
                     this.game.categories = this.categoryIdsArray;
                     await this.saveAfterCategoryChange();
                 } else {
-                    this.fetchGameDetails();
-                    alert("The category already is assigned to this game");
+                    //this.fetchGameDetails();
+                    this.popupMessage = "The category already is assigned to this game";
+                    this.showPopup = true;
+                    setTimeout(() => (this.showPopup = false), 3000);
 
                 }
-                this.categoryId="";
+                this.categoryId = "";
             }
         },
-        async removeCategory(id){
-        this.categoryIdsArray=[];
-        var counter=0;
-        var check=this.game.categories.length;
-        for(var i=0;i<this.game.categories.length;i++){
-         console.log( this.game.categories[i]["categoryId"]+" the id I am passig is "+id);;
-            if(this.game.categories[i]["categoryId"]!=id){
-              console.log("I am here");
-            this.categoryIdsArray.push(this.game.categories[i]["categoryId"]);
-            counter++;
+        async removeCategory(id) {
+            this.categoryIdsArray = [];
+            var counter = 0;
+            var check = this.game.categories.length;
+            for (var i = 0; i < this.game.categories.length; i++) {
+                console.log(this.game.categories[i]["categoryId"] + " the id I am passig is " + id);;
+                if (this.game.categories[i]["categoryId"] != id) {
+                    console.log("I am here");
+                    this.categoryIdsArray.push(this.game.categories[i]["categoryId"]);
+                    counter++;
+                }
             }
-        }
-        this.game.categories=this.categoryIdsArray;
-        if(counter!==check){
-        await this.saveAfterCategoryChange();
-        }else{
-          alert("This category does not exist for this game, try another one");
-          await this.fetchGameDetails();
-        }
-        this.categoryIdRemove="";
-      },
+            this.game.categories = this.categoryIdsArray;
+            if (counter !== check) {
+                await this.saveAfterCategoryChange();
+            } else {
+                this.popupMessage = "This category does not exist for this game, try another one";
+                this.showPopup = true;
+                setTimeout(() => (this.showPopup = false), 3000);
+                //await this.fetchGameDetails();
+            }
+            this.categoryIdRemove = "";
+        },
         goToManagerHome() {
             router.push({
                 name: 'manager-homepage',
@@ -271,7 +290,7 @@ export default {
             try {
                 const response = await axios.get('http://localhost:8080/categories');
                 this.categories = response.data["categories"];
-                this.catList=response.data["categories"];
+                this.catList = response.data["categories"];
             } catch (error) {
                 console.error('Error fetching categories:', error);
             }
@@ -292,7 +311,9 @@ export default {
             const review = this.reviews.find((c) => c.reviewId === reviewId);
 
             if (!review || !review.replyText) {
-                alert("Please write a reply before submitting.");
+                this.popupMessage = "Please write a reply before submitting.";
+                this.showPopup = true;
+                setTimeout(() => (this.showPopup = false), 3000);
                 return;
             }
             review.reply = review.replyText;
@@ -311,7 +332,9 @@ export default {
                 review.replyText = "";
             } catch (error) {
                 console.error("Error posting reply:", error);
-                alert("Failed to post reply.");
+                this.popupMessage = "Failed to post reply.";
+                this.showPopup = true;
+                setTimeout(() => (this.showPopup = false), 3000);
             }
         },
 
@@ -334,26 +357,29 @@ export default {
                     reply: "",
                 };
                 await axios.put(`http://localhost:8080/review/${review.reviewId}`, payload);
-                alert("Reply successfully deleted!")
+                this.popupMessage = "Reply successfully deleted!";
+                this.showPopup = true;
+                setTimeout(() => (this.showPopup = false), 3000);
                 this.fetchReviews(); // Refresh the reviews list after updating
             } catch (error) {
-                console.error("Failed to delete the reply:", error);
-                alert("Failed to delete the reply. Please try again.");
+                this.popupMessage = "Failed to delete the reply. Please try again.";
+                this.showPopup = true;
+                setTimeout(() => (this.showPopup = false), 3000);
             }
         },
         logout() {
             this.$router.push("/SignIn"); // Redirect to login
         },
     },
-    created(){
-    this.managerID = this.managerId; 
-    this.gameID = this.gameId; 
-    console.log("The game id before accessing is "+this.gameId);
-     this.fetchGameDetails();
-     this.fetchCategories();
-     this.fetchReviews();
-  }
-    };
+    created() {
+        this.managerID = this.managerId;
+        this.gameID = this.gameId;
+        console.log("The game id before accessing is " + this.gameId);
+        this.fetchGameDetails();
+        this.fetchCategories();
+        this.fetchReviews();
+    }
+};
 </script>
 
 <style scoped>
@@ -364,6 +390,7 @@ export default {
     list-style: none;
     font-family: "poppins";
 }
+
 .header {
     display: flex;
     justify-content: space-between;
@@ -376,11 +403,28 @@ export default {
 .app-name {
     font-size: 1.5rem;
 }
-.navmenu{
+
+.navmenu {
     display: flex;
     gap: 10px
+}
+.auth-links {
+  display: flex;
+  gap: 1rem;
+  padding-right: 1rem; 
+}
+
+.auth-links a {
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
 
 }
+
+.auth-links a:hover {
+  text-decoration: underline;
+}
+
 .manager-btn {
     display: flex;
     background-color: #22bae0;
@@ -389,7 +433,7 @@ export default {
     padding: 0.5rem 1rem;
     border-radius: 20px;
     font-size: 0.9rem;
-   
+
 }
 
 .logout-btn {
@@ -409,6 +453,20 @@ export default {
     gap: 2rem;
     background-color: #ffffff;
     color: #000;
+}
+
+.popup {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #eee;
+    color: #000000;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    font-weight: bold;
+    z-index: 0;
 }
 
 .game-info {
@@ -490,10 +548,11 @@ export default {
 }
 
 .save-btn {
+    font-size: 1rem;
     margin-top: 1.5rem;
     margin-bottom: 1.5rem;
     padding: 0.75rem;
-    background-color: #28a745;
+    background-color: #22bae0;
     color: white;
     border: none;
     border-radius: 5px;
@@ -504,32 +563,21 @@ export default {
     background-color: #218838;
 }
 
-.add-category {
+.add-btn {
+    font-size: 1rem;
     margin-top: 1.5rem;
     margin-bottom: 1.5rem;
     padding: 0.75rem;
+    background-color: #22bae0;
     color: white;
     border: none;
+    width: 100%;
     border-radius: 5px;
     cursor: pointer;
-    background-color: #1033a4;
-    width: 100%;
 }
 
-.remove-category {
-    background-color: red;
-    margin-top: 1.5rem;
-    margin-bottom: 1.5rem;
-    padding: 0.75rem;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    width: 100%;
-}
-
-.add-category:hover {
-    background-color: #887821;
+.add-btn:hover {
+    background-color: #22bae0;
 }
 
 .categories-list {
@@ -557,62 +605,62 @@ export default {
 
 /* Comments Section */
 .comments-section {
-  background-color: white;
-  padding: 1.5rem;
-  border-radius: 10px;
-  box-shadow: 0 10px 20px rgba(85, 85, 85, 0.2);
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 10px 20px rgba(85, 85, 85, 0.2);
 }
 
 .comments-section h2 {
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
 }
 
 .comment-card {
-  border-top: 1px solid #eee;
-  padding: 1rem 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+    border-top: 1px solid #eee;
+    padding: 1rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
 }
 
 .comment-header {
-  display: flex;
-  flex-direction: column;
+    display: flex;
+    flex-direction: column;
 }
 
 .comment-content {
-  font-size: 1rem;
-  margin: 0.5rem 0;
+    font-size: 1rem;
+    margin: 0.5rem 0;
 }
 
 
 .reviews {
-  margin-bottom: 20px;
+    margin-bottom: 20px;
 }
 
 .review {
-  padding: 15px;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  background: #fff;
-  margin-bottom: 10px;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background: #fff;
+    margin-bottom: 10px;
 }
 
 form {
-  margin-top: 20px;
+    margin-top: 20px;
 }
 
 .form-group {
-  margin-bottom: 15px;
+    margin-bottom: 15px;
 }
 
 textarea {
-  width: 100%;
-  height: 100px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-  padding: 10px;
+    width: 100%;
+    height: 100px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    padding: 10px;
 }
 
 .manager-reply {
@@ -621,71 +669,77 @@ textarea {
     background-color: #f9f9f9;
     border-left: 4px solid #4caf50;
 }
+
 .manager-reply p {
     margin: 0;
     font-size: 14px;
 }
 
 .stars {
-  display: flex;
-  margin-top: 5px;
+    display: flex;
+    margin-top: 5px;
 }
 
 .star {
-  font-size: 20px;
-  color: #ccc;
+    font-size: 20px;
+    color: #ccc;
 }
 
 .star.filled {
-  color: gold;
+    color: gold;
 }
 
-.btn-reply, .btn-delete {
-  padding: 5px 15px;
-  font-size: 14px;
-  background-color: #49D8B9;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
+.btn-reply,
+.btn-delete {
+    padding: 5px 15px;
+    font-size: 14px;
+    background-color: #49D8B9;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
 }
 
-.btn-reply:hover, .btn-delete:hover {
-  background-color: #0056b3;
+.btn-reply:hover,
+.btn-delete:hover {
+    background-color: #0056b3;
 }
 
 .btn-delete {
-  background-color: #D84949;
+    background-color: #D84949;
 }
 
 .reply-form {
-  margin-top: 10px;
+    margin-top: 10px;
 }
 
 .reply-form textarea {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
 }
 
 .replies {
-  margin-top: 10px;
+    margin-top: 10px;
 }
 
 .replies h4 {
-  margin-bottom: 5px;
+    margin-bottom: 5px;
 }
+
 .button-container {
     display: flex;
     justify-content: space-between;
-    gap: 1rem; /* Add a gap between the buttons if needed */
+    gap: 1rem;
+    /* Add a gap between the buttons if needed */
 }
+
 select {
-  width: 100%;
-  padding: 0.5rem;
-  font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  margin-bottom: 1rem;
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 1rem;
 }
 </style>

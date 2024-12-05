@@ -1,34 +1,35 @@
 <template>
-    <link
-    href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.4/css/boxicons.min.css"
-    rel="stylesheet"
-  />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.4/css/boxicons.min.css" rel="stylesheet" />
   <div class="employee-management">
     <header>
       <nav class="navbar">
         <div class="logo">
           <h2>GameShop</h2>
         </div>
-          <div class="button-container">
-            <button @click="goToManagerHome" class="homepage-btn">HomePage</button>
-            <button @click="logout" class="logout-btn">Sign Out</button>
-          </div>
+        <div class="button-container">
+          <button @click="goToManagerHome" class="homepage-btn">HomePage</button>
+          <button @click="logout" class="logout-btn">Sign Out</button>
+        </div>
       </nav>
     </header>
     <div class="main-header">
       <div class="header">
         <h2>Employee Management</h2>
-       
+        <h5>Manage your team efficiently and effortlessly!</h5>
       </div>
     </div>
     <div class="container">
+      <div v-if="showPopup" class="popup">
+        {{ popupMessage }}
+      </div>
       <!-- Add Employee Section -->
       <div class="section add-employee">
         <h2>Add Employee</h2>
         <form class="form">
           <input type="text" name="name" placeholder="Full name" v-model="employeeName" class="input" required>
           <input type="email" name="email" placeholder="Email" v-model="employeeEmail" class="input" required>
-          <input type="password" name="password" placeholder="Password" v-model="employeePassword" class="input" required>
+          <input type="password" name="password" placeholder="Password" v-model="employeePassword" class="input"
+            required>
           <input type="text" name="phone" placeholder="Phone number" v-model="employeePhone" class="input" required>
           <button type="submit" @click="addEmployee()" class="btn">Add Employee</button>
         </form>
@@ -83,33 +84,36 @@ export default {
       employeePassword: '',
       employeePhone: '',
       employeeId: 0,
+      popupMessage: "",
+      showPopup: false,
     };
   },
   methods: {
     isLoggedIn() {
-        return this.loggedIn;
+      return this.loggedIn;
     },
 
     async searchByName() {
 
-        console.log(gameId);
-      this.$router.push({ name: "manager-gamepage",
-      params: {
-        gameId: gameId,
-        managerId:this.managerID,
-        loggedIn:true
-      } 
-    });
+      console.log(gameId);
+      this.$router.push({
+        name: "manager-gamepage",
+        params: {
+          gameId: gameId,
+          managerId: this.managerID,
+          loggedIn: true
+        }
+      });
     },
 
     async fetchEmployees() {
       try {
         const response = await axios.get("http://localhost:8080/employees");
         this.employees = response.data["employees"];
-        for(var i=0; i<this.employees.length;i++){
-            if(this.employees[i]["username"]==="deactivated"){
-                this.employees.splice(i,1);
-            }
+        for (let i = 0; i < this.employees.length; i++) {
+          if (this.employees[i].username === "deactivated") {
+            this.employees.splice(i, 1);  // Remove the employee at index i
+          }
         }
         console.log(this.employees);
       } catch (error) {
@@ -123,16 +127,21 @@ export default {
         if (!exists) {
           const newEmployee = {
             username: this.employeeName,
-            email: this.employeeEmail.toLowerCase(),
+            email: this.employeeEmail,
             password: this.employeePassword,
             phone: this.employeePhone
           };
 
           await axios.post('http://localhost:8080/employees', newEmployee);
+          this.empl
           await this.fetchEmployees();
-          alert("Employee added successfully!");
+          this.popupMessage = "Employee was added successfully!";
+          this.showPopup = true;
+          setTimeout(() => (this.showPopup = false), 3000);
         } else {
-          alert("The employee already exists");
+          this.popupMessage = "The employee already exists";
+          this.showPopup = true;
+          setTimeout(() => (this.showPopup = false), 3000);
         }
       } catch (error) {
         console.error("Error adding employee: ", error)
@@ -140,36 +149,35 @@ export default {
     },
 
     async deactivateEmployee(id) {
-      try{
+      try {
         const response = await axios.get(`http://localhost:8080/employees/${id}`);
         console.log(response);
         this.employeeToDelete = response.data;
-      } catch(error){
+      } catch (error) {
         alert(error);
       }
       try {
         await axios.put(`http://localhost:8080/employees/deactivate/${id}`);
-        alert("Changes saved successfully!");
-        for (let i = 0; i < this.employees.length; i++) {
-          if (this.employees[i].username === "deactivated") {
-            this.employees.splice(i, 1);  // Remove the employee at index i
-          }
-        }
+        this.popupMessage = "The employee was deactivated.";
+        this.showPopup = true;
+        setTimeout(() => (this.showPopup = false), 3000);
         this.fetchEmployees();
       } catch (error) {
         console.error("Error deactivating employee:", error);
-        alert(error);
+        this.popupMessage = "Error deactivating employee.";
+        this.showPopup = true;
+        setTimeout(() => (this.showPopup = false), 3000);
       }
     },
 
     async goToManagerHome() {
       router.push({
-          name: 'manager-homepage',
-          params: {
-            employeeId: this.managerID,
-            loggedIn: true
-          } 
-        });
+        name: 'manager-homepage',
+        params: {
+          employeeId: this.managerID,
+          loggedIn: true
+        }
+      });
     },
 
     async assignTask(id) {
@@ -177,9 +185,14 @@ export default {
         const task = prompt('Enter the task to assign:');
         if (!task) return; // No task provided
         await axios.put(`http://localhost:8080/employees/${id}/tasks`, { task });
-        alert(`Assigned task "${task}" to employee with ID: ${id}`); // Mock task assignment
-      } catch(error) {
-        console.error("Error assigning task: ", error)
+        this.popupMessage = `Assigned task "${task}" to employee with ID: ${id}`;
+        this.showPopup = true;
+        setTimeout(() => (this.showPopup = false), 3000);  
+      } catch (error) {
+        console.error("Error assigning task: ", error);
+        this.popupMessage = `An issue occured when assigning "${task}" to employee with ID: ${id}`;
+        this.showPopup = true;
+        setTimeout(() => (this.showPopup = false), 3000);  
       }
     },
 
@@ -189,27 +202,26 @@ export default {
   },
 
   created() {
-      if (!this.isLoggedIn()) {
-        this.$router.push({ name: "sign in" });
-        alert("Please log in before accessing this page.");
-      } else {
-        this.managerID = this.managerId; 
-        this.fetchEmployees();
-      }
-        
-    },
+    if (!this.isLoggedIn()) {
+      this.$router.push({ name: "sign in" });
+      alert("Please log in before accessing this page.");
+    } else {
+      this.managerID = this.managerId;
+      this.fetchEmployees();
+    }
+
+  },
 };
 </script>
 
 
 <style scoped>
-
 * {
-    margin: 0;
-    padding: 0;
-    text-decoration: none;
-    list-style: none;
-    font-family: "poppins";
+  margin: 0;
+  padding: 0;
+  text-decoration: none;
+  list-style: none;
+  font-family: "poppins";
 }
 
 /* Shared styles with Wishlist Page */
@@ -221,52 +233,56 @@ export default {
   margin: 0;
 }
 
+.container {
+  height: 100vh;
+}
+
 /* Navbar */
 .navbar {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    height: 90px;
-    background: #1033a4;
-    padding: 0 40px; 
-    align-items: center;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  height: 90px;
+  background: #1033a4;
+  padding: 0 40px;
+  align-items: center;
 }
 
 .navbar h2 {
-    color: #ffffff;
-    font-size: 25px;
-    font-weight: 500;
-    margin-left: 20px; 
-    text-decoration: none; 
+  color: #ffffff;
+  font-size: 25px;
+  font-weight: 500;
+  margin-left: 20px;
+  text-decoration: none;
 }
 
 /* Unapproved Games Box */
 .unapproved-box {
-    margin-top: 1rem;
-    text-align: center;
+  margin-top: 1rem;
+  text-align: center;
 }
 
 /* Search Box */
 .search-box .search {
-    width: 600px;
-    padding: 10px;
-    border-radius: 50px;
-    font-size: 16px;
+  width: 600px;
+  padding: 10px;
+  border-radius: 50px;
+  font-size: 16px;
 }
 
 .search-box {
-    margin-left: 40px; 
-    display: flex;
-    align-items: center;
+  margin-left: 40px;
+  display: flex;
+  align-items: center;
 }
 
 .navmenu .search-box i {
-    color: #ffffff;
-    position: relative;
-    right: 40px;
-    background-color: #1140d9;
-    padding: 8px;
-    border-radius: 50px;
+  color: #ffffff;
+  position: relative;
+  right: 40px;
+  background-color: #1140d9;
+  padding: 8px;
+  border-radius: 50px;
 }
 
 .btn {
@@ -285,9 +301,9 @@ export default {
 }
 
 .button-container {
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem; 
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
 }
 
 .button-container:hover {
@@ -323,6 +339,7 @@ export default {
 }
 
 .add-employee h2 {
+  font-weight: bold;
   text-align: center;
 }
 
@@ -334,15 +351,12 @@ export default {
   padding: 0.5rem 1rem;
   border-radius: 20px;
   font-size: 0.9rem;
+
 }
 
 .homepage-btn:hover {
-  background-color: #48bbd8;
-
-}
-
-.logout-btn:hover {
-  background-color: #fa8c82;
+  cursor: pointer;
+  background-color: #77c3d5;
 }
 
 .logout-btn {
@@ -352,6 +366,11 @@ export default {
   padding: 0.5rem 1rem;
   border-radius: 20px;
   font-size: 0.9rem;
+}
+
+.logout-btn:hover {
+  cursor: pointer;
+  background-color: #fa978e;
 }
 
 .input {
@@ -365,6 +384,7 @@ export default {
 .form .btn {
   width: 100%;
   text-align: center;
+  font-size: 1rem;
 }
 
 /* Employee List Section */
@@ -414,5 +434,4 @@ export default {
   font-weight: 550;
   text-align: center;
 }
-
 </style>

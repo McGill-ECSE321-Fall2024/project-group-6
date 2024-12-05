@@ -20,7 +20,6 @@
               <button @click="logout" class="logout-btn">Log Out</button>
             </div>
           </div>
-
           <RouterLink><img src="../assets/White-Heart.png" @click="goToCustomerWishlist">
           </RouterLink>
 
@@ -46,22 +45,26 @@
     </aside>
 
 
-    <main class="catalog"  >
-     
+    <main class="catalog">
       <div v-if="games.length === 0">No games found</div>
       <div v-for="game in games" :key="game.gameId" class="game-card">
         <img :src="game.photoURL" alt="Game Image" class="game-image" @click="goToGamePage(game)"/>
         <div class="game-info" >
           <h3>{{ game.name }}</h3>
-          <p class="game-price"><strong>Price:</strong> ${{ game.price }}</p>
-          <p class="game-stock"><strong>Stock:</strong> {{ game.stockQuantity }} left</p>
-          <p class="game-promotion"><strong>Promotion:</strong> {{ game.promotion }}</p>
-          <div class="button-container">
-            <button class="btn" @click="addToCart(game)">Add to Cart</button>
-            <button class="btn" @click="addToWishlist(game)">Add to Wishlist</button>
-          </div>
+          <div class="price-box">
+          <p v-if="game.promotion > 0" class="game-price promo">
+            <strong>Price:</strong> ${{ game.price }} 
+            <span class="promo-badge">{{ game.promotion*100}}% off!</span>
+          </p>
+          <p v-else class="game-price">
+            <strong>Price:</strong> ${{ game.price }}
+          </p>
         </div>
-        
+        <div class="button-container">
+          <button class="btn" @click="addToCart(game)">Add to Cart</button>
+          <button class="btn" @click="addToWishlist(game)">Add to Wishlist</button>
+        </div>
+        </div>
       </div>
     </main>
 
@@ -94,6 +97,13 @@ export default {
     isLoggedIn() {
       return this.loggedIn;
     },
+
+    calculateFinalPrice(price, promotion) {
+    const discount = (price * promotion) / 100;
+    const finalPrice = price - discount;
+    return finalPrice.toFixed(2); // Return price rounded to 2 decimal places
+  },
+
     async fetchCategories() {
       try {
         const response = await axios.get('http://localhost:8080/categories');
@@ -258,48 +268,52 @@ export default {
 }
 
 .user-options {
-  display: flex;
-  /* Aligns child elements (buttons) horizontally */
+    display: flex;
 
-  /* Adds spacing between buttons (adjust as needed) */
-  align-items: center;
-  /* Vertically aligns buttons if needed */
+    align-items: center;
+    /* Vertically aligns buttons if needed */
 }
 
 .user-options button {
-  background: none;
-  /* Remove default button background */
-  border: none;
-  /* Remove default button border */
-  padding: 0;
-  /* Remove padding around buttons */
-  cursor: pointer;
+    background: none;
+    /* Remove default button background */
+    border: none;
+    /* Remove default button border */
+    padding: 0;
+    /* Remove padding around buttons */
+    cursor: pointer;
 }
 
 .user-options img {
-  margin-top: 15px;
-  margin-right: 10px;
-  align-items: center;
-  width: 40px;
+    margin-top: 15px;
+    margin-right: 10px;
+    align-items: center;
+    width: 40px;
 }
 
 .dropdown .nav-buttons {
-  display: none;
-  /* Initially hide dropdown content */
-  position: absolute;
-  background-color: rgba(255, 255, 255, 0.906);
-  background: #ffff;
+    display: none;
+    /* Initially hide dropdown content */
+    position: absolute;
+    background-color: rgba(255, 255, 255, 0.906);
+    background: #ffff;
 
-  color: #ffff;
-  z-index: 1;
+    color: #ffff;
+    z-index: 1;
 }
 
 .dropdown:hover .nav-buttons {
-  display: block;
-  /* Show dropdown on hover */
-  border: solid;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: block;
+    /* Show dropdown on hover */
+    border: solid;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown:hover .nav-buttons button {
+    display: flex;
+    /* Show dropdown on hover */
+
 }
 
 
@@ -354,13 +368,13 @@ export default {
 }
 
 .navmenu .search-box i {
-  color: #ffffff;
-  position: relative;
-  right: 40px;
-  top: 2px;
-  background-color: #1140d9;
-  padding: 8px;
-  border-radius: 50px;
+    color: #ffffff;
+    position: relative;
+    right: 40px;
+    top: 2px;
+    background-color: #1140d9;
+    padding: 8px;
+    border-radius: 50px;
 }
 
 header .img {
@@ -370,18 +384,14 @@ header .img {
   width: 40px;
 }
 
-
-
-
 .container {
   display: flex;
   justify-content: space-between;
   background-color: #ffff;
   color: #000;
-  height: 100%;
+  height: 100vh;
   padding: 20px;
 }
-
 
 .categories {
   width: 200px;
@@ -438,18 +448,41 @@ header .img {
   color: #1140d9;
 }
 
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.9;
+  }
+}
 
 .catalog {
-  flex: 1;
+  flex: 9;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
   padding-left: 2rem;
 }
 
+.game-card {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 300px;
+  height: 450px; /* Ensure consistent height for all cards */
+  text-align: center;
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
 
-.game-card h3 {
-  margin: 0;
+.game-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
 }
 
 .game-image {
@@ -459,34 +492,44 @@ header .img {
 }
 
 .game-info {
-  text-align: center;
-}
-
-.game-card p {
-  margin-top: 0.5rem;
-}
-
-.game-info {
-
+  position: absolute;
+  bottom: 10px; /* Ensure info starts from the bottom */
+  left: 0;
+  right: 0;
   padding: 15px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s;
+  background-color: #fff; /* Optional: Add a subtle background */
 }
 
-.game-info:hover {
-  transform: scale(1.05);
-}
-
-.game-info p {
-  margin: 10px 0;
-}
 .game-info h3 {
+  font-size: 1.2rem;
   font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.promo {
+  position: relative;
+}
+
+.promo-badge {
+  display: inline-block;
+  margin-left: 10px;
+  padding: 3px 8px;
+  background-color: rgba(236, 137, 137, 0.999); /* Bright orange to catch attention */
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: bold;
+  border-radius: 5px;
+  text-transform: uppercase;
+  animation: pulse 1.5s infinite;
 }
 
 .game-price {
-  color: #e60000;
+  font-size: 1rem;
+  margin: 0.5em 0;
+  color: #333;
+}
+
+.game-price strong {
   font-weight: bold;
 }
 
@@ -494,18 +537,9 @@ header .img {
   color: #333;
 }
 
-.game-stock {
-  color: #007bff;
-  font-weight: bold;
-}
-
 .account-img {
   padding-top: -2px;
 
-}
-
-#catalog-title {
-  padding-bottom: 20px;
 }
 
 .nav-buttons {
@@ -514,31 +548,41 @@ header .img {
   align-items: center;
 }
 
-.nav-buttons button {
-
-  color: #1033a4;
+button {
+  color: white;
+  padding: 10px 20px;
   border: none;
-  padding: 0.5rem 1rem;
   border-radius: 5px;
+  font-size: 1rem;
   cursor: pointer;
-  text-align: center;
-  /* Centers the text horizontally */
-  height: 50px;
-  /* Set a fixed height to ensure vertical centering */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  /* Centers the button text vertically */
+  transition: background-color 0.3s ease;
+}
+
+.nav-buttons button {
+font-size: 1rem;
+color: #1033a4;
+border: none;
+padding: 0.5rem 1rem;
+border-radius: 5px;
+cursor: pointer;
+text-align: center;
+/* Centers the text horizontally */
+height: 50px;
+/* Set a fixed height to ensure vertical centering */
+display: flex;
+justify-content: center;
+align-items: center;
+/* Centers the button text vertically */
 }
 
 .nav-buttons button img {
-  padding-bottom: 15px;
-  padding-left: 10px;
+padding-bottom: 15px;
+padding-left: 10px;
 
 }
 
 .nav-buttons button:hover {
-  background-color: #eff2f1;
+background-color: #eff2f1;
 }
 
 .nav-buttons {
@@ -579,32 +623,14 @@ header .img {
 }
 
 .button-container {
-  margin-left: 15px;
   display: flex;
-  /* Enable flexbox */
-  align-items: center;
-  /* Align items vertically */
-  gap: 1rem;
-  /* Add spacing between buttons */
-
+  justify-content: center;
+  gap: 10px;
 }
 
 .button-container .btn {
-  width: 40%;
-  margin-bottom: 5px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  align-items: center;
   background: #88b9df;
-  border: 1px solid #88b9df;
-  font-size: 15px;
-  color: #ffffff;
-  font-weight: 400;
-  border-radius: 50px;
-  padding: 4px 2px;
 }
-
 
 .button-container .btn:hover {
   color: #88b9df;

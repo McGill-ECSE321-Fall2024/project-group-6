@@ -6,7 +6,10 @@
         <h2>GameShop</h2>
       </div>
       <div class="navmenu">
-        
+        <div class="search-box">
+          <input type="search" v-model="searchQuery" class="search" placeholder="Search game..." />
+          <i class="bx bx-search" @click="searchByName"></i>
+        </div>
 
         <div class="user-options">
           <div class="dropdown">
@@ -28,10 +31,10 @@
     </nav>
   </header>
     <div class="container">
+        <a @click="goToCustomerMainPage">Keep shopping</a>
         <div class="checkoutLayout">
             <div class="returnCart">
-                <a @click="goToCustomerMainPage">Keep shopping</a>
-                <h1>List Product in Cart</h1>
+                <h1>Product List in Cart</h1>
                 <div class="list">
                     <div v-if="showPopup" class="popup">
                         {{ popupMessage }}
@@ -42,9 +45,9 @@
                             <div class="info">
                                 <div class="name">{{ game.name }}</div>
                                 <p><strong>Stock:</strong> {{ game.stockQuantity }} left</p>
-                                <div class="price">{{ game.price }}</div>
+                                <p><strong>Price:</strong> {{ game.price }}$ </p>
                             </div>
-                            <div class="returnPrice">{{ game.price }}$</div>
+                            <div class="returnPrice">{{ game.price*(1-game.promotion) }}$</div>
                             <div class="buttons">
                                 <a @click="removeFromCart(game)" class="btn">-</a>
                             </div>
@@ -192,7 +195,7 @@ export default {
             return this.customer.cart.length;
         },
         totalPrice() {
-            return this.customer.cart.reduce((total, game) => total + game.price, 0);
+            return this.customer.cart.reduce((total, game) => total + game.price*(1-game.promotion), 0);
         },
 
     },
@@ -464,13 +467,12 @@ export default {
 }
 
 .nav-buttons {
-
 display: flex;
 align-items: center;
 }
 
 .nav-buttons button {
-
+font-size: 1rem;
 color: #1033a4;
 border: none;
 padding: 0.5rem 1rem;
@@ -556,8 +558,13 @@ header .img {
     width: 40px;
 }
 .container {
+    height: 100vh;
     background-color: #ffffff;
     color: #000000;
+}
+
+.info strong {
+    font-weight: bold;
 }
 
 h2 {
@@ -597,7 +604,6 @@ h2 {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 20px;
-    border-bottom: 1px solid #3e78ff;
     padding-bottom: 20px;
 }
 
@@ -639,6 +645,7 @@ h2 {
     width: 100%;
     height: 40px;
     border: none;
+    font-size: 1rem;
     border-radius: 20px;
     background-color: #49D8B9;
     margin-top: 40px;
@@ -646,13 +653,23 @@ h2 {
     color: #fff;
 }
 
+.buttonCheckout:hover {
+    background-color: #61c2da;
+    cursor: pointer;
+}
+
+.container a {
+    text-align: center;
+    font-size: 1.5rem;
+    margin-top: 3rem;
+    font-weight: bold;
+  }
+
 .returnCart h1 {
-    border-top: 1px solid #eee;
     padding: 20px 0;
 }
 
 .returnCart .list {
-    border-bottom: 2px solid #eee;
     padding: 20px 0;
 }
 
@@ -660,7 +677,7 @@ h2 {
     height: 80px;
 }
 
-.returnCart .list .item .buttons a {
+.returnCart .list .item a {
     padding: 0 6px;
     width: 100%;
     height: 40px;
@@ -670,6 +687,10 @@ h2 {
     margin-top: 20px;
     font-weight: bold;
     color: #ffffff;
+}
+
+.buttons .btn {
+    border-radius: 50%;
 }
 
 .returnCart .list .item {

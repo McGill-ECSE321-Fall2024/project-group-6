@@ -2,31 +2,26 @@
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.4/css/boxicons.min.css" rel="stylesheet">
     <header>
-    <nav class="navbar">
-      <div class="logo">
-        <h2>GameShop</h2>
-      </div>
-      <div class="navmenu">
-
-        <div class="user-options">
-          <div class="dropdown">
-            <button class="dropbtn"><img src="../assets/account.png" class="account-img"></button>
-            <div class="nav-buttons">
-              <button @click="goToCustomerAccount">Account</button>
-              <button @click="goToCustomerOrders" class="order-btn">Orders</button>
-              <button @click="logout" class="logout-btn">Log Out</button>
-            </div>
-          </div>
-
-          <RouterLink><img src="../assets/White-Heart.png" @click="goToWishlist">
-          </RouterLink>
-
-          <RouterLink><img src="../assets/pngaaa.com-5034351.png" @click="goToCart">
-          </RouterLink>
+      <nav class="navbar">
+        <div class="logo">
+          <h2>GameShop</h2>
         </div>
-      </div>
-    </nav>
-  </header>
+        <div class="navmenu">
+        </div>
+          <div class="user-options">
+            <div class="dropdown">
+              <button class="dropbtn"><img src="../assets/account.png" class="account-img"></button>
+              <div class="nav-buttons">                    
+                    <button @click="goToCustomerMainPage">Home</button>
+                    <button @click="goToCustomerOrders">Orders</button>
+                    <button @click="logout">Sign out</button>
+                </div>
+            </div>
+            <button @click="goToCustomerWishlist"><img src="../assets/White-Heart.png" alt="WishList" class="wishlist-img" @click="goToCustomerWishlist"></button>
+            <button @click="goToCart"><img src="../assets/pngaaa.com-5034351.png" alt="Cart" class="cart-img" @click="goToCustomerCart"></button>
+          </div>
+      </nav>
+    </header>
     <div class="wishlist">
         <div class="main-header">
             <div class="header">
@@ -271,7 +266,7 @@ align-items: center;
 }
 
 .nav-buttons button {
-
+font-size: 1rem;
 color: #1033a4;
 border: none;
 padding: 0.5rem 1rem;
@@ -449,6 +444,11 @@ html {
 
 .returnCart .list .item img {
     height: 90px;
+}
+
+.returnCart a {
+    text-align: center;
+    font-size: 2rem;
 }
 
 .wishlist .returnCart .list .item {

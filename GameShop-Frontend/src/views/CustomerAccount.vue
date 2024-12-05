@@ -13,17 +13,17 @@
         <div class="navmenu">
         </div>
           <div class="user-options">
-            <button @click="goToCart"><img src="../assets/pngaaa.com-5034351.png" alt="Cart" class="cart-img" @click="goToCustomerCart"></button>
-            <button @click="goToCustomerWishlist"><img src="../assets/White-Heart.png" alt="WishList" class="wishlist-img" @click="goToCustomerWishlist"></button>
             <div class="dropdown">
-                <button class="dropbtn"><img src="../assets/person-circle.svg" alt="Account" class="account-img"></button>
-                <div class="nav-buttons">                    
-                    <button @click="goToCustomerMainPage" class="mainpage-btn">Home</button>
-                    <button @click="goToCustomerOrders" class="order-btn">Orders</button>
-                    <button @click="logout" class="logout-btn">Logout</button>
+              <button class="dropbtn"><img src="../assets/account.png" class="account-img"></button>
+              <div class="nav-buttons">                    
+                    <button @click="goToCustomerMainPage">Home</button>
+                    <button @click="goToCustomerOrders">Orders</button>
+                    <button @click="logout">Sign out</button>
                 </div>
             </div>
-        </div>
+            <button @click="goToCustomerWishlist"><img src="../assets/White-Heart.png" alt="WishList" class="wishlist-img" @click="goToCustomerWishlist"></button>
+            <button @click="goToCart"><img src="../assets/pngaaa.com-5034351.png" alt="Cart" class="cart-img" @click="goToCustomerCart"></button>
+          </div>
       </nav>
     </header>
 
@@ -233,53 +233,90 @@ body {
   margin-left: 20px;
 }
 
-.cart-img,
-.wishlist-img,
 .account-img {
-  width: 40px; 
-  height: auto;  
-  object-fit: contain; 
+  padding-top: -2px;
+
 }
 
 .user-options {
   display: flex;
-  align-items: center; 
-  gap: 20px; 
+  /* Aligns child elements (buttons) horizontally */
+
+  /* Adds spacing between buttons (adjust as needed) */
+  align-items: center;
+  /* Vertically aligns buttons if needed */
 }
 
 .user-options button {
   background: none;
+  /* Remove default button background */
   border: none;
+  /* Remove default button border */
   padding: 0;
+  /* Remove padding around buttons */
   cursor: pointer;
 }
 
 .user-options img {
-  width: 30px; 
-  height: 30px;
+  margin-top: 15px;
+  margin-right: 10px;
+  align-items: center;
+  width: 40px;
 }
 
-.dropdown {
-  position: relative;
-}
-
-.nav-buttons {
+.dropdown .nav-buttons {
   display: none;
-  flex-direction: column;
+  /* Initially hide dropdown content */
   position: absolute;
-  background-color: #fff;
-  top: 40px;
-  right: 0;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  padding: 10px;
-}
+  background-color: rgba(255, 255, 255, 0.906);
+  background: #ffff;
 
-.dropdown:hover .nav-buttons, .nav-buttons:hover {
-  display: flex; 
+  color: #ffff;
+  z-index: 1;
 }
 
 .dropdown:hover .nav-buttons {
-  display: flex !important; 
+  display: block;
+  /* Show dropdown on hover */
+  border: solid;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.nav-buttons {
+  display: flex;
+  align-items: center;
+}
+
+.nav-buttons button {
+font-size: 1rem;
+color: #1033a4;
+border: none;
+padding: 0.5rem 1rem;
+border-radius: 5px;
+cursor: pointer;
+text-align: center;
+/* Centers the text horizontally */
+height: 50px;
+/* Set a fixed height to ensure vertical centering */
+display: flex;
+justify-content: center;
+align-items: center;
+/* Centers the button text vertically */
+}
+
+.nav-buttons button img {
+padding-bottom: 15px;
+padding-left: 10px;
+
+}
+
+.nav-buttons button:hover {
+background-color: #eff2f1;
+}
+
+.nav-buttons {
+padding: 10px;
 }
 
 /* Account Info Page Styles */
@@ -287,7 +324,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: calc(100vh - 80px); 
+  height: 100vh; 
   width: 100%; 
   padding: 20px; 
   overflow-x: hidden; 
@@ -318,6 +355,7 @@ body {
 }
 
 .form-group label {
+  font-weight: bold;
   display: block;
   margin-bottom: 5px;
   color: #1033a4;
@@ -338,6 +376,7 @@ body {
   color: #fff;
   border: none;
   cursor: pointer;
+  font-size: 1rem;
   margin-top: 10px;
 }
 

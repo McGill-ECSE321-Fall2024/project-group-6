@@ -10,15 +10,13 @@ import CustomerAccount from '@/views/CustomerAccount.vue'
 import EmployeeGameView from '@/views/EmployeeGameView.vue'
 import ManagerGameView from '@/views/ManagerGameView.vue'
 import ManagerHomePage from '@/views/ManagerHomePage.vue'
+import ManageEmployees from '@/views/ManageEmployees.vue'
 import CustomerHomePage from '@/views/CustomerHomePage.vue'
+import CustomerGamePage from '@/views/CustomerGamePage.vue'
+import CustomerOrders from '@/views/CustomerOrders.vue'
+import GamePage from '@/views/GamePage.vue'
 import Checkout from '@/views/Checkout.vue'
 import Command from '@/views/Command.vue'
-import CustomerOrders from '@/views/CustomerOrders.vue'
-import CustomerGamePage from '@/views/CustomerGamePage.vue'
-import GamePage from '@/views/GamePage.vue'
-import ManageEmployees from '@/views/ManageEmployees.vue'
-
-
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -45,11 +43,6 @@ const router = createRouter({
       component: Wishlist,
     },
     {
-      path: '/gamePage/:gameId',
-      name: 'gamepage',
-      component: GamePage,
-    },
-    {
       path: '/employeeAccount/:employeeId/:loggedIn',
       name: 'employee-account',
       component: EmployeeAccount,
@@ -70,7 +63,33 @@ const router = createRouter({
       path: '/customerAccount/:customerId/:loggedIn',
       name: 'customer-account',
       component: CustomerAccount,
+      props:true,
+      
+      beforeEnter: (to, from, next) => {
+        if (localStorage.getItem('loggedIn') === 'true') {
+          next();
+        } else {
+          alert('Please sign in before accessing this page.');
+          next({ name: 'sign in' });
+        }
+      }
     },
+
+    {
+      path: '/customerGamePage/:customerId/:loggedIn/:gameId',
+      name: 'customer-gamepage',
+      component: CustomerGamePage,
+      props: true,
+      beforeEnter: (to, from, next) => {
+        if (localStorage.getItem('loggedIn') === 'true') {
+          next();
+        } else {
+          alert('Please sign in before accessing this page.');
+          next({ name: 'sign in' });
+        }
+      }  
+    },
+
       {
         path: '/employeeHomePage/:employeeId/:loggedIn',
         name: 'employee-homepage',
@@ -100,6 +119,29 @@ const router = createRouter({
         }
           
       },
+
+      {
+        path: '/customerOrders/:customerId/:loggedIn',
+        name: 'customer-orders',
+        component: CustomerOrders,
+        props: true,
+        beforeEnter: (to, from, next) => {
+          if (localStorage.getItem('loggedIn') === 'true') {
+            next();
+          } else {
+            alert('Please sign in before accessing this page.');
+            next({ name: 'sign in' });
+          }
+        }
+          
+      },
+
+      {
+        path: '/gamePage/:gameId',
+        name: 'gamepage',
+        component: GamePage,
+      },
+
       {
         path: '/managerHomePage/:managerId/:loggedIn',
         name: 'manager-homepage',
@@ -112,9 +154,25 @@ const router = createRouter({
             alert('Please sign in before accessing this page.');
             next({ name: 'sign in' });
           }
-        }
-          
+        } 
       },
+
+      {
+        path: '/manageEmployees/:managerId/:loggedIn',
+        name: 'manage-employees',
+        component: ManageEmployees,
+        props:true,
+        beforeEnter: (to, from, next) => {
+          if (localStorage.getItem('loggedIn') === 'true') {
+            next();
+          } else {
+            alert('Please sign in before accessing this page.');
+            next({ name: 'sign in' });
+          }
+        }
+      
+      },
+
       {
         path: '/managerGamePage/:managerId/:loggedIn/:gameId',
         name: 'manager-gamepage',
@@ -135,36 +193,6 @@ const router = createRouter({
         path: '/customerHomePage/:customerId/:loggedIn',
         name: 'customer-homepage',
         component: CustomerHomePage,
-        props: true,
-        beforeEnter: (to, from, next) => {
-          if (localStorage.getItem('loggedIn') === 'true') {
-            next();
-          } else {
-            alert('Please sign in before accessing this page.');
-            next({ name: 'sign in' });
-          }
-        }
-          
-      },
-      {
-        path: '/customerGamePage/:customerId/:loggedIn/:gameId',
-        name: 'customer-gamepage',
-        component: CustomerGamePage,
-        props: true,
-        beforeEnter: (to, from, next) => {
-          if (localStorage.getItem('loggedIn') === 'true') {
-            next();
-          } else {
-            alert('Please sign in before accessing this page.');
-            next({ name: 'sign in' });
-          }
-        }
-          
-      },
-      {
-        path: '/customerOrders/:customerId/:loggedIn',
-        name: 'customer-orders',
-        component: CustomerOrders,
         props: true,
         beforeEnter: (to, from, next) => {
           if (localStorage.getItem('loggedIn') === 'true') {

@@ -11,8 +11,6 @@
       <div class="navmenu"></div>
       <div class="button-container">
         <button @click="goToEmployeeHome" class="homepage-btn" >HomePage</button>
-     
-      
         <button @click="logout" class="logout-btn">Logout</button>
       </div>
     
@@ -265,7 +263,7 @@ display: flex;
 justify-content: space-between;
 width: 100%;
 height: 90px;
-background: #1033a4;
+background-color: #1033a4;
 padding: 0 40px;
 align-items: center;
 }
@@ -327,8 +325,12 @@ display: flex;
 justify-content: space-between;
 background-color: #ffff;
 color: #000;
-height: 100%;
+height: 100vh;
 padding: 20px;
+}
+
+.container h3 {
+  font-weight: bold;
 }
 
 .catalog {
@@ -363,10 +365,15 @@ border-radius: 5px;
 width: 100%;
 }
 
+.form-group label {
+  font-weight: bold;
+}
+
 .save-btn {
 margin-top: 1.5rem;
 padding: 0.75rem;
-background-color: #28a745;
+font-size: 1rem;
+background-color: #22bae0;
 color: white;
 border: none;
 border-radius: 5px;
@@ -374,21 +381,23 @@ cursor: pointer;
 }
 
 .save-btn:hover {
-background-color: #218838;
+  background-color: #61c2da;
 }
 
 .add-category {
 margin-top: 1.5rem;
 padding: 0.75rem;
-background-color: #a78928;
+background-color: #1033a4;
 color: white;
 border: none;
 border-radius: 5px;
+font-size: 1rem;
 cursor: pointer;
+width: 100%
 }
 
 .add-category:hover {
-background-color: #887821;
+  background-color: #445ba3;
 }
 
 .categories-list {
@@ -421,11 +430,6 @@ font-size: 1rem;
 .button-container:hover {
 cursor: pointer;
 }
-.homepage-btn {
-display: flex;
-
-padding: 0.5rem 1rem;
-}
 
 .homepage-btn {
 display: flex;
@@ -438,12 +442,13 @@ font-size: 0.9rem;
 }
 
 .homepage-btn:hover {
-background-color: #48bbd8;
-
+background-color: #61c2da;
+cursor: pointer;
 }
 
 .logout-btn:hover {
 background-color: #fa8c82;
+cursor: pointer;
 }
 
 .logout-btn {
@@ -454,6 +459,7 @@ padding: 0.5rem 1rem;
 border-radius: 20px;
 font-size: 0.9rem;
 }
+
 select {
 width: 100%;
 padding: 0.5rem;
