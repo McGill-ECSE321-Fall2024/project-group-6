@@ -108,5 +108,7 @@ Table 3 : Roles of each team member Deliverable 3: <br/>
 |             | Demo                                                                        |         5         |
 |             | Testing of the application                                                  |                  |
 |             | Backend Setup                                                                |       7          |
-| Mario       | Customer Dashboard and Account (Frontend/Backend)                            |                  |
-|             | Manager "Manage employee page" and Game page (Frontend/Backend)             |                  |
+| Mario       | Customer Dashboard and Account (Frontend/Backend)                            |        9          |
+|             | Manager "Manage employee page" and Game page (Frontend/Backend)             |         7         |
+|             | Game catalog of all home pages                                            |           6          |
+|             | Ensured consistent formatting for all pages                                |          4         |
